@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <img 
-                src="/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
+                src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
                 alt="Ministry of Health Logo" 
                 className="h-10 w-auto mr-3 brightness-150 contrast-75" 
               />

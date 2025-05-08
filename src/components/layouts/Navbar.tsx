@@ -1,12 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Search, Globe, ChevronDown } from "lucide-react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
   
   useEffect(() => {
     const handleScroll = () => {
@@ -24,7 +26,11 @@ export default function Navbar() {
   
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
+      isHomePage 
+        ? scrolled 
+          ? 'bg-white/95 backdrop-blur-md shadow-md py-2' 
+          : 'bg-transparent py-4'
+        : 'bg-white shadow-sm py-2'
     }`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
@@ -35,39 +41,68 @@ export default function Navbar() {
                 alt="Ministry of Health Logo" 
                 className={`transition-all duration-300 ${scrolled ? 'h-8' : 'h-10'} w-auto object-contain`} 
               />
-              <span className={`ml-3 font-medium text-moh-darkGreen ${scrolled ? 'text-base' : 'text-lg'}`}>
+              <span className={`ml-3 font-medium ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'} ${scrolled ? 'text-base' : 'text-lg'}`}>
                 Innovation Platform
               </span>
             </Link>
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/about" className="text-moh-darkGreen hover:text-moh-green transition-colors flex items-center">
+            <Link 
+              to="/about" 
+              className={`hover:text-moh-green transition-colors flex items-center ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
+            >
               About
             </Link>
-            <Link to="/challenges" className="text-moh-darkGreen hover:text-moh-green transition-colors flex items-center gap-1">
+            <Link 
+              to="/challenges" 
+              className={`hover:text-moh-green transition-colors flex items-center gap-1 ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
+            >
               Challenges
               <ChevronDown className="h-4 w-4" />
             </Link>
-            <Link to="/innovations" className="text-moh-darkGreen hover:text-moh-green transition-colors">
+            <Link 
+              to="/innovations" 
+              className={`hover:text-moh-green transition-colors ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
+            >
               Innovations
             </Link>
-            <Link to="/knowledge-hub" className="text-moh-darkGreen hover:text-moh-green transition-colors">
+            <Link 
+              to="/knowledge-hub" 
+              className={`hover:text-moh-green transition-colors ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
+            >
               Knowledge Hub
             </Link>
           </nav>
           
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-moh-lightGreen hover:text-moh-green rounded-full">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`hover:bg-moh-lightGreen hover:text-moh-green rounded-full ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
+            >
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-moh-lightGreen hover:text-moh-green rounded-full">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`hover:bg-moh-lightGreen hover:text-moh-green rounded-full ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
+            >
               <Globe className="h-5 w-5" />
             </Button>
-            <Button variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen">
+            <Button 
+              variant={isHomePage && !scrolled ? "outline" : "outline"} 
+              className={isHomePage && !scrolled 
+                ? "border-white text-white hover:bg-white/10" 
+                : "border-moh-green text-moh-green hover:bg-moh-lightGreen"}
+            >
               Sign In
             </Button>
-            <Button className="bg-moh-green hover:bg-moh-darkGreen text-white">
+            <Button 
+              className={isHomePage && !scrolled 
+                ? "bg-white text-moh-green hover:bg-white/90" 
+                : "bg-moh-green hover:bg-moh-darkGreen text-white"}
+            >
               Register
             </Button>
           </div>
@@ -76,7 +111,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <button 
               type="button" 
-              className="inline-flex items-center justify-center rounded-md p-2 text-moh-darkGreen" 
+              className={`inline-flex items-center justify-center rounded-md p-2 ${isHomePage && !scrolled ? 'text-white' : 'text-moh-darkGreen'}`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? 
