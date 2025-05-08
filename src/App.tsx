@@ -15,6 +15,7 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import ChallengesPage from "./pages/challenges";
 import ChallengeDetailPage from "./pages/challenges/[id]";
+import AboutPage from "./pages/about";
 import SubmissionsPage from "./pages/dashboard/submissions";
 import SubmitChallengePage from "./pages/dashboard/submit/[challengeId]";
 
@@ -68,7 +69,7 @@ const App = () => (
             </Route>
             
             {/* Static Routes */}
-            <Route path="/about" element={<NotFound />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/innovations" element={<NotFound />} />
             <Route path="/knowledge-hub" element={<NotFound />} />
             
