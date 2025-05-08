@@ -3,26 +3,20 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  Trophy, 
-  Share2, 
-  FileText, 
-  ArrowLeft, 
-  Building, 
-  Calendar as CalendarIcon 
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Challenge } from "@/types/challenges";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
-import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+
+// Component imports
+import ChallengeHeader from "@/components/challenges/ChallengeHeader";
+import ChallengeSidebar from "@/components/challenges/ChallengeSidebar";
+import ChallengeTimeline from "@/components/challenges/ChallengeTimeline";
+import ChallengeRequirements from "@/components/challenges/ChallengeRequirements";
 
 // Mock data for now
 const mockChallenges: Challenge[] = [
@@ -71,14 +65,59 @@ const mockChallenges: Challenge[] = [
       { date: "September 30, 2025", event: "Winners Announced" }
     ]
   },
+  {
+    id: "2",
+    title: "AI for Early Disease Detection",
+    description: "Develop AI algorithms to detect early signs of diseases using existing health data from MOH facilities.",
+    long_description: `
+      <h3>Challenge Background</h3>
+      <p>Early disease detection is crucial for improving patient outcomes and reducing healthcare costs. The Ministry of Health has accumulated vast amounts of patient data that could potentially reveal patterns indicative of disease onset before clinical symptoms appear.</p>
+      
+      <h3>Challenge Objective</h3>
+      <p>This challenge invites innovative AI solutions that can analyze existing health data to identify early markers of disease. The goal is to develop algorithms that can flag patients at risk of developing specific conditions, enabling preventive interventions and timely treatment.</p>
+      
+      <h3>What We're Looking For</h3>
+      <ul>
+        <li>Machine learning models with high sensitivity and specificity for disease prediction</li>
+        <li>Solutions that maintain patient privacy and data security</li>
+        <li>Approaches that can handle diverse data types including structured and unstructured data</li>
+        <li>Models that can be integrated with existing electronic health record systems</li>
+        <li>Explainable AI features that provide insight into prediction factors</li>
+        <li>Scalable solutions that can be deployed across the Saudi healthcare system</li>
+      </ul>
+    `,
+    deadline: "July 15, 2025",
+    submission_deadline: "2025-07-15T23:59:59+03:00",
+    category: "AI & Machine Learning",
+    participants: 32,
+    prize: "SAR 750,000",
+    image_url: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    organizer: "Ministry of Health - Digital Transformation Office",
+    status: "Open",
+    eligibility: "Data scientists, AI researchers, healthcare innovators, startups, and established companies with expertise in machine learning and healthcare analytics.",
+    requirements: [
+      "Must use anonymized healthcare data",
+      "Solution must demonstrate significant improvement over existing methods",
+      "Algorithms must be explainable and transparent in their decision-making",
+      "Submissions must include validation metrics and methodology",
+      "Data privacy and security measures must be explicitly addressed"
+    ],
+    timeline: [
+      { date: "April 1, 2025", event: "Challenge Launch" },
+      { date: "May 15, 2025", event: "Dataset Access Provided" },
+      { date: "June 1, 2025", event: "Technical Q&A Webinar" },
+      { date: "July 15, 2025", event: "Submission Deadline" },
+      { date: "August 15, 2025", event: "Finalists Announced" },
+      { date: "September 30, 2025", event: "Final Presentations" },
+      { date: "October 15, 2025", event: "Winners Announced" }
+    ]
+  },
   // ... other challenges
 ];
 
 const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
-  const { toast } = useToast();
   
   // Fetch challenge details from API with proper typing
   const { data: challenge, isLoading, error } = useQuery({
@@ -102,37 +141,6 @@ const ChallengeDetail = () => {
       });
     }
   });
-
-  // Function to handle apply button click
-  const handleApply = () => {
-    if (!user) {
-      // Redirect to login
-      window.location.href = `/auth/login?redirect=/challenges/${id}`;
-      return;
-    }
-    
-    // Navigate to submission form
-    window.location.href = `/dashboard/submit/${id}`;
-  };
-  
-  // Calculate days remaining until deadline
-  const getDaysRemaining = (deadlineDate: string) => {
-    const deadline = new Date(deadlineDate);
-    const today = new Date();
-    const diffTime = deadline.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 0;
-  };
-
-  // Function to handle share button click
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link copied!",
-      description: "Challenge link copied to clipboard",
-      duration: 3000,
-    });
-  };
 
   if (isLoading) {
     return (
@@ -188,31 +196,7 @@ const ChallengeDetail = () => {
       <Navbar />
       <main className="flex-grow pt-24">
         {/* Hero Banner */}
-        <div className="relative h-64 md:h-80 overflow-hidden">
-          <img 
-            src={challenge.image_url} 
-            alt={challenge.title} 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex items-end">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <Link to="/challenges" className="inline-flex items-center text-white mb-4 hover:underline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Challenges
-              </Link>
-              <Badge className="bg-moh-gold hover:bg-moh-darkGold mb-3">
-                {challenge.category}
-              </Badge>
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                {challenge.title}
-              </h1>
-              <div className="flex items-center text-white/80 text-sm">
-                <Building className="h-4 w-4 mr-1" />
-                <span>{challenge.organizer}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ChallengeHeader challenge={challenge} />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Breadcrumb Navigation */}
@@ -236,96 +220,20 @@ const ChallengeDetail = () => {
                 </TabsContent>
                 
                 <TabsContent value="requirements" className="space-y-6">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-medium text-moh-darkGreen">Eligibility</h3>
-                    <p>{challenge.eligibility}</p>
-                    
-                    <h3 className="text-xl font-medium text-moh-darkGreen mt-6">Requirements</h3>
-                    <ul className="list-disc pl-5 space-y-2">
-                      {challenge.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  <ChallengeRequirements 
+                    eligibility={challenge.eligibility} 
+                    requirements={challenge.requirements} 
+                  />
                 </TabsContent>
                 
                 <TabsContent value="timeline" className="space-y-6">
-                  <div className="relative pl-8 border-l border-gray-200 space-y-8">
-                    {challenge.timeline.map((event, index) => (
-                      <div key={index} className="relative">
-                        <div className="absolute -left-11 mt-1.5 h-6 w-6 rounded-full border-4 border-white bg-moh-green flex items-center justify-center">
-                          <CalendarIcon className="h-3 w-3 text-white" />
-                        </div>
-                        <time className="mb-1 text-sm font-normal leading-none text-gray-500">
-                          {event.date}
-                        </time>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {event.event}
-                        </h3>
-                        {index === challenge.timeline.length - 1 ? (
-                          <p className="text-sm text-gray-600">Final winners will be announced and prizes awarded.</p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
+                  <ChallengeTimeline timeline={challenge.timeline} />
                 </TabsContent>
               </Tabs>
             </div>
             
             {/* Sidebar */}
-            <div className="lg:w-80">
-              <div className="bg-white shadow-md rounded-lg border border-gray-100 p-6 sticky top-20">
-                <div className="mb-6">
-                  <span className="inline-flex gap-2 items-center text-sm text-gray-500 mb-2">
-                    <Clock className="h-4 w-4" />
-                    Submission Deadline
-                  </span>
-                  <p className="font-medium">{challenge.deadline}</p>
-                </div>
-                
-                <div className="bg-moh-lightGreen/50 p-4 rounded-md mb-6">
-                  <div className="text-center">
-                    <span className="text-sm text-gray-600">Days Remaining</span>
-                    <p className="text-2xl font-bold text-moh-green">
-                      {getDaysRemaining(challenge.submission_deadline)}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex justify-between mb-6">
-                  <div>
-                    <span className="inline-flex gap-1 items-center text-sm text-gray-500 mb-1">
-                      <Trophy className="h-4 w-4" />
-                      Prize
-                    </span>
-                    <p className="font-medium">{challenge.prize}</p>
-                  </div>
-                  <div>
-                    <span className="inline-flex gap-1 items-center text-sm text-gray-500 mb-1">
-                      <Users className="h-4 w-4" />
-                      Participants
-                    </span>
-                    <p className="font-medium">{challenge.participants}</p>
-                  </div>
-                </div>
-                
-                <Button 
-                  onClick={handleApply}
-                  className="w-full bg-moh-green hover:bg-moh-darkGreen text-white mb-4"
-                >
-                  Apply to Challenge
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={handleShare}
-                >
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share Challenge
-                </Button>
-              </div>
-            </div>
+            <ChallengeSidebar challenge={challenge} />
           </div>
         </div>
       </main>

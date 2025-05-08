@@ -18,6 +18,8 @@ export interface Challenge {
     date: string;
     event: string;
   }[];
+  tags?: string[];
+  difficulty_level?: string;
 }
 
 export interface Submission {
@@ -29,4 +31,8 @@ export interface Submission {
   submitted_at: string | null;
   updated_at: string;
   category: string;
+  description?: string;
+  team_members?: string[];
+  feedback?: string;
+  score?: number;
 }
