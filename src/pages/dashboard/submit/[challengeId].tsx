@@ -1,127 +1,113 @@
-import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Upload, File, Paperclip, X } from "lucide-react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, FileUp } from "lucide-react";
+import { Challenge } from "@/types/challenges";
 
-// Mock challenge data
-const mockChallenges = [
+// Mock data for now
+const mockChallenges: Challenge[] = [
   {
     id: "1",
     title: "Remote Patient Monitoring Solutions",
     description: "Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.",
+    long_description: `Challenge details...`,
+    deadline: "June 30, 2025",
+    submission_deadline: "2025-06-30T23:59:59+03:00",
     category: "Digital Health",
+    participants: 47,
+    prize: "SAR 500,000",
+    image_url: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    organizer: "Ministry of Health - Innovation Department",
+    status: "Open",
+    eligibility: "Healthcare professionals and innovators",
+    requirements: ["Solution must be applicable within Saudi healthcare system"],
+    timeline: [{ date: "June 30, 2025", event: "Submission Deadline" }]
   },
-  // ... other challenges
+  // Additional challenges would be here
 ];
 
-// Form schema
-const submitFormSchema = z.object({
-  title: z.string().min(5, { message: "Title must be at least 5 characters" }).max(100),
-  description: z.string().min(50, { message: "Description must be at least 50 characters" }).max(2000),
-  approach: z.string().min(100, { message: "Approach must be at least 100 characters" }).max(2000),
-  team_info: z.string().optional(),
-  github_link: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal('')),
-  additional_links: z.string().optional(),
-});
+// Types for the form data
+interface SubmissionFormData {
+  title: string;
+  summary: string;
+  description: string;
+  team_members?: string;
+  files?: FileList;
+}
 
-type SubmitFormValues = z.infer<typeof submitFormSchema>;
-
-const SubmitChallengePage = () => {
+export default function SubmitChallengePage() {
   const { challengeId } = useParams<{ challengeId: string }>();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
-  
-  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Fetch challenge details
-  const { data: challenge, isLoading, error } = useQuery({
+  const [files, setFiles] = useState<File[]>([]);
+
+  // Fetch challenge details from API with proper typing
+  const { data: challenge, isLoading: challengeLoading } = useQuery({
     queryKey: ['challenge', challengeId],
     queryFn: async () => {
       // In a real app, this would be fetching from Supabase
-      // const { data, error } = await supabase
-      //   .from('challenges')
-      //   .select('*')
-      //   .eq('id', challengeId)
-      //   .single();
+      // const { data, error } = await supabase.from('challenges').select('*').eq('id', challengeId).single();
       // if (error) throw error;
       // return data;
       
       // Using mock data for now
-      return new Promise((resolve) => {
+      return new Promise<Challenge | undefined>((resolve) => {
         setTimeout(() => {
-          const challenge = mockChallenges.find(c => c.id === challengeId);
-          resolve(challenge);
+          const foundChallenge = mockChallenges.find(c => c.id === challengeId);
+          resolve(foundChallenge);
         }, 500);
       });
     }
   });
 
-  // Form setup
-  const form = useForm<SubmitFormValues>({
-    resolver: zodResolver(submitFormSchema),
+  // Form configuration
+  const form = useForm<SubmissionFormData>({
     defaultValues: {
       title: "",
+      summary: "",
       description: "",
-      approach: "",
-      team_info: "",
-      github_link: "",
-      additional_links: "",
+      team_members: "",
     },
   });
 
-  // Handle file upload
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFiles = event.target.files;
-    if (uploadedFiles) {
-      const newFiles = Array.from(uploadedFiles);
-      setFiles(prevFiles => [...prevFiles, ...newFiles]);
-    }
-  };
-
-  // Remove file
-  const removeFile = (index: number) => {
-    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
-  };
-
-  // Submit form
-  const onSubmit = async (data: SubmitFormValues) => {
+  const onSubmit = async (data: SubmissionFormData) => {
     setIsSubmitting(true);
     
-    try {
-      // In a real app, this would submit to Supabase
-      // 1. Create the submission record
-      // 2. Upload any files to Supabase Storage
-      // 3. Update the submission with file URLs
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+    // Basic validation
+    if (!data.title || !data.summary || !data.description) {
       toast({
-        title: "Submission successful!",
-        description: "Your solution has been submitted for review.",
+        title: "Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
       });
-      
-      // Redirect to submissions page
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      // Simulate submission to a backend (replace with actual API call)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      toast({
+        title: "Success",
+        description: "Your submission has been received!",
+      });
       navigate("/dashboard/submissions");
     } catch (error) {
-      console.error("Submission error:", error);
       toast({
-        title: "Submission failed",
-        description: "There was a problem submitting your solution. Please try again.",
+        title: "Error",
+        description: "Failed to submit the challenge. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -129,239 +115,147 @@ const SubmitChallengePage = () => {
     }
   };
 
-  if (isLoading) {
-    return <div className="py-6">Loading challenge details...</div>;
-  }
-
-  if (error || !challenge) {
-    return (
-      <div className="py-6">
-        <h1 className="text-2xl font-bold mb-4">Challenge Not Found</h1>
-        <p className="mb-4">The challenge you're trying to submit to doesn't exist or has been removed.</p>
-        <Button asChild>
-          <Link to="/challenges">Back to Challenges</Link>
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <Link to={`/challenges/${challengeId}`} className="inline-flex items-center text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Challenge Details
-        </Link>
-        <h1 className="text-3xl font-bold mt-4">{challenge.title}</h1>
-        <p className="text-muted-foreground mt-2">Submit your solution for this challenge</p>
-      </div>
+    <div className="container mx-auto py-12">
+      <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back
+      </Button>
+      
+      {challengeLoading ? (
+        <div className="text-center py-10">Loading challenge details...</div>
+      ) : !challenge ? (
+        <div className="text-center py-10">Challenge not found.</div>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Submit to: {challenge.title}</CardTitle>
+            <CardDescription>
+              Fill out the form below to submit your solution to this challenge.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Submission Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter your submission title" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Give your submission a clear and concise title.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="summary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Executive Summary</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Provide a brief summary of your solution"
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Summarize your solution in 2-3 sentences.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Detailed Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe your solution in detail"
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Provide a comprehensive description of your solution, including its key features and benefits.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="team_members"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team Members (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="List team members and their roles" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        If applicable, list the names and roles of your team members.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Solution Details</CardTitle>
-          <CardDescription>
-            Provide details about your solution to the {challenge.category} challenge.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Solution Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter a concise title for your solution" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Make it descriptive and memorable.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Solution Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe your solution, its key features, and how it addresses the challenge..." 
-                        {...field} 
-                        className="min-h-32"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Explain what your solution does and the problem it solves.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="approach"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Technical Approach</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe your approach, methodology, and any technologies used..." 
-                        {...field} 
-                        className="min-h-32"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Detail the technical aspects of your solution.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Separator className="my-6" />
-              
-              <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-medium mb-2">Supporting Documents</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Upload any supporting documents, presentations, or images related to your solution.
-                  </p>
-                  
-                  <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <label htmlFor="file-upload" className="cursor-pointer">
-                      <div className="border-2 border-dashed border-gray-300 rounded-md p-6 flex flex-col items-center justify-center hover:border-gray-400 transition-colors">
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm font-medium">Click to upload files</p>
-                        <p className="text-xs text-muted-foreground mt-1">PDF, DOCX, PPT, PNG, JPG up to 10MB</p>
-                      </div>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        multiple
-                        className="hidden"
-                        onChange={handleFileChange}
-                      />
+                  <FormLabel>Supporting Documents (Optional)</FormLabel>
+                  <Input
+                    type="file"
+                    multiple
+                    id="files"
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        setFiles(Array.from(e.target.files));
+                      }
+                    }}
+                    className="hidden"
+                  />
+                  <Button variant="secondary" asChild>
+                    <label htmlFor="files" className="flex items-center">
+                      <FileUp className="h-4 w-4 mr-2" />
+                      Upload Files
                     </label>
-                  </div>
-                  
+                  </Button>
                   {files.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      <p className="text-sm font-medium">Uploaded Files</p>
-                      <ul className="space-y-2">
-                        {files.map((file, index) => (
-                          <li key={index} className="flex items-center justify-between py-2 px-3 bg-muted rounded-md">
-                            <div className="flex items-center">
-                              <File className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span className="text-sm truncate max-w-[200px]">{file.name}</span>
-                              <span className="text-xs text-muted-foreground ml-2">
-                                {(file.size / 1024 / 1024).toFixed(2)} MB
-                              </span>
-                            </div>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeFile(index)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <ul className="mt-2">
+                      {files.map((file, index) => (
+                        <li key={index} className="text-sm">
+                          {file.name} ({file.type}, {Math.round(file.size / 1024)} KB)
+                        </li>
+                      ))}
+                    </ul>
                   )}
+                  <FormDescription>
+                    Upload any supporting documents that may help showcase your solution.
+                  </FormDescription>
                 </div>
-              </div>
-              
-              <Separator className="my-6" />
-              
-              <h3 className="text-lg font-medium mb-4">Additional Information</h3>
-              
-              <FormField
-                control={form.control}
-                name="team_info"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Team Information (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Information about your team members and their roles..." 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Tell us about your team members and their contributions.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="github_link"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>GitHub Repository (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://github.com/username/repository" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Link to your code repository if applicable.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="additional_links"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Links (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Any other relevant links (demo, website, etc.)" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Share any additional resources or links related to your submission.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="flex justify-end space-x-4 pt-4">
-                <Button type="button" variant="outline" onClick={() => navigate(`/challenges/${challengeId}`)}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit Solution"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+
+                <CardFooter>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Submitting..." : "Submit Challenge"}
+                  </Button>
+                </CardFooter>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
-};
-
-export default SubmitChallengePage;
+}

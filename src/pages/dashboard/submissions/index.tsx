@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -12,9 +11,10 @@ import { Search, Plus, Eye, Clock, Filter } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
+import { Submission } from "@/types/challenges";
 
 // Mock submissions data
-const mockSubmissions = [
+const mockSubmissions: Submission[] = [
   {
     id: "1",
     title: "HealthMonitor: Remote Patient Tracker",
@@ -48,7 +48,7 @@ const mockSubmissions = [
 ];
 
 // Submission card component
-const SubmissionCard = ({ submission }: { submission: any }) => {
+const SubmissionCard = ({ submission }: { submission: Submission }) => {
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -126,7 +126,7 @@ export default function SubmissionsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   
-  // Fetch user's submissions
+  // Fetch user's submissions with proper typing
   const { data: submissions, isLoading, error } = useQuery({
     queryKey: ['user-submissions', user?.id],
     queryFn: async () => {
@@ -139,7 +139,7 @@ export default function SubmissionsPage() {
       // return data;
       
       // Using mock data for now
-      return new Promise(resolve => {
+      return new Promise<Submission[]>(resolve => {
         setTimeout(() => resolve(mockSubmissions), 1000);
       });
     },

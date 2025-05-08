@@ -1,5 +1,5 @@
-
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/layouts/Navbar";
@@ -11,21 +11,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { ArrowRight, Clock, Users, Trophy, Search, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-
-// Types
-interface Challenge {
-  id: string;
-  title: string;
-  description: string;
-  deadline: string;
-  category: string;
-  participants: number;
-  prize: string;
-  image_url: string;
-}
+import { Challenge } from "@/types/challenges";
 
 // Mock data for now - would be replaced by actual API call
-const mockChallenges = [
+const mockChallenges: Challenge[] = [
   {
     id: "1",
     title: "Remote Patient Monitoring Solutions",
@@ -136,9 +125,11 @@ const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full bg-moh-green hover:bg-moh-darkGreen text-white group">
-          View Challenge
-          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+        <Button asChild className="w-full bg-moh-green hover:bg-moh-darkGreen text-white group">
+          <Link to={`/challenges/${challenge.id}`}>
+            View Challenge
+            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </Button>
       </CardFooter>
     </Card>

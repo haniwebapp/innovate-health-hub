@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { Slot } from "@radix-ui/react-slot";
@@ -37,9 +36,14 @@ const BreadcrumbItem = React.forwardRef<
 ));
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
+// Fixed the type definition
+type BreadcrumbLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  asChild?: boolean;
+};
+
 const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
-  React.AnchorElementProps
+  BreadcrumbLinkProps
 >(({ className, asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "a";
   return (
@@ -111,9 +115,3 @@ export {
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
 };
-
-// Helper type for anchor with as child
-type AnchorProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
-type AnchorElementProps = AnchorProps & {
-  asChild?: boolean
-}

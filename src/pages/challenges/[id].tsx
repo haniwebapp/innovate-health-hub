@@ -10,9 +10,10 @@ import { Calendar, Clock, Users, Trophy, Share2, FileText, ArrowLeft, Building, 
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Challenge } from "@/types/challenges";
 
 // Mock data for now
-const mockChallenges = [
+const mockChallenges: Challenge[] = [
   {
     id: "1",
     title: "Remote Patient Monitoring Solutions",
@@ -66,7 +67,7 @@ const ChallengeDetail = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   
-  // Fetch challenge details from API
+  // Fetch challenge details from API with proper typing
   const { data: challenge, isLoading, error } = useQuery({
     queryKey: ['challenge', id],
     queryFn: async () => {
@@ -80,7 +81,7 @@ const ChallengeDetail = () => {
       // return data;
       
       // Using mock data for now
-      return new Promise((resolve) => {
+      return new Promise<Challenge | undefined>((resolve) => {
         setTimeout(() => {
           const foundChallenge = mockChallenges.find(c => c.id === id);
           resolve(foundChallenge);
