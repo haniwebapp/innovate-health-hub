@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Info } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -19,11 +20,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
-  const { signIn, signUp } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   // Get the location they were trying to access
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || "/dashboard";
@@ -39,6 +41,7 @@ export default function LoginForm() {
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
     try {
       await signIn(values.email, values.password);
       navigate(from);
@@ -57,22 +60,50 @@ export default function LoginForm() {
   async function createTestAdminAccount() {
     setIsLoading(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
+
+    // First check if the user already exists
+    const { data: existingUser, error: checkError } = await supabase.auth.admin.listUsers({
+      filter: { email: 'admin@moh.gov.sa' }
+    }).catch(() => ({ data: null, error: null }));
+
+    // If we can't check (which is likely due to lack of admin privileges), we'll try to sign up anyway
     try {
-      // Create a test admin account
-      await signUp("admin@moh.gov.sa", "password123", {
-        firstName: "Admin",
-        lastName: "User",
-        userType: "admin",
-        organization: "Ministry of Health"
+      // Try to create the admin user
+      const { data, error } = await supabase.auth.signUp({
+        email: "admin@moh.gov.sa",
+        password: "password123",
+        options: {
+          data: {
+            firstName: "Admin",
+            lastName: "User",
+            userType: "admin",
+            organization: "Ministry of Health"
+          }
+        }
       });
-      setErrorMessage("Admin account created. Try logging in with admin@moh.gov.sa and password123");
+
+      if (error) {
+        // If error because user exists, we'll show a helpful message
+        if (error.message?.includes("already registered")) {
+          setSuccessMessage("Admin account already exists. Try logging in with admin@moh.gov.sa and password123");
+          
+          // Pre-fill the form with the admin credentials for convenience
+          form.setValue("email", "admin@moh.gov.sa");
+          form.setValue("password", "password123");
+        } else {
+          setErrorMessage(error.message || "An error occurred during account creation.");
+        }
+      } else {
+        setSuccessMessage("Admin account created. You can now log in with admin@moh.gov.sa and password123");
+        
+        // Pre-fill the form with the admin credentials for convenience
+        form.setValue("email", "admin@moh.gov.sa");
+        form.setValue("password", "password123");
+      }
     } catch (error: any) {
       console.error("Account creation error:", error);
-      if (error.message?.includes("already registered")) {
-        setErrorMessage("Admin account already exists. Try logging in with admin@moh.gov.sa and password123");
-      } else {
-        setErrorMessage(error.message || "An error occurred during account creation.");
-      }
+      setErrorMessage(error.message || "An error occurred during account creation.");
     } finally {
       setIsLoading(false);
     }
@@ -85,6 +116,13 @@ export default function LoginForm() {
           <Alert variant="destructive" className="text-sm">
             <AlertTriangle className="h-4 w-4 mr-2" />
             <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        )}
+        
+        {successMessage && (
+          <Alert className="text-sm bg-green-50 border-green-200 text-green-800">
+            <Info className="h-4 w-4 mr-2 text-green-600" />
+            <AlertDescription>{successMessage}</AlertDescription>
           </Alert>
         )}
         

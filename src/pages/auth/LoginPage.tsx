@@ -35,6 +35,11 @@ export default function LoginPage() {
             <LoginForm />
           </CardContent>
         </Card>
+
+        <div className="text-center text-xs text-gray-500">
+          <p>If you're having trouble logging in, try creating a test admin account first.</p>
+          <p>Then use email: admin@moh.gov.sa and password: password123</p>
+        </div>
       </div>
     </div>
   );
