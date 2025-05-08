@@ -1,10 +1,11 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Innovation, statusColors } from "@/types/innovations";
 import {
   Calendar,
   Star,
@@ -18,22 +19,6 @@ import {
   Bookmark,
   ChevronLeft,
 } from "lucide-react";
-
-interface Innovation {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  tags: string[];
-  rating: number;
-  status: "New" | "Validated" | "Scaling" | "Established";
-  createdAt: string;
-  longDescription?: string;
-  organization?: string;
-  website?: string;
-  contact?: string;
-}
 
 // Mock innovation data (in a real app, this would come from an API)
 const mockInnovations: Record<string, Innovation> = {
@@ -67,14 +52,6 @@ const mockInnovations: Record<string, Innovation> = {
     website: "www.healthconnect.sa",
     contact: "partnerships@healthconnect.sa"
   }
-};
-
-// Status badge color mapping
-const statusColors: Record<string, string> = {
-  "New": "bg-blue-100 text-blue-800",
-  "Validated": "bg-green-100 text-green-800",
-  "Scaling": "bg-purple-100 text-purple-800",
-  "Established": "bg-gray-100 text-gray-800"
 };
 
 export default function InnovationDetailPage() {
@@ -149,7 +126,8 @@ export default function InnovationDetailPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <Button
-                onClick={() => window.history.back()}
+                component={Link}
+                to="/innovations"
                 variant="outline"
                 className="mb-4 bg-white/80 backdrop-blur-sm hover:bg-white"
               >

@@ -2,31 +2,13 @@
 import { Star, ArrowUpRight, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-interface Innovation {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  tags: string[];
-  rating: number;
-  status: "New" | "Validated" | "Scaling" | "Established";
-  createdAt: string;
-}
+import { Link } from "react-router-dom";
+import { Innovation, statusColors } from "@/types/innovations";
 
 interface InnovationCardProps {
   innovation: Innovation;
   view: "grid" | "list";
 }
-
-// Status badge color mapping
-const statusColors: Record<string, string> = {
-  "New": "bg-blue-100 text-blue-800",
-  "Validated": "bg-green-100 text-green-800",
-  "Scaling": "bg-purple-100 text-purple-800",
-  "Established": "bg-gray-100 text-gray-800"
-};
 
 export default function InnovationCard({ innovation, view }: InnovationCardProps) {
   if (view === "grid") {
@@ -67,9 +49,16 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
                 })}
               </span>
             </div>
-            <Button variant="outline" size="sm" className="text-moh-green border-moh-green hover:bg-moh-lightGreen group">
-              View Details
-              <ArrowUpRight size={14} className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-moh-green border-moh-green hover:bg-moh-lightGreen group"
+              asChild
+            >
+              <Link to={`/innovations/${innovation.id}`}>
+                View Details
+                <ArrowUpRight size={14} className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -121,9 +110,14 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
               })}
             </span>
           </div>
-          <Button className="bg-moh-green hover:bg-moh-darkGreen text-white">
-            View Details
-            <ArrowUpRight size={16} className="ml-1" />
+          <Button 
+            className="bg-moh-green hover:bg-moh-darkGreen text-white"
+            asChild
+          >
+            <Link to={`/innovations/${innovation.id}`}>
+              View Details
+              <ArrowUpRight size={16} className="ml-1" />
+            </Link>
           </Button>
         </div>
       </div>
