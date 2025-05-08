@@ -35,15 +35,6 @@ export default function LoginPage() {
             <LoginForm />
           </CardContent>
         </Card>
-
-        <div className="text-center text-sm p-4 bg-blue-50 rounded-md border border-blue-100">
-          <h3 className="font-medium text-blue-800 mb-1">Quick Access Instructions</h3>
-          <p className="text-blue-700 mb-2">For testing, click "Create Test Admin Account" button then sign in with:</p>
-          <div className="bg-white p-2 rounded border border-blue-200 text-left inline-block min-w-[250px]">
-            <p><span className="font-medium">Email:</span> admin@moh.gov.sa</p>
-            <p><span className="font-medium">Password:</span> password123</p>
-          </div>
-        </div>
       </div>
     </div>
   );

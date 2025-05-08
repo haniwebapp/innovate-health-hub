@@ -10,7 +10,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Info } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -52,54 +51,6 @@ export default function LoginForm() {
       } else {
         setErrorMessage(error.message || "An error occurred during login. Please try again.");
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function createTestAdminAccount() {
-    setIsLoading(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    // We won't try to check if the user exists first, as that requires admin privileges
-    // Instead, we'll just try to create the account and handle any errors
-    try {
-      // Try to create the admin user
-      const { data, error } = await supabase.auth.signUp({
-        email: "admin@moh.gov.sa",
-        password: "password123",
-        options: {
-          data: {
-            firstName: "Admin",
-            lastName: "User",
-            userType: "admin",
-            organization: "Ministry of Health"
-          }
-        }
-      });
-
-      if (error) {
-        // If error because user exists, we'll show a helpful message
-        if (error.message?.includes("already registered")) {
-          setSuccessMessage("Admin account already exists. Try logging in with admin@moh.gov.sa and password123");
-          
-          // Pre-fill the form with the admin credentials for convenience
-          form.setValue("email", "admin@moh.gov.sa");
-          form.setValue("password", "password123");
-        } else {
-          setErrorMessage(error.message || "An error occurred during account creation.");
-        }
-      } else {
-        setSuccessMessage("Admin account created. You can now log in with admin@moh.gov.sa and password123");
-        
-        // Pre-fill the form with the admin credentials for convenience
-        form.setValue("email", "admin@moh.gov.sa");
-        form.setValue("password", "password123");
-      }
-    } catch (error: any) {
-      console.error("Account creation error:", error);
-      setErrorMessage(error.message || "An error occurred during account creation.");
     } finally {
       setIsLoading(false);
     }
@@ -177,21 +128,6 @@ export default function LoginForm() {
           <Link to="/auth/register" className="text-moh-green hover:underline font-medium">
             Register
           </Link>
-        </div>
-
-        <div className="pt-4 border-t border-gray-200">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full text-xs"
-            onClick={createTestAdminAccount}
-            disabled={isLoading}
-          >
-            Create Test Admin Account
-          </Button>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            For demo purposes only. Creates an admin account with email: admin@moh.gov.sa
-          </p>
         </div>
       </form>
     </Form>
