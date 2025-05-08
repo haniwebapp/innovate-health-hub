@@ -20,6 +20,7 @@ export interface Challenge {
   }[];
   tags?: string[];
   difficulty_level?: string;
+  featured?: boolean;
 }
 
 export interface Submission {
