@@ -67,7 +67,7 @@ export default {
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#E0F5EC',
+					lightGreen: '#E8F6EF', // Updated to match the image
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',
@@ -129,7 +129,7 @@ export default {
 				'count-up': 'count-up 2s forwards'
 			},
 			backgroundImage: {
-				'hero-pattern': 'linear-gradient(135deg, #E0F5EC 0%, #F0EAD6 100%)',
+				'hero-pattern': 'linear-gradient(135deg, #E8F6EF 0%, #F0EAD6 100%)',
 				'card-gradient': 'linear-gradient(to right, rgba(0, 129, 74, 0.05), rgba(195, 168, 107, 0.05))',
 			}
 		}
