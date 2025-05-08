@@ -16,6 +16,7 @@ import ProfilePage from "./pages/dashboard/ProfilePage";
 import ChallengesPage from "./pages/challenges";
 import ChallengeDetailPage from "./pages/challenges/[id]";
 import AboutPage from "./pages/about";
+import KnowledgeHubPage from "./pages/knowledge-hub";
 import SubmissionsPage from "./pages/dashboard/submissions";
 import SubmitChallengePage from "./pages/dashboard/submit/[challengeId]";
 
@@ -71,7 +72,7 @@ const App = () => (
             {/* Static Routes */}
             <Route path="/about" element={<AboutPage />} />
             <Route path="/innovations" element={<NotFound />} />
-            <Route path="/knowledge-hub" element={<NotFound />} />
+            <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
             
             {/* 404 - Catch-all */}
             <Route path="*" element={<NotFound />} />
