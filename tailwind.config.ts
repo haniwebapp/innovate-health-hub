@@ -67,7 +67,7 @@ export default {
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#E8F6EF', // Updated to match the image
+					lightGreen: '#F7FAFA', // Updated to a very light white/green
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',
@@ -129,8 +129,8 @@ export default {
 				'count-up': 'count-up 2s forwards'
 			},
 			backgroundImage: {
-				'hero-pattern': 'linear-gradient(135deg, #E8F6EF 0%, #F0EAD6 100%)',
-				'card-gradient': 'linear-gradient(to right, rgba(0, 129, 74, 0.05), rgba(195, 168, 107, 0.05))',
+				'hero-pattern': 'linear-gradient(135deg, #FFFFFF 0%, #F7FAFA 100%)',
+				'card-gradient': 'linear-gradient(to right, rgba(255, 255, 255, 0.7), rgba(247, 250, 250, 0.7))',
 			}
 		}
 	},

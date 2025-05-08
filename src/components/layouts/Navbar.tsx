@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Globe, ChevronDown } from "lucide-react";
+import { Search, Globe } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "./NavbarMainLinks";
@@ -37,7 +37,7 @@ export default function Navbar() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-white py-4'
+        scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-white py-4'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,10 +55,10 @@ export default function Navbar() {
           <NavbarMainLinks isRouteActive={isRouteActive} />
           
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-100 hover:text-moh-green rounded-full">
+            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-100 hover:text-moh-green rounded-full">
+            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
               <Globe className="h-5 w-5" />
             </Button>
             
@@ -69,7 +69,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <button 
               type="button" 
-              className="inline-flex items-center justify-center rounded-md p-2 text-moh-darkGreen" 
+              className="inline-flex items-center justify-center rounded-md p-2 text-moh-darkGreen hover:bg-gray-50" 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
               aria-expanded={mobileMenuOpen}
             >

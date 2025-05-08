@@ -91,8 +91,8 @@ export function NavbarMobileMenu({
               to={link.path}
               className={`block px-4 py-2 rounded-md text-base font-medium ${
                 isRouteActive(link.path) 
-                  ? 'text-moh-green bg-moh-lightGreen' 
-                  : 'text-moh-darkGreen hover:bg-moh-lightGreen'
+                  ? 'text-moh-green bg-gray-50' 
+                  : 'text-moh-darkGreen hover:bg-gray-50'
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -105,7 +105,7 @@ export function NavbarMobileMenu({
           <Button 
             variant="ghost" 
             size="sm" 
-            className="flex-1 justify-center text-moh-darkGreen hover:bg-moh-lightGreen hover:text-moh-green"
+            className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
           >
             <Search className="h-4 w-4 mr-2" />
             Search
@@ -113,7 +113,7 @@ export function NavbarMobileMenu({
           <Button 
             variant="ghost" 
             size="sm" 
-            className="flex-1 justify-center text-moh-darkGreen hover:bg-moh-lightGreen hover:text-moh-green"
+            className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
           >
             <Globe className="h-4 w-4 mr-2" />
             Language
@@ -147,7 +147,7 @@ export function NavbarMobileMenu({
               <Button 
                 variant="outline" 
                 onClick={() => handleNavigate('/auth/login')} 
-                className="w-full border-moh-green text-moh-green hover:bg-moh-lightGreen flex gap-2 items-center justify-center"
+                className="w-full border-moh-green text-moh-green hover:bg-gray-50 flex gap-2 items-center justify-center"
               >
                 <LogIn className="h-4 w-4" />
                 Sign In
