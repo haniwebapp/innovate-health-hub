@@ -1,20 +1,13 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 export default function Footer() {
-  return (
-    <footer className="bg-moh-darkGreen text-white">
+  return <footer className="bg-moh-darkGreen text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <img 
-                src="/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
-                alt="Ministry of Health Logo" 
-                className="h-10 w-auto mr-3 brightness-150 contrast-75" 
-              />
-              <span className="font-bold text-lg">Health Innovation Platform</span>
+              <img src="/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" alt="Ministry of Health Logo" className="h-10 w-auto mr-3 brightness-150 contrast-75" />
+              
             </div>
             <p className="text-gray-300 mb-4">
               A Ministry of Health initiative supporting healthcare innovation across Saudi Arabia.
@@ -71,11 +64,7 @@ export default function Footer() {
               Subscribe to stay updated with the latest innovations and opportunities.
             </p>
             <div className="flex gap-2">
-              <Input 
-                type="email" 
-                placeholder="Email address"
-                className="bg-white/20 border-white/10 text-white placeholder:text-gray-400"
-              />
+              <Input type="email" placeholder="Email address" className="bg-white/20 border-white/10 text-white placeholder:text-gray-400" />
               <Button className="bg-moh-gold hover:bg-moh-darkGold">
                 Subscribe
               </Button>
@@ -102,6 +91,5 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 }
