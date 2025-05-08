@@ -70,12 +70,8 @@ export default function Footer() {
               </Button>
             </div>
             <div className="mt-4 flex items-center gap-2">
-              <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
-                English
-              </Button>
-              <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
-                العربية
-              </Button>
+              
+              
             </div>
           </div>
         </div>
