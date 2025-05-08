@@ -1,29 +1,23 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Languages, Sun, Moon } from "lucide-react";
 
 export default function Footer() {
-  const { language, direction, toggleLanguage, t } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
-  
   return (
-    <footer className="bg-moh-darkGreen text-white" dir={direction}>
+    <footer className="bg-moh-darkGreen text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center mb-4">
               <img 
-                src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
+                src="/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
                 alt="Ministry of Health Logo" 
                 className="h-10 w-auto mr-3 brightness-150 contrast-75" 
               />
               <span className="font-bold text-lg">Health Innovation Platform</span>
             </div>
             <p className="text-gray-300 mb-4">
-              {t('footer.description')}
+              A Ministry of Health initiative supporting healthcare innovation across Saudi Arabia.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-white">
@@ -50,7 +44,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="font-semibold text-lg mb-4">{t('footer.quickLinks')}</h3>
+            <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><a href="#" className="text-gray-300 hover:text-white">About the Platform</a></li>
               <li><a href="#" className="text-gray-300 hover:text-white">Innovation Challenges</a></li>
@@ -61,7 +55,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="font-semibold text-lg mb-4">{t('footer.resources')}</h3>
+            <h3 className="font-semibold text-lg mb-4">Resources</h3>
             <ul className="space-y-2">
               <li><a href="#" className="text-gray-300 hover:text-white">Vision 2030</a></li>
               <li><a href="#" className="text-gray-300 hover:text-white">MOH Strategy</a></li>
@@ -72,38 +66,26 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="font-semibold text-lg mb-4">{t('footer.newsletter')}</h3>
+            <h3 className="font-semibold text-lg mb-4">Newsletter</h3>
             <p className="text-gray-300 mb-4">
-              {t('footer.newsletterText')}
+              Subscribe to stay updated with the latest innovations and opportunities.
             </p>
             <div className="flex gap-2">
               <Input 
                 type="email" 
-                placeholder={t('footer.emailPlaceholder')}
+                placeholder="Email address"
                 className="bg-white/20 border-white/10 text-white placeholder:text-gray-400"
               />
               <Button className="bg-moh-gold hover:bg-moh-darkGold">
-                {t('footer.subscribe')}
+                Subscribe
               </Button>
             </div>
             <div className="mt-4 flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-white/20 text-white hover:bg-white/10 flex items-center gap-2"
-                onClick={toggleLanguage}
-              >
-                <Languages className="h-4 w-4" />
-                {language === 'en' ? 'English' : 'العربية'}
+              <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+                English
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-white/20 text-white hover:bg-white/10 flex items-center gap-2"
-                onClick={toggleTheme}
-              >
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                {theme === 'dark' ? 'Light' : 'Dark'}
+              <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+                العربية
               </Button>
             </div>
           </div>
@@ -111,12 +93,12 @@ export default function Footer() {
         
         <div className="border-t border-white/10 mt-8 pt-8 flex flex-col md:flex-row justify-between">
           <p className="text-gray-400 text-sm">
-            {t('footer.rights')}
+            © {new Date().getFullYear()} Ministry of Health, Kingdom of Saudi Arabia. All rights reserved.
           </p>
           <div className="flex gap-4 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-white text-sm">{t('footer.privacy')}</a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm">{t('footer.terms')}</a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm">{t('footer.accessibility')}</a>
+            <a href="#" className="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
+            <a href="#" className="text-gray-400 hover:text-white text-sm">Terms of Service</a>
+            <a href="#" className="text-gray-400 hover:text-white text-sm">Accessibility</a>
           </div>
         </div>
       </div>

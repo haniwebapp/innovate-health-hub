@@ -95,26 +95,11 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  
-  /* RTL Support */
-  [dir="rtl"] {
-    font-family: 'Tajawal', sans-serif;
-  }
-  
-  [dir="rtl"] .ltr-only {
-    direction: ltr;
-    text-align: left;
-  }
-  
-  [dir="ltr"] .rtl-only {
-    direction: rtl;
-    text-align: right;
-  }
 }
 
 @layer components {
   .text-gradient {
-    @apply bg-gradient-to-r from-moh-green to-moh-darkGold bg-clip-text text-transparent dark:from-moh-lightGreen dark:to-moh-gold;
+    @apply bg-gradient-to-r from-moh-green to-moh-darkGold bg-clip-text text-transparent;
   }
 
   .animation-delay-100 {
@@ -142,18 +127,8 @@
   }
 
   .stat-counter {
-    @apply text-4xl font-bold text-moh-green dark:text-moh-lightGreen;
+    @apply text-4xl font-bold text-moh-green;
     counter-reset: stat attr(data-value);
     animation: count-up 2s forwards;
   }
-}
-
-/* RTL specific overrides */
-[dir="rtl"] .rotate-icon {
-  transform: scaleX(-1);
-}
-
-/* Dark mode transition */
-.dark-transition {
-  @apply transition-all duration-300 ease-in-out;
 }
