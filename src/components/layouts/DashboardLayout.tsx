@@ -5,7 +5,7 @@ import DashboardSidebar from "./DashboardSidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Shield } from "lucide-react";
 
 // Helper to get page title from pathname
 const getPageTitle = (pathname: string): string => {
@@ -30,7 +30,7 @@ const getPageTitle = (pathname: string): string => {
 export default function DashboardLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { pathname } = useLocation();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   
   // Check if the screen is small (for responsive sidebar)
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -101,6 +101,11 @@ export default function DashboardLayout() {
             </Button>
             
             <div className="hidden md:flex items-center">
+              {isAdmin && (
+                <span className="bg-moh-lightGreen text-moh-darkGreen text-xs rounded px-1.5 py-0.5 font-medium mr-2 flex items-center">
+                  <Shield size={12} className="mr-1" /> Admin
+                </span>
+              )}
               <span className="text-sm font-medium mr-2">
                 {user?.email?.split('@')[0]}
               </span>

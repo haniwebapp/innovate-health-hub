@@ -4,10 +4,14 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+type UserRole = 'admin' | 'user';
+
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  userRole: UserRole;
+  isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, userData: any) => Promise<void>;
   signOut: () => Promise<void>;
@@ -19,7 +23,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<UserRole>('user');
   const { toast } = useToast();
+
+  // Determine if user is admin based on email
+  const determineUserRole = (email: string | undefined): UserRole => {
+    if (email === 'admin@moh.gov.sa') {
+      return 'admin';
+    }
+    return 'user';
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -27,6 +40,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        
+        if (currentSession?.user) {
+          setUserRole(determineUserRole(currentSession.user.email));
+        } else {
+          setUserRole('user');
+        }
         
         if (event === 'SIGNED_IN' && currentSession) {
           toast({
@@ -48,6 +67,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      
+      if (currentSession?.user) {
+        setUserRole(determineUserRole(currentSession.user.email));
+      }
+      
       setIsLoading(false);
     });
 
@@ -119,6 +143,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     session,
     isLoading,
+    userRole,
+    isAdmin: userRole === 'admin',
     signIn,
     signUp,
     signOut,
