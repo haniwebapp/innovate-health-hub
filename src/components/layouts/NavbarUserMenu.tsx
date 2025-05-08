@@ -37,7 +37,7 @@ export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMe
           <DropdownMenuTrigger asChild>
             <Button 
               variant="outline" 
-              className="border-moh-green bg-white text-moh-green hover:bg-gray-50 flex gap-2 items-center rounded-full px-6"
+              className="border-gray-300 bg-white text-gray-800 hover:bg-gray-100 flex gap-2 items-center rounded-full px-6"
             >
               <User className="h-4 w-4" />
               {isAdmin ? "Admin" : "My Account"}
@@ -46,30 +46,30 @@ export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMe
           <DropdownMenuContent align="end" className="w-56 bg-white shadow-md border border-gray-100 rounded-md">
             <DropdownMenuLabel className="flex items-center">
               {isAdmin && (
-                <span className="bg-gray-50 text-moh-darkGreen text-xs rounded px-1.5 py-0.5 font-medium mr-2">
+                <span className="bg-gray-100 text-gray-700 text-xs rounded px-1.5 py-0.5 font-medium mr-2">
                   Admin
                 </span>
               )}
               My Account
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate('/dashboard')} className="hover:bg-gray-50 hover:text-moh-green cursor-pointer">
+            <DropdownMenuItem onClick={() => navigate('/dashboard')} className="hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
               Dashboard
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/dashboard/profile')} className="hover:bg-gray-50 hover:text-moh-green cursor-pointer">
+            <DropdownMenuItem onClick={() => navigate('/dashboard/profile')} className="hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
               Profile Settings
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/dashboard/submissions')} className="hover:bg-gray-50 hover:text-moh-green cursor-pointer">
+            <DropdownMenuItem onClick={() => navigate('/dashboard/submissions')} className="hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
               My Submissions
             </DropdownMenuItem>
             {isAdmin && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="text-xs text-gray-500">Admin Functions</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => navigate('/dashboard/create-challenge')} className="hover:bg-gray-50 hover:text-moh-green cursor-pointer">
+                <DropdownMenuItem onClick={() => navigate('/dashboard/create-challenge')} className="hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
                   Create Challenge
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/dashboard/analytics')} className="hover:bg-gray-50 hover:text-moh-green cursor-pointer">
+                <DropdownMenuItem onClick={() => navigate('/dashboard/analytics')} className="hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
                   Analytics Dashboard
                 </DropdownMenuItem>
               </>
@@ -89,14 +89,14 @@ export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMe
           <Button 
             variant="outline" 
             onClick={() => navigate('/auth/login')} 
-            className="border-moh-green bg-white text-moh-green hover:bg-gray-50 flex gap-2 items-center rounded-full px-6"
+            className="border-gray-300 bg-white text-gray-800 hover:bg-gray-100 flex gap-2 items-center rounded-full px-6"
           >
             <LogIn className="h-4 w-4" />
             Sign In
           </Button>
           <Button 
             onClick={() => navigate('/auth/register')} 
-            className="bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center rounded-full px-6"
+            className="bg-gray-800 hover:bg-gray-700 text-white flex gap-2 items-center rounded-full px-6"
           >
             <UserPlus className="h-4 w-4" />
             Register

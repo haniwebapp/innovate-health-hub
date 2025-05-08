@@ -21,14 +21,14 @@ export default function LoginPage() {
             alt="Ministry of Health Logo" 
             className="h-14 mx-auto" 
           />
-          <h1 className="text-2xl font-bold text-moh-darkGreen">Innovation Platform</h1>
-          <p className="text-moh-darkGreen/80 text-sm">Enter your credentials to access the platform</p>
+          <h1 className="text-2xl font-bold text-gray-800">Innovation Platform</h1>
+          <p className="text-gray-600 text-sm">Enter your credentials to access the platform</p>
         </div>
         
-        <Card className="border-gray-100 shadow-sm bg-white">
+        <Card className="border-gray-100 shadow-md bg-white">
           <CardHeader className="pb-4">
-            <CardTitle className="text-moh-darkGreen">Sign In</CardTitle>
-            <CardDescription className="text-moh-darkGreen/70">
+            <CardTitle className="text-gray-800">Sign In</CardTitle>
+            <CardDescription className="text-gray-500">
               Enter your email and password to access your account
             </CardDescription>
           </CardHeader>

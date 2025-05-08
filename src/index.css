@@ -16,16 +16,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 153 100% 25%; /* MOH green */
+    --primary: 240 6% 50%; /* Gray */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 42 43% 59%; /* MOH gold */
+    --secondary: 210 10% 60%; /* Light Gray */
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 153 100% 92%; /* Light Green */
+    --accent: 240 6% 97%; /* Very Light Gray */
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -33,13 +33,13 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 153 100% 25%;
+    --ring: 240 6% 50%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 153 100% 25%;
+    --sidebar-primary: 240 6% 50%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
@@ -57,16 +57,16 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 153 100% 25%;
+    --primary: 240 6% 50%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 42 43% 59%;
+    --secondary: 210 10% 60%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 153 100% 20%;
+    --accent: 240 6% 20%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -74,11 +74,11 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 153 100% 25%;
+    --ring: 240 6% 50%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 153 100% 25%;
+    --sidebar-primary: 240 6% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
@@ -99,7 +99,7 @@
 
 @layer components {
   .text-gradient {
-    @apply bg-gradient-to-r from-moh-green to-moh-darkGold bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-gray-700 to-gray-500 bg-clip-text text-transparent;
   }
 
   .animation-delay-100 {
@@ -127,9 +127,8 @@
   }
 
   .stat-counter {
-    @apply text-4xl font-bold text-moh-green;
+    @apply text-4xl font-bold text-gray-700;
     counter-reset: stat attr(data-value);
     animation: count-up 2s forwards;
   }
 }
-

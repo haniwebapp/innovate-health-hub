@@ -5,7 +5,6 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
@@ -40,10 +39,10 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
           link.hasDropdown ? (
             <NavigationMenuItem key={link.path}>
               <NavigationMenuTrigger className={cn(
-                "bg-transparent hover:bg-gray-50 text-lg px-0",
+                "bg-transparent hover:bg-gray-100 text-lg px-0",
                 isRouteActive(link.path) 
-                  ? 'text-moh-green font-medium' 
-                  : 'text-moh-darkGreen hover:text-moh-green'
+                  ? 'text-gray-900 font-medium' 
+                  : 'text-gray-700 hover:text-gray-900'
               )}>
                 {link.label}
               </NavigationMenuTrigger>
@@ -53,7 +52,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                     <NavigationMenuLink asChild>
                       <Link
                         to={link.path}
-                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
                       >
                         <div className="text-sm font-medium">All Resources</div>
                       </Link>
@@ -64,7 +63,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                       <NavigationMenuLink asChild>
                         <Link
                           to={item.path}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
                         >
                           <div className="text-sm font-medium">{item.label}</div>
                         </Link>
@@ -81,8 +80,8 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                 className={cn(
                   "text-lg transition-colors px-3 py-2 rounded-md",
                   isRouteActive(link.path) 
-                    ? 'text-moh-green font-medium' 
-                    : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
+                    ? 'text-gray-900 font-medium' 
+                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
                 )}
               >
                 {link.label}
@@ -93,4 +92,10 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
       </NavigationMenuList>
     </NavigationMenu>
   );
+}
+
+// Add missing component
+function NavigationMenuLink({ asChild, ...props }: { asChild: boolean, [key: string]: any }) {
+  const Comp = asChild ? Link : 'a';
+  return <Comp {...props} />;
 }
