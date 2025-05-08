@@ -69,8 +69,8 @@ export function NavbarMobileMenu({
                 <AccordionTrigger 
                   className={`${
                     isRouteActive(link.path) 
-                      ? 'text-gray-900 font-medium' 
-                      : 'text-gray-700 hover:text-gray-900'
+                      ? 'text-moh-green font-medium' 
+                      : 'text-moh-darkGreen hover:text-moh-green'
                   } px-4 py-2 no-underline`}
                 >
                   {link.label}
@@ -79,7 +79,7 @@ export function NavbarMobileMenu({
                   <div className="flex flex-col space-y-1 pl-6">
                     <Link
                       to={link.path}
-                      className="py-2 text-gray-700 hover:text-gray-900"
+                      className="py-2 text-moh-darkGreen hover:text-moh-green"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       All Resources
@@ -88,7 +88,7 @@ export function NavbarMobileMenu({
                       <Link
                         key={item.path}
                         to={item.path}
-                        className="py-2 text-gray-700 hover:text-gray-900"
+                        className="py-2 text-moh-darkGreen hover:text-moh-green"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         {item.label}
@@ -104,8 +104,8 @@ export function NavbarMobileMenu({
               to={link.path}
               className={`block px-4 py-2 rounded-md text-base font-medium ${
                 isRouteActive(link.path) 
-                  ? 'text-gray-900 bg-gray-100' 
-                  : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'text-moh-green bg-gray-50' 
+                  : 'text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green'
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -118,7 +118,7 @@ export function NavbarMobileMenu({
           <Button 
             variant="ghost" 
             size="sm" 
-            className="flex-1 justify-center text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
           >
             <Search className="h-4 w-4 mr-2" />
             Search
@@ -126,7 +126,7 @@ export function NavbarMobileMenu({
           <Button 
             variant="ghost" 
             size="sm" 
-            className="flex-1 justify-center text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
           >
             <Globe className="h-4 w-4 mr-2" />
             Language
@@ -138,7 +138,7 @@ export function NavbarMobileMenu({
             <>
               <Button 
                 onClick={() => handleNavigate('/dashboard')} 
-                className="w-full bg-gray-800 hover:bg-gray-700 text-white flex gap-2 items-center justify-center"
+                className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center"
               >
                 <User className="h-4 w-4" />
                 Dashboard
@@ -157,14 +157,14 @@ export function NavbarMobileMenu({
               <Button 
                 variant="outline" 
                 onClick={() => handleNavigate('/auth/login')} 
-                className="w-full border-gray-300 text-gray-800 hover:bg-gray-100 flex gap-2 items-center justify-center"
+                className="w-full border-moh-green text-moh-green hover:bg-gray-50 flex gap-2 items-center justify-center"
               >
                 <LogIn className="h-4 w-4" />
                 Sign In
               </Button>
               <Button 
                 onClick={() => handleNavigate('/auth/register')} 
-                className="w-full bg-gray-800 hover:bg-gray-700 text-white flex gap-2 items-center justify-center"
+                className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center"
               >
                 <UserPlus className="h-4 w-4" />
                 Register

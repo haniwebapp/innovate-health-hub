@@ -5,6 +5,7 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
+  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
@@ -12,27 +13,6 @@ import {
 interface NavbarMainLinksProps {
   isRouteActive: (path: string) => boolean;
 }
-
-interface DropdownItemProps {
-  label: string;
-  path: string;
-}
-
-// Fix for the type issue with NavigationMenuLink
-const NavigationMenuLink = ({ 
-  asChild, 
-  children, 
-  ...props 
-}: { 
-  asChild: boolean; 
-  children: React.ReactNode;
-  [key: string]: any;
-}) => {
-  if (asChild) {
-    return children;
-  }
-  return <a {...props}>{children}</a>;
-};
 
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   // Main links with dropdown options for Knowledge Hub
@@ -60,31 +40,35 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
           link.hasDropdown ? (
             <NavigationMenuItem key={link.path}>
               <NavigationMenuTrigger className={cn(
-                "bg-transparent hover:bg-gray-100 text-lg px-0",
+                "bg-transparent hover:bg-gray-50 text-lg px-0",
                 isRouteActive(link.path) 
-                  ? 'text-gray-900 font-medium' 
-                  : 'text-gray-700 hover:text-gray-900'
+                  ? 'text-moh-green font-medium' 
+                  : 'text-moh-darkGreen hover:text-moh-green'
               )}>
                 {link.label}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-md rounded-md border border-gray-100">
                   <li className="row-span-1">
-                    <Link
-                      to={link.path}
-                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
-                    >
-                      <div className="text-sm font-medium">All Resources</div>
-                    </Link>
-                  </li>
-                  {link.dropdownItems?.map((item: DropdownItemProps) => (
-                    <li key={item.path} className="row-span-1">
+                    <NavigationMenuLink asChild>
                       <Link
-                        to={item.path}
-                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
+                        to={link.path}
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
                       >
-                        <div className="text-sm font-medium">{item.label}</div>
+                        <div className="text-sm font-medium">All Resources</div>
                       </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  {link.dropdownItems?.map((item) => (
+                    <li key={item.path} className="row-span-1">
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to={item.path}
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
+                        >
+                          <div className="text-sm font-medium">{item.label}</div>
+                        </Link>
+                      </NavigationMenuLink>
                     </li>
                   ))}
                 </ul>
@@ -97,8 +81,8 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                 className={cn(
                   "text-lg transition-colors px-3 py-2 rounded-md",
                   isRouteActive(link.path) 
-                    ? 'text-gray-900 font-medium' 
-                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'text-moh-green font-medium' 
+                    : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
                 )}
               >
                 {link.label}

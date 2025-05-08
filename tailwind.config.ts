@@ -63,16 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// MOH brand colors - updated to match white theme
+				// MOH brand colors
 				moh: {
-					green: '#808080',
-					gold: '#A0A0A0',
-					lightGreen: '#FCFCFC',
-					darkGreen: '#595959',
-					lightGold: '#F8F8F8',
-					darkGold: '#707070',
-					gray: '#F9F9F9',
-					darkGray: '#404040',
+					green: '#00814A',
+					gold: '#C3A86B',
+					lightGreen: '#F8F8F8', // Updated to a very light white shade
+					darkGreen: '#006B3E',
+					lightGold: '#F0EAD6',
+					darkGold: '#A38A56',
+					gray: '#F5F7FA',
+					darkGray: '#4A5568',
 				}
 			},
 			fontFamily: {
