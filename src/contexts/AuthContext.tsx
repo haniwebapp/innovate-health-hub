@@ -28,7 +28,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Determine if user is admin based on email
   const determineUserRole = (email: string | undefined): UserRole => {
-    if (email === 'admin@moh.gov.sa') {
+    // Check specifically if the email is admin@moh.gov.sa
+    if (email && email.toLowerCase() === 'admin@moh.gov.sa') {
       return 'admin';
     }
     return 'user';
@@ -42,7 +43,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(currentSession?.user ?? null);
         
         if (currentSession?.user) {
-          setUserRole(determineUserRole(currentSession.user.email));
+          // Use the email to determine role
+          const email = currentSession.user.email;
+          setUserRole(determineUserRole(email));
         } else {
           setUserRole('user');
         }
@@ -69,7 +72,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(currentSession?.user ?? null);
       
       if (currentSession?.user) {
-        setUserRole(determineUserRole(currentSession.user.email));
+        // Use the email to determine role
+        const email = currentSession.user.email;
+        setUserRole(determineUserRole(email));
       }
       
       setIsLoading(false);

@@ -62,12 +62,8 @@ export default function LoginForm() {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    // First check if the user already exists
-    const { data: existingUser, error: checkError } = await supabase.auth.admin.listUsers({
-      filter: { email: 'admin@moh.gov.sa' }
-    }).catch(() => ({ data: null, error: null }));
-
-    // If we can't check (which is likely due to lack of admin privileges), we'll try to sign up anyway
+    // We won't try to check if the user exists first, as that requires admin privileges
+    // Instead, we'll just try to create the account and handle any errors
     try {
       // Try to create the admin user
       const { data, error } = await supabase.auth.signUp({
