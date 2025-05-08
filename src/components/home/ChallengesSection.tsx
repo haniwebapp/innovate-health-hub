@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock, Users, Trophy } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ChallengeCardProps {
+  id: string;
   title: string;
   description: string;
   deadline: string;
@@ -17,7 +19,7 @@ interface ChallengeCardProps {
 }
 
 const ChallengeCard = ({ 
-  title, description, deadline, category, participants, prize, delay, image
+  id, title, description, deadline, category, participants, prize, delay, image
 }: ChallengeCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   
@@ -81,9 +83,11 @@ const ChallengeCard = ({
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full bg-moh-green hover:bg-moh-darkGreen text-white group">
-            View Challenge
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          <Button asChild className="w-full bg-moh-green hover:bg-moh-darkGreen text-white group">
+            <Link to={`/challenges/${id}`}>
+              View Challenge
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </CardFooter>
       </Card>
@@ -128,6 +132,7 @@ export default function ChallengesSection() {
 
   const challenges = [
     {
+      id: "1",
       title: "Remote Patient Monitoring Solutions",
       description: "Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.",
       deadline: "June 30, 2025",
@@ -137,6 +142,7 @@ export default function ChallengesSection() {
       image: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
     },
     {
+      id: "2",
       title: "AI for Early Disease Detection",
       description: "Develop AI algorithms to detect early signs of diseases using existing health data from MOH facilities.",
       deadline: "July 15, 2025",
@@ -146,6 +152,7 @@ export default function ChallengesSection() {
       image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
     },
     {
+      id: "3",
       title: "Healthcare Supply Chain Optimization",
       description: "Create solutions to improve the efficiency and resilience of medical supply chains across Saudi Arabia.",
       deadline: "August 22, 2025",
@@ -173,11 +180,14 @@ export default function ChallengesSection() {
             </p>
           </div>
           <Button 
+            asChild
             variant="outline" 
             className="mt-6 md:mt-0 border-moh-green text-moh-green hover:bg-moh-lightGreen group"
           >
-            View All Challenges
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <Link to="/challenges">
+              View All Challenges
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </div>
         
@@ -185,6 +195,7 @@ export default function ChallengesSection() {
           {challenges.map((challenge, index) => (
             <ChallengeCard 
               key={index}
+              id={challenge.id}
               title={challenge.title}
               description={challenge.description}
               deadline={challenge.deadline}

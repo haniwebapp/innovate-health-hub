@@ -6,11 +6,23 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Users, Trophy, Share2, FileText, ArrowLeft, Building, Calendar as CalendarIcon } from "lucide-react";
+import { 
+  Calendar, 
+  Clock, 
+  Users, 
+  Trophy, 
+  Share2, 
+  FileText, 
+  ArrowLeft, 
+  Building, 
+  Calendar as CalendarIcon 
+} from "lucide-react";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Challenge } from "@/types/challenges";
+import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
+import { useToast } from "@/components/ui/use-toast";
 
 // Mock data for now
 const mockChallenges: Challenge[] = [
@@ -66,6 +78,7 @@ const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+  const { toast } = useToast();
   
   // Fetch challenge details from API with proper typing
   const { data: challenge, isLoading, error } = useQuery({
@@ -109,6 +122,16 @@ const ChallengeDetail = () => {
     const diffTime = deadline.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays > 0 ? diffDays : 0;
+  };
+
+  // Function to handle share button click
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link copied!",
+      description: "Challenge link copied to clipboard",
+      duration: 3000,
+    });
   };
 
   if (isLoading) {
@@ -192,6 +215,12 @@ const ChallengeDetail = () => {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Breadcrumb Navigation */}
+          <BreadcrumbNav 
+            items={[{label: 'Challenges', href: '/challenges'}]} 
+            currentPage={challenge.title}
+          />
+          
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Main Content */}
             <div className="flex-1">
@@ -290,10 +319,7 @@ const ChallengeDetail = () => {
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    alert("Link copied to clipboard!");
-                  }}
+                  onClick={handleShare}
                 >
                   <Share2 className="h-4 w-4 mr-2" />
                   Share Challenge
