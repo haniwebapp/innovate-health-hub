@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { User, LogIn, UserPlus, Shield } from "lucide-react";
+import { User, LogIn, UserPlus, Shield, LogOut } from "lucide-react";
 import { NavigateFunction } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,17 @@ interface NavbarUserMenuProps {
 }
 
 export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMenuProps) {
+  const { signOut } = useAuth();
+  
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/auth/login');
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <>
       {user ? (
@@ -64,13 +76,10 @@ export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMe
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem 
-              className="text-red-600 focus:text-red-600"
-              onClick={() => {
-                // Handle logout logic here
-                // For now we just redirect to login page
-                navigate('/auth/login');
-              }}
+              className="text-red-600 focus:text-red-600 flex items-center"
+              onClick={handleSignOut}
             >
+              <LogOut className="h-4 w-4 mr-2" />
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>

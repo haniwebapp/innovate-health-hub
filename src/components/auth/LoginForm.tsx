@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -17,10 +19,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginForm() {
-  const { signIn } = useAuth();
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   // Get the location they were trying to access
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || "/dashboard";
@@ -35,11 +38,41 @@ export default function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
+    setErrorMessage(null);
     try {
       await signIn(values.email, values.password);
       navigate(from);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
+      if (error.message === "Invalid login credentials") {
+        setErrorMessage("Invalid email or password. Please check your credentials and try again.");
+      } else {
+        setErrorMessage(error.message || "An error occurred during login. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function createTestAdminAccount() {
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      // Create a test admin account
+      await signUp("admin@moh.gov.sa", "password123", {
+        firstName: "Admin",
+        lastName: "User",
+        userType: "admin",
+        organization: "Ministry of Health"
+      });
+      setErrorMessage("Admin account created. Try logging in with admin@moh.gov.sa and password123");
+    } catch (error: any) {
+      console.error("Account creation error:", error);
+      if (error.message?.includes("already registered")) {
+        setErrorMessage("Admin account already exists. Try logging in with admin@moh.gov.sa and password123");
+      } else {
+        setErrorMessage(error.message || "An error occurred during account creation.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -48,6 +81,13 @@ export default function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {errorMessage && (
+          <Alert variant="destructive" className="text-sm">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        )}
+        
         <FormField
           control={form.control}
           name="email"
@@ -103,6 +143,21 @@ export default function LoginForm() {
           <Link to="/auth/register" className="text-moh-green hover:underline font-medium">
             Register
           </Link>
+        </div>
+
+        <div className="pt-4 border-t border-gray-200">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full text-xs"
+            onClick={createTestAdminAccount}
+            disabled={isLoading}
+          >
+            Create Test Admin Account
+          </Button>
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            For demo purposes only. Creates an admin account with email: admin@moh.gov.sa
+          </p>
         </div>
       </form>
     </Form>

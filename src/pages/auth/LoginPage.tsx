@@ -1,9 +1,8 @@
 
-import { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import LoginForm from '@/components/auth/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
