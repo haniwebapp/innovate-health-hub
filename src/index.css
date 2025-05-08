@@ -131,4 +131,60 @@
     counter-reset: stat attr(data-value);
     animation: count-up 2s forwards;
   }
+  
+  .btn-primary {
+    @apply bg-gray-800 hover:bg-gray-700 text-white transition-colors duration-300;
+  }
+  
+  .btn-outline {
+    @apply border-gray-300 bg-white text-gray-800 hover:bg-gray-100 transition-colors duration-300;
+  }
+  
+  .link-primary {
+    @apply text-gray-700 hover:text-gray-900 transition-colors duration-300;
+  }
+  
+  .nav-active {
+    @apply text-gray-900 font-medium;
+  }
+  
+  .nav-inactive {
+    @apply text-gray-700 hover:text-gray-900 hover:bg-gray-100; 
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8c8c9;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8a898c;
 }

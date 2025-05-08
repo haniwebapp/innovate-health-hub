@@ -13,6 +13,27 @@ interface NavbarMainLinksProps {
   isRouteActive: (path: string) => boolean;
 }
 
+interface DropdownItemProps {
+  label: string;
+  path: string;
+}
+
+// Fix for the type issue with NavigationMenuLink
+const NavigationMenuLink = ({ 
+  asChild, 
+  children, 
+  ...props 
+}: { 
+  asChild: boolean; 
+  children: React.ReactNode;
+  [key: string]: any;
+}) => {
+  if (asChild) {
+    return children;
+  }
+  return <a {...props}>{children}</a>;
+};
+
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   // Main links with dropdown options for Knowledge Hub
   const mainLinks = [
@@ -49,25 +70,21 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
               <NavigationMenuContent>
                 <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-md rounded-md border border-gray-100">
                   <li className="row-span-1">
-                    <NavigationMenuLink asChild>
+                    <Link
+                      to={link.path}
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
+                    >
+                      <div className="text-sm font-medium">All Resources</div>
+                    </Link>
+                  </li>
+                  {link.dropdownItems?.map((item: DropdownItemProps) => (
+                    <li key={item.path} className="row-span-1">
                       <Link
-                        to={link.path}
+                        to={item.path}
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
                       >
-                        <div className="text-sm font-medium">All Resources</div>
+                        <div className="text-sm font-medium">{item.label}</div>
                       </Link>
-                    </NavigationMenuLink>
-                  </li>
-                  {link.dropdownItems?.map((item) => (
-                    <li key={item.path} className="row-span-1">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={item.path}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900"
-                        >
-                          <div className="text-sm font-medium">{item.label}</div>
-                        </Link>
-                      </NavigationMenuLink>
                     </li>
                   ))}
                 </ul>
@@ -92,10 +109,4 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
       </NavigationMenuList>
     </NavigationMenu>
   );
-}
-
-// Add missing component
-function NavigationMenuLink({ asChild, ...props }: { asChild: boolean, [key: string]: any }) {
-  const Comp = asChild ? Link : 'a';
-  return <Comp {...props} />;
 }
