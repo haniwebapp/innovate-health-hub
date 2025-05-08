@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -11,29 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, FileUp } from "lucide-react";
-import { Challenge } from "@/types/challenges";
-
-// Mock data for now
-const mockChallenges: Challenge[] = [
-  {
-    id: "1",
-    title: "Remote Patient Monitoring Solutions",
-    description: "Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.",
-    long_description: `Challenge details...`,
-    deadline: "June 30, 2025",
-    submission_deadline: "2025-06-30T23:59:59+03:00",
-    category: "Digital Health",
-    participants: 47,
-    prize: "SAR 500,000",
-    image_url: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    organizer: "Ministry of Health - Innovation Department",
-    status: "Open",
-    eligibility: "Healthcare professionals and innovators",
-    requirements: ["Solution must be applicable within Saudi healthcare system"],
-    timeline: [{ date: "June 30, 2025", event: "Submission Deadline" }]
-  },
-  // Additional challenges would be here
-];
+import { getChallengeById } from "@/services/challengeService";
+import { Challenge, Submission } from "@/types/challenges";
 
 // Types for the form data
 interface SubmissionFormData {
@@ -52,23 +32,11 @@ export default function SubmitChallengePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
-  // Fetch challenge details from API with proper typing
+  // Fetch challenge details
   const { data: challenge, isLoading: challengeLoading } = useQuery({
     queryKey: ['challenge', challengeId],
-    queryFn: async () => {
-      // In a real app, this would be fetching from Supabase
-      // const { data, error } = await supabase.from('challenges').select('*').eq('id', challengeId).single();
-      // if (error) throw error;
-      // return data;
-      
-      // Using mock data for now
-      return new Promise<Challenge | undefined>((resolve) => {
-        setTimeout(() => {
-          const foundChallenge = mockChallenges.find(c => c.id === challengeId);
-          resolve(foundChallenge);
-        }, 500);
-      });
-    }
+    queryFn: () => getChallengeById(challengeId as string),
+    enabled: !!challengeId
   });
 
   // Form configuration
@@ -82,6 +50,15 @@ export default function SubmitChallengePage() {
   });
 
   const onSubmit = async (data: SubmissionFormData) => {
+    if (!challenge) {
+      toast({
+        title: "Error",
+        description: "Challenge not found. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     // Basic validation
@@ -116,16 +93,23 @@ export default function SubmitChallengePage() {
   };
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto py-8">
       <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back
       </Button>
       
       {challengeLoading ? (
-        <div className="text-center py-10">Loading challenge details...</div>
+        <div className="text-center py-10">
+          <div className="h-12 w-1/2 bg-gray-200 rounded animate-pulse mx-auto mb-4"></div>
+          <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mx-auto"></div>
+        </div>
       ) : !challenge ? (
-        <div className="text-center py-10">Challenge not found.</div>
+        <div className="text-center py-10">
+          <h2 className="text-xl font-medium mb-2">Challenge not found</h2>
+          <p className="mb-4 text-muted-foreground">The challenge you're looking for doesn't exist or has been removed.</p>
+          <Button onClick={() => navigate("/challenges")}>Browse Challenges</Button>
+        </div>
       ) : (
         <Card>
           <CardHeader>
@@ -215,41 +199,59 @@ export default function SubmitChallengePage() {
 
                 <div>
                   <FormLabel>Supporting Documents (Optional)</FormLabel>
-                  <Input
-                    type="file"
-                    multiple
-                    id="files"
-                    onChange={(e) => {
-                      if (e.target.files) {
-                        setFiles(Array.from(e.target.files));
-                      }
-                    }}
-                    className="hidden"
-                  />
-                  <Button variant="secondary" asChild>
-                    <label htmlFor="files" className="flex items-center">
-                      <FileUp className="h-4 w-4 mr-2" />
-                      Upload Files
-                    </label>
-                  </Button>
-                  {files.length > 0 && (
-                    <ul className="mt-2">
-                      {files.map((file, index) => (
-                        <li key={index} className="text-sm">
-                          {file.name} ({file.type}, {Math.round(file.size / 1024)} KB)
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <FormDescription>
+                  <div className="mt-2">
+                    <Input
+                      type="file"
+                      multiple
+                      id="files"
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          setFiles(Array.from(e.target.files));
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <Button variant="secondary" asChild>
+                      <label htmlFor="files" className="flex items-center cursor-pointer">
+                        <FileUp className="h-4 w-4 mr-2" />
+                        Upload Files
+                      </label>
+                    </Button>
+                    {files.length > 0 && (
+                      <ul className="mt-3 space-y-1">
+                        {files.map((file, index) => (
+                          <li key={index} className="text-sm flex items-center bg-gray-50 px-3 py-2 rounded border">
+                            <span className="font-medium">{file.name}</span>
+                            <span className="ml-2 text-muted-foreground">
+                              ({file.type || 'Unknown'}, {Math.round(file.size / 1024)} KB)
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <FormDescription className="mt-2">
                     Upload any supporting documents that may help showcase your solution.
                   </FormDescription>
                 </div>
 
-                <CardFooter>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Submitting..." : "Submit Challenge"}
-                  </Button>
+                <CardFooter className="px-0">
+                  <div className="flex gap-3">
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate(-1)} 
+                      type="button"
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={isSubmitting}
+                      className="bg-moh-green hover:bg-moh-darkGreen"
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit Challenge"}
+                    </Button>
+                  </div>
                 </CardFooter>
               </form>
             </Form>
