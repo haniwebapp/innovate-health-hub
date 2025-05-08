@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
@@ -49,7 +48,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                 {link.label}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-1 p-2 bg-white">
+                <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-md rounded-md border border-gray-100">
                   <li className="row-span-1">
                     <NavigationMenuLink asChild>
                       <Link

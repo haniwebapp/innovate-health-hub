@@ -67,7 +67,7 @@ export default {
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#F7FAFA', // Updated to a very light white/green
+					lightGreen: '#F8F8F8', // Updated to a very light white shade
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',
@@ -94,11 +94,11 @@ export default {
 					to: { height: '0' }
 				},
 				'fade-in': {
-					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'fade-in-right': {
-					'0%': { opacity: '0', transform: 'translateX(20px)' },
+					'0%': { opacity: '0', transform: 'translateX(10px)' },
 					'100%': { opacity: '1', transform: 'translateX(0)' }
 				},
 				'pulse-soft': {
@@ -107,10 +107,10 @@ export default {
 				},
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-10px)' }
+					'50%': { transform: 'translateY(-5px)' }
 				},
 				'scale-in': {
-					'0%': { transform: 'scale(0.9)', opacity: '0' },
+					'0%': { transform: 'scale(0.95)', opacity: '0' },
 					'100%': { transform: 'scale(1)', opacity: '1' }
 				},
 				'count-up': {
@@ -121,16 +121,16 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.7s ease-out forwards',
-				'fade-in-right': 'fade-in-right 0.7s ease-out forwards',
+				'fade-in': 'fade-in 0.5s ease-out forwards',
+				'fade-in-right': 'fade-in-right 0.5s ease-out forwards',
 				'pulse-soft': 'pulse-soft 3s infinite ease-in-out',
-				'float': 'float 6s infinite ease-in-out',
-				'scale-in': 'scale-in 0.5s ease-out forwards',
+				'float': 'float 4s infinite ease-in-out',
+				'scale-in': 'scale-in 0.3s ease-out forwards',
 				'count-up': 'count-up 2s forwards'
 			},
 			backgroundImage: {
-				'hero-pattern': 'linear-gradient(135deg, #FFFFFF 0%, #F7FAFA 100%)',
-				'card-gradient': 'linear-gradient(to right, rgba(255, 255, 255, 0.7), rgba(247, 250, 250, 0.7))',
+				'hero-pattern': 'linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 100%)',
+				'card-gradient': 'linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.9))',
 			}
 		}
 	},

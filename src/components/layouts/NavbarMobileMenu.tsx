@@ -1,9 +1,10 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Globe, User, LogIn, UserPlus } from "lucide-react";
+import { Search, Globe, User, LogIn, UserPlus, LogOut } from "lucide-react";
 import { NavigateFunction } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Accordion,
   AccordionContent,
@@ -24,6 +25,8 @@ export function NavbarMobileMenu({
   user, 
   navigate 
 }: NavbarMobileMenuProps) {
+  const { signOut } = useAuth();
+  
   const mainLinks = [
     { path: "/about", label: "About" },
     { path: "/challenges", label: "Challenges" },
@@ -44,6 +47,16 @@ export function NavbarMobileMenu({
   const handleNavigate = (path: string) => {
     navigate(path);
     setMobileMenuOpen(false);
+  };
+  
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/auth/login');
+      setMobileMenuOpen(false);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (
@@ -92,7 +105,7 @@ export function NavbarMobileMenu({
               className={`block px-4 py-2 rounded-md text-base font-medium ${
                 isRouteActive(link.path) 
                   ? 'text-moh-green bg-gray-50' 
-                  : 'text-moh-darkGreen hover:bg-gray-50'
+                  : 'text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green'
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -132,13 +145,10 @@ export function NavbarMobileMenu({
               </Button>
               <Button 
                 variant="outline"
-                onClick={() => {
-                  // Handle logout logic here
-                  // For now we just redirect to login page
-                  handleNavigate('/auth/login');
-                }} 
+                onClick={handleSignOut}
                 className="w-full border-red-500 text-red-500 hover:bg-red-50"
               >
+                <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
             </>

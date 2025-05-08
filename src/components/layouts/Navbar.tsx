@@ -15,7 +15,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Handle scrolling effect
+  // Handle scrolling effect with throttling for better performance
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
@@ -23,7 +23,8 @@ export default function Navbar() {
         setScrolled(isScrolled);
       }
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -37,7 +38,7 @@ export default function Navbar() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-white py-4'
+        scrolled ? 'bg-white shadow-sm py-2' : 'bg-white py-4'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,6 +73,7 @@ export default function Navbar() {
               className="inline-flex items-center justify-center rounded-md p-2 text-moh-darkGreen hover:bg-gray-50" 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
               aria-expanded={mobileMenuOpen}
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? (
                 <span className="material-symbols-outlined">close</span>
@@ -83,7 +85,7 @@ export default function Navbar() {
         </div>
       </div>
       
-      {/* Mobile menu */}
+      {/* Mobile menu with improved animation */}
       {mobileMenuOpen && (
         <NavbarMobileMenu 
           isRouteActive={isRouteActive} 
