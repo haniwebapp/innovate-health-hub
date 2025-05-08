@@ -13,7 +13,7 @@ export default function LoginPage() {
   }
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-moh-lightGreen/20">
+    <div className="flex items-center justify-center min-h-screen bg-[#E8F3EF]/50">
       <div className="w-full max-w-md p-4 space-y-8">
         <div className="text-center space-y-2">
           <img 
@@ -24,7 +24,7 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold">Innovation Platform</h1>
         </div>
         
-        <Card>
+        <Card className="border-moh-lightGreen shadow-sm">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, Search, Globe, ChevronDown, User } from "lucide-react";
+import { Search, Globe, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "./NavbarMainLinks";
@@ -37,7 +37,7 @@ export default function Navbar() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
+        scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-[#E8F3EF] py-4'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,9 +74,9 @@ export default function Navbar() {
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
+                <span className="material-symbols-outlined">close</span>
               ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
+                <span className="material-symbols-outlined">menu</span>
               )}
             </button>
           </div>

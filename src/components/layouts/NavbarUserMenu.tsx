@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { User, LogIn, UserPlus, Shield, LogOut } from "lucide-react";
+import { LogIn, UserPlus, Shield, LogOut } from "lucide-react";
 import { NavigateFunction } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -37,9 +37,9 @@ export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMe
           <DropdownMenuTrigger asChild>
             <Button 
               variant="outline" 
-              className="border-moh-green text-moh-green hover:bg-moh-lightGreen flex gap-2 items-center"
+              className="border-moh-green bg-white text-moh-green hover:bg-moh-lightGreen flex gap-2 items-center rounded-full px-6"
             >
-              {isAdmin ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />}
+              {isAdmin ? <Shield className="h-4 w-4" /> : null}
               {isAdmin ? "Admin" : "My Account"}
             </Button>
           </DropdownMenuTrigger>
@@ -89,14 +89,14 @@ export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMe
           <Button 
             variant="outline" 
             onClick={() => navigate('/auth/login')} 
-            className="border-moh-green text-moh-green hover:bg-moh-lightGreen flex gap-2 items-center"
+            className="border-moh-green bg-white text-moh-green hover:bg-moh-lightGreen flex gap-2 items-center rounded-full px-6"
           >
             <LogIn className="h-4 w-4" />
             Sign In
           </Button>
           <Button 
             onClick={() => navigate('/auth/register')} 
-            className="bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center"
+            className="bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center rounded-full px-6"
           >
             <UserPlus className="h-4 w-4" />
             Register

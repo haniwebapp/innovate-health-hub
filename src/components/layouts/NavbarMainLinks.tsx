@@ -35,60 +35,46 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   ];
 
   return (
-    <nav className="hidden md:flex items-center space-x-8">
+    <nav className="hidden md:flex items-center space-x-12">
       {mainLinks.map((link) => (
         link.hasDropdown ? (
-          <NavigationMenu key={link.path}>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger 
-                  className={cn(
-                    "bg-transparent hover:bg-transparent",
-                    isRouteActive(link.path) 
-                      ? 'text-moh-green font-medium' 
-                      : 'text-moh-darkGreen hover:text-moh-green'
-                  )}
-                >
-                  {link.label}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[200px] gap-1 p-2">
-                    <li className="row-span-1">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={link.path}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-moh-lightGreen hover:text-moh-green focus:bg-moh-lightGreen focus:text-moh-green"
-                        >
-                          <div className="text-sm font-medium leading-none">All Resources</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                    {link.dropdownItems?.map((item) => (
-                      <li key={item.path} className="row-span-1">
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to={item.path}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-moh-lightGreen hover:text-moh-green focus:bg-moh-lightGreen focus:text-moh-green"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.label}</div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          <div key={link.path} className="relative inline-block">
+            <Link
+              to={link.path}
+              className={cn(
+                "flex items-center text-lg transition-colors",
+                isRouteActive(link.path) 
+                  ? 'text-moh-green font-medium' 
+                  : 'text-moh-darkGreen hover:text-moh-green'
+              )}
+            >
+              {link.label}
+              <ChevronDown className="ml-1 h-4 w-4" />
+            </Link>
+            <div className="absolute left-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block">
+              <div className="py-1">
+                {link.dropdownItems?.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="block px-4 py-2 text-sm text-moh-darkGreen hover:bg-moh-lightGreen hover:text-moh-green"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         ) : (
           <Link
             key={link.path}
             to={link.path}
-            className={`transition-colors flex items-center ${
+            className={cn(
+              "text-lg transition-colors",
               isRouteActive(link.path) 
                 ? 'text-moh-green font-medium' 
                 : 'text-moh-darkGreen hover:text-moh-green'
-            }`}
+            )}
           >
             {link.label}
           </Link>
