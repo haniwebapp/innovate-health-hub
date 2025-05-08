@@ -1,16 +1,19 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Search, Globe, ChevronDown, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { MegaMenu } from "@/components/navigation/MegaMenu";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const challengesMenuRef = useRef<HTMLDivElement>(null);
 
   // Handle scrolling effect
   useEffect(() => {
@@ -30,6 +33,29 @@ export default function Navbar() {
   const isRouteActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
+  
+  // Close mega menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (challengesMenuRef.current && !challengesMenuRef.current.contains(event.target as Node)) {
+        setMegaMenuOpen(false);
+      }
+    }
+    
+    if (megaMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [megaMenuOpen]);
+
+  // Close menus when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setMegaMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'}`}>
@@ -52,13 +78,21 @@ export default function Navbar() {
             >
               About
             </Link>
-            <Link 
-              to="/challenges" 
-              className={`transition-colors flex items-center gap-1 ${isRouteActive('/challenges') ? 'text-moh-green font-medium' : 'text-moh-darkGreen hover:text-moh-green'}`}
-            >
-              Challenges
-              <ChevronDown className="h-4 w-4" />
-            </Link>
+            <div ref={challengesMenuRef} className="relative">
+              <button 
+                className={`transition-colors flex items-center gap-1 ${isRouteActive('/challenges') ? 'text-moh-green font-medium' : 'text-moh-darkGreen hover:text-moh-green'}`}
+                onClick={() => setMegaMenuOpen(!megaMenuOpen)}
+                aria-expanded={megaMenuOpen}
+              >
+                Challenges
+                <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${megaMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              <MegaMenu 
+                isOpen={megaMenuOpen} 
+                onClose={() => setMegaMenuOpen(false)}
+                className="mt-2"
+              />
+            </div>
             <Link 
               to="/innovations" 
               className={`transition-colors ${isRouteActive('/innovations') ? 'text-moh-green font-medium' : 'text-moh-darkGreen hover:text-moh-green'}`}
@@ -138,13 +172,55 @@ export default function Navbar() {
             >
               About
             </Link>
-            <Link 
-              to="/challenges" 
-              className={`block px-4 py-2 rounded-md text-base font-medium ${isRouteActive('/challenges') ? 'text-moh-green bg-moh-lightGreen' : 'text-moh-darkGreen hover:bg-moh-lightGreen'}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Challenges
-            </Link>
+            <div className="block px-4 py-2 rounded-md text-base font-medium">
+              <button 
+                className={`flex items-center justify-between w-full ${isRouteActive('/challenges') ? 'text-moh-green' : 'text-moh-darkGreen'}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/challenges');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <span>Challenges</span>
+              </button>
+              <div className="pl-4 mt-2 space-y-2 border-l-2 border-moh-lightGreen">
+                <Link
+                  to="/challenges?category=Digital%20Health"
+                  className="block py-1 text-sm text-moh-darkGreen hover:text-moh-green"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Digital Health
+                </Link>
+                <Link
+                  to="/challenges?category=Artificial%20Intelligence"
+                  className="block py-1 text-sm text-moh-darkGreen hover:text-moh-green"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Artificial Intelligence
+                </Link>
+                <Link
+                  to="/challenges?category=Operations"
+                  className="block py-1 text-sm text-moh-darkGreen hover:text-moh-green"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Operations
+                </Link>
+                <Link
+                  to="/challenges?status=open"
+                  className="block py-1 text-sm text-moh-darkGreen hover:text-moh-green"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Open Challenges
+                </Link>
+                <Link
+                  to="/challenges?status=upcoming"
+                  className="block py-1 text-sm text-moh-darkGreen hover:text-moh-green"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Upcoming Challenges
+                </Link>
+              </div>
+            </div>
             <Link 
               to="/innovations" 
               className={`block px-4 py-2 rounded-md text-base font-medium ${isRouteActive('/innovations') ? 'text-moh-green bg-moh-lightGreen' : 'text-moh-darkGreen hover:bg-moh-lightGreen'}`}

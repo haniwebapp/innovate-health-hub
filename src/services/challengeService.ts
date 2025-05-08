@@ -82,21 +82,50 @@ const mockChallenges: Challenge[] = [
   }
 ];
 
-// Get all challenges
-export const getAllChallenges = async (): Promise<Challenge[]> => {
+// Get all challenges with filtering options
+export const getAllChallenges = async (filters?: {
+  status?: string;
+  category?: string;
+  search?: string;
+}): Promise<Challenge[]> => {
   try {
-    // When integrated with Supabase:
-    // const { data, error } = await supabase
-    //   .from('challenges')
-    //   .select('*')
-    //   .order('submission_deadline', { ascending: true });
+    // When integrated with Supabase, we would apply filters to the query
+    // const query = supabase.from('challenges').select('*');
+    
+    // if (filters?.status) query.eq('status', filters.status);
+    // if (filters?.category) query.eq('category', filters.category);
+    // if (filters?.search) query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    
+    // const { data, error } = await query.order('submission_deadline', { ascending: true });
     
     // if (error) throw error;
     // return data;
     
-    // Using mock data for now:
+    // Using mock data with filtering for now:
     return new Promise(resolve => {
-      setTimeout(() => resolve(mockChallenges), 500);
+      setTimeout(() => {
+        let filtered = [...mockChallenges];
+        
+        // Apply filters
+        if (filters?.status && filters.status !== 'all') {
+          filtered = filtered.filter(c => c.status === filters.status);
+        }
+        
+        if (filters?.category) {
+          filtered = filtered.filter(c => c.category === filters.category);
+        }
+        
+        if (filters?.search) {
+          const search = filters.search.toLowerCase();
+          filtered = filtered.filter(
+            c => c.title.toLowerCase().includes(search) || 
+                 c.description.toLowerCase().includes(search) ||
+                 c.category.toLowerCase().includes(search)
+          );
+        }
+        
+        resolve(filtered);
+      }, 500);
     });
   } catch (error) {
     console.error("Error fetching challenges:", error);
@@ -166,6 +195,32 @@ export const getChallengesByCategory = async (category: string): Promise<Challen
   }
 };
 
+// Get challenges by status
+export const getChallengesByStatus = async (status: string): Promise<Challenge[]> => {
+  try {
+    // When integrated with Supabase:
+    // const { data, error } = await supabase
+    //   .from('challenges')
+    //   .select('*')
+    //   .eq('status', status)
+    //   .order('submission_deadline', { ascending: true });
+    
+    // if (error) throw error;
+    // return data;
+    
+    // Using mock data for now:
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const filteredChallenges = mockChallenges.filter(c => c.status === status);
+        resolve(filteredChallenges);
+      }, 300);
+    });
+  } catch (error) {
+    console.error("Error fetching challenges by status:", error);
+    return [];
+  }
+};
+
 // Search challenges
 export const searchChallenges = async (query: string): Promise<Challenge[]> => {
   try {
@@ -196,3 +251,4 @@ export const searchChallenges = async (query: string): Promise<Challenge[]> => {
     return [];
   }
 };
+
