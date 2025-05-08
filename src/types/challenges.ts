@@ -29,16 +29,4 @@ export interface Submission {
   submitted_at: string | null;
   updated_at: string;
   category: string;
-  description?: string;
-  team_members?: string;
-}
-
-export type SubmissionStatus = "draft" | "submitted" | "under_review" | "approved" | "rejected";
-export type ChallengeStatus = "open" | "closed" | "upcoming" | "completed";
-
-// Stats interfaces for dashboard
-export interface UserStats {
-  total_submissions: number;
-  approved_submissions: number;
-  ongoing_challenges: number;
 }

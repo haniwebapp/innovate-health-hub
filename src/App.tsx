@@ -15,7 +15,6 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import ChallengesPage from "./pages/challenges";
 import ChallengeDetailPage from "./pages/challenges/[id]";
-import InnovationsPage from "./pages/innovations";
 import SubmissionsPage from "./pages/dashboard/submissions";
 import SubmitChallengePage from "./pages/dashboard/submit/[challengeId]";
 
@@ -49,7 +48,6 @@ const App = () => (
             <Route path="/auth/verification" element={<VerificationPage />} />
             <Route path="/challenges" element={<ChallengesPage />} />
             <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
-            <Route path="/innovations" element={<InnovationsPage />} />
             
             {/* Protected Routes - Dashboard */}
             <Route 
@@ -71,6 +69,7 @@ const App = () => (
             
             {/* Static Routes */}
             <Route path="/about" element={<NotFound />} />
+            <Route path="/innovations" element={<NotFound />} />
             <Route path="/knowledge-hub" element={<NotFound />} />
             
             {/* 404 - Catch-all */}
