@@ -1,12 +1,15 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Menu, X, Search, Globe, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Search, Globe, ChevronDown, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -64,12 +67,33 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-moh-lightGreen hover:text-moh-green rounded-full">
               <Globe className="h-5 w-5" />
             </Button>
-            <Button variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen">
-              Sign In
-            </Button>
-            <Button className="bg-moh-green hover:bg-moh-darkGreen text-white">
-              Register
-            </Button>
+            
+            {user ? (
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/dashboard')}
+                className="border-moh-green text-moh-green hover:bg-moh-lightGreen flex gap-2 items-center"
+              >
+                <User className="h-4 w-4" />
+                Dashboard
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/auth/login')}
+                  className="border-moh-green text-moh-green hover:bg-moh-lightGreen"
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  onClick={() => navigate('/auth/register')}
+                  className="bg-moh-green hover:bg-moh-darkGreen text-white"
+                >
+                  Register
+                </Button>
+              </>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -141,12 +165,40 @@ export default function Navbar() {
             </div>
             
             <div className="flex flex-col space-y-3 pt-2">
-              <Button variant="outline" className="w-full border-moh-green text-moh-green hover:bg-moh-lightGreen">
-                Sign In
-              </Button>
-              <Button className="w-full bg-moh-green hover:bg-moh-darkGreen text-white">
-                Register
-              </Button>
+              {user ? (
+                <Button 
+                  onClick={() => {
+                    navigate('/dashboard');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full bg-moh-green hover:bg-moh-darkGreen text-white"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      navigate('/auth/login');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full border-moh-green text-moh-green hover:bg-moh-lightGreen"
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      navigate('/auth/register');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full bg-moh-green hover:bg-moh-darkGreen text-white"
+                  >
+                    Register
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
