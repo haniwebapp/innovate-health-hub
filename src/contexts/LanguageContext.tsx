@@ -469,7 +469,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Challenges Section
     'home.challenges.tag': 'تحديات الابتكار',
     'home.challenges.title': 'الفرص القادمة',
-    'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة وفتح فرص التمويل.',
+    'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة ��فتح فرص التمويل.',
     'home.challenges.viewAll': 'عرض جميع التحديات',
     'home.challenges.viewChallenge': 'عرض التحدي',
     'home.challenges.deadline': 'الموعد النهائي',

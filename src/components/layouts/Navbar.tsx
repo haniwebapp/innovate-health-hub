@@ -1,13 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
-import { NavbarMainLinks } from "./NavbarMainLinks";
-import { NavbarUserMenu } from "./NavbarUserMenu";
-import LanguageSwitcher from "./LanguageSwitcher";
+import NavbarMainLinks from "@/components/layouts/NavbarMainLinks";
+import NavbarUserMenu from "@/components/layouts/NavbarUserMenu";
+import LanguageSwitcher from "@/components/layouts/LanguageSwitcher";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -54,7 +53,7 @@ export default function Navbar() {
         scrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm py-2' : 'bg-white py-4'
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
         <div className={`flex justify-between items-center ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
@@ -98,7 +97,7 @@ export default function Navbar() {
             </Button>
           </div>
         </div>
-      </div>
+      </Container>
       
       {/* Mobile menu with improved animation */}
       <AnimatePresence>
