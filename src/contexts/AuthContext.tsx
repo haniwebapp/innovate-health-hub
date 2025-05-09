@@ -1,7 +1,8 @@
 
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock authentication for development
+// Authentication types
 interface User {
   id: string;
   email: string;
@@ -34,48 +35,98 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Simulate checking for an existing session
+    // Check for existing session
     const checkAuth = async () => {
       try {
-        // In a real app, this would check localStorage, cookies, or call an API
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
+        setIsLoading(true);
+        
+        // Get current session
+        const { data: sessionData } = await supabase.auth.getSession();
+        
+        if (sessionData?.session?.user) {
+          // Get user profile including roles
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', sessionData.session.user.id)
+            .single();
+
+          // Set user data
+          setUser({
+            ...sessionData.session.user,
+            role: profileData?.roles?.includes('admin') ? 'admin' : 'user',
+            user_metadata: {
+              firstName: profileData?.first_name || '',
+              lastName: profileData?.last_name || '',
+              organization: profileData?.organization || '',
+            }
+          });
+          
+          // Set admin status based on roles
+          setIsAdmin(profileData?.roles?.includes('admin') || false);
         }
       } catch (error) {
-        console.error("Auth error:", error);
+        console.error("Auth check error:", error);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     checkAuth();
+    
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setIsLoading(true);
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          // Get user profile with roles when signed in
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          // Set user data
+          setUser({
+            ...session.user,
+            role: profileData?.roles?.includes('admin') ? 'admin' : 'user',
+            user_metadata: {
+              firstName: profileData?.first_name || '',
+              lastName: profileData?.last_name || '',
+              organization: profileData?.organization || '',
+            }
+          });
+          
+          // Set admin status based on roles
+          setIsAdmin(profileData?.roles?.includes('admin') || false);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setIsAdmin(false);
+        }
+        
+        setIsLoading(false);
+      }
+    );
+    
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Mock login - in a real app, this would call an API
-      const mockUser: User = {
-        id: "user-1",
-        email: email,
-        name: email.split("@")[0],
-        role: email.includes("admin") ? "admin" : "user",
-        user_metadata: {
-          firstName: email.split("@")[0],
-          lastName: "User",
-          organization: "Health Organization",
-        },
-        app_metadata: {},
-        aud: "authenticated",
-        created_at: new Date().toISOString(),
-      };
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
-      setUser(mockUser);
-      localStorage.setItem("user", JSON.stringify(mockUser));
-    } catch (error) {
+      if (error) throw error;
+    } catch (error: any) {
       console.error("Login error:", error);
       throw error;
     } finally {
@@ -83,33 +134,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const register = async (email: string, password: string, userData: any) => {
     setIsLoading(true);
     try {
-      // Mock registration - in a real app, this would call an API
-      const mockUser: User = {
-        id: "user-" + Math.floor(Math.random() * 1000),
-        email: email,
-        name: userData.firstName,
-        role: "user",
-        user_metadata: {
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          organization: userData.organization,
-        },
-        app_metadata: {},
-        aud: "authenticated",
-        created_at: new Date().toISOString(),
-      };
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            userType: userData.userType,
+            organization: userData.organization,
+          }
+        }
+      });
       
-      setUser(mockUser);
-      localStorage.setItem("user", JSON.stringify(mockUser));
-    } catch (error) {
+      if (error) throw error;
+    } catch (error: any) {
       console.error("Registration error:", error);
       throw error;
     } finally {
@@ -121,8 +171,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = login;
   const signUp = register;
   const signOut = logout;
-  
-  const isAdmin = user?.role === "admin";
 
   return (
     <AuthContext.Provider value={{ 

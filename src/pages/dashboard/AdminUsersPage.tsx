@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import AdminUsersTable from "@/components/admin/AdminUsersTable";
 import AdminUserStats from "@/components/admin/AdminUserStats";
 import UserInsightsCard from "@/components/ai/UserInsightsCard";
 import AdminAIAssistant from "@/components/ai/AdminAIAssistant";
 import { UserProfile } from "@/types/admin";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminUsersPage() {
   const { toast } = useToast();
@@ -21,6 +22,7 @@ export default function AdminUsersPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -38,9 +40,10 @@ export default function AdminUsersPage() {
       // Map profiles to UserProfile format
       const mappedUsers: UserProfile[] = profiles.map(profile => {
         // Generate an email from the profile data or use a placeholder
-        const email = profile.user_type === 'admin' 
-          ? `${profile.first_name || 'admin'}.${profile.last_name || 'user'}@moh.gov.sa` 
-          : `${profile.first_name || 'user'}.${profile.last_name || profile.id.substring(0, 5)}@example.com`;
+        const email = profile.email || 
+          (profile.user_type === 'admin' 
+            ? `${profile.first_name || 'admin'}.${profile.last_name || 'user'}@moh.gov.sa` 
+            : `${profile.first_name || 'user'}.${profile.last_name || profile.id.substring(0, 5)}@example.com`);
         
         return {
           id: profile.id,
@@ -49,8 +52,8 @@ export default function AdminUsersPage() {
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",
           organization: profile.organization || "",
-          lastSignIn: new Date(profile.updated_at).toLocaleDateString(),
-          status: Math.random() > 0.2 ? "active" : "inactive" // Simulate active/inactive status
+          lastSignIn: profile.last_sign_in ? new Date(profile.last_sign_in).toLocaleDateString() : "Never",
+          status: profile.status as "active" | "inactive" || "active"
         };
       });
 
@@ -66,6 +69,11 @@ export default function AdminUsersPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAddUser = () => {
+    // Navigate to user creation form or open a modal
+    navigate("/admin/users/add");
   };
 
   const filteredUsers = users.filter(user => {
@@ -95,6 +103,10 @@ export default function AdminUsersPage() {
           </Button>
           <Button onClick={fetchUsers} disabled={isLoading}>
             {isLoading ? "Loading..." : "Refresh Users"}
+          </Button>
+          <Button onClick={handleAddUser}>
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add User
           </Button>
         </div>
       }

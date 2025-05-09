@@ -548,7 +548,10 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          last_sign_in: string | null
           organization: string | null
+          roles: string[] | null
+          status: string
           updated_at: string
           user_type: string | null
         }
@@ -557,7 +560,10 @@ export type Database = {
           first_name?: string | null
           id: string
           last_name?: string | null
+          last_sign_in?: string | null
           organization?: string | null
+          roles?: string[] | null
+          status?: string
           updated_at?: string
           user_type?: string | null
         }
@@ -566,7 +572,10 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          last_sign_in?: string | null
           organization?: string | null
+          roles?: string[] | null
+          status?: string
           updated_at?: string
           user_type?: string | null
         }
@@ -897,7 +906,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
