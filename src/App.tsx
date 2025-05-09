@@ -33,10 +33,16 @@ import ChallengeDetails from './pages/challenges/[id]';
 import InnovationsPage from './pages/innovations';
 import InnovationDetails from './pages/innovations/[id]';
 import InnovationSubmitPage from './pages/innovations/submit/index';
+import BasicInfoPage from './pages/innovations/submit/basic-info';
+import DetailsPage from './pages/innovations/submit/details';
+import MediaPage from './pages/innovations/submit/media';
+import TechnicalPage from './pages/innovations/submit/technical';
+import RegulatoryPage from './pages/innovations/submit/regulatory';
 import ContactInformationPage from './pages/innovations/submit/contact';
+import ReviewPage from './pages/innovations/submit/review';
 
 import InvestmentPage from './pages/investment';
-import RegulatoryPage from './pages/regulatory';
+import RegulatoryPage2 from './pages/regulatory';
 
 import KnowledgeHubPage from './pages/knowledge-hub';
 
@@ -68,12 +74,17 @@ function App() {
                         Select an option from the right to begin your innovation submission.
                       </p>
                     </div>} />
+                    <Route path="basic-info" element={<BasicInfoPage />} />
+                    <Route path="details" element={<DetailsPage />} />
+                    <Route path="media" element={<MediaPage />} />
+                    <Route path="technical" element={<TechnicalPage />} />
+                    <Route path="regulatory" element={<RegulatoryPage />} />
                     <Route path="contact" element={<ContactInformationPage />} />
-                    {/* We'll add the rest of the submission flow routes later */}
+                    <Route path="review" element={<ReviewPage />} />
                   </Route>
                   
                   <Route path="/investment" element={<InvestmentPage />} />
-                  <Route path="/regulatory" element={<RegulatoryPage />} />
+                  <Route path="/regulatory" element={<RegulatoryPage2 />} />
                   <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
                   
                   {/* Auth Routes */}
