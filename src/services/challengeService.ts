@@ -78,7 +78,7 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
   }
 
   // Create a copy of the challenge object to modify
-  const insertData = { ...challenge };
+  const insertData: any = { ...challenge };
   
   // If requirements is an array, we need to stringify it
   if (insertData.requirements && Array.isArray(insertData.requirements)) {
@@ -86,10 +86,10 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
   }
   
   // Remove non-database fields
-  delete (insertData as any).timeline;
-  delete (insertData as any).deadline;
-  delete (insertData as any).submission_deadline;
-  delete (insertData as any).participants;
+  delete insertData.timeline;
+  delete insertData.deadline;
+  delete insertData.submission_deadline;
+  delete insertData.participants;
 
   const { data, error } = await supabase
     .from('challenges')
@@ -109,7 +109,7 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
  */
 export const updateChallenge = async (id: string, challenge: Partial<Challenge>) => {
   // Create a copy of the challenge object to modify
-  const updateData = { ...challenge };
+  const updateData: any = { ...challenge };
   
   // If requirements is an array, we need to stringify it
   if (updateData.requirements && Array.isArray(updateData.requirements)) {
@@ -117,10 +117,10 @@ export const updateChallenge = async (id: string, challenge: Partial<Challenge>)
   }
   
   // Remove non-database fields
-  delete (updateData as any).timeline;
-  delete (updateData as any).deadline;
-  delete (updateData as any).submission_deadline;
-  delete (updateData as any).participants;
+  delete updateData.timeline;
+  delete updateData.deadline;
+  delete updateData.submission_deadline;
+  delete updateData.participants;
 
   const { data, error } = await supabase
     .from('challenges')
