@@ -15,10 +15,14 @@ export const applyRTLDirection = (language: string): void => {
     document.documentElement.classList.add('rtl-layout');
     document.documentElement.classList.add('lang-ar');
     document.body.classList.add('rtl-mode');
+    document.head.insertAdjacentHTML('beforeend', 
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap">'
+    );
   } else {
     document.documentElement.classList.remove('rtl-layout');
     document.documentElement.classList.remove('lang-ar');
     document.body.classList.remove('rtl-mode');
+    // We don't remove the Tajawal font as it might be needed if user switches back to Arabic
   }
   
   // Apply RTL-specific CSS variables for layout control
@@ -98,6 +102,17 @@ export const useRTLDirection = (language: string): void => {
           .rtl-padding-flip { padding-right: 0.5rem; padding-left: 0 !important; }
           .rtl-text-align { text-align: right !important; }
           .rtl-float { float: right !important; }
+          
+          /* Fix button icon placement in RTL */
+          .rtl-layout button:not(.rtl-exempt) svg:first-child {
+            margin-right: 0;
+            margin-left: 0.5rem;
+          }
+          
+          /* Apply Arabic font */
+          .rtl-layout, .rtl-layout * {
+            font-family: 'Tajawal', sans-serif;
+          }
         `;
       } else {
         styleEl.textContent = '';
@@ -108,8 +123,8 @@ export const useRTLDirection = (language: string): void => {
     
     // Cleanup function
     return () => {
-      const styleId = document.getElementById('rtl-dynamic-styles');
-      if (styleId) styleId.textContent = '';
+      const styleEl = document.getElementById('rtl-dynamic-styles');
+      if (styleEl) styleEl.textContent = '';
     };
   }, [language]);
 };

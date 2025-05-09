@@ -4,9 +4,11 @@ import { ArrowRight, Sparkles, Award } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { getRTLClasses } from "@/utils/rtlUtils";
 
 export function HeroButtons() {
   const { t, language } = useLanguage();
+  const rtlClasses = getRTLClasses(language);
   
   // Animation variants for staggered animations
   const containerVariants = {
@@ -26,9 +28,14 @@ export function HeroButtons() {
     }
   };
   
+  // Handle icon placement based on language
+  const iconPosition = language === 'ar' ? 'ml-2' : 'mr-2';
+  const motionDirection = language === 'ar' ? [-5, 0, -5] : [0, 5, 0];
+  const arrowRotation = language === 'ar' ? 'rotate-180' : '';
+  
   return (
     <motion.div 
-      className="flex flex-col sm:flex-row justify-center gap-4" 
+      className={`flex flex-col sm:flex-row justify-center gap-4 ${language === 'ar' ? 'sm:flex-row-reverse' : ''}`}
       variants={containerVariants} 
       initial="hidden" 
       animate="visible"
@@ -36,17 +43,23 @@ export function HeroButtons() {
       <motion.div variants={itemVariants}>
         <Button size="lg" className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group" asChild>
           <Link to="/innovations">
+            {language === 'ar' && (
+              <motion.div 
+                animate={{ x: motionDirection }}
+                transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
+              >
+                <ArrowRight className={`${iconPosition} h-4 w-4 ${arrowRotation}`} />
+              </motion.div>
+            )}
             {t('home.hero.exploreButton')}
-            <motion.div 
-              animate={{ x: language === 'ar' ? [-5, 0, -5] : [0, 5, 0] }}
-              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
-            >
-              {language === 'ar' ? (
-                <ArrowRight className="mr-2 h-4 w-4 transform rotate-180" />
-              ) : (
-                <ArrowRight className="ml-2 h-4 w-4" />
-              )}
-            </motion.div>
+            {language === 'en' && (
+              <motion.div 
+                animate={{ x: motionDirection }}
+                transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
+              >
+                <ArrowRight className={`${iconPosition} h-4 w-4`} />
+              </motion.div>
+            )}
           </Link>
         </Button>
       </motion.div>
@@ -58,7 +71,7 @@ export function HeroButtons() {
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
             >
-              <Sparkles className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
+              <Sparkles className={iconPosition} size={16} />
             </motion.div>
             {t('home.hero.joinButton')}
           </Link>
@@ -68,7 +81,7 @@ export function HeroButtons() {
       <motion.div variants={itemVariants}>
         <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm" asChild>
           <Link to="/investment">
-            <Award className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
+            <Award className={iconPosition} size={16} />
             {t('home.hero.investmentButton')}
           </Link>
         </Button>
