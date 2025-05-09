@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -7,9 +8,13 @@ import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "@/components/layouts/NavbarMainLinks";
 import NavbarUserMenu from "@/components/layouts/NavbarUserMenu";
 import { motion, AnimatePresence } from "framer-motion";
+import { Dialog } from "@/components/ui/dialog";
+import { SearchDialog } from "@/components/layouts/SearchDialog";
+
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const {
     user
   } = useAuth();
@@ -41,6 +46,7 @@ export default function Navbar() {
   const isRouteActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
   };
+  
   return <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm py-2' : 'bg-white py-4'}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
@@ -59,10 +65,18 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-3">
             {/* Add prominent CTA button for Submit Innovation */}
             <Button className="bg-moh-green hover:bg-moh-darkGreen text-white flex items-center gap-2 group" asChild>
-              
+              <Link to="/innovations/submit">
+                <FileUp className="h-4 w-4" />
+                Submit Innovation
+              </Link>
             </Button>
             
-            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full"
+              onClick={() => setSearchOpen(true)}
+            >
               <Search className="h-5 w-5" />
             </Button>
             
@@ -82,5 +96,8 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && <NavbarMobileMenu isRouteActive={isRouteActive} setMobileMenuOpen={setMobileMenuOpen} />}
       </AnimatePresence>
+
+      {/* Search Dialog */}
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </header>;
 }

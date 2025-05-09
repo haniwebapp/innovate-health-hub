@@ -2,10 +2,17 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp } from "lucide-react";
+import { LogOut, User, Settings, FileUp, ChevronRight, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from "@/components/ui/accordion";
 
 interface NavbarMobileMenuProps {
   isRouteActive: (path: string) => boolean;
@@ -21,12 +28,66 @@ export function NavbarMobileMenu({
   
   // Reordered navigation links to match desktop navigation
   const navigationLinks = [
-    { path: "/innovations", label: "Innovations" },
-    { path: "/challenges", label: "Challenges" },
-    { path: "/investment", label: "Investment" },
-    { path: "/regulatory", label: "Regulatory" },
-    { path: "/knowledge-hub", label: "Knowledge Hub" },
-    { path: "/about", label: "About" },
+    { 
+      path: "/innovations", 
+      label: "Innovations",
+      submenu: [
+        { label: "Browse Innovations", path: "/innovations/latest" },
+        { label: "Innovation Types", path: "/innovations/types" },
+        { label: "Submit Innovation", path: "/innovations/submit" },
+        { label: "All Innovations", path: "/innovations" }
+      ]
+    },
+    { 
+      path: "/challenges", 
+      label: "Challenges",
+      submenu: [
+        { label: "Open Challenges", path: "/challenges/open" },
+        { label: "Challenge Areas", path: "/challenges/areas" },
+        { label: "Guidelines", path: "/challenges/guidelines" },
+        { label: "All Challenges", path: "/challenges" }
+      ]
+    },
+    { 
+      path: "/investment", 
+      label: "Investment",
+      submenu: [
+        { label: "Funding Programs", path: "/investment/programs" },
+        { label: "For Investors", path: "/investment/for-investors" },
+        { label: "Resources", path: "/investment/resources" },
+        { label: "All Investment", path: "/investment" }
+      ]
+    },
+    { 
+      path: "/regulatory", 
+      label: "Regulatory",
+      submenu: [
+        { label: "Guidelines", path: "/regulatory/guidelines" },
+        { label: "Approval Pathways", path: "/regulatory/pathways" },
+        { label: "Resources", path: "/regulatory/resources" },
+        { label: "All Regulatory", path: "/regulatory" }
+      ]
+    },
+    { 
+      path: "/knowledge-hub", 
+      label: "Knowledge Hub",
+      submenu: [
+        { label: "Articles", path: "/knowledge-hub/articles" },
+        { label: "Events", path: "/knowledge-hub/events" },
+        { label: "Tools", path: "/knowledge-hub/tools" },
+        { label: "All Resources", path: "/knowledge-hub" }
+      ]
+    },
+    { 
+      path: "/about", 
+      label: "About",
+      submenu: [
+        { label: "Our Mission", path: "/about/mission" },
+        { label: "Partners", path: "/about/partners" },
+        { label: "Contact Us", path: "/about/contact" },
+        { label: "About Us", path: "/about" }
+      ]
+    },
   ];
   
   // Animation variants
@@ -76,24 +137,39 @@ export function NavbarMobileMenu({
               </Link>
             </Button>
 
-            {navigationLinks.map((link) => (
-              <div key={link.path} className="mb-1">
-                <Button
-                  variant="ghost"
-                  className={`w-full justify-start text-left mb-1 ${
-                    isRouteActive(link.path)
-                      ? "bg-gray-50 text-moh-green font-medium"
-                      : "text-moh-darkGreen hover:text-moh-green"
-                  }`}
-                  onClick={() => handleLinkClick(link.path)}
-                  asChild
-                >
-                  <Link to={link.path}>
+            <Accordion type="single" collapsible className="w-full">
+              {navigationLinks.map((link) => (
+                <AccordionItem key={link.path} value={link.path} className="border-none">
+                  <AccordionTrigger 
+                    className={`p-2 text-lg font-normal ${
+                      isRouteActive(link.path)
+                      ? "text-moh-green font-medium"
+                      : "text-moh-darkGreen"
+                    }`}
+                  >
                     {link.label}
-                  </Link>
-                </Button>
-              </div>
-            ))}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pl-4 py-2 space-y-2">
+                      {link.submenu.map((subItem) => (
+                        <Button
+                          key={subItem.path}
+                          variant="ghost"
+                          className="w-full justify-start text-left"
+                          onClick={() => handleLinkClick(subItem.path)}
+                          asChild
+                        >
+                          <Link to={subItem.path} className="flex items-center">
+                            <span>{subItem.label}</span>
+                            <ChevronRight className="h-4 w-4 ml-auto" />
+                          </Link>
+                        </Button>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
             
             <Separator className="my-4" />
             
