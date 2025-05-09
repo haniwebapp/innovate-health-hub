@@ -6,6 +6,7 @@ import AboutSection from "@/components/home/AboutSection";
 import PlatformHighlights from "@/components/home/PlatformHighlights";
 import AIDrivenSection from "@/components/home/AIDrivenSection";
 import HealthcareAnimation from "@/components/home/HealthcareAnimation";
+import HealthcareInnovationSection from "@/components/home/healthcare/HealthcareInnovationSection";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import ChallengesSection from "@/components/home/ChallengesSection";
 import InnovationJourney from "@/components/home/InnovationJourney";
@@ -48,6 +49,7 @@ const Index = () => {
       <main className="flex-grow pt-16">
         <TooltipProvider>
           <HeroSection />
+          <HealthcareInnovationSection />
           <HealthcareAnimation />
           <AboutSection />
           <InnovationJourney />
