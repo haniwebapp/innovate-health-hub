@@ -26,7 +26,7 @@ export function HeroStats() {
         <div className="font-bold text-2xl md:text-3xl text-moh-green">
           <AnimatedCounter value={500} suffix="+" duration={2.5} />
         </div>
-        <div className="text-sm md:text-base text-gray-600">{t('home.hero.stats.innovators') || "Registered Innovators"}</div>
+        <div className="text-sm md:text-base text-gray-600">Registered Innovators</div>
       </motion.div>
       
       <motion.div 
@@ -40,7 +40,7 @@ export function HeroStats() {
         <div className="font-bold text-2xl md:text-3xl text-moh-darkGold">
           <AnimatedCounter value={250} suffix="M+" duration={2.5} delay={0.2} />
         </div>
-        <div className="text-sm md:text-base text-gray-600">{t('home.hero.stats.investments') || "Investment Funding"}</div>
+        <div className="text-sm md:text-base text-gray-600">Investment Funding</div>
       </motion.div>
       
       <motion.div 
@@ -54,7 +54,7 @@ export function HeroStats() {
         <div className="font-bold text-2xl md:text-3xl text-moh-green">
           <AnimatedCounter value={40} suffix="+" duration={2.5} delay={0.4} />
         </div>
-        <div className="text-sm md:text-base text-gray-600">{t('home.hero.stats.challenges') || "Active Challenges"}</div>
+        <div className="text-sm md:text-base text-gray-600">Active Challenges</div>
       </motion.div>
     </motion.div>
   );
