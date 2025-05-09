@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { ChevronRight, Users, Building, Globe, Award, Heart } from "lucide-react";
@@ -9,7 +8,7 @@ import GeneratedLogo from "@/components/logos/GeneratedLogo";
 const AboutPage = () => {
   const { t, language } = useLanguage();
   
-  // Strategic partners data with logos - updated to use generative logos where needed
+  // Strategic partners data with logos - updated to use real logos
   const partners = [
     { 
       name: "Ministry of Health", 
@@ -18,41 +17,43 @@ const AboutPage = () => {
     },
     { 
       name: "King Salman Medical City",
-      shape: "hexagon",
-      style: "gradient", 
-      primaryColor: "#00814A",
-      secondaryColor: "#6b9bc3"
+      logo: "/public/lovable-uploads/5993dbad-5475-4d1f-b16c-a18b49bdb942.png",
+      useRealLogo: true
     },
     { 
       name: "Saudi Digital Health Authority",
-      shape: "square",
-      style: "pattern",
-      primaryColor: "#00814A" 
+      logo: "/public/lovable-uploads/4b75072f-e048-410c-8071-da579732a493.png",
+      useRealLogo: true
     },
     { 
       name: "King Abdulaziz University Hospital",
-      shape: "circle",
-      style: "gradient",
-      primaryColor: "#135D80",
-      secondaryColor: "#4ec3a9"
+      logo: "/public/lovable-uploads/5a9acce6-713e-4091-9221-498fa246c6d3.png",
+      useRealLogo: true
     },
     { 
       name: "Saudi Health Council",
-      shape: "triangle",
-      style: "outline",
-      primaryColor: "#00814A"
+      logo: "/public/lovable-uploads/490e4e1f-9428-448f-87b4-1ee68f24331c.png",
+      useRealLogo: true
     },
     { 
-      name: "King Faisal Specialist Hospital",
-      shape: "hexagon",
-      style: "solid",
-      primaryColor: "#2596be"
+      name: "KAUST",
+      logo: "/public/lovable-uploads/8740809b-3739-46bc-927a-4787dc7ca177.png",
+      useRealLogo: true
     },
     { 
-      name: "Saudi Medical Journal",
-      shape: "square",
-      style: "pattern",
-      primaryColor: "#C3A86B"
+      name: "KACST",
+      logo: "/public/lovable-uploads/8b61ff0c-8ac1-4567-a8c2-24b34ecda18b.png",
+      useRealLogo: true
+    },
+    { 
+      name: "Ministry of Investment", 
+      logo: "/public/lovable-uploads/dcd2d50c-77f9-409a-a6ba-fe69ade5fe12.png",
+      useRealLogo: true
+    },
+    { 
+      name: "NUPCO",
+      logo: "/public/lovable-uploads/f997b965-bd17-4e6d-ba9c-af09c86b0eb0.png",
+      useRealLogo: true
     },
     { 
       name: "Saudi Commission for Health Specialties", 
@@ -170,7 +171,7 @@ const AboutPage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center text-moh-darkGreen">{t('about.partners')}</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
             {partners.map((partner, i) => (
               <motion.div 
                 key={i} 
@@ -182,23 +183,11 @@ const AboutPage = () => {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
               >
                 <div className="h-16 flex items-center justify-center">
-                  {partner.useRealLogo ? (
-                    <img 
-                      src={partner.logo} 
-                      alt={`${partner.name} logo`} 
-                      className="max-h-16 max-w-[140px] object-contain"
-                    />
-                  ) : (
-                    <GeneratedLogo 
-                      name={partner.name}
-                      shape={partner.shape as any}
-                      style={partner.style as any}
-                      primaryColor={partner.primaryColor}
-                      secondaryColor={partner.secondaryColor}
-                      size={64}
-                      className="max-h-16 max-w-[140px] object-contain"
-                    />
-                  )}
+                  <img 
+                    src={partner.logo} 
+                    alt={`${partner.name} logo`} 
+                    className="max-h-16 max-w-[140px] object-contain"
+                  />
                 </div>
                 <p className="mt-3 text-sm text-center text-gray-600 font-medium">{partner.name}</p>
               </motion.div>
