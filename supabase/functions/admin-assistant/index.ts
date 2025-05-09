@@ -7,77 +7,92 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+interface Message {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
+
 serve(async (req) => {
-  // Handle CORS preflight requests
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Get messages and context from request
     const { messages, context } = await req.json();
-    
-    // Check required parameters
+
     if (!messages || !Array.isArray(messages)) {
       throw new Error("Messages array is required");
     }
-    
-    // Prepare system message based on context
-    let systemMessage = "You are an AI assistant for healthcare platform administrators. ";
-    
-    if (context === "admin-panel") {
-      systemMessage += `
-        You help administrators manage users, analyze platform data, and make informed decisions.
-        You have access to the user management dashboard that shows profiles, activity, and statistics.
-        Provide helpful, concise answers about platform administration, user management best practices,
-        data analysis, and security recommendations. If you don't know specific platform data, be honest
-        about your limitations. Keep responses professional and focused on administration tasks.
-      `;
-    } else if (context === "admin-settings") {
-      systemMessage += `
-        You are a platform settings expert who helps administrators optimize their platform configuration.
-        Analyze the settings provided and give specific, actionable recommendations based on best practices.
-        Focus on security, user experience, and platform growth.
-        Your recommendations should be concise but explain the reasoning behind each suggestion.
-        Format your response as a list of 3-4 key insights, each with a brief explanation.
-      `;
-    } else if (context === "admin-integrations") {
-      systemMessage += `
-        You are an integration specialist for healthcare platforms. You provide recommendations on which 
-        third-party services and APIs would benefit the healthcare platform based on industry standards
-        and best practices. Focus on these key integration categories:
-        
-        - Healthcare standards (FHIR, HL7)
-        - Authentication and security
-        - Payment processing
-        - Communication channels
-        - AI and data processing
-        - Storage and file management
-        
-        For each recommendation, explain its benefits, implementation complexity, and how it would
-        enhance the platform's capabilities. Format your response with clear sections for insights
-        and specific integration recommendations.
-      `;
-    } else if (context === "workflow-automation") {
-      systemMessage += `
-        You are a workflow automation expert for healthcare innovation platforms. You help users design
-        automated processes to streamline innovation submission, evaluation, and funding processes.
-        Provide recommendations on:
-        
-        - User onboarding automation
-        - Innovation evaluation workflows
-        - Regulatory compliance checks
-        - Investment matching algorithms
-        - Knowledge hub content personalization
-        
-        Your answers should be practical and implementable within a digital healthcare innovation platform.
-      `;
+
+    // Define context-specific system messages
+    let systemMessage: Message;
+
+    switch(context) {
+      case "admin-panel":
+        systemMessage = {
+          role: "system",
+          content: "You are an AI assistant for the healthcare innovation platform admin panel. Help with user management, data analytics, and platform administration tasks. Be concise and actionable in your responses."
+        };
+        break;
+      case "admin-settings":
+        systemMessage = {
+          role: "system",
+          content: "You are a settings optimization assistant for the healthcare platform. Analyze platform settings and provide recommendations focused on security, user experience, and growth optimization. Be specific and strategic."
+        };
+        break;
+      case "admin-integrations":
+        systemMessage = {
+          role: "system",
+          content: "You are an integration specialist assistant for the healthcare platform. Help users connect external services, troubleshoot integration issues, and optimize data flows. Your recommendations should be technical but clear."
+        };
+        break;
+      case "investment-startup":
+        systemMessage = {
+          role: "system",
+          content: "You are an investment advisor for healthcare startups. Provide strategic funding advice, pitch optimization tips, and investor matching guidance. Your insights should help startups navigate the healthcare funding landscape effectively."
+        };
+        break;
+      case "investment-investor":
+        systemMessage = {
+          role: "system",
+          content: "You are an investment advisor for healthcare investors. Provide market trend analysis, due diligence guidance, and portfolio optimization recommendations. Your insights should be data-driven and focused on healthcare innovation opportunities."
+        };
+        break;
+      case "investment-matching":
+        systemMessage = {
+          role: "system",
+          content: "You are an AI matchmaker between healthcare startups and investors. Analyze innovation profiles, investment criteria, and market factors to create optimal matches. Your recommendations should include match scores and rationales."
+        };
+        break;
+      case "market-analysis":
+        systemMessage = {
+          role: "system",
+          content: "You are a market analysis expert for healthcare investments. Identify growth sectors, emerging opportunities, and potential risks. Your analysis should include growth projections, confidence scores, and strategic insights."
+        };
+        break;
+      case "regulatory-sandbox":
+        systemMessage = {
+          role: "system",
+          content: "You are a regulatory compliance assistant for healthcare innovations. Provide guidance on navigating the regulatory landscape, compliance requirements, and sandbox testing processes. Your recommendations should be specific to innovation types."
+        };
+        break;
+      case "regulatory-compliance":
+        systemMessage = {
+          role: "system",
+          content: "You are a regulatory compliance analyzer for healthcare innovations. Assess innovations against regulatory requirements, identify documentation needs, and create compliance pathways. Your analysis should include compliance scores and step-by-step guidance."
+        };
+        break;
+      default:
+        systemMessage = {
+          role: "system",
+          content: "You are a helpful assistant for the healthcare innovation platform. Provide clear, concise, and useful information to user queries. Focus on being informative and supportive."
+        };
     }
 
-    // Prevent system message override by checking for existing system message
-    const hasSystemMessage = messages.some(m => m.role === 'system');
-    const finalMessages = hasSystemMessage ? 
-      messages : 
-      [{ role: "system", content: systemMessage }, ...messages];
+    // Prepare messages for OpenAI, adding the system message first
+    const apiMessages = [systemMessage, ...messages];
 
     // Call OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -88,43 +103,44 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: finalMessages,
-        temperature: 0.7,
+        messages: apiMessages,
+        temperature: 0.5,
         max_tokens: 800
       })
     });
 
     if (!openaiResponse.ok) {
       const error = await openaiResponse.json();
-      console.error("OpenAI API error:", error);
       throw new Error(error.error?.message || "Failed to get response from OpenAI");
     }
 
     const data = await openaiResponse.json();
-    const assistantMessage = data.choices[0].message.content;
+    const message = data.choices[0].message.content;
 
-    // Parse insights if appropriate
-    const insights = context === "admin-settings" || context === "admin-integrations" 
-      ? assistantMessage.split(/\n+/)
-          .filter((line: string) => line.trim().length > 10)
-          .slice(0, 4) 
-      : [];
-
+    // Generate insights based on the message
+    let insights: string[] = [];
+    
+    // Extract insights from the message (simple approach: use paragraphs or bullet points)
+    insights = message
+      .split(/\n+/)
+      .filter((line: string) => line.trim().length > 10 && !line.includes('?'))
+      .slice(0, 4);
+    
     return new Response(
-      JSON.stringify({ 
-        message: assistantMessage,
-        insights: insights.length > 0 ? insights : undefined
+      JSON.stringify({
+        message,
+        insights
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
     console.error("Error in admin-assistant function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      }
+      JSON.stringify({
+        message: "",
+        error: error.message || "An error occurred while processing the request"
+      }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

@@ -100,3 +100,93 @@ export const formatAIError = (error: any): string => {
   
   return error.message || "An error occurred while processing your request";
 };
+
+/**
+ * Generate investment opportunity matches using AI
+ * @param criteria Criteria for matching (sector, stage, etc.)
+ * @returns Investment matches and confidence scores
+ */
+export const generateInvestmentMatches = async (criteria: any): Promise<AIResponse> => {
+  try {
+    const message = {
+      role: "user" as const,
+      content: `Find investment matches based on these criteria: ${JSON.stringify(criteria)}`
+    };
+    
+    const { data: responseData, error } = await supabase.functions.invoke("admin-assistant", {
+      body: { 
+        messages: [message],
+        context: "investment-matching"
+      }
+    });
+
+    if (error) throw error;
+    return responseData as AIResponse;
+  } catch (error: any) {
+    console.error("Error generating investment matches:", error);
+    return {
+      message: "",
+      error: error.message || "Failed to generate investment matches"
+    };
+  }
+};
+
+/**
+ * Analyze regulatory compliance requirements for an innovation
+ * @param innovationData Information about the innovation
+ * @returns Compliance requirements and recommendations
+ */
+export const analyzeRegulatoryCompliance = async (innovationData: any): Promise<AIResponse> => {
+  try {
+    const message = {
+      role: "user" as const,
+      content: `Analyze regulatory compliance for this innovation: ${JSON.stringify(innovationData)}`
+    };
+    
+    const { data: responseData, error } = await supabase.functions.invoke("admin-assistant", {
+      body: { 
+        messages: [message],
+        context: "regulatory-compliance"
+      }
+    });
+
+    if (error) throw error;
+    return responseData as AIResponse;
+  } catch (error: any) {
+    console.error("Error analyzing regulatory compliance:", error);
+    return {
+      message: "",
+      error: error.message || "Failed to analyze regulatory compliance"
+    };
+  }
+};
+
+/**
+ * Generate market trend analysis for healthcare investments
+ * @param parameters Analysis parameters (timeframe, sectors, etc.)
+ * @returns Market trends and growth predictions
+ */
+export const analyzeMarketTrends = async (parameters: any): Promise<AIResponse> => {
+  try {
+    const message = {
+      role: "user" as const,
+      content: `Analyze healthcare investment market trends based on these parameters: ${JSON.stringify(parameters)}`
+    };
+    
+    const { data: responseData, error } = await supabase.functions.invoke("admin-assistant", {
+      body: { 
+        messages: [message],
+        context: "market-analysis"
+      }
+    });
+
+    if (error) throw error;
+    return responseData as AIResponse;
+  } catch (error: any) {
+    console.error("Error analyzing market trends:", error);
+    return {
+      message: "",
+      error: error.message || "Failed to analyze market trends"
+    };
+  }
+};
