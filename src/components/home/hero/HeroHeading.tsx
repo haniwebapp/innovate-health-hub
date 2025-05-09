@@ -16,7 +16,7 @@ export function HeroHeading() {
     <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-tight">
       <div className="flex flex-row justify-center items-start py-0">
         {language === 'ar' && (
-          <ArabicVerticalText text="صحي" className="ml-4" delay={0.5} />
+          <ArabicVerticalText text="2030" className="ml-4" delay={0.5} />
         )}
         
         <div className={language === 'ar' ? 'ml-4' : 'mr-4'}>
@@ -37,7 +37,7 @@ export function HeroHeading() {
         </div>
         
         {language === 'en' && (
-          <ArabicVerticalText text="صحي" className="mr-4" delay={0.5} />
+          <ArabicVerticalText text="2030" className="mr-4" delay={0.5} />
         )}
       </div>
     </h1>
