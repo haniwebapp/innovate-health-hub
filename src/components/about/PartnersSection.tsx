@@ -100,7 +100,7 @@ export default function PartnersSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            {t('about.partners')}
+            Our Partners
           </motion.h2>
           
           <motion.div 
