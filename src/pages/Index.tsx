@@ -13,26 +13,13 @@ import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useRTLDirection } from "@/utils/rtlUtils";
 
 const Index = () => {
   const { language } = useLanguage();
   
-  // Apply RTL direction to document when language is Arabic
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    
-    // Add special RTL class to document for global RTL styles if needed
-    if (language === 'ar') {
-      document.documentElement.classList.add('rtl-layout');
-    } else {
-      document.documentElement.classList.remove('rtl-layout');
-    }
-    
-    // Add global inline override for alignment in RTL mode
-    document.documentElement.style.textAlign = language === 'ar' ? 'right' : 'left';
-  }, [language]);
+  // Apply RTL direction using the new utility hook
+  useRTLDirection(language);
   
   return (
     <motion.div 

@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export default function LanguageSwitcher() {
@@ -41,12 +41,17 @@ export default function LanguageSwitcher() {
           size="icon" 
           className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full relative"
         >
-          <motion.div
-            animate={isChangingLanguage ? { rotate: 360 } : {}}
-            transition={{ duration: 0.5 }}
-          >
-            <Globe className="h-5 w-5" />
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isChangingLanguage ? 'changing' : 'static'}
+              initial={{ rotate: 0 }}
+              animate={isChangingLanguage ? { rotate: 360 } : {}}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Globe className="h-5 w-5" />
+            </motion.div>
+          </AnimatePresence>
           <motion.div 
             className="absolute -top-1 -right-1 w-3 h-3 bg-moh-gold rounded-full"
             initial={{ scale: 0 }}
@@ -55,7 +60,7 @@ export default function LanguageSwitcher() {
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[150px]">
+      <DropdownMenuContent align="end" className="min-w-[150px] bg-white">
         <DropdownMenuItem 
           onClick={() => handleLanguageChange('en')} 
           className={`${language === 'en' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}

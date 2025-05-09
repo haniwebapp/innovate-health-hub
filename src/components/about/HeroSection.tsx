@@ -26,11 +26,14 @@ export default function HeroSection() {
     }
   };
   
+  // Adjust icon placement based on language
+  const iconPosition = language === 'ar' ? 'ml-1.5' : 'mr-1.5';
+  
   return (
     <section className="pt-28 pb-16 bg-gradient-to-br from-moh-lightGreen to-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
-          className="max-w-3xl"
+          className={`max-w-3xl ${language === 'ar' ? 'mr-auto' : 'ml-0'}`}
           initial="hidden"
           animate="visible"
           variants={fadeInUpVariants}
@@ -51,7 +54,7 @@ export default function HeroSection() {
             )}
           </h1>
           <motion.p 
-            className="text-lg text-gray-700 mb-8 leading-relaxed"
+            className={`text-lg text-gray-700 mb-8 leading-relaxed ${language === 'ar' ? 'text-right' : 'text-left'}`}
             variants={fadeInUpVariants}
           >
             {t('about.description')}
@@ -66,7 +69,7 @@ export default function HeroSection() {
               variants={fadeInUpVariants}
               whileHover={{ scale: 1.05 }}
             >
-              <Users className={`h-4 w-4 ${language === 'ar' ? 'ml-1.5' : 'mr-1.5'}`} />
+              <Users className={iconPosition} />
               500+ {t('about.innovators')}
             </motion.span>
             <motion.span 
@@ -74,7 +77,7 @@ export default function HeroSection() {
               variants={fadeInUpVariants}
               whileHover={{ scale: 1.05 }}
             >
-              <Award className={`h-4 w-4 ${language === 'ar' ? 'ml-1.5' : 'mr-1.5'}`} />
+              <Award className={iconPosition} />
               40+ {t('about.challenges')}
             </motion.span>
             <motion.span 
@@ -82,7 +85,7 @@ export default function HeroSection() {
               variants={fadeInUpVariants}
               whileHover={{ scale: 1.05 }}
             >
-              <Globe className={`h-4 w-4 ${language === 'ar' ? 'ml-1.5' : 'mr-1.5'}`} />
+              <Globe className={iconPosition} />
               {t('about.impact')}
             </motion.span>
           </motion.div>

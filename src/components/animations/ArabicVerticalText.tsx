@@ -3,15 +3,18 @@ import { motion } from "framer-motion";
 
 interface ArabicVerticalTextProps {
   text: string;
+  className?: string;
+  delay?: number;
 }
 
-export function ArabicVerticalText({ text }: ArabicVerticalTextProps) {
+export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVerticalTextProps) {
   // Split text into characters
   const characters = text.split("");
 
   // Words grouping by spaces to create "snap" effect by words
   const wordsGroups: string[][] = [];
   let currentGroup: string[] = [];
+  
   characters.forEach(char => {
     if (char === " ") {
       if (currentGroup.length > 0) {
@@ -39,7 +42,7 @@ export function ArabicVerticalText({ text }: ArabicVerticalTextProps) {
       opacity: 1,
       transition: {
         staggerChildren: 0.08,
-        delayChildren: 0.3
+        delayChildren: delay + 0.3
       }
     }
   };
@@ -68,26 +71,31 @@ export function ArabicVerticalText({ text }: ArabicVerticalTextProps) {
     visible: (i: number) => ({
       opacity: 1,
       transition: {
-        delay: 0.5 + i * 0.5 // Staggered delay between word groups
+        delay: delay + 0.5 + i * 0.5 // Staggered delay between word groups
       }
     })
   };
 
+  const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
+
   return (
-    <div className="inline-flex flex-col items-center justify-center mx-2">
+    <motion.div 
+      className={`inline-flex flex-col items-center justify-center mx-2 ${className}`}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       {wordsGroups.map((group, groupIndex) => (
         <motion.div 
           key={`group-${groupIndex}`} 
           className="flex flex-col items-center" 
           custom={groupIndex} 
-          initial="hidden" 
-          animate="visible" 
           variants={wordGroupVariants}
         >
           {group.map((char, charIndex) => (
             <motion.div
               key={`${groupIndex}-${charIndex}`}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green"
+              className={defaultClasses}
               variants={itemVariants}
             >
               {char}
@@ -95,6 +103,6 @@ export function ArabicVerticalText({ text }: ArabicVerticalTextProps) {
           ))}
         </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
