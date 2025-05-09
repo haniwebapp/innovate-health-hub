@@ -119,11 +119,11 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
               key={`${groupIndex}-${charIndex}`}
               className={defaultClasses}
               variants={itemVariants}
-              whileHover={() => ({ 
+              whileHover={{ 
                 scale: 1.2, 
                 color: "#00A651", 
                 transition: { duration: 0.2 } 
-              })}
+              }}
             >
               {char === " " ? <div className="h-4"></div> : char}
             </motion.div>

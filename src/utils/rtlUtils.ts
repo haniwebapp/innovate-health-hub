@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 
 /**
- * Sets document direction and related styles based on language
+ * Enhanced RTL utility to set document direction and related styles based on language
  * @param language Current language code ('en' or 'ar')
  */
 export const applyRTLDirection = (language: string): void => {
@@ -27,11 +27,17 @@ export const applyRTLDirection = (language: string): void => {
     document.documentElement.style.setProperty('--float', 'right');
     document.documentElement.style.setProperty('--start', 'right');
     document.documentElement.style.setProperty('--end', 'left');
+    document.documentElement.style.setProperty('--dir', 'rtl');
+    document.documentElement.style.setProperty('--flex-direction', 'row-reverse');
+    document.documentElement.style.setProperty('--transform-direction', 'scaleX(-1)');
   } else {
     document.documentElement.style.setProperty('--text-align', 'left');
     document.documentElement.style.setProperty('--float', 'left');
     document.documentElement.style.setProperty('--start', 'left');
     document.documentElement.style.setProperty('--end', 'right');
+    document.documentElement.style.setProperty('--dir', 'ltr');
+    document.documentElement.style.setProperty('--flex-direction', 'row');
+    document.documentElement.style.setProperty('--transform-direction', 'none');
   }
   
   // Additional global style overrides
@@ -54,10 +60,19 @@ export const useRTLDirection = (language: string): void => {
         document.querySelectorAll('.reversed-in-rtl').forEach((el) => {
           (el as HTMLElement).style.flexDirection = 'row-reverse';
         });
+        
+        // Fix any additional elements that need special treatment
+        document.querySelectorAll('.rtl-icon-rotate').forEach((el) => {
+          (el as HTMLElement).style.transform = 'scaleX(-1)';
+        });
       } else {
         // Reset any specific adjustments
         document.querySelectorAll('.reversed-in-rtl').forEach((el) => {
           (el as HTMLElement).style.flexDirection = 'row';
+        });
+        
+        document.querySelectorAll('.rtl-icon-rotate').forEach((el) => {
+          (el as HTMLElement).style.transform = 'none';
         });
       }
     };
@@ -65,6 +80,37 @@ export const useRTLDirection = (language: string): void => {
     // Execute with a slight delay to ensure DOM is updated
     setTimeout(handleRTLTransition, 100);
     
+    // Create/add global stylesheet for RTL-specific CSS
+    const addRTLStyles = () => {
+      const styleId = 'rtl-dynamic-styles';
+      let styleEl = document.getElementById(styleId);
+      
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = styleId;
+        document.head.appendChild(styleEl);
+      }
+      
+      if (language === 'ar') {
+        styleEl.textContent = `
+          .rtl-flip-icon { transform: scaleX(-1); }
+          .rtl-margin-flip { margin-right: 0.5rem; margin-left: 0 !important; }
+          .rtl-padding-flip { padding-right: 0.5rem; padding-left: 0 !important; }
+          .rtl-text-align { text-align: right !important; }
+          .rtl-float { float: right !important; }
+        `;
+      } else {
+        styleEl.textContent = '';
+      }
+    };
+    
+    addRTLStyles();
+    
+    // Cleanup function
+    return () => {
+      const styleEl = document.getElementById('rtl-dynamic-styles');
+      if (styleEl) styleEl.textContent = '';
+    };
   }, [language]);
 };
 
@@ -81,5 +127,30 @@ export const getRTLClasses = (language: string) => {
     margin: language === 'ar' ? 'mr-auto' : 'ml-auto',
     padding: language === 'ar' ? 'pr-4' : 'pl-4',
     iconMargin: language === 'ar' ? 'ml-2' : 'mr-2',
+    justify: language === 'ar' ? 'justify-end' : 'justify-start',
+    alignEnd: language === 'ar' ? 'items-start' : 'items-end',
+    flipIcon: language === 'ar' ? 'rtl-flip-icon' : '',
   };
+};
+
+/**
+ * Returns the appropriate placement for popovers and tooltips based on RTL
+ * @param language Current language code
+ * @param ltrPlacement The placement to use in LTR mode
+ * @returns The appropriate placement considering RTL
+ */
+export const getRTLPlacement = (language: string, ltrPlacement: string): string => {
+  if (language !== 'ar') return ltrPlacement;
+  
+  // Map of LTR placements to their RTL equivalents
+  const placementMap: Record<string, string> = {
+    'left': 'right',
+    'left-start': 'right-start',
+    'left-end': 'right-end',
+    'right': 'left',
+    'right-start': 'left-start',
+    'right-end': 'left-end',
+  };
+  
+  return placementMap[ltrPlacement] || ltrPlacement;
 };
