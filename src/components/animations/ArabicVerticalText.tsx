@@ -1,11 +1,14 @@
+
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
+
 export function ArabicVerticalText({
   text,
   className = "",
@@ -52,6 +55,7 @@ export function ArabicVerticalText({
       }
     }
   };
+  
   const itemVariants = {
     hidden: {
       y: 20,
@@ -102,11 +106,42 @@ export function ArabicVerticalText({
       }
     }
   };
+  
   const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
-  return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
-      {wordsGroups.map((group, groupIndex) => {})}
+  
+  return (
+    <motion.div 
+      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
+      initial="hidden" 
+      animate="visible" 
+      variants={containerVariants}
+    >
+      {wordsGroups.map((group, groupIndex) => (
+        <motion.div
+          key={`group-${groupIndex}`}
+          custom={groupIndex}
+          variants={wordGroupVariants}
+          className="group relative"
+        >
+          {group.map((char, charIndex) => (
+            <motion.span
+              key={`${groupIndex}-${charIndex}`}
+              variants={itemVariants}
+              className={`block ${defaultClasses} ${char === " " ? "mb-2" : ""}`}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </motion.div>
+      ))}
       
       {/* Special shimmer highlight effect */}
-      <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
-    </motion.div>;
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" 
+        initial="initial" 
+        animate="animate" 
+        variants={shimmerEffect} 
+      />
+    </motion.div>
+  );
 }

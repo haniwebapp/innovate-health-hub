@@ -1,37 +1,58 @@
 
 import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function HeroStats() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  const stats = [
+    { 
+      value: 250, 
+      label: t('home.hero.stats.innovators'),
+      suffix: "+"
+    },
+    { 
+      value: 125, 
+      label: t('home.hero.stats.investments'),
+      suffix: "M"
+    },
+    { 
+      value: 15, 
+      label: t('home.hero.stats.challenges'),
+      suffix: ""
+    }
+  ];
   
   return (
-    <motion.div 
-      className="mt-16 grid grid-cols-3 gap-4" 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: 0.2 }}
+    <motion.div
+      className={`flex ${language === 'ar' ? 'flex-row-reverse' : ''} justify-center gap-8 md:gap-12 lg:gap-16 flex-wrap`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.7, delay: 1.7 }}
     >
-      <div className="text-center">
-        <div className="font-bold text-2xl text-moh-green">
-          <AnimatedCounter value={500} suffix="+" duration={2.5} />
-        </div>
-        <div className="text-sm text-gray-600">{t('home.hero.stats.innovators')}</div>
-      </div>
-      <div className="text-center">
-        <div className="font-bold text-2xl text-moh-darkGold">
-          <AnimatedCounter value={250} suffix="M+" duration={2.5} delay={0.2} />
-        </div>
-        <div className="text-sm text-gray-600">{t('home.hero.stats.investments')}</div>
-      </div>
-      <div className="text-center">
-        <div className="font-bold text-2xl text-moh-green">
-          <AnimatedCounter value={40} suffix="+" duration={2.5} delay={0.4} />
-        </div>
-        <div className="text-sm text-gray-600">{t('home.hero.stats.challenges')}</div>
-      </div>
+      {stats.map((stat, index) => (
+        <motion.div 
+          key={index}
+          className="text-center"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ 
+            delay: 1.7 + index * 0.2, 
+            duration: 0.5
+          }}
+        >
+          <div className="text-2xl md:text-3xl font-bold text-moh-darkGreen flex items-center justify-center">
+            <AnimatedCounter 
+              value={stat.value} 
+              suffix={stat.suffix} 
+              duration={2} 
+              delay={2 + index * 0.2} 
+            />
+          </div>
+          <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+        </motion.div>
+      ))}
     </motion.div>
   );
 }
