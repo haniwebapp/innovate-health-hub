@@ -7,9 +7,16 @@ import VisionMissionSection from "@/components/about/VisionMissionSection";
 import FocusAreasSection from "@/components/about/FocusAreasSection";
 import PartnersSection from "@/components/about/PartnersSection";
 import JoinCommunitySection from "@/components/about/JoinCommunitySection";
+import { useEffect } from "react";
 
 const AboutPage = () => {
   const { language } = useLanguage();
+  
+  // Apply RTL direction to document when language is Arabic
+  useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
   
   return (
     <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>

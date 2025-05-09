@@ -1,9 +1,9 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 export default function JoinCommunitySection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   return (
     <section className="py-16 bg-gradient-to-br from-moh-lightGreen to-white">
@@ -15,7 +15,11 @@ export default function JoinCommunitySection() {
         <div className="flex flex-wrap justify-center gap-4">
           <button className="bg-moh-green hover:bg-moh-darkGreen text-white px-6 py-3 rounded-md font-medium inline-flex items-center">
             {t('about.registerNow')} 
-            <ChevronRight className="ml-2 h-5 w-5" />
+            {language === 'ar' ? (
+              <ChevronLeft className="mr-2 h-5 w-5" />
+            ) : (
+              <ChevronRight className="ml-2 h-5 w-5" />
+            )}
           </button>
           <button className="border border-moh-green text-moh-green hover:bg-moh-lightGreen px-6 py-3 rounded-md font-medium">
             {t('about.learnMore')}

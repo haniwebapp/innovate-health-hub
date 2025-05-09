@@ -13,9 +13,16 @@ import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const Index = () => {
   const { language } = useLanguage();
+  
+  // Apply RTL direction to document when language is Arabic
+  useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
   
   return (
     <motion.div 
