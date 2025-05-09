@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { motion, useInView } from "framer-motion";
+import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
+import { WaveDivider } from "@/components/animations/WaveDivider";
+import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
 
 interface Stat {
   value: number;
@@ -22,6 +26,8 @@ export default function FeaturedSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const statsRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const statsInView = useInView(statsRef, { once: true, margin: "-100px" });
+  const carouselInView = useInView(carouselRef, { once: true, margin: "-100px" });
   const { t } = useLanguage();
   
   const stats: Stat[] = [
@@ -86,47 +92,143 @@ export default function FeaturedSection() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-16 md:py-24 bg-white relative">
+      <WaveDivider className="-mt-16" color="#ffffff" />
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <ScrollFadeIn className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-moh-darkGreen">
             {t('home.featured.title')}
           </h2>
           <p className="max-w-3xl mx-auto text-gray-700">
             {t('home.featured.description')}
           </p>
-        </div>
+        </ScrollFadeIn>
         
         {/* Stats Counter Section */}
         <div 
           ref={statsRef} 
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 opacity-0"
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
         >
           {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="flex items-center justify-center">
-                <span className="stat-counter" data-value={stat.value}>
-                  {stat.value}
-                </span>
-                <span className="text-3xl font-bold text-moh-green">{stat.suffix}</span>
-              </div>
+            <ScrollFadeIn 
+              key={index} 
+              delay={0.2 * index}
+              className="text-center group"
+            >
+              <motion.div 
+                className="relative flex items-center justify-center"
+                animate={statsInView ? {
+                  scale: [1, 1.1, 1],
+                  transition: {
+                    delay: 1 + index * 0.2, 
+                    duration: 0.6,
+                    repeat: 2,
+                    repeatType: "reverse" 
+                  }
+                } : {}}
+              >
+                {/* Circular progress indicator */}
+                <svg className="w-24 h-24 absolute" viewBox="0 0 100 100">
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="none"
+                    strokeWidth="3"
+                    stroke="#E5F8EF"
+                    className="absolute"
+                  />
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="none"
+                    strokeWidth="3"
+                    stroke="#00814A"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={statsInView ? { pathLength: stat.value / 100 } : {}}
+                    transition={{ duration: 2, delay: 0.5 + index * 0.2 }}
+                    style={{ 
+                      pathLength: stat.value / 100,
+                      rotate: "-90deg",
+                      transformOrigin: "center"
+                    }}
+                  />
+                </svg>
+                
+                {/* Value */}
+                <div className="text-3xl font-bold text-moh-green">
+                  <AnimatedCounter 
+                    value={stat.value} 
+                    suffix={stat.suffix} 
+                    duration={2}
+                    delay={0.5 + index * 0.2}
+                  />
+                </div>
+              </motion.div>
               <p className="text-gray-600 mt-2">{t(stat.labelKey)}</p>
-            </div>
+              
+              {/* Animated particle burst on hover */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                initial="hidden"
+                whileHover="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1 }
+                }}
+              >
+                {[...Array(6)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 rounded-full bg-moh-green/50"
+                    variants={{
+                      hidden: { x: 0, y: 0, opacity: 0, scale: 0 },
+                      visible: {
+                        x: (i % 2 ? 1 : -1) * (20 + i * 5),
+                        y: (i % 3 === 0 ? 1 : -1) * (15 + i * 5),
+                        opacity: [0, 1, 0],
+                        scale: [0, 1.5, 0],
+                        transition: {
+                          duration: 1 + i * 0.2,
+                          repeat: Infinity,
+                          repeatType: "loop",
+                          ease: "easeOut",
+                        },
+                      },
+                    }}
+                    style={{
+                      top: "50%",
+                      left: "50%",
+                      translateX: "-50%",
+                      translateY: "-50%",
+                    }}
+                  />
+                ))}
+              </motion.div>
+            </ScrollFadeIn>
           ))}
         </div>
         
         {/* Success Stories Carousel */}
-        <div 
-          ref={carouselRef} 
-          className="opacity-0"
-        >
-          <h3 className="text-xl md:text-2xl font-semibold mb-6 text-moh-darkGreen">{t('home.featured.stories.title')}</h3>
+        <div ref={carouselRef}>
+          <ScrollFadeIn delay={0.3}>
+            <h3 className="text-xl md:text-2xl font-semibold mb-6 text-moh-darkGreen">{t('home.featured.stories.title')}</h3>
+          </ScrollFadeIn>
           
           <div className="relative">
             <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out" 
-                style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+              <motion.div 
+                className="flex"
+                animate={{
+                  x: `-${activeSlide * 100}%`,
+                }}
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  duration: 0.5,
+                }}
               >
                 {successStories.map((story, index) => (
                   <div key={index} className="min-w-full">
@@ -134,13 +236,19 @@ export default function FeaturedSection() {
                       <CardContent className="p-0">
                         <div className="grid md:grid-cols-2 gap-0">
                           <div className="h-64 md:h-auto overflow-hidden">
-                            <img 
+                            <motion.img 
                               src={story.image} 
                               alt={t(story.titleKey)} 
                               className="w-full h-full object-cover"
+                              whileHover={{ scale: 1.05 }}
+                              transition={{ duration: 0.5 }}
                             />
                           </div>
-                          <div className="p-6 flex flex-col justify-center">
+                          <ScrollFadeIn 
+                            delay={0.4 + index * 0.1} 
+                            className="p-6 flex flex-col justify-center"
+                            direction="left"
+                          >
                             <div className="text-sm font-medium text-moh-gold mb-2">
                               {t(story.categoryKey)}
                             </div>
@@ -152,21 +260,33 @@ export default function FeaturedSection() {
                             </p>
                             <Button 
                               variant="outline" 
-                              className="border-moh-green text-moh-green self-start"
+                              className="border-moh-green text-moh-green self-start group"
                             >
                               {t('home.featured.readMore')}
+                              <motion.span 
+                                className="inline-block ml-1"
+                                animate={{ x: [0, 3, 0] }}
+                                transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop", repeatDelay: 1 }}
+                              >
+                                →
+                              </motion.span>
                             </Button>
-                          </div>
+                          </ScrollFadeIn>
                         </div>
                       </CardContent>
                     </Card>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             </div>
             
             {/* Carousel Controls */}
-            <div className="flex justify-between mt-6">
+            <motion.div 
+              className="flex justify-between mt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
               <div className="flex gap-2">
                 {successStories.map((_, index) => (
                   <button 
@@ -182,7 +302,7 @@ export default function FeaturedSection() {
                   size="icon" 
                   variant="outline" 
                   onClick={prevSlide}
-                  className="rounded-full w-10 h-10"
+                  className="rounded-full w-10 h-10 hover:bg-moh-lightGreen hover:border-moh-green"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
@@ -190,15 +310,17 @@ export default function FeaturedSection() {
                   size="icon" 
                   variant="outline" 
                   onClick={nextSlide}
-                  className="rounded-full w-10 h-10"
+                  className="rounded-full w-10 h-10 hover:bg-moh-lightGreen hover:border-moh-green"
                 >
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
+      
+      <WaveDivider className="mt-16 rotate-180" color="#ffffff" />
     </section>
   );
 }

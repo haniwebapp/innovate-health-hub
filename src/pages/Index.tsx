@@ -7,29 +7,40 @@ import AIDrivenSection from "@/components/home/AIDrivenSection";
 import HealthcareAnimation from "@/components/home/HealthcareAnimation";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import ChallengesSection from "@/components/home/ChallengesSection";
+import InnovationJourney from "@/components/home/InnovationJourney";
+import ProcessFlowSection from "@/components/home/ProcessFlowSection";
 import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const { language } = useLanguage();
   
   return (
-    <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <motion.div 
+      className="min-h-screen flex flex-col bg-white" 
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Navbar />
       <main className="flex-grow pt-16">
         <TooltipProvider>
           <HeroSection />
           <HealthcareAnimation />
           <AboutSection />
+          <InnovationJourney />
           <PlatformHighlights />
+          <ProcessFlowSection />
           <AIDrivenSection />
           <FeaturedSection />
           <ChallengesSection />
         </TooltipProvider>
       </main>
       <Footer />
-    </div>
+    </motion.div>
   );
 };
 
