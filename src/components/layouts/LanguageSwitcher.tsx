@@ -9,37 +9,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function LanguageSwitcher() {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  
-  // Animation when language changes
-  useEffect(() => {
-    if (isChangingLanguage) {
-      // Show spinner/animation for a brief period
-      const timer = setTimeout(() => {
-        setIsChangingLanguage(false);
-        setShowNotification(true);
-        
-        // Hide notification after some time
-        const notificationTimer = setTimeout(() => {
-          setShowNotification(false);
-        }, 2000);
-        
-        return () => clearTimeout(notificationTimer);
-      }, 800);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isChangingLanguage]);
   
   const handleLanguageChange = (newLanguage: 'en' | 'ar') => {
     if (newLanguage !== language) {
       setIsChangingLanguage(true);
       setLanguage(newLanguage);
+      
+      // Show animation and notification
+      setTimeout(() => {
+        setIsChangingLanguage(false);
+        setShowNotification(true);
+        
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+      }, 800);
     }
   };
 
@@ -51,7 +41,7 @@ export default function LanguageSwitcher() {
             variant="ghost" 
             size="icon" 
             className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full relative"
-            aria-label={t('nav.language')}
+            aria-label="Language"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -79,7 +69,7 @@ export default function LanguageSwitcher() {
           >
             <span className="flex items-center">
               <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇬🇧</span>
-              {t('general.english')}
+              English
             </span>
             {language === 'en' && (
               <motion.div 
@@ -95,7 +85,7 @@ export default function LanguageSwitcher() {
           >
             <span className="flex items-center">
               <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇸🇦</span>
-              {t('general.arabic')}
+              Arabic
             </span>
             {language === 'ar' && (
               <motion.div 

@@ -6,11 +6,11 @@ import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 
 export function HeroHeading() {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   
-  // Dynamic tagline text based on language
-  const taglineGradient = t('home.hero.titleGradient') || "Empowering Health";
-  const taglineDark = t('home.hero.titleDark') || "Innovation for a Better Tomorrow";
+  // Using direct text instead of translations
+  const taglineGradient = "Empowering Health Innovation";
+  const taglineDark = "for a Better Tomorrow";
   
   return (
     <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-tight">
