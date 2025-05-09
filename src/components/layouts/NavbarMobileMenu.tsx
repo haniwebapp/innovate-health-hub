@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Search, Globe, User, LogIn, UserPlus, LogOut } from "lucide-react";
 import { NavigateFunction } from "react-router-dom";
-import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -59,62 +59,99 @@ export function NavbarMobileMenu({
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        when: "afterChildren",
+        staggerChildren: 0.05,
+        staggerDirection: -1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+    exit: { y: 10, opacity: 0 }
+  };
+
   return (
-    <div className="md:hidden bg-white shadow-lg animate-fade-in">
+    <motion.div 
+      className="md:hidden bg-white shadow-lg overflow-hidden"
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={containerVariants}
+    >
       <div className="px-4 pt-4 pb-6 space-y-3">
-        {mainLinks.map((link) => (
-          link.hasDropdown ? (
-            <Accordion type="single" collapsible key={link.path} className="border-none">
-              <AccordionItem value="knowledge-hub" className="border-none">
-                <AccordionTrigger 
-                  className={`${
-                    isRouteActive(link.path) 
-                      ? 'text-moh-green font-medium' 
-                      : 'text-moh-darkGreen hover:text-moh-green'
-                  } px-4 py-2 no-underline`}
-                >
-                  {link.label}
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex flex-col space-y-1 pl-6">
-                    <Link
-                      to={link.path}
-                      className="py-2 text-moh-darkGreen hover:text-moh-green"
-                      onClick={() => setMobileMenuOpen(false)}
+        {mainLinks.map((link, index) => (
+          <motion.div key={link.path} variants={itemVariants}>
+            {link.hasDropdown ? (
+              <Accordion type="single" collapsible className="border-none">
+                <AccordionItem value="knowledge-hub" className="border-none">
+                  <AccordionTrigger 
+                    className={`${
+                      isRouteActive(link.path) 
+                        ? 'text-moh-green font-medium' 
+                        : 'text-moh-darkGreen hover:text-moh-green'
+                    } px-4 py-2 no-underline`}
+                  >
+                    {link.label}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <motion.div 
+                      className="flex flex-col space-y-1 pl-6"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.1 }}
                     >
-                      All Resources
-                    </Link>
-                    {link.dropdownItems?.map((item) => (
                       <Link
-                        key={item.path}
-                        to={item.path}
+                        to={link.path}
                         className="py-2 text-moh-darkGreen hover:text-moh-green"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        {item.label}
+                        All Resources
                       </Link>
-                    ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          ) : (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`block px-4 py-2 rounded-md text-base font-medium ${
-                isRouteActive(link.path) 
-                  ? 'text-moh-green bg-gray-50' 
-                  : 'text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green'
-              }`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          )
+                      {link.dropdownItems?.map((item) => (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          className="py-2 text-moh-darkGreen hover:text-moh-green"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            ) : (
+              <Link
+                to={link.path}
+                className={`block px-4 py-2 rounded-md text-base font-medium ${
+                  isRouteActive(link.path) 
+                    ? 'text-moh-green bg-gray-50' 
+                    : 'text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green'
+                } transition-all duration-200`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            )}
+          </motion.div>
         ))}
         
-        <div className="flex items-center justify-between pt-3 pb-2">
+        <motion.div variants={itemVariants} className="flex items-center justify-between pt-3 pb-2">
           <Button 
             variant="ghost" 
             size="sm" 
@@ -131,14 +168,14 @@ export function NavbarMobileMenu({
             <Globe className="h-4 w-4 mr-2" />
             Language
           </Button>
-        </div>
+        </motion.div>
         
-        <div className="flex flex-col space-y-3 pt-2">
+        <motion.div variants={itemVariants} className="flex flex-col space-y-3 pt-2">
           {user ? (
             <>
               <Button 
                 onClick={() => handleNavigate('/dashboard')} 
-                className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center"
+                className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center btn-hover"
               >
                 <User className="h-4 w-4" />
                 Dashboard
@@ -146,7 +183,7 @@ export function NavbarMobileMenu({
               <Button 
                 variant="outline"
                 onClick={handleSignOut}
-                className="w-full border-red-500 text-red-500 hover:bg-red-50"
+                className="w-full border-red-500 text-red-500 hover:bg-red-50 btn-hover"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -157,22 +194,22 @@ export function NavbarMobileMenu({
               <Button 
                 variant="outline" 
                 onClick={() => handleNavigate('/auth/login')} 
-                className="w-full border-moh-green text-moh-green hover:bg-gray-50 flex gap-2 items-center justify-center"
+                className="w-full border-moh-green text-moh-green hover:bg-gray-50 flex gap-2 items-center justify-center btn-hover"
               >
                 <LogIn className="h-4 w-4" />
                 Sign In
               </Button>
               <Button 
                 onClick={() => handleNavigate('/auth/register')} 
-                className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center"
+                className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center btn-hover"
               >
                 <UserPlus className="h-4 w-4" />
                 Register
               </Button>
             </>
           )}
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

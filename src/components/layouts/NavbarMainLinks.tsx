@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -33,6 +34,8 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     }
   ];
 
+  const MotionLink = motion(Link);
+
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList className="space-x-6">
@@ -48,12 +51,12 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                 {link.label}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-md rounded-md border border-gray-100">
+                <ul className="grid w-[220px] gap-1 p-3 bg-white shadow-lg rounded-lg border border-gray-100">
                   <li className="row-span-1">
                     <NavigationMenuLink asChild>
                       <Link
                         to={link.path}
-                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
+                        className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
                       >
                         <div className="text-sm font-medium">All Resources</div>
                       </Link>
@@ -64,7 +67,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                       <NavigationMenuLink asChild>
                         <Link
                           to={item.path}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
+                          className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
                         >
                           <div className="text-sm font-medium">{item.label}</div>
                         </Link>
@@ -76,7 +79,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
             </NavigationMenuItem>
           ) : (
             <NavigationMenuItem key={link.path}>
-              <Link
+              <MotionLink
                 to={link.path}
                 className={cn(
                   "text-lg transition-colors px-3 py-2 rounded-md",
@@ -84,9 +87,12 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                     ? 'text-moh-green font-medium' 
                     : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
                 )}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
                 {link.label}
-              </Link>
+              </MotionLink>
             </NavigationMenuItem>
           )
         ))}

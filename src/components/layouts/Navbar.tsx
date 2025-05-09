@@ -2,11 +2,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Globe } from "lucide-react";
+import { Search, Globe, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "./NavbarMainLinks";
 import { NavbarUserMenu } from "./NavbarUserMenu";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,10 +18,19 @@ export default function Navbar() {
 
   // Handle scrolling effect with throttling for better performance
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
+      lastScrollY = window.scrollY;
+      
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(lastScrollY > 20);
+          ticking = false;
+        });
+        
+        ticking = true;
       }
     };
     
@@ -28,7 +38,7 @@ export default function Navbar() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [scrolled]);
+  }, []);
 
   // Check if route is active
   const isRouteActive = (path: string) => {
@@ -38,17 +48,19 @@ export default function Navbar() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white shadow-sm py-2' : 'bg-white py-4'
+        scrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm py-2' : 'bg-white py-4'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
-              <img 
+            <Link to="/" className="flex items-center group">
+              <motion.img 
                 src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
                 alt="Ministry of Health Logo" 
-                className={`transition-all duration-300 ${scrolled ? 'h-8' : 'h-10'} w-auto object-contain`} 
+                className={`transition-all duration-300 ${scrolled ? 'h-8' : 'h-10'} w-auto object-contain`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               />
             </Link>
           </div>
@@ -68,32 +80,36 @@ export default function Navbar() {
           
           {/* Mobile menu button */}
           <div className="flex md:hidden">
-            <button 
+            <Button 
               type="button" 
-              className="inline-flex items-center justify-center rounded-md p-2 text-moh-darkGreen hover:bg-gray-50" 
+              variant="ghost"
+              size="icon"
+              className="rounded-full text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green" 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
               aria-expanded={mobileMenuOpen}
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? (
-                <span className="material-symbols-outlined">close</span>
+                <X className="h-5 w-5" />
               ) : (
-                <span className="material-symbols-outlined">menu</span>
+                <Menu className="h-5 w-5" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
       
       {/* Mobile menu with improved animation */}
-      {mobileMenuOpen && (
-        <NavbarMobileMenu 
-          isRouteActive={isRouteActive} 
-          setMobileMenuOpen={setMobileMenuOpen} 
-          user={user} 
-          navigate={navigate} 
-        />
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <NavbarMobileMenu 
+            isRouteActive={isRouteActive} 
+            setMobileMenuOpen={setMobileMenuOpen} 
+            user={user} 
+            navigate={navigate} 
+          />
+        )}
+      </AnimatePresence>
     </header>
   );
 }
