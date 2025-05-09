@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,12 +41,12 @@ const sandboxApplications = [
   }
 ];
 
-// Mock regulatory frameworks
-const frameworks = [
+// Mock regulatory frameworks - updated to use string values for icons instead of JSX elements
+const frameworks: RegulatoryFramework[] = [
   {
     id: "mdf",
     title: "Medical Devices Framework",
-    icon: <Shield size={24} />,
+    icon: "Shield",
     description: "For physical medical devices and equipment",
     completedSteps: 2,
     totalSteps: 5,
@@ -60,7 +61,7 @@ const frameworks = [
   {
     id: "dhf",
     title: "Digital Health Software Framework",
-    icon: <FileCode size={24} />,
+    icon: "Code",
     description: "For healthcare software and digital tools",
     completedSteps: 1,
     totalSteps: 4,
@@ -74,7 +75,7 @@ const frameworks = [
   {
     id: "biof",
     title: "Biotechnology Framework",
-    icon: <Beaker size={24} />,
+    icon: "Beaker",
     description: "For biotech and pharmaceutical innovations",
     completedSteps: 0,
     totalSteps: 6,
