@@ -7,12 +7,10 @@ import {
   Beaker, 
   ShieldCheck, 
   Rocket, 
-  BarChart3, 
-  ArrowRight,
-  Check
+  BarChart3
 } from "lucide-react";
 import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { InnovationPhase } from "@/components/home/journey/InnovationPhase";
 import { InnovationPathway } from "@/components/home/journey/InnovationPathway";
 
@@ -26,7 +24,7 @@ export default function InnovationJourney() {
   const phases = [
     {
       id: "ideation",
-      icon: <Lightbulb className="text-moh-gold w-6 h-6" />,
+      icon: <Lightbulb className="w-6 h-6 text-moh-gold" />,
       name: t("home.journey.ideation.title") || "Ideation",
       description: t("home.journey.ideation.description") || 
         "Identifying healthcare challenges and developing innovative solutions",
@@ -41,7 +39,7 @@ export default function InnovationJourney() {
     },
     {
       id: "development",
-      icon: <Beaker className="text-moh-green w-6 h-6" />,
+      icon: <Beaker className="w-6 h-6 text-moh-green" />,
       name: t("home.journey.development.title") || "Development",
       description: t("home.journey.development.description") || 
         "Building prototypes and testing with stakeholders",
@@ -56,7 +54,7 @@ export default function InnovationJourney() {
     },
     {
       id: "validation",
-      icon: <ShieldCheck className="text-moh-darkGreen w-6 h-6" />,
+      icon: <ShieldCheck className="w-6 h-6 text-moh-darkGreen" />,
       name: t("home.journey.validation.title") || "Validation",
       description: t("home.journey.validation.description") || 
         "Ensuring solutions meet clinical and regulatory standards",
@@ -71,7 +69,7 @@ export default function InnovationJourney() {
     },
     {
       id: "implementation",
-      icon: <Rocket className="text-moh-darkGold w-6 h-6" />,
+      icon: <Rocket className="w-6 h-6 text-moh-darkGold" />,
       name: t("home.journey.implementation.title") || "Implementation",
       description: t("home.journey.implementation.description") || 
         "Scaling solutions across healthcare facilities",
@@ -86,7 +84,7 @@ export default function InnovationJourney() {
     },
     {
       id: "impact",
-      icon: <BarChart3 className="text-moh-gold w-6 h-6" />,
+      icon: <BarChart3 className="w-6 h-6 text-moh-gold" />,
       name: t("home.journey.impact.title") || "Impact Measurement",
       description: t("home.journey.impact.description") || 
         "Evaluating outcomes and optimizing solutions",

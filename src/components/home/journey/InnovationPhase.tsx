@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface PhaseProps {
