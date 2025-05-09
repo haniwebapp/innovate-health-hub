@@ -95,7 +95,7 @@ export default function FeaturedSection() {
   const prevSlide = () => {
     setActiveSlide(prev => (prev - 1 + successStories.length) % successStories.length);
   };
-  return <section className="py-16 md:py-24 bg-white relative">
+  return <section className="py-16 bg-white relative md:py-[15px]">
       <WaveDivider className="-mt-16" color="#ffffff" />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
