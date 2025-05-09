@@ -6,6 +6,7 @@ import { NavigateFunction } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { User as UserType } from "@supabase/supabase-js";
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +17,7 @@ import {
 interface NavbarMobileMenuProps {
   isRouteActive: (path: string) => boolean;
   setMobileMenuOpen: (isOpen: boolean) => void;
-  user: any; // Using any for now, should be properly typed based on user context
+  user: UserType | null;
   navigate: NavigateFunction;
 }
 

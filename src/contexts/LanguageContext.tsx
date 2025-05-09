@@ -380,7 +380,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.missionText': 'نحن نربط المبتكرين ومقدمي الرعاية الصحية والمنظمين والمستثمرين لتسريع تطوير وتنفيذ حلول الرعاية الصحية التحويلية، وإنشاء مسار سلس من الفكرة إلى التنفيذ عبر المملكة.',
     'about.focusAreas': 'مجالات التركيز الرئيسية',
     'about.focusDescription': 'نحن ملتزمون بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
-    'about.preventative': 'الرعاية الصحية الوقائية',
+    'about.preventative': 'الرع��ية الصحية الوقائية',
     'about.preventativeDesc': 'التحول من العلاج إلى الوقاية مع حلول مبتكرة للكشف المبكر والمراقبة.',
     'about.infrastructure': 'البنية التحتية للرعاية الصحية',
     'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
@@ -469,7 +469,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Challenges Section
     'home.challenges.tag': 'تحديات الابتكار',
     'home.challenges.title': 'الفرص القادمة',
-    'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة ��فتح فرص التمويل.',
+    'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة وفتح فرص التمويل.',
     'home.challenges.viewAll': 'عرض جميع التحديات',
     'home.challenges.viewChallenge': 'عرض التحدي',
     'home.challenges.deadline': 'الموعد النهائي',
