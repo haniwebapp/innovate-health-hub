@@ -24,7 +24,6 @@ export interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (email: string, password: string, userData: any) => Promise<void>;
-  // Add these methods to match what's being used in components
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, userData: any) => Promise<void>;
   signOut: () => void;
@@ -118,12 +117,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const isAdmin = user?.role === "admin";
-
   // Add alias methods to match what's being used in components
   const signIn = login;
   const signUp = register;
   const signOut = logout;
+  
+  const isAdmin = user?.role === "admin";
 
   return (
     <AuthContext.Provider value={{ 

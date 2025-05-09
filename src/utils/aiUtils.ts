@@ -6,13 +6,19 @@ export interface AIMessage {
   content: string;
 }
 
+export interface AIResponse {
+  message: string;
+  insights?: string[];
+  error?: string;
+}
+
 /**
  * Call the admin-assistant edge function with messages
  * @param messages Array of messages to send to the assistant
  * @param context Context for the assistant (optional)
  * @returns Response from the assistant
  */
-export const callAIAssistant = async (messages: AIMessage[], context?: string) => {
+export const callAIAssistant = async (messages: AIMessage[], context?: string): Promise<AIResponse> => {
   try {
     const { data, error } = await supabase.functions.invoke("admin-assistant", {
       body: { 
@@ -22,10 +28,13 @@ export const callAIAssistant = async (messages: AIMessage[], context?: string) =
     });
 
     if (error) throw error;
-    return data;
+    return data as AIResponse;
   } catch (error: any) {
     console.error("Error calling AI assistant:", error);
-    throw new Error(error.message || "Failed to get a response from the assistant");
+    return {
+      message: "",
+      error: error.message || "Failed to get a response from the assistant"
+    };
   }
 };
 
@@ -35,7 +44,7 @@ export const callAIAssistant = async (messages: AIMessage[], context?: string) =
  * @param context Context for the recommendations (e.g., "admin-settings", "admin-integrations")
  * @returns Recommendations and insights
  */
-export const generateAIRecommendations = async (data: any, context: string) => {
+export const generateAIRecommendations = async (data: any, context: string): Promise<AIResponse> => {
   try {
     const message = {
       role: "user" as const,
@@ -50,10 +59,13 @@ export const generateAIRecommendations = async (data: any, context: string) => {
     });
 
     if (error) throw error;
-    return responseData;
+    return responseData as AIResponse;
   } catch (error: any) {
     console.error("Error getting AI recommendations:", error);
-    throw new Error(error.message || "Failed to get AI recommendations");
+    return {
+      message: "",
+      error: error.message || "Failed to get AI recommendations"
+    };
   }
 };
 
@@ -62,12 +74,29 @@ export const generateAIRecommendations = async (data: any, context: string) => {
  * @param text Response text from AI
  * @returns Structured insights object
  */
-export const parseAIInsights = (text: string) => {
+export const parseAIInsights = (text: string): string[] => {
   // Simple parsing of key insights from text
+  if (!text) return [];
+  
   const insights = text
     .split(/\n+/)
     .filter((line) => line.trim().length > 0 && !line.includes(':') && line.length > 10)
     .slice(0, 4);
   
   return insights;
+};
+
+/**
+ * Format error messages for user display
+ * @param error Error object or string
+ * @returns Formatted error message
+ */
+export const formatAIError = (error: any): string => {
+  if (!error) return "Unknown error occurred";
+  
+  if (typeof error === 'string') {
+    return error;
+  }
+  
+  return error.message || "An error occurred while processing your request";
 };

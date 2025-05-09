@@ -57,7 +57,27 @@ serve(async (req) => {
         enhance the platform's capabilities. Format your response with clear sections for insights
         and specific integration recommendations.
       `;
+    } else if (context === "workflow-automation") {
+      systemMessage += `
+        You are a workflow automation expert for healthcare innovation platforms. You help users design
+        automated processes to streamline innovation submission, evaluation, and funding processes.
+        Provide recommendations on:
+        
+        - User onboarding automation
+        - Innovation evaluation workflows
+        - Regulatory compliance checks
+        - Investment matching algorithms
+        - Knowledge hub content personalization
+        
+        Your answers should be practical and implementable within a digital healthcare innovation platform.
+      `;
     }
+
+    // Prevent system message override by checking for existing system message
+    const hasSystemMessage = messages.some(m => m.role === 'system');
+    const finalMessages = hasSystemMessage ? 
+      messages : 
+      [{ role: "system", content: systemMessage }, ...messages];
 
     // Call OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -68,13 +88,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemMessage },
-          ...messages.map((m: any) => ({
-            role: m.role,
-            content: m.content
-          }))
-        ],
+        messages: finalMessages,
         temperature: 0.7,
         max_tokens: 800
       })
@@ -82,14 +96,25 @@ serve(async (req) => {
 
     if (!openaiResponse.ok) {
       const error = await openaiResponse.json();
+      console.error("OpenAI API error:", error);
       throw new Error(error.error?.message || "Failed to get response from OpenAI");
     }
 
     const data = await openaiResponse.json();
     const assistantMessage = data.choices[0].message.content;
 
+    // Parse insights if appropriate
+    const insights = context === "admin-settings" || context === "admin-integrations" 
+      ? assistantMessage.split(/\n+/)
+          .filter((line: string) => line.trim().length > 10)
+          .slice(0, 4) 
+      : [];
+
     return new Response(
-      JSON.stringify({ message: assistantMessage }),
+      JSON.stringify({ 
+        message: assistantMessage,
+        insights: insights.length > 0 ? insights : undefined
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
