@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available languages
@@ -326,7 +327,7 @@ const translations: Record<Language, Record<string, string>> = {
     'verification.title': 'تحقق من بريدك الإلكتروني',
     'verification.description': 'لقد أرسلنا إليك بريدًا إلكترونيًا للتحقق',
     'verification.checkInbox': 'يرجى التحقق من صندوق الوارد الخاص بك والنقر على رابط التحقق لإكمال التسجيل.',
-    'verification.notReceived': 'لم تستلم البريد الإلكتروني?',
+    'verification.notReceived': 'لم تستلم البريد الإلكتروني؟',
     'verification.resendEmail': 'إعادة إرسال البريد الإلكتروني للتحقق',
     'verification.goToLogin': 'العودة لتسجيل الدخول',
     
@@ -509,3 +510,93 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.challenge3.category': 'الخدمات اللوجستية',
     
     // Footer Section
+    'footer.mohLogo': 'شعار وزارة الصحة',
+    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار الصحي في جميع أنحاء المملكة العربية السعودية.',
+    'footer.quickLinks': 'روابط سريعة',
+    'footer.aboutPlatform': 'عن المنصة',
+    'footer.innovationChallenges': 'تحديات الابتكار',
+    'footer.investmentOpportunities': 'فرص الاستثمار',
+    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
+    'footer.knowledgeHub': 'مركز المعرفة',
+    'footer.resources': 'الموارد',
+    'footer.vision2030': 'رؤية 2030',
+    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
+    'footer.policies': 'السياسات والإرشادات',
+    'footer.successStories': 'قصص النجاح',
+    'footer.contactSupport': 'الاتصال بالدعم',
+    'footer.newsletter': 'النشرة الإخبارية',
+    'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
+    'footer.emailPlaceholder': 'البريد الإلكتروني',
+    'footer.subscribe': 'اشتراك',
+    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
+    'footer.privacyPolicy': 'سياسة الخصوصية',
+    'footer.termsOfService': 'شروط الخدمة',
+    'footer.accessibility': 'إمكانية الوصول'
+  }
+};
+
+// Define props for the provider component
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+// Create the provider component
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
+  // Get language from local storage or default to English
+  const getInitialLanguage = (): Language => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('moh-language') as Language;
+      return savedLanguage === 'ar' ? 'ar' : 'en'; // Default to 'en' if not saved or invalid
+    }
+    return 'en';
+  };
+
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+  
+  // Update HTML dir and lang attributes when language changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = language;
+      localStorage.setItem('moh-language', language);
+      
+      // Add or remove the .lang-ar class on the body based on language
+      if (language === 'ar') {
+        document.body.classList.add('lang-ar');
+      } else {
+        document.body.classList.remove('lang-ar');
+      }
+    }
+  }, [language]);
+
+  // Create a wrapper for setLanguage to also update localStorage
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+  };
+
+  // Translation function
+  const t = (key: string): string => {
+    return translations[language][key] || key;
+  };
+
+  const value = {
+    language,
+    setLanguage,
+    t,
+  };
+
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+// Custom hook for using the language context
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+};

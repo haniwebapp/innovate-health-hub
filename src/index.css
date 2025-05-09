@@ -82,6 +82,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Better Arabic font handling */
+  .font-tajawal {
+    font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif;
+  }
 }
 
 /* Animation Utilities */
@@ -200,4 +205,28 @@ html[lang="ar"] body {
   font-feature-settings: "calt" 1;
   font-kerning: normal;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+/* RTL dropdown menus */
+.rtl-menu {
+  text-align: right;
+}
+
+/* Ensure Arabic text has the correct font weight */
+html[lang="ar"] h1, 
+html[lang="ar"] h2, 
+html[lang="ar"] h3, 
+html[lang="ar"] h4, 
+html[lang="ar"] h5, 
+html[lang="ar"] h6 {
+  font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif !important;
+  font-weight: 700;
+}
+
+/* Fix Arabic number alignment */
+html[lang="ar"] .font-numeric {
+  direction: ltr;
+  display: inline-block;
 }

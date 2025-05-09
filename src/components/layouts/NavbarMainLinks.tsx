@@ -37,6 +37,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
               to={link.path}
               className={cn(
                 "text-lg transition-colors px-3 py-2 rounded-md arabic-text",
+                language === 'ar' ? 'font-tajawal' : '',
                 isRouteActive(link.path) 
                   ? 'text-moh-green font-medium' 
                   : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
