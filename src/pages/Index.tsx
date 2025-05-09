@@ -8,6 +8,7 @@ import FeaturedSection from "@/components/home/FeaturedSection";
 import ChallengesSection from "@/components/home/ChallengesSection";
 import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -16,12 +17,14 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
       <main className="flex-grow pt-16">
-        <HeroSection />
-        <AboutSection />
-        <PlatformHighlights />
-        <AIDrivenSection />
-        <FeaturedSection />
-        <ChallengesSection />
+        <TooltipProvider>
+          <HeroSection />
+          <AboutSection />
+          <PlatformHighlights />
+          <AIDrivenSection />
+          <FeaturedSection />
+          <ChallengesSection />
+        </TooltipProvider>
       </main>
       <Footer />
     </div>
