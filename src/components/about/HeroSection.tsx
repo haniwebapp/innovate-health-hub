@@ -2,6 +2,7 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { Users, Award, Globe } from "lucide-react";
+import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 
 export default function HeroSection() {
   const { t, language } = useLanguage();
@@ -11,7 +12,19 @@ export default function HeroSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-3xl">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-moh-darkGreen">
-            {t('about.title')}
+            {language === 'ar' ? (
+              <div className="flex items-center">
+                <ArabicVerticalText text="منصة الابتكار الصحي" />
+                <span className="mr-4">{t('about.title')}</span>
+              </div>
+            ) : (
+              <>
+                {t('about.title')}
+                <div className="inline-block ml-4">
+                  <ArabicVerticalText text="منصة الابتكار الصحي" />
+                </div>
+              </>
+            )}
           </h1>
           <p className="text-lg text-gray-700 mb-8 leading-relaxed">
             {t('about.description')}
