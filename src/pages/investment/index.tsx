@@ -1,11 +1,59 @@
 
+import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2, Lightbulb } from "lucide-react";
 
 export default function InvestmentPage() {
   const { t, language } = useLanguage();
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("startups");
+  const [aiRecommendations, setAiRecommendations] = useState<string[]>([]);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  
+  // Generate AI recommendations based on selected tab
+  const generateRecommendations = async () => {
+    setIsLoadingAI(true);
+    
+    try {
+      const context = activeTab === "startups" 
+        ? "investment-startup" 
+        : activeTab === "investors" 
+          ? "investment-investor" 
+          : "investment-resources";
+      
+      const response: AIResponse = await callAIAssistant([
+        {
+          role: "user",
+          content: `Generate personalized ${activeTab} recommendations for the investment platform.`
+        }
+      ], context);
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      
+      setAiRecommendations(response.insights || [response.message]);
+      
+      toast({
+        title: "AI Recommendations Generated",
+        description: "Personalized insights are now available.",
+      });
+    } catch (error) {
+      console.error("Error generating AI recommendations:", error);
+      toast({
+        title: "Could not generate recommendations",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -15,7 +63,41 @@ export default function InvestmentPage() {
           Connect healthcare innovations with the right investment opportunities. Our platform brings together startups, investors, and growth resources to accelerate healthcare solutions.
         </p>
         
-        <Tabs defaultValue="startups" className="mb-12">
+        <div className="mb-8">
+          <Button 
+            onClick={generateRecommendations} 
+            className="bg-moh-green hover:bg-moh-darkGreen flex items-center gap-2"
+            disabled={isLoadingAI}
+          >
+            {isLoadingAI ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Generating Recommendations...
+              </>
+            ) : (
+              <>
+                <Lightbulb className="h-4 w-4" />
+                Get AI Recommendations
+              </>
+            )}
+          </Button>
+        </div>
+        
+        {aiRecommendations.length > 0 && (
+          <Card className="p-6 mb-8 border-l-4 border-l-yellow-400 bg-yellow-50">
+            <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-yellow-500" />
+              AI Insights
+            </h3>
+            <div className="space-y-2">
+              {aiRecommendations.map((insight, i) => (
+                <p key={i} className="text-gray-700">{insight}</p>
+              ))}
+            </div>
+          </Card>
+        )}
+        
+        <Tabs defaultValue="startups" className="mb-12" onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="startups">For Startups</TabsTrigger>
             <TabsTrigger value="investors">For Investors</TabsTrigger>

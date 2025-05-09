@@ -1,169 +1,259 @@
 
+import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Shield } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
+import { useToast } from "@/components/ui/use-toast";
+import { 
+  Loader2, Lightbulb, CheckCircle, Clock, CheckSquare,
+  Clipboard, FileText, ClipboardCheck, AlertCircle
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function RegulatoryPage() {
   const { t, language } = useLanguage();
+  const { toast } = useToast();
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [aiRecommendations, setAiRecommendations] = useState<string[]>([]);
+  const [selectedRegulation, setSelectedRegulation] = useState<string | null>(null);
+  
+  // Generate AI recommendations for regulatory compliance
+  const generateRecommendations = async () => {
+    setIsLoadingAI(true);
+    
+    try {
+      const response: AIResponse = await callAIAssistant([
+        {
+          role: "user",
+          content: "Generate regulatory compliance recommendations for healthcare innovations"
+        }
+      ], "regulatory-sandbox");
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      
+      setAiRecommendations(response.insights || [response.message]);
+      
+      toast({
+        title: "AI Compliance Analysis Complete",
+        description: "Review your personalized regulatory guidance.",
+      });
+    } catch (error) {
+      console.error("Error generating AI recommendations:", error);
+      toast({
+        title: "Could not generate recommendations",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
+  
+  // Sample regulatory frameworks
+  const regulatoryFrameworks = [
+    {
+      id: "mds",
+      title: "Medical Device Standards",
+      icon: <CheckSquare className="h-5 w-5" />,
+      description: "Applicable to hardware and equipment innovations in healthcare.",
+      completedSteps: 2,
+      totalSteps: 5,
+      steps: [
+        "Device Classification", 
+        "Risk Assessment",
+        "Technical Documentation", 
+        "Clinical Evaluation", 
+        "Quality Management System"
+      ]
+    },
+    {
+      id: "dht", 
+      title: "Digital Health Technologies",
+      icon: <Clipboard className="h-5 w-5" />,
+      description: "For mobile apps, AI platforms, and other software-based innovations.",
+      completedSteps: 3,
+      totalSteps: 6,
+      steps: [
+        "Software Classification",
+        "Cybersecurity Assessment",
+        "User Validation",
+        "Data Protection Impact Assessment",
+        "Algorithm Validation",
+        "Post-Market Surveillance Plan"
+      ]
+    },
+    {
+      id: "ipr", 
+      title: "Intellectual Property Recognition",
+      icon: <FileText className="h-5 w-5" />,
+      description: "Protect your innovation through patents, trademarks and industrial designs.",
+      completedSteps: 1,
+      totalSteps: 4,
+      steps: [
+        "Innovation Assessment",
+        "Patentability Search",
+        "Application Filing",
+        "Examination Response"
+      ]
+    },
+  ];
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="h-8 w-8 text-moh-green" />
-          <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen">Regulatory Sandbox</h1>
-        </div>
-        
+        <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-6">Regulatory Sandbox</h1>
         <p className="text-lg text-gray-700 mb-10">
-          Navigate healthcare regulatory requirements with ease. Our regulatory sandbox provides a safe environment to test innovations while ensuring compliance with healthcare standards.
+          Navigate the healthcare regulatory landscape with confidence. Our Regulatory Sandbox provides a controlled environment to test innovative solutions against regulatory requirements.
         </p>
         
-        <Tabs defaultValue="sandbox" className="mb-12">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="sandbox">Sandbox Program</TabsTrigger>
-            <TabsTrigger value="guidance">Regulatory Guidance</TabsTrigger>
-            <TabsTrigger value="compliance">Compliance Tools</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="sandbox" className="mt-6">
-            <Card className="p-6 mb-6">
-              <h3 className="text-xl font-semibold mb-3">About the Regulatory Sandbox</h3>
-              <p className="mb-4">
-                The Regulatory Sandbox is a controlled environment for healthcare innovators to test their solutions with real users while ensuring compliance with healthcare standards. This program accelerates the path to market while maintaining patient safety and data security.
-              </p>
-              
-              <div className="grid gap-4 md:grid-cols-2 mb-4">
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-medium mb-2">Benefits</h4>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
-                    <li>Accelerated regulatory pathway</li>
-                    <li>Expert compliance guidance</li>
-                    <li>Supervised testing environment</li>
-                    <li>Reduced regulatory uncertainty</li>
-                    <li>Access to MoH regulatory experts</li>
-                  </ul>
-                </div>
-                
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-medium mb-2">Eligible Innovations</h4>
-                  <ul className="list-disc list-inside space-y-1 text-sm">
-                    <li>Digital health applications</li>
-                    <li>Medical devices (Class I & II)</li>
-                    <li>Telehealth solutions</li>
-                    <li>Health data platforms</li>
-                    <li>AI/ML healthcare algorithms</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <Button className="bg-moh-green hover:bg-moh-darkGreen">Apply to Sandbox Program</Button>
-            </Card>
-            
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="p-6">
-                <Badge className="mb-3 bg-amber-100 text-amber-800 hover:bg-amber-100">Current Program</Badge>
-                <h3 className="text-xl font-semibold mb-2">Spring 2025 Sandbox Cohort</h3>
-                <p className="mb-4 text-sm">Applications open until June 1, 2025. Program runs July-October 2025.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen w-full">Apply Now</Button>
-              </Card>
-              
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-2">Success Stories</h3>
-                <p className="mb-4 text-sm">Learn from innovators who successfully navigated regulatory requirements through our sandbox.</p>
-                <Button variant="outline" className="w-full">View Case Studies</Button>
-              </Card>
+        <div className="mb-8">
+          <Button 
+            onClick={generateRecommendations} 
+            className="bg-moh-green hover:bg-moh-darkGreen flex items-center gap-2"
+            disabled={isLoadingAI}
+          >
+            {isLoadingAI ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Analyzing Regulatory Landscape...
+              </>
+            ) : (
+              <>
+                <Lightbulb className="h-4 w-4" />
+                Get AI Compliance Analysis
+              </>
+            )}
+          </Button>
+        </div>
+        
+        {aiRecommendations.length > 0 && (
+          <Card className="p-6 mb-8 border-l-4 border-l-yellow-400 bg-yellow-50">
+            <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-yellow-500" />
+              AI Regulatory Insights
+            </h3>
+            <div className="space-y-2">
+              {aiRecommendations.map((insight, i) => (
+                <p key={i} className="text-gray-700">{insight}</p>
+              ))}
             </div>
-          </TabsContent>
-          
-          <TabsContent value="guidance" className="mt-6">
-            <div className="space-y-6">
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-3">Regulatory Frameworks</h3>
-                <p className="mb-4">Essential healthcare compliance frameworks and requirements.</p>
-                <div className="space-y-4 mb-4">
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-1">Digital Health Applications</h4>
-                    <p className="text-sm text-gray-600 mb-2">Guidance for mobile health apps, telehealth platforms, and digital therapeutics.</p>
-                    <Button variant="outline" size="sm">View Framework</Button>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-1">Medical Devices</h4>
-                    <p className="text-sm text-gray-600 mb-2">Requirements for medical device approval and certification.</p>
-                    <Button variant="outline" size="sm">View Framework</Button>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-1">Health Data & Privacy</h4>
-                    <p className="text-sm text-gray-600 mb-2">Compliance requirements for health data management and patient privacy.</p>
-                    <Button variant="outline" size="sm">View Framework</Button>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-3">Consultation Services</h3>
-                <p className="mb-4">Get expert guidance on your specific regulatory compliance needs.</p>
-                <div className="grid gap-4 md:grid-cols-2 mb-4">
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-1">1:1 Expert Consultation</h4>
-                    <p className="text-sm text-gray-600 mb-2">Schedule a meeting with a regulatory expert.</p>
-                    <Button variant="outline" size="sm">Book Session</Button>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-1">Document Review</h4>
-                    <p className="text-sm text-gray-600 mb-2">Submit your compliance documents for expert review.</p>
-                    <Button variant="outline" size="sm">Submit Documents</Button>
-                  </div>
-                </div>
-              </Card>
+          </Card>
+        )}
+        
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-10">
+          <h2 className="text-2xl font-semibold mb-4">How the Sandbox Works</h2>
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
+                <CheckCircle className="h-6 w-6 text-moh-green" />
+              </div>
+              <h3 className="font-medium mb-2">1. Registration</h3>
+              <p className="text-sm text-gray-600">Register your innovation and select the applicable regulatory framework.</p>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="compliance" className="mt-6">
-            <Card className="p-6 mb-6">
-              <h3 className="text-xl font-semibold mb-3">Compliance Self-Assessment Tools</h3>
-              <p className="mb-4">Evaluate your innovation's regulatory readiness with our self-assessment tools.</p>
-              <div className="space-y-3 mb-4">
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-medium">Digital Health Assessment Tool</h4>
-                  <p className="text-sm text-gray-600 mb-2">For mobile health apps, telehealth platforms, and other digital health solutions.</p>
-                  <Button className="bg-moh-green hover:bg-moh-darkGreen">Start Assessment</Button>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
+                <ClipboardCheck className="h-6 w-6 text-moh-green" />
+              </div>
+              <h3 className="font-medium mb-2">2. Preparation</h3>
+              <p className="text-sm text-gray-600">Complete the required documentation and get ready for testing.</p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
+                <Clock className="h-6 w-6 text-moh-green" />
+              </div>
+              <h3 className="font-medium mb-2">3. Testing</h3>
+              <p className="text-sm text-gray-600">Test your innovation in a controlled environment with regulatory oversight.</p>
+            </div>
+          </div>
+          <Button className="w-full bg-moh-green hover:bg-moh-darkGreen">Apply to the Sandbox Program</Button>
+        </div>
+        
+        <h2 className="text-2xl font-semibold mb-4">Regulatory Frameworks</h2>
+        <div className="space-y-4 mb-8">
+          {regulatoryFrameworks.map((framework) => (
+            <Card 
+              key={framework.id}
+              className={cn(
+                "p-4 cursor-pointer transition-all",
+                selectedRegulation === framework.id 
+                  ? "border-2 border-moh-green" 
+                  : "hover:border-moh-green/50"
+              )}
+              onClick={() => setSelectedRegulation(framework.id)}
+            >
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-moh-green/10 rounded-md text-moh-green">
+                  {framework.icon}
                 </div>
-                
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-medium">Medical Device Classification Tool</h4>
-                  <p className="text-sm text-gray-600 mb-2">Determine the classification of your medical device and applicable requirements.</p>
-                  <Button className="bg-moh-green hover:bg-moh-darkGreen">Start Assessment</Button>
-                </div>
-                
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-medium">Data Privacy Compliance Checker</h4>
-                  <p className="text-sm text-gray-600 mb-2">Evaluate your solution against healthcare data privacy requirements.</p>
-                  <Button className="bg-moh-green hover:bg-moh-darkGreen">Start Assessment</Button>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg">{framework.title}</h3>
+                  <p className="text-gray-600 text-sm mb-3">{framework.description}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Completion</span>
+                      <span className="font-medium">{framework.completedSteps}/{framework.totalSteps} steps</span>
+                    </div>
+                    <Progress 
+                      value={(framework.completedSteps / framework.totalSteps) * 100} 
+                      className="h-2 bg-gray-100" 
+                    />
+                  </div>
                 </div>
               </div>
+              
+              {selectedRegulation === framework.id && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <h4 className="font-medium mb-2">Compliance Steps</h4>
+                  <div className="space-y-2">
+                    {framework.steps.map((step, index) => (
+                      <div 
+                        key={index} 
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        {index < framework.completedSteps ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-amber-400" />
+                        )}
+                        <span className={index < framework.completedSteps ? "line-through text-gray-400" : ""}>
+                          {step}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <Button className="w-full bg-moh-green hover:bg-moh-darkGreen">
+                      Continue Compliance Process
+                    </Button>
+                  </div>
+                </div>
+              )}
             </Card>
-            
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-3">Document Templates</h3>
-              <p className="mb-4">Access standardized templates for regulatory documentation.</p>
-              <div className="grid gap-3 grid-cols-2 md:grid-cols-3 mb-4">
-                <Button variant="outline" className="text-sm h-auto py-2">Risk Assessment</Button>
-                <Button variant="outline" className="text-sm h-auto py-2">Technical File</Button>
-                <Button variant="outline" className="text-sm h-auto py-2">Data Privacy</Button>
-                <Button variant="outline" className="text-sm h-auto py-2">Clinical Validation</Button>
-                <Button variant="outline" className="text-sm h-auto py-2">Quality Management</Button>
-                <Button variant="outline" className="text-sm h-auto py-2">User Manuals</Button>
-              </div>
-              <Button className="w-full">Access All Templates</Button>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          ))}
+        </div>
+        
+        <Separator className="my-8" />
+        
+        <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
+          <h2 className="text-xl font-semibold text-blue-800 mb-4">Regulatory Support Services</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-white p-4 rounded-md border border-blue-100">
+              <h3 className="font-medium mb-2">Compliance Consultation</h3>
+              <p className="text-sm text-gray-600 mb-3">Get personalized guidance on your regulatory journey from our experts.</p>
+              <Button variant="outline" className="w-full text-blue-700 border-blue-200 hover:bg-blue-50">Book Consultation</Button>
+            </div>
+            <div className="bg-white p-4 rounded-md border border-blue-100">
+              <h3 className="font-medium mb-2">Documentation Review</h3>
+              <p className="text-sm text-gray-600 mb-3">Have your regulatory documents reviewed by our compliance specialists.</p>
+              <Button variant="outline" className="w-full text-blue-700 border-blue-200 hover:bg-blue-50">Request Review</Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
