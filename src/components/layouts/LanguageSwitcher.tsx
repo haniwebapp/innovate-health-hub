@@ -8,22 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
 
 export default function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
-  const [mounted, setMounted] = useState(false);
-  
-  // This ensures hydration matching by only rendering after client-side mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return (
-    <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
-      <Globe className="h-5 w-5" />
-    </Button>
-  );
 
   return (
     <DropdownMenu>
@@ -32,22 +19,22 @@ export default function LanguageSwitcher() {
           <Globe className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={language === 'ar' ? "start" : "end"} className={language === 'ar' ? 'rtl-menu font-tajawal' : ''}>
+      <DropdownMenuContent align="end">
         <DropdownMenuItem 
           onClick={() => setLanguage('en')} 
-          className={`${language === 'en' ? 'bg-moh-lightGreen' : ''} flex items-center gap-2`}
+          className={`${language === 'en' ? 'bg-moh-lightGreen' : ''}`}
         >
           <span className="flex items-center">
-            <span className={language === 'ar' ? "ml-2" : "mr-2"}>🇬🇧</span>
+            <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇬🇧</span>
             {t('general.english')}
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setLanguage('ar')} 
-          className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''} flex items-center gap-2 font-tajawal`}
+          className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''}`}
         >
           <span className="flex items-center">
-            <span className={language === 'ar' ? "ml-2" : "mr-2"}>🇸🇦</span>
+            <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇸🇦</span>
             {t('general.arabic')}
           </span>
         </DropdownMenuItem>

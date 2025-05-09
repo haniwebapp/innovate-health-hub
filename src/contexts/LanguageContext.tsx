@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available languages
 export type Language = 'en' | 'ar';
@@ -24,8 +25,6 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.about': 'About',
     'nav.challenges': 'Challenges',
     'nav.innovations': 'Innovations',
-    'nav.investment': 'Investment',
-    'nav.regulatory': 'Regulatory',
     'nav.knowledgeHub': 'Knowledge Hub',
     'nav.allResources': 'All Resources',
     'nav.articles': 'Articles',
@@ -273,8 +272,6 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.about': 'نبذة عنا',
     'nav.challenges': 'التحديات',
     'nav.innovations': 'الابتكارات',
-    'nav.investment': 'الاستثمار',
-    'nav.regulatory': 'التنظيم',
     'nav.knowledgeHub': 'مركز المعرفة',
     'nav.allResources': 'جميع الموارد',
     'nav.articles': 'المقالات',
@@ -326,7 +323,7 @@ const translations: Record<Language, Record<string, string>> = {
     'verification.title': 'تحقق من بريدك الإلكتروني',
     'verification.description': 'لقد أرسلنا إليك بريدًا إلكترونيًا للتحقق',
     'verification.checkInbox': 'يرجى التحقق من صندوق الوارد الخاص بك والنقر على رابط التحقق لإكمال التسجيل.',
-    'verification.notReceived': 'لم تستلم البريد الإلكتروني؟',
+    'verification.notReceived': 'لم تستلم البريد الإلكتروني?',
     'verification.resendEmail': 'إعادة إرسال البريد الإلكتروني للتحقق',
     'verification.goToLogin': 'العودة لتسجيل الدخول',
     
@@ -377,35 +374,21 @@ const translations: Record<Language, Record<string, string>> = {
     'about.title': 'عن منصة الابتكار الصحي',
     'about.description': 'تحويل تقديم الرعاية الصحية من خلال الابتكار والتعاون والشراكات الاستراتيجية عبر النظام البيئي للرعاية الصحية في المملكة العربية السعودية.',
     'about.innovators': 'المبتكرون',
-    'about.innovatorsDescription': 'مبتكرون نشطون على المنصة',
     'about.challenges': 'التحديات',
-    'about.challengesDescription': 'تحديات الابتكار المكتملة',
-    'about.solutions': 'الحلول',
-    'about.solutionsDescription': 'حلول مبتكرة تم تطويرها',
-    'about.patientsBenefited': 'المستفيدون',
-    'about.patientsBenefitedDescription': 'مرضى استفادوا من حلولنا',
-    'about.ourTeam': 'فريقنا',
-    'about.teamDescription': 'يعمل فريق متخصص من الخبراء على دفع مبادرات الابتكار الصحي في المملكة',
-    'about.chiefInnovationOfficer': 'رئيس قسم الابتكار',
-    'about.headOfResearch': 'رئيس قسم البحث والتطوير',
-    'about.digitalTransformationLead': 'قائد التحول الرقمي',
-    'about.healthcareAdvisor': 'مستشار الرعاية الصحية',
-    'about.ourImpact': 'تأثيرنا',
-    'about.impactDescription': 'منذ انطلاقتها، أحدثت منصة الابتكار الصحي تأثيرًا كبيرًا في قطاع الرعاية الصحية بالمملكة',
     'about.impact': 'التأثير الوطني',
     'about.vision': 'رؤيتنا',
     'about.visionText': 'أن تكون المملكة العربية السعودية رائدة عالمياً في مجال الابتكار الصحي، وتعزيز نظام بيئي ديناميكي يعالج أولويات الصحة الوطنية ويحسن جودة الحياة لجميع المواطنين بما يتماشى مع رؤية 2030.',
     'about.mission': 'مهمتنا',
     'about.missionText': 'نحن نربط المبتكرين ومقدمي الرعاية الصحية والمنظمين والمستثمرين لتسريع تطوير وتنفيذ حلول الرعاية الصحية التحويلية، وإنشاء مسار سلس من الفكرة إلى التنفيذ عبر المملكة.',
     'about.focusAreas': 'مجالات التركيز الرئيسية',
-    'about.focusDescription': 'نحن ملتزمو بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
+    'about.focusDescription': 'نحن ملتزمون بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
     'about.preventative': 'الرعاية الصحية الوقائية',
     'about.preventativeDesc': 'التحول من العلاج إلى الوقاية مع حلول مبتكرة للكشف المبكر والمراقبة.',
     'about.infrastructure': 'البنية التحتية للرعاية الصحية',
     'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
     'about.digital': 'الصحة الرقمية',
     'about.digitalDesc': 'الاستفادة من التكنولوجيا لتوفير خدمات رعاية صحية يسهل الوصول إليها وشخصية وفعالة.',
-    'about.partners': 'شركاؤنا الاستراتيجيين',
+    'about.partners': 'شركاؤنا الاستراتيجيون',
     'about.joinCommunity': 'انضم إلى مجتمع الابتكار لدينا',
     'about.joinDescription': 'كن جزءًا من تحول الرعاية الصحية في المملكة العربية السعودية. سواء كنت مبتكرًا أو مستثمرًا أو مقدم رعاية صحية، هناك مكان لك في مجتمعنا المتنامي.',
     'about.registerNow': 'سجل الآن',
@@ -435,7 +418,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.hero.exploreButton': 'استكشاف الابتكارات',
     'home.hero.joinButton': 'انضم إلى تحدي',
     'home.hero.investmentButton': 'الوصول للاستثمار',
-    'home.hero.stats.innovators': '��لمبتكرون',
+    'home.hero.stats.innovators': 'المبتكرون',
     'home.hero.stats.investments': 'الاستثمارات (ريال)',
     'home.hero.stats.challenges': 'التحديات النشطة',
     
@@ -466,6 +449,37 @@ const translations: Record<Language, Record<string, string>> = {
     'home.highlights.feature6.title': 'شبكة الصحة العالمية',
     'home.highlights.feature6.description': 'تواصل مع شركاء دوليين واطلع على اتجاهات ورؤى الابتكار الصحي العالمية.',
     
+    // Innovation Journey Section
+    'home.journey.tag': 'رحلة الابتكار',
+    'home.journey.title': 'مسار رحلتك مع منصة الابتكار',
+    'home.journey.description': 'نقدم مساراً منظماً للمبتكرين لتطوير حلولهم من الفكرة إلى التنفيذ.',
+    'home.journey.ideation.title': 'توليد الأفكار',
+    'home.journey.ideation.description': 'حدد التحديات الصحية وطور أفكارًا مبتكرة للحلول المحتملة.',
+    'home.journey.development.title': 'التطوير',
+    'home.journey.development.description': 'تحويل الأفكار إلى نماذج أولية عملية مع دعم الخبراء والتوجيه.',
+    'home.journey.validation.title': 'التحقق',
+    'home.journey.validation.description': 'اختبار الحلول والتحقق من صحتها مع المتخصصين في الرعاية الصحية والمستخدمين النهائيين.',
+    'home.journey.implementation.title': 'التنفيذ',
+    'home.journey.implementation.description': 'نشر الحل في بيئات الرعاية الصحية الواقعية مع الدعم المستمر.',
+    'home.journey.impact.title': 'التأثير',
+    'home.journey.impact.description': 'قياس النتائج وتوسيع نطاق الحلول الناجحة عبر نظام الرعاية الصحية.',
+    
+    // Process Flow Section
+    'home.process.tag': 'عملية الابتكار',
+    'home.process.title': 'كيف تعمل منصتنا',
+    'home.process.description': 'عملية مبسطة تربط المبتكرين في مجال الرعاية الصحية بالفرص والموارد والدعم.',
+    'home.process.step1.title': 'إنشاء حساب',
+    'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخصصة على المنصة.',
+    'home.process.step2.title': 'تقديم الابتكار',
+    'home.process.step2.description': 'قم بتحميل فكرتك أو مشروعك باستخدام نموذج التقديم الخاص بنا.',
+    'home.process.step3.title': 'الحصول على الملاحظات',
+    'home.process.step3.description': 'تلقي ملاحظات من خبراء وزارة الصحة والمتخصصين في المجال.',
+    'home.process.step4.title': 'الاتصال بالفرص',
+    'home.process.step4.description': 'المطابقة مع المستثمرين والتحديات والموارد المناسبة.',
+    'home.process.step5.title': 'تطوير وتوسيع النطاق',
+    'home.process.step5.description': 'الوصول إلى الدعم المستمر لتطوير وتوسيع نطاق ابتكارك.',
+    'home.process.buttonText': 'ابدأ رحلة الابتكار',
+    
     // Featured Section
     'home.featured.title': 'تأثير المنصة',
     'home.featured.description': 'دفع التحول الواقعي للرعاية الصحية من خلال الابتكار والتعاون.',
@@ -495,22 +509,10 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.participants': 'المشاركون',
     'home.challenges.prize': 'الجائزة',
     'home.challenges.nextDeadline': 'الموعد النهائي للتحدي القادم',
-    'home.challenges.challenge1.title': 'حلول مراقبة المرضى عن بعد',
-    'home.challenges.challenge1.description': 'تصميم حلول مبتكرة لمراقبة المرضى الذين يعانون من أمراض مزمنة في المناطق النائية من المملكة.',
-    'home.challenges.challenge1.deadline': '30 يونيو 2025',
-    'home.challenges.challenge1.category': 'الصحة الرقمية',
-    'home.challenges.challenge2.title': 'الذكاء الاصطناعي للكشف المبكر عن الأمراض',
-    'home.challenges.challenge2.description': 'تطوير خوارزميات الذكاء الاصطناعي للكشف عن العلامات المبكرة للأمراض باستخدام البيانات الصحية الموجودة من منشآت وزارة الصحة.',
-    'home.challenges.challenge2.deadline': '15 يوليو 2025',
-    'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
-    'home.challenges.challenge3.title': 'تحسين سلسلة إمداد الرعاية الصحية',
-    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي across Saudi Arabia.',
-    'home.challenges.challenge3.deadline': '22 أغسطس 2025',
-    'home.challenges.challenge3.category': 'الخدمات اللوجستية',
     
     // Footer Section
     'footer.mohLogo': 'شعار وزارة الصحة',
-    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار الصحي في جميع أنحاء المملكة العربية السعودية.',
+    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار في مجال الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
     'footer.quickLinks': 'روابط سريعة',
     'footer.aboutPlatform': 'عن المنصة',
     'footer.innovationChallenges': 'تحديات الابتكار',
@@ -522,11 +524,11 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.mohStrategy': 'استراتيجية وزارة الصحة',
     'footer.policies': 'السياسات والإرشادات',
     'footer.successStories': 'قصص النجاح',
-    'footer.contactSupport': 'الاتصال بالدعم',
+    'footer.contactSupport': 'اتصل بالدعم',
     'footer.newsletter': 'النشرة الإخبارية',
     'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
-    'footer.emailPlaceholder': 'البريد الإلكتروني',
-    'footer.subscribe': 'اشتراك',
+    'footer.emailPlaceholder': 'عنوان البريد الإلكتروني',
+    'footer.subscribe': 'اشترك',
     'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
     'footer.privacyPolicy': 'سياسة الخصوصية',
     'footer.termsOfService': 'شروط الخدمة',
@@ -534,68 +536,38 @@ const translations: Record<Language, Record<string, string>> = {
   }
 };
 
-// Define props for the provider component
-interface LanguageProviderProps {
-  children: ReactNode;
-}
+// Provider component
+export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+  const [language, setLanguage] = useState<Language>(() => {
+    // Try to get language from localStorage
+    const savedLanguage = localStorage.getItem('language');
+    return (savedLanguage as Language) || 'en';
+  });
 
-// Create the provider component
-export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Get language from local storage or default to English
-  const getInitialLanguage = (): Language => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('moh-language') as Language;
-      return savedLanguage === 'ar' ? 'ar' : 'en'; // Default to 'en' if not saved or invalid
-    }
-    return 'en';
-  };
-
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
-  
-  // Update HTML dir and lang attributes when language changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-      document.documentElement.lang = language;
-      localStorage.setItem('moh-language', language);
-      
-      // Add or remove the .lang-ar class on the body based on language
-      if (language === 'ar') {
-        document.body.classList.add('lang-ar');
-      } else {
-        document.body.classList.remove('lang-ar');
-      }
+  // Update localStorage when language changes
+  React.useEffect(() => {
+    localStorage.setItem('language', language);
+    // Update document direction based on language
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    // Add or remove a class to the HTML element for RTL-specific styling
+    if (language === 'ar') {
+      document.documentElement.classList.add('rtl');
+    } else {
+      document.documentElement.classList.remove('rtl');
     }
   }, [language]);
 
-  // Create a wrapper for setLanguage to also update localStorage
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-  };
-
-  // Translation function
+  // Translate function
   const t = (key: string): string => {
     return translations[language][key] || key;
   };
 
-  const value = {
-    language,
-    setLanguage,
-    t,
-  };
-
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-// Custom hook for using the language context
-export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
+// Hook for using the language context
+export const useLanguage = () => useContext(LanguageContext);
