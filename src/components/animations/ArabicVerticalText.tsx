@@ -63,9 +63,7 @@ export function ArabicVerticalText({
     }
   };
   return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
-      {characters.map((char, index) => <motion.span key={`char-${index}`} variants={charVariants} className="text-3xl md:text-4xl text-moh-gold lg:text-4xl font-bold">
-          {char}
-        </motion.span>)}
+      {characters.map((char, index) => {})}
       
       {/* Special shimmer highlight effect */}
       <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
