@@ -10,7 +10,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import {
   ChevronLeft, ChevronRight, LayoutDashboard, Users, Settings, BarChart3, 
-  MessageSquare, FilePlus, Box, FileText, LogOut, PlusCircle, Plug
+  MessageSquare, FilePlus, Box, FileText, LogOut, PlusCircle, Plug,
+  LightbulbIcon, BookOpen, DollarSign, FileCheck, Clock, Folder
 } from "lucide-react";
 
 interface DashboardSidebarProps {
@@ -67,8 +68,56 @@ export default function DashboardSidebar({
           />
           <NavItem 
             to="/dashboard/submissions" 
+            icon={<FileCheck size={18} />} 
+            text="My Challenges" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/innovations" 
+            icon={<LightbulbIcon size={18} />} 
+            text="My Innovations" 
+            isCollapsed={isCollapsed}
+          />
+          
+          {/* Phase 2 features */}
+          <div className={cn(
+            "my-2 border-t",
+            isCollapsed ? "mx-2" : "mx-4"
+          )}></div>
+          <div className={cn(
+            "mb-2 px-4 text-xs uppercase text-muted-foreground",
+            isCollapsed && "sr-only"
+          )}>
+            Extra Features
+          </div>
+          <NavItem 
+            to="/dashboard/investment" 
+            icon={<DollarSign size={18} />} 
+            text="Investment Hub" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/regulatory" 
             icon={<FileText size={18} />} 
-            text="My Submissions" 
+            text="Regulatory Sandbox" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/knowledge" 
+            icon={<BookOpen size={18} />} 
+            text="Knowledge Hub" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/collaboration" 
+            icon={<MessageSquare size={18} />} 
+            text="Collaboration" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/activity" 
+            icon={<Clock size={18} />} 
+            text="Activity History" 
             isCollapsed={isCollapsed}
           />
           
@@ -131,8 +180,28 @@ export default function DashboardSidebar({
         </nav>
       </div>
       
-      {/* Logout button */}
+      {/* Settings and Logout buttons */}
       <div className="border-t p-4">
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size={isCollapsed ? "icon" : "default"}
+              className={cn(
+                "w-full justify-start mb-2",
+                isCollapsed && "h-9 w-9"
+              )}
+              asChild
+            >
+              <NavLink to="/dashboard/settings">
+                <Settings size={18} className={cn(isCollapsed ? "" : "mr-2")} />
+                {!isCollapsed && <span>Settings</span>}
+              </NavLink>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Settings</TooltipContent>
+        </Tooltip>
+        
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <Button 

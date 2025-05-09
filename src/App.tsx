@@ -46,6 +46,29 @@ import RegulatoryPage2 from './pages/regulatory';
 
 import KnowledgeHubPage from './pages/knowledge-hub';
 
+// New imports for user portal
+import DashboardInnovationsPage from './pages/dashboard/innovations/index';
+import DashboardInnovationDetailsPage from './pages/dashboard/innovations/[id]';
+import DashboardSettingsPage from './pages/dashboard/settings/index';
+import DashboardActivityPage from './pages/dashboard/activity/index';
+import DashboardKnowledgePage from './pages/dashboard/knowledge/index';
+import DashboardInvestmentPage from './pages/dashboard/investment/index';
+import DashboardRegulatoryPage from './pages/dashboard/regulatory/index';
+import DashboardCollaborationPage from './pages/dashboard/collaboration/index';
+
+// New imports for admin portal
+import AdminDashboardPage from './pages/admin/index';
+import AdminCmsPage from './pages/admin/cms/index';
+import AdminReportsPage from './pages/admin/reports/index';
+import AdminUserManagementPage from './pages/admin/users/index';
+import AdminChallengeManagementPage from './pages/admin/challenges/index';
+import AdminInnovationRegistryPage from './pages/admin/innovations/index';
+import AdminInvestmentToolsPage from './pages/admin/investment/index';
+import AdminSandboxPage from './pages/admin/sandbox/index';
+import AdminKnowledgePage from './pages/admin/knowledge/index';
+import AdminNotificationsPage from './pages/admin/notifications/index';
+import AdminIntegrationsPage2 from './pages/admin/integrations/index';
+
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -100,7 +123,20 @@ function App() {
                   }>
                     <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
+                    <Route path="settings" element={<DashboardSettingsPage />} />
+                    
+                    {/* User Portal Routes - Phase 1 */}
                     <Route path="submissions" element={<SubmissionsList />} />
+                    <Route path="innovations" element={<DashboardInnovationsPage />} />
+                    <Route path="innovations/:id" element={<DashboardInnovationDetailsPage />} />
+                    <Route path="activity" element={<DashboardActivityPage />} />
+                    
+                    {/* User Portal Routes - Phase 2 (placeholders) */}
+                    <Route path="investment" element={<DashboardInvestmentPage />} />
+                    <Route path="regulatory" element={<DashboardRegulatoryPage />} />
+                    <Route path="knowledge" element={<DashboardKnowledgePage />} />
+                    <Route path="collaboration" element={<DashboardCollaborationPage />} />
+                    
                     <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
                     <Route path="create-challenge" element={<CreateChallengePage />} />
                     
@@ -110,6 +146,63 @@ function App() {
                     <Route path="admin/settings" element={<AdminSettingsPage />} />
                     <Route path="admin/integrations" element={<AdminIntegrationsPage />} />
                   </Route>
+                  
+                  {/* Admin Portal Routes */}
+                  <Route path="/admin" element={
+                    <ProtectedRoute>
+                      <AdminDashboardPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/cms" element={
+                    <ProtectedRoute>
+                      <AdminCmsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/reports" element={
+                    <ProtectedRoute>
+                      <AdminReportsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/users" element={
+                    <ProtectedRoute>
+                      <AdminUserManagementPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/challenges" element={
+                    <ProtectedRoute>
+                      <AdminChallengeManagementPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/innovations" element={
+                    <ProtectedRoute>
+                      <AdminInnovationRegistryPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/investment" element={
+                    <ProtectedRoute>
+                      <AdminInvestmentToolsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/sandbox" element={
+                    <ProtectedRoute>
+                      <AdminSandboxPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/knowledge" element={
+                    <ProtectedRoute>
+                      <AdminKnowledgePage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/notifications" element={
+                    <ProtectedRoute>
+                      <AdminNotificationsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/integrations" element={
+                    <ProtectedRoute>
+                      <AdminIntegrationsPage2 />
+                    </ProtectedRoute>
+                  } />
                   
                   {/* 404 Route */}
                   <Route path="*" element={<NotFound />} />
