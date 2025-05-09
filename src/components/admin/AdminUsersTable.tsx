@@ -43,7 +43,9 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
                 ) : (
                   <User className="h-4 w-4 text-muted-foreground" />
                 )}
-                {user.firstName} {user.lastName}
+                {user.firstName || user.lastName ? 
+                  `${user.firstName || ''} ${user.lastName || ''}`.trim() : 
+                  `User ${user.id.substring(0, 5)}`}
               </TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.userType || "User"}</TableCell>

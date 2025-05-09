@@ -26,35 +26,35 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const { data: profiles, error: profilesError } = await supabase
+      const { data: profiles, error } = await supabase
         .from('profiles')
         .select('*');
 
-      if (profilesError) throw profilesError;
+      if (error) throw error;
 
-      // For demonstration purposes, we'll simulate user data based on profiles
+      // Map profiles to UserProfile format
       const mappedUsers: UserProfile[] = profiles.map(profile => {
-        const email = profile.first_name && profile.last_name 
-          ? `${profile.first_name.toLowerCase()}.${profile.last_name.toLowerCase()}@example.com` 
-          : `user-${profile.id.substring(0, 8)}@example.com`;
-        
-        const isAdmin = Math.random() > 0.7;
-        const adminEmail = isAdmin ? `${profile.first_name?.toLowerCase() || 'admin'}.${profile.last_name?.toLowerCase() || 'user'}@moh.gov.sa` : email;
+        // Generate an email from the profile data or use a placeholder
+        const email = profile.user_type === 'admin' 
+          ? `${profile.first_name || 'admin'}.${profile.last_name || 'user'}@moh.gov.sa` 
+          : `${profile.first_name || 'user'}.${profile.last_name || profile.id.substring(0, 5)}@example.com`;
         
         return {
           id: profile.id,
-          email: isAdmin ? adminEmail : email,
+          email: email,
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",
           organization: profile.organization || "",
-          lastSignIn: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
-          status: Math.random() > 0.2 ? "active" : "inactive"
+          lastSignIn: new Date(profile.updated_at).toLocaleDateString(),
+          status: Math.random() > 0.2 ? "active" : "inactive" // Simulate active/inactive status
         };
       });
 
+      console.log("Fetched users:", mappedUsers);
       setUsers(mappedUsers);
     } catch (error: any) {
+      console.error("Error fetching users:", error);
       toast({
         variant: "destructive",
         title: "Error fetching users",
