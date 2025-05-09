@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChallengeSettings, GeneralSettings } from "@/types/admin";
+import { GeneralSettings } from "@/types/admin";
+import { ChallengeSettings } from "@/types/challenges";
 import { useToast } from "@/hooks/use-toast";
 
 interface AdminSettingsAIProps {

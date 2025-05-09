@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -163,7 +162,10 @@ export default function ChallengesPage() {
         <section className="py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {/* Breadcrumb Navigation */}
-            <BreadcrumbNav currentPage="Challenges" />
+            <BreadcrumbNav 
+              items={[{ label: "Home", href: "/" }]}
+              currentPage="Challenges" 
+            />
             
             {/* Search and Filter */}
             <div className="flex flex-col md:flex-row gap-4 mb-8 items-end">

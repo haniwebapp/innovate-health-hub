@@ -84,6 +84,12 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
   if (insertData.requirements && Array.isArray(insertData.requirements)) {
     insertData.requirements = JSON.stringify(insertData.requirements);
   }
+  
+  // Remove non-database fields
+  delete (insertData as any).timeline;
+  delete (insertData as any).deadline;
+  delete (insertData as any).submission_deadline;
+  delete (insertData as any).participants;
 
   const { data, error } = await supabase
     .from('challenges')
@@ -109,6 +115,12 @@ export const updateChallenge = async (id: string, challenge: Partial<Challenge>)
   if (updateData.requirements && Array.isArray(updateData.requirements)) {
     updateData.requirements = JSON.stringify(updateData.requirements);
   }
+  
+  // Remove non-database fields
+  delete (updateData as any).timeline;
+  delete (updateData as any).deadline;
+  delete (updateData as any).submission_deadline;
+  delete (updateData as any).participants;
 
   const { data, error } = await supabase
     .from('challenges')
