@@ -191,33 +191,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     { 
       path: "/about", 
       label: "About",
-      megaMenu: true,
-      categories: [
-        {
-          title: "About Us",
-          items: [
-            { label: "Our Mission", path: "/about/mission" },
-            { label: "Our Vision", path: "/about/vision" },
-            { label: "Our Team", path: "/about/team" }
-          ]
-        },
-        {
-          title: "Partnerships",
-          items: [
-            { label: "Healthcare Partners", path: "/about/healthcare-partners" },
-            { label: "Academic Partners", path: "/about/academic-partners" },
-            { label: "Industry Partners", path: "/about/industry-partners" }
-          ]
-        },
-        {
-          title: "Contact & Support",
-          items: [
-            { label: "Contact Us", path: "/about/contact" },
-            { label: "FAQ", path: "/about/faq" },
-            { label: "Support", path: "/about/support" }
-          ]
-        }
-      ]
+      megaMenu: false
     },
   ];
 

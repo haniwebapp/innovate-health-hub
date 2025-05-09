@@ -2,11 +2,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp, ChevronRight, ChevronDown } from "lucide-react";
+import { LogOut, User, Settings, FileUp, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
 import { 
   Accordion,
   AccordionContent,
@@ -86,12 +85,7 @@ export function NavbarMobileMenu({
     { 
       path: "/about", 
       label: "About",
-      submenu: [
-        { label: "Our Mission", path: "/about/mission" },
-        { label: "Partners", path: "/about/partners" },
-        { label: "Contact Us", path: "/about/contact" },
-        { label: "About Us", path: "/about" }
-      ]
+      submenu: []
     },
   ];
   
