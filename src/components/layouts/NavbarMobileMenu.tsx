@@ -3,14 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
 import { LogOut, User, Settings } from "lucide-react";
-import { User as UserType } from "@/integrations/supabase/types";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
+
+// Define our own User type to avoid the Supabase import error
+interface User {
+  id: string;
+  email?: string;
+  user_metadata?: Record<string, any>;
+}
 
 interface NavbarMobileMenuProps {
   isRouteActive: (path: string) => boolean;
   setMobileMenuOpen: (open: boolean) => void;
-  user: UserType | null;
+  user: User | null;
   navigate: ReturnType<typeof useNavigate>;
 }
 

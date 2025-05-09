@@ -1,42 +1,25 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
 import { useToast } from "@/components/ui/use-toast";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { 
   Loader2, Lightbulb, CheckCircle, Clock, CheckSquare,
-  Clipboard, FileText, ClipboardCheck, AlertCircle,
-  FileSearch, ArrowRight, FileQuestion, Scale
+  Clipboard, FileText, ClipboardCheck, Scale
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { 
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-// Define types for AI-powered compliance
-interface ComplianceRequirement {
-  id: string;
-  title: string;
-  description: string;
-  status: "required" | "recommended" | "optional";
-  completed: boolean;
-}
-
-interface AIComplianceAnalysis {
-  score: number;
-  summary: string;
-  requirements: ComplianceRequirement[];
-  documentRecommendations: string[];
-}
+import { AIInsightsCard } from "@/components/investment/AIInsightsCard";
+import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
+import { ComplianceResults, AIComplianceAnalysis } from "@/components/regulatory/ComplianceResults";
+import { RegulatoryFrameworks } from "@/components/regulatory/RegulatoryFrameworks";
 
 export default function RegulatoryPage() {
   const { t, language } = useLanguage();
@@ -47,7 +30,7 @@ export default function RegulatoryPage() {
   const [innovationDescription, setInnovationDescription] = useState("");
   const [innovationType, setInnovationType] = useState("");
   
-  // New state for AI-powered compliance features
+  // State for AI-powered compliance features
   const [complianceAnalysis, setComplianceAnalysis] = useState<AIComplianceAnalysis | null>(null);
   const [isAnalyzingCompliance, setIsAnalyzingCompliance] = useState(false);
   
@@ -85,7 +68,7 @@ export default function RegulatoryPage() {
     }
   };
   
-  // New function to analyze regulatory compliance
+  // Analyze regulatory compliance
   const analyzeCompliance = async () => {
     if (!innovationDescription || !innovationType) {
       toast({
@@ -273,157 +256,28 @@ export default function RegulatoryPage() {
         </div>
         
         {/* AI Compliance Analyzer */}
-        <Card className="p-6 mb-8 border border-blue-200">
-          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Scale className="h-5 w-5 text-blue-600" />
-            AI Compliance Analyzer
-          </h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="innovationType" className="block text-sm font-medium mb-1">Innovation Type</label>
-              <select 
-                id="innovationType"
-                className="w-full p-2 border rounded-md"
-                value={innovationType}
-                onChange={(e) => setInnovationType(e.target.value)}
-              >
-                <option value="" disabled>Select innovation type</option>
-                <option value="medical device">Medical Device</option>
-                <option value="digital health application">Digital Health Application</option>
-                <option value="diagnostic tool">Diagnostic Tool</option>
-                <option value="AI-based solution">AI-based Solution</option>
-                <option value="telemedicine platform">Telemedicine Platform</option>
-              </select>
-            </div>
-            
-            <div>
-              <label htmlFor="innovationDescription" className="block text-sm font-medium mb-1">Describe Your Innovation</label>
-              <Textarea 
-                id="innovationDescription"
-                placeholder="Briefly describe your healthcare innovation, its purpose, and how it works..."
-                value={innovationDescription}
-                onChange={(e) => setInnovationDescription(e.target.value)}
-                className="min-h-[120px]"
-              />
-            </div>
-            
-            <Button 
-              onClick={analyzeCompliance} 
-              className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
-              disabled={isAnalyzingCompliance}
-            >
-              {isAnalyzingCompliance ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Analyzing Compliance Requirements...
-                </>
-              ) : (
-                <>
-                  <FileSearch className="h-4 w-4" />
-                  Analyze Regulatory Requirements
-                </>
-              )}
-            </Button>
-          </div>
-        </Card>
+        <AIComplianceAnalyzer 
+          innovationDescription={innovationDescription}
+          innovationType={innovationType}
+          isAnalyzingCompliance={isAnalyzingCompliance}
+          onDescriptionChange={(value) => setInnovationDescription(value)}
+          onTypeChange={(value) => setInnovationType(value)}
+          onAnalyzeClick={analyzeCompliance}
+        />
         
         {/* Display compliance analysis results */}
         {complianceAnalysis && (
-          <Card className="p-6 mb-8 border-l-4 border-l-blue-600">
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <FileSearch className="h-5 w-5 text-blue-600" />
-                Compliance Analysis Results
-              </h3>
-              <div className="bg-gray-100 rounded-full h-16 w-16 flex items-center justify-center">
-                <div className="text-center">
-                  <div className={cn(
-                    "text-lg font-bold",
-                    complianceAnalysis.score > 80 ? "text-green-600" : 
-                    complianceAnalysis.score > 60 ? "text-amber-600" : "text-red-600"
-                  )}>
-                    {complianceAnalysis.score}%
-                  </div>
-                  <div className="text-xs text-gray-500">Ready</div>
-                </div>
-              </div>
-            </div>
-            
-            <p className="text-gray-700 mb-4">{complianceAnalysis.summary}</p>
-            
-            <div className="mb-6">
-              <h4 className="font-medium text-lg mb-2">Required Compliance Steps</h4>
-              <div className="space-y-3">
-                {complianceAnalysis.requirements.map(requirement => (
-                  <div 
-                    key={requirement.id} 
-                    className={cn(
-                      "p-4 border rounded-md",
-                      requirement.completed ? "bg-green-50 border-green-200" : "bg-white"
-                    )}
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        {requirement.status === "required" && (
-                          <Badge className="bg-red-500">Required</Badge>
-                        )}
-                        {requirement.status === "recommended" && (
-                          <Badge className="bg-amber-500">Recommended</Badge>
-                        )}
-                        {requirement.status === "optional" && (
-                          <Badge className="bg-gray-500">Optional</Badge>
-                        )}
-                        <h5 className="font-medium">{requirement.title}</h5>
-                      </div>
-                      <Button 
-                        size="sm" 
-                        variant={requirement.completed ? "outline" : "default"}
-                        className={requirement.completed ? "border-green-500 text-green-500" : ""}
-                        onClick={() => markRequirementComplete(requirement.id)}
-                      >
-                        {requirement.completed ? (
-                          <>
-                            <CheckCircle className="h-4 w-4 mr-1" /> Completed
-                          </>
-                        ) : "Mark Complete"}
-                      </Button>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">{requirement.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="font-medium text-lg mb-2">Required Documentation</h4>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                {complianceAnalysis.documentRecommendations.map((doc, index) => (
-                  <li key={index}>{doc}</li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="mt-6">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                Generate Compliance Report
-              </Button>
-            </div>
-          </Card>
+          <ComplianceResults 
+            analysis={complianceAnalysis}
+            onMarkRequirementComplete={markRequirementComplete}
+          />
         )}
         
         {aiRecommendations.length > 0 && (
-          <Card className="p-6 mb-8 border-l-4 border-l-yellow-400 bg-yellow-50">
-            <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
-              <Lightbulb className="h-5 w-5 text-yellow-500" />
-              AI Regulatory Insights
-            </h3>
-            <div className="space-y-2">
-              {aiRecommendations.map((insight, i) => (
-                <p key={i} className="text-gray-700">{insight}</p>
-              ))}
-            </div>
-          </Card>
+          <AIInsightsCard 
+            insights={aiRecommendations} 
+            title="AI Regulatory Insights" 
+          />
         )}
         
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-10">
@@ -455,68 +309,11 @@ export default function RegulatoryPage() {
         </div>
         
         <h2 className="text-2xl font-semibold mb-4">Regulatory Frameworks</h2>
-        <div className="space-y-4 mb-8">
-          {regulatoryFrameworks.map((framework) => (
-            <Card 
-              key={framework.id}
-              className={cn(
-                "p-4 cursor-pointer transition-all",
-                selectedRegulation === framework.id 
-                  ? "border-2 border-moh-green" 
-                  : "hover:border-moh-green/50"
-              )}
-              onClick={() => setSelectedRegulation(framework.id)}
-            >
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-moh-green/10 rounded-md text-moh-green">
-                  {framework.icon}
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{framework.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{framework.description}</p>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Completion</span>
-                      <span className="font-medium">{framework.completedSteps}/{framework.totalSteps} steps</span>
-                    </div>
-                    <Progress 
-                      value={(framework.completedSteps / framework.totalSteps) * 100} 
-                      className="h-2 bg-gray-100" 
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              {selectedRegulation === framework.id && (
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <h4 className="font-medium mb-2">Compliance Steps</h4>
-                  <div className="space-y-2">
-                    {framework.steps.map((step, index) => (
-                      <div 
-                        key={index} 
-                        className="flex items-center gap-2 text-sm"
-                      >
-                        {index < framework.completedSteps ? (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <AlertCircle className="h-4 w-4 text-amber-400" />
-                        )}
-                        <span className={index < framework.completedSteps ? "line-through text-gray-400" : ""}>
-                          {step}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-4">
-                    <Button className="w-full bg-moh-green hover:bg-moh-darkGreen">
-                      Continue Compliance Process
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
+        <RegulatoryFrameworks 
+          frameworks={regulatoryFrameworks}
+          selectedFramework={selectedRegulation}
+          onFrameworkSelect={setSelectedRegulation}
+        />
         
         <Separator className="my-8" />
         

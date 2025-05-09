@@ -1,16 +1,15 @@
+
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Lightbulb, BarChart3, TrendingUp, Search, Zap } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import { Loader2, Lightbulb } from "lucide-react";
 import { AIInsightsCard } from "@/components/investment/AIInsightsCard";
-import { AIMatchScoreCard, AIMatchScore } from "@/components/investment/AIMatchScoreCard";
-import { MarketTrendCard, AIMarketTrend } from "@/components/investment/MarketTrendCard";
+import { AIMatchScore } from "@/components/investment/AIMatchScoreCard";
+import { AIMarketTrend } from "@/components/investment/MarketTrendCard";
+import { AIAnalysisSection } from "@/components/investment/AIAnalysisSection";
+import { InvestmentTabs } from "@/components/investment/InvestmentTabs";
 
 export default function InvestmentPage() {
   const { t, language } = useLanguage();
@@ -21,7 +20,7 @@ export default function InvestmentPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [investmentType, setInvestmentType] = useState("all");
   
-  // New state for AI-powered features
+  // State for AI-powered features
   const [aiMatchScores, setAiMatchScores] = useState<AIMatchScore[]>([]);
   const [aiMarketTrends, setAiMarketTrends] = useState<AIMarketTrend[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -67,7 +66,7 @@ export default function InvestmentPage() {
     }
   };
 
-  // New function to analyze investment opportunities
+  // Analyze investment opportunities
   const analyzeInvestmentOpportunities = async () => {
     setIsAnalyzing(true);
     
@@ -85,7 +84,6 @@ export default function InvestmentPage() {
       }
       
       // Generate mock data for demo purposes
-      // In a real implementation, this would parse structured data from the AI response
       const mockMatches: AIMatchScore[] = [
         {
           name: "Digital Health Platform",
@@ -165,11 +163,6 @@ export default function InvestmentPage() {
     }
   };
   
-  // Filter AI match scores based on search query
-  const filteredMatches = aiMatchScores.filter(match => 
-    match.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-4xl mx-auto">
@@ -196,184 +189,25 @@ export default function InvestmentPage() {
               </>
             )}
           </Button>
-          
-          <Button 
-            onClick={analyzeInvestmentOpportunities} 
-            variant="outline"
-            className="border-moh-green text-moh-green hover:bg-moh-green/10 flex items-center gap-2"
-            disabled={isAnalyzing}
-          >
-            {isAnalyzing ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Analyzing Investment Landscape...
-              </>
-            ) : (
-              <>
-                <BarChart3 className="h-4 w-4" />
-                AI Investment Analysis
-              </>
-            )}
-          </Button>
         </div>
         
         <AIInsightsCard insights={aiRecommendations} />
         
-        {aiMatchScores.length > 0 && (
-          <Card className="p-6 mb-8">
-            <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
-              <Zap className="h-5 w-5 text-amber-500" />
-              AI Investment Match Scores
-            </h3>
-            <div className="flex flex-col md:flex-row gap-4 mb-4">
-              <div className="flex-1">
-                <Input
-                  placeholder="Search opportunities..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <div className="w-full md:w-1/3">
-                <Select value={selectedSector} onValueChange={setSelectedSector}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select sector" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Sectors</SelectItem>
-                    <SelectItem value="digital-health">Digital Health</SelectItem>
-                    <SelectItem value="medical-devices">Medical Devices</SelectItem>
-                    <SelectItem value="biotech">Biotech</SelectItem>
-                    <SelectItem value="ai-ml">AI/ML in Healthcare</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="space-y-4 mt-4">
-              {filteredMatches.length > 0 ? (
-                filteredMatches.map((match, i) => (
-                  <AIMatchScoreCard key={i} match={match} />
-                ))
-              ) : (
-                <p className="text-gray-500 italic">No matching opportunities found.</p>
-              )}
-            </div>
-          </Card>
-        )}
+        <AIAnalysisSection 
+          aiMatchScores={aiMatchScores}
+          aiMarketTrends={aiMarketTrends}
+          isAnalyzing={isAnalyzing}
+          selectedSector={selectedSector}
+          onSectorChange={setSelectedSector}
+          onAnalyzeClick={analyzeInvestmentOpportunities}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
         
-        {aiMarketTrends.length > 0 && (
-          <Card className="p-6 mb-8">
-            <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-blue-500" />
-              Healthcare Investment Market Trends
-            </h3>
-            <div className="space-y-4">
-              {aiMarketTrends.map((trend, i) => (
-                <MarketTrendCard key={i} trend={trend} />
-              ))}
-            </div>
-          </Card>
-        )}
-        
-        <Tabs defaultValue="startups" className="mb-12" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="startups">For Startups</TabsTrigger>
-            <TabsTrigger value="investors">For Investors</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="startups" className="mt-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="p-6 border-l-4 border-l-moh-green">
-                <h3 className="text-xl font-semibold mb-3">Funding Opportunities</h3>
-                <p className="mb-4">Access targeted funding opportunities aligned with your healthcare innovation stage and domain.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">Find Opportunities</Button>
-              </Card>
-              
-              <Card className="p-6 border-l-4 border-l-moh-green">
-                <h3 className="text-xl font-semibold mb-3">Investor Matching</h3>
-                <p className="mb-4">Get matched with investors who specialize in your area of healthcare innovation.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">Connect with Investors</Button>
-              </Card>
-              
-              <Card className="p-6 border-l-4 border-l-moh-green">
-                <h3 className="text-xl font-semibold mb-3">Pitch Resources</h3>
-                <p className="mb-4">Access tools and templates to create compelling investment pitches.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">View Resources</Button>
-              </Card>
-              
-              <Card className="p-6 border-l-4 border-l-moh-green">
-                <h3 className="text-xl font-semibold mb-3">Growth Guidance</h3>
-                <p className="mb-4">Receive tailored guidance on scaling your healthcare startup.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">Get Guidance</Button>
-              </Card>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="investors" className="mt-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="p-6 border-l-4 border-l-blue-500">
-                <h3 className="text-xl font-semibold mb-3">Deal Flow</h3>
-                <p className="mb-4">Access a curated pipeline of vetted healthcare innovations ready for investment.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">View Opportunities</Button>
-              </Card>
-              
-              <Card className="p-6 border-l-4 border-l-blue-500">
-                <h3 className="text-xl font-semibold mb-3">Due Diligence Support</h3>
-                <p className="mb-4">Get comprehensive due diligence resources for healthcare innovation investments.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">Access Tools</Button>
-              </Card>
-              
-              <Card className="p-6 border-l-4 border-l-blue-500">
-                <h3 className="text-xl font-semibold mb-3">Market Intelligence</h3>
-                <p className="mb-4">Stay informed with the latest trends and opportunities in healthcare innovation.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">View Reports</Button>
-              </Card>
-              
-              <Card className="p-6 border-l-4 border-l-blue-500">
-                <h3 className="text-xl font-semibold mb-3">Co-Investment Network</h3>
-                <p className="mb-4">Connect with other investors for healthcare innovation co-investment opportunities.</p>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">Join Network</Button>
-              </Card>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="resources" className="mt-6">
-            <div className="space-y-6">
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-3">Investment Guides</h3>
-                <p className="mb-4">Comprehensive guides for healthcare innovation investment strategies.</p>
-                <ul className="list-disc list-inside space-y-2 mb-4">
-                  <li>Early-stage Investment Guide</li>
-                  <li>Digital Health Investment Framework</li>
-                  <li>Medical Device Investment Strategy</li>
-                  <li>Biotech Investment Risk Assessment</li>
-                </ul>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">Access Guides</Button>
-              </Card>
-              
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-3">Funding Events</h3>
-                <p className="mb-4">Upcoming pitch events, investor meetings and funding workshops.</p>
-                <div className="space-y-3 mb-4">
-                  <div className="border-b pb-2">
-                    <p className="font-medium">Healthcare Investment Summit</p>
-                    <p className="text-sm text-gray-500">June 15-16, 2025 • Riyadh</p>
-                  </div>
-                  <div className="border-b pb-2">
-                    <p className="font-medium">Digital Health Investor Showcase</p>
-                    <p className="text-sm text-gray-500">July 23, 2025 • Virtual</p>
-                  </div>
-                  <div className="border-b pb-2">
-                    <p className="font-medium">Medical Innovation Funding Workshop</p>
-                    <p className="text-sm text-gray-500">August 10, 2025 • Jeddah</p>
-                  </div>
-                </div>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen">View All Events</Button>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+        <InvestmentTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       </div>
     </div>
   );
