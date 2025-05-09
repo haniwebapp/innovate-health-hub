@@ -82,7 +82,7 @@ const translations: Record<string, string> = {
   // Innovation Journey section
   'home.journey.tag': 'Innovation Journey',
   'home.journey.title': 'Healthcare Innovation Roadmap',
-  'home.journey.description': 'Our structured approach to healthcare innovation ensures ideas are properly vetted, developed, and implemented across Saudi Arabia's healthcare system.',
+  'home.journey.description': "Our structured approach to healthcare innovation ensures ideas are properly vetted, developed, and implemented across Saudi Arabia's healthcare system.",
   'home.journey.currentPhase': 'Current Phase',
   
   // Innovation Journey phases
