@@ -10,9 +10,7 @@ export function HeroHeading() {
   } = useLanguage();
   return <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-tight">
       <div className="flex flex-row justify-center items-start py-0">
-        {language === 'ar' && <div className="mr-4">
-            <ArabicVerticalText text="منصة الابتكار الصحي" />
-          </div>}
+        {language === 'ar'}
         
         <div className={language === 'ar' ? 'ml-4' : 'mr-4'}>
           <TextReveal text={t('home.hero.titleGradient')} className="text-gradient block" delay={0.6} staggerDelay={0.05} splitBy="words" />
