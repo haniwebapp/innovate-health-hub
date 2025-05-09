@@ -8,13 +8,9 @@ import FocusAreasSection from "@/components/about/FocusAreasSection";
 import PartnersSection from "@/components/about/PartnersSection";
 import JoinCommunitySection from "@/components/about/JoinCommunitySection";
 import { motion } from "framer-motion";
-import { useRTLDirection } from "@/utils/rtlUtils";
 
 const AboutPage = () => {
   const { language } = useLanguage();
-  
-  // Apply RTL direction using the enhanced utility hook
-  useRTLDirection(language);
   
   // Page transition animations
   const pageVariants = {
@@ -31,8 +27,8 @@ const AboutPage = () => {
   
   return (
     <motion.div 
-      className={`min-h-screen flex flex-col bg-white ${language === 'ar' ? 'rtl-mode' : ''}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      className="min-h-screen flex flex-col bg-white"
+      dir="ltr"
       initial="initial"
       animate="animate"
       exit="exit"

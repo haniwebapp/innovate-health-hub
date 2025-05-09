@@ -15,7 +15,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100" dir="ltr">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">Page Not Found</h1>
         <p className="text-xl text-gray-600 mb-4">Sorry, the page you are looking for does not exist.</p>

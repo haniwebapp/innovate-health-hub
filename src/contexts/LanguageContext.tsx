@@ -130,13 +130,15 @@ const translations: Record<string, string> = {
 // Define context type
 type LanguageContextType = {
   language: Language;
-  t: (key: string) => string; 
+  t: (key: string) => string;
+  setLanguage: (lang: Language) => void; // Add this even though we'll only use English
 };
 
 // Create context with default values
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
-  t: (key: string) => key, 
+  t: (key: string) => key,
+  setLanguage: () => {}, // No-op function
 });
 
 // Provider component
@@ -145,7 +147,7 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [language] = useState<Language>('en'); // Always English
+  const [language, setLanguage] = useState<Language>('en'); // Always English
 
   // Translation function that returns translations based on the key
   const t = (key: string): string => {
@@ -158,7 +160,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, t }}>
+    <LanguageContext.Provider value={{ language, t, setLanguage }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getRTLClasses } from "@/utils/rtlUtils";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -16,7 +15,6 @@ interface NavbarMainLinksProps {
 
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
   
   // Main links without dropdown, using direct text instead of translation keys
   const mainLinks = [
@@ -32,7 +30,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
 
   return (
     <NavigationMenu className="hidden md:flex">
-      <NavigationMenuList className={`space-x-6 ${language === 'ar' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+      <NavigationMenuList className="space-x-6">
         {mainLinks.map((link) => (
           <NavigationMenuItem key={link.path}>
             <MotionLink

@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Globe, Award, Sparkles } from "lucide-react";
+import { ArrowRight, Award, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -38,14 +38,10 @@ export function HeroButtons() {
           <Link to="/innovations">
             Explore Innovations
             <motion.div 
-              animate={{ x: language === 'ar' ? [-5, 0, -5] : [0, 5, 0] }}
+              animate={{ x: [0, 5, 0] }}
               transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
             >
-              {language === 'ar' ? (
-                <ArrowRight className="mr-2 h-4 w-4 transform rotate-180" />
-              ) : (
-                <ArrowRight className="ml-2 h-4 w-4" />
-              )}
+              <ArrowRight className="ml-2 h-4 w-4" />
             </motion.div>
           </Link>
         </Button>
@@ -58,7 +54,7 @@ export function HeroButtons() {
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
             >
-              <Sparkles className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
+              <Sparkles className="mr-2 h-4 w-4" />
             </motion.div>
             Join a Challenge
           </Link>
@@ -68,7 +64,7 @@ export function HeroButtons() {
       <motion.div variants={itemVariants}>
         <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm" asChild>
           <Link to="/investment">
-            <Award className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
+            <Award className="mr-2 h-4 w-4" />
             Access Investment
           </Link>
         </Button>

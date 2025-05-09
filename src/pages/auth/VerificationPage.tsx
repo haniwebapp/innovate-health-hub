@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function EmailVerificationPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function EmailVerificationPage() {
   }, [user, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-moh-lightGreen/20" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="flex items-center justify-center min-h-screen bg-moh-lightGreen/20" dir="ltr">
       <div className="w-full max-w-md p-4">
         <div className="text-center mb-8">
           <img 

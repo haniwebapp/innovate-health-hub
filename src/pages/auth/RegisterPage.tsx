@@ -7,7 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function RegisterPage() {
   const { user, isLoading } = useAuth();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   // Redirect authenticated users to dashboard
   if (user && !isLoading) {
@@ -15,7 +15,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-moh-lightGreen/20" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="flex items-center justify-center min-h-screen bg-moh-lightGreen/20" dir="ltr">
       <div className="w-full max-w-lg p-4 space-y-8">
         <div className="text-center space-y-2">
           <img 

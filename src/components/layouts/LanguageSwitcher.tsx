@@ -16,7 +16,8 @@ export default function LanguageSwitcher() {
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   
-  const handleLanguageChange = (newLanguage: 'en' | 'ar') => {
+  // Since we're English-only now, this is just a placeholder function
+  const handleLanguageChange = (newLanguage: 'en') => {
     if (newLanguage !== language) {
       setIsChangingLanguage(true);
       setLanguage(newLanguage);
@@ -65,35 +66,17 @@ export default function LanguageSwitcher() {
         <DropdownMenuContent align="end" className="min-w-[150px] bg-white">
           <DropdownMenuItem 
             onClick={() => handleLanguageChange('en')} 
-            className={`${language === 'en' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}
+            className="bg-moh-lightGreen cursor-pointer flex items-center justify-between px-4 py-2"
           >
             <span className="flex items-center">
-              <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇬🇧</span>
+              <span className="mr-2">🇬🇧</span>
               English
             </span>
-            {language === 'en' && (
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }} 
-                className="w-2 h-2 bg-moh-green rounded-full"
-              />
-            )}
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            onClick={() => handleLanguageChange('ar')} 
-            className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}
-          >
-            <span className="flex items-center">
-              <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇸🇦</span>
-              Arabic
-            </span>
-            {language === 'ar' && (
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }} 
-                className="w-2 h-2 bg-moh-green rounded-full"
-              />
-            )}
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }} 
+              className="w-2 h-2 bg-moh-green rounded-full"
+            />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -108,7 +91,7 @@ export default function LanguageSwitcher() {
             transition={{ duration: 0.3 }}
             className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-moh-green text-white px-4 py-2 rounded-md shadow-lg"
           >
-            {language === 'ar' ? 'تم تغيير اللغة إلى العربية' : 'Language changed to English'}
+            Language changed to English
           </motion.div>
         )}
       </AnimatePresence>

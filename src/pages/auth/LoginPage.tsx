@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   // Redirect authenticated users to dashboard
   if (user && !isLoading) {
@@ -16,8 +16,7 @@ export default function LoginPage() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4" 
-      dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4" dir="ltr">
       <div className="w-full max-w-md">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
