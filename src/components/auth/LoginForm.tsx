@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -126,7 +125,7 @@ export default function LoginForm() {
         </Button>
         
         <div className="text-center text-sm">
-          {t('register.dontHaveAccount')}{" "}
+          {t('login.dontHaveAccount')}{" "}
           <Link to="/auth/register" className="text-moh-green hover:underline font-medium">
             {t('nav.register')}
           </Link>

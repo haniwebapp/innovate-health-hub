@@ -1,117 +1,80 @@
-
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { LogIn, UserPlus, Shield, LogOut, User, Settings, FileText, LayoutDashboard } from "lucide-react";
-import { NavigateFunction } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LogOut, User } from "lucide-react";
 
-interface NavbarUserMenuProps {
-  user: any; // Using any for now, should be properly typed based on user context
-  navigate: NavigateFunction;
-  isAdmin?: boolean;
-}
-
-export function NavbarUserMenu({ user, navigate, isAdmin = false }: NavbarUserMenuProps) {
-  const { signOut } = useAuth();
+export default function NavbarUserMenu() {
+  const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigate('/auth/login');
-    } catch (error) {
-      console.error("Error signing out:", error);
+  // Get user initials for avatar
+  const getInitials = () => {
+    if (!user || !user.user_metadata) return "U";
+    const { firstName, lastName } = user.user_metadata;
+    if (firstName && lastName) {
+      return `${firstName[0]}${lastName[0]}`.toUpperCase();
     }
+    return user.email ? user.email[0].toUpperCase() : "U";
   };
 
-  const menuItems = [
-    { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard", admin: false },
-    { label: "Profile Settings", icon: Settings, path: "/dashboard/profile", admin: false },
-    { label: "My Submissions", icon: FileText, path: "/dashboard/submissions", admin: false },
-    { label: "Create Challenge", icon: Shield, path: "/dashboard/create-challenge", admin: true },
-    { label: "Analytics Dashboard", icon: Shield, path: "/dashboard/analytics", admin: true },
-  ];
+  if (!user) {
+    return (
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" asChild>
+          <Link to="/auth/login">{t('nav.signIn')}</Link>
+        </Button>
+        <Button asChild>
+          <Link to="/auth/register">{t('nav.register')}</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              variant="outline" 
-              className="border-moh-green bg-white text-moh-green hover:bg-gray-50 flex gap-2 items-center rounded-full px-6 btn-hover"
-            >
-              <User className="h-4 w-4" />
-              {isAdmin ? "Admin" : "My Account"}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg border border-gray-100 rounded-md animate-in slide-in-from-top-1 zoom-in-95">
-            <DropdownMenuLabel className="flex items-center">
-              {isAdmin && (
-                <span className="bg-gray-50 text-moh-darkGreen text-xs rounded px-1.5 py-0.5 font-medium mr-2">
-                  Admin
-                </span>
-              )}
-              <span className="font-medium">My Account</span>
-            </DropdownMenuLabel>
-            
-            <DropdownMenuSeparator />
-            
-            {menuItems
-              .filter(item => !item.admin || isAdmin)
-              .map((item, idx) => (
-                <DropdownMenuItem 
-                  key={idx}
-                  onClick={() => navigate(item.path)} 
-                  className="hover:bg-gray-50 hover:text-moh-green cursor-pointer flex items-center"
-                >
-                  <item.icon className="h-4 w-4 mr-2 opacity-70" />
-                  {item.label}
-                </DropdownMenuItem>
-              ))
-            }
-            
-            <DropdownMenuSeparator />
-            <DropdownMenuItem 
-              className="text-red-600 focus:text-red-600 hover:bg-red-50 flex items-center cursor-pointer"
-              onClick={handleSignOut}
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <div className="flex items-center gap-2">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/auth/login')} 
-              className="border-moh-green bg-white text-moh-green hover:bg-gray-50 flex gap-2 items-center rounded-full px-6"
-            >
-              <LogIn className="h-4 w-4" />
-              Sign In
-            </Button>
-          </motion.div>
-          
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button 
-              onClick={() => navigate('/auth/register')} 
-              className="bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center rounded-full px-6"
-            >
-              <UserPlus className="h-4 w-4" />
-              Register
-            </Button>
-          </motion.div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+          <Avatar className="h-10 w-10 border border-gray-200">
+            <AvatarFallback className="bg-moh-lightGreen text-moh-darkGreen">
+              {getInitials()}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <div className="flex items-center justify-start gap-2 p-2">
+          <div className="flex flex-col space-y-0.5">
+            <p className="text-sm font-medium">
+              {user.user_metadata?.firstName} {user.user_metadata?.lastName}
+            </p>
+            <p className="text-xs text-muted-foreground">{user.email}</p>
+          </div>
         </div>
-      )}
-    </>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/dashboard" className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>{t('nav.dashboard')}</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          onClick={signOut}
+          className="text-red-600 focus:text-red-600 cursor-pointer"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>{t('nav.logout')}</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
