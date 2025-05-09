@@ -74,7 +74,7 @@ export function ProcessFlow({
                     "0 4px 6px rgba(0,0,0,0.1)"
                   ],
                   scale: [1, step.completionRate && step.completionRate > 70 ? 1.08 : 1.05, 1],
-                }}
+                } : {}}
                 transition={{ 
                   duration: step.timeMetric ? Math.min(3, step.timeMetric / 5) : 2, 
                   repeat: Infinity, 
