@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -25,7 +24,7 @@ import { X } from "lucide-react";
 // Form schema
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
-  shortDescription: z.string().min(20, "Description must be at least 20 characters").max(300),
+  description: z.string().min(20, "Description must be at least 20 characters").max(300),
   category: z.string().min(1, "Please select a category"),
   tags: z.array(z.string()).optional(),
 });
@@ -55,7 +54,7 @@ export default function BasicInfoPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: formData.title || "",
-      shortDescription: formData.shortDescription || "",
+      description: formData.description || "",
       category: formData.category || "",
       tags: formData.tags || [],
     }
@@ -71,7 +70,7 @@ export default function BasicInfoPage() {
     // Mark this step as completed
     updateProgress('basicInfo', true);
     
-    // Save progress in local storage (to enable persisting through page refresh)
+    // Save progress in local storage
     const currentProgress = JSON.parse(localStorage.getItem('innovationFormProgress') || '{}');
     localStorage.setItem('innovationFormProgress', JSON.stringify({
       ...currentProgress,
@@ -142,7 +141,7 @@ export default function BasicInfoPage() {
             
             <FormField
               control={form.control}
-              name="shortDescription"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Short Description</FormLabel>

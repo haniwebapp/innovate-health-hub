@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -108,7 +107,7 @@ export default function ReviewPage() {
                   <div className="md:col-span-3">{formData.title || "Not provided"}</div>
                   
                   <div className="text-sm font-medium text-gray-500">Short Description:</div>
-                  <div className="md:col-span-3">{formData.shortDescription || "Not provided"}</div>
+                  <div className="md:col-span-3">{formData.description || "Not provided"}</div>
                   
                   <div className="text-sm font-medium text-gray-500">Category:</div>
                   <div className="md:col-span-3">{formData.category || "Not selected"}</div>
@@ -159,16 +158,16 @@ export default function ReviewPage() {
                   <div className="md:col-span-3">
                     {formData.implementationStatus ? (
                       <Badge>
-                        {formData.implementationStatus.charAt(0).toUpperCase() + formData.implementationStatus.slice(1)}
+                        {formData.implementationStatus}
                       </Badge>
                     ) : "Not selected"}
                   </div>
                   
                   <div className="text-sm font-medium text-gray-500">Problem Statement:</div>
-                  <div className="md:col-span-3">{formData.problemStatement || "Not provided"}</div>
+                  <div className="md:col-span-3">{formData.problem || "Not provided"}</div>
                   
                   <div className="text-sm font-medium text-gray-500">Solution Description:</div>
-                  <div className="md:col-span-3">{formData.solutionDescription || "Not provided"}</div>
+                  <div className="md:col-span-3">{formData.solution || "Not provided"}</div>
                 </div>
                 
                 <Button 

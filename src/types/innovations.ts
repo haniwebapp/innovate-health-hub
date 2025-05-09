@@ -44,26 +44,33 @@ export const categoryColors: Record<string, string> = {
 export interface InnovationSubmission {
   // Basic info (Step 1)
   title: string;
-  description: string;
+  description: string; // This was previously shortDescription in some forms
   category: string;
   tags: string[];
   
   // Details (Step 2)
-  longDescription: string;
-  implementationStatus: "Concept" | "Prototype" | "Pilot" | "Deployed";
-  problem: string;
-  solution: string;
+  longDescription: string; // This was fullDescription in some forms
+  implementationStatus: "Concept" | "Prototype" | "Pilot" | "Deployed"; // Capitalized values
+  problem: string; // This was problemStatement in some forms
+  solution: string; // This was solutionDescription in some forms
   
   // Media (Step 3)
   images: File[];
-  documentationFiles?: File[];
+  imageUrls?: string[]; // Added for preview URLs
+  documentFiles?: File[];
+  documentNames?: string[]; // Added for showing file names
   videoUrl?: string;
+  website?: string; // This was websiteUrl in some forms
   
   // Technical (Step 4)
   technicalSpecifications?: string;
-  integrationRequirements?: string;
-  hardwareRequirements?: string;
-  compatibilityInfo?: string;
+  innovationAdvantages?: string;
+  patentStatus?: 'none' | 'pending' | 'granted';
+  hasAI?: boolean;
+  hasConnectedDevices?: boolean;
+  hasMobileApp?: boolean;
+  compatibleSystems?: string;
+  targetUsers?: string;
   
   // Regulatory (Step 5)
   regulatoryStatus?: {
@@ -71,14 +78,23 @@ export interface InnovationSubmission {
     certifications: string[];
     pendingApprovals: string[];
   };
+  regulatoryStatusType?: 'notStarted' | 'inProgress' | 'approved' | 'notApplicable'; // Added this field
+  approvalType?: string;
+  approvalDetails?: string;
+  hasRiskAssessment?: boolean;
+  hasClinicalTrials?: boolean;
+  hasEthicalReview?: boolean;
+  complianceStandards?: string;
+  regulatoryChallenges?: string;
   
   // Contact (Step 6)
   organization: string;
   contactName: string;
   contactEmail: string;
-  contactPhone?: string;
-  website?: string;
+  phoneNumber?: string; // Updated from contactPhone
   address?: string;
+  additionalInfo?: string;
+  allowPublicContact?: boolean;
 }
 
 // Progress tracking for multi-step form

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -24,7 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // Form schema
 const formSchema = z.object({
-  regulatoryStatus: z.enum(['notStarted', 'inProgress', 'approved', 'notApplicable']),
+  regulatoryStatusType: z.enum(['notStarted', 'inProgress', 'approved', 'notApplicable']),
   approvalType: z.string().optional(),
   approvalDetails: z.string().optional(),
   hasRiskAssessment: z.boolean().default(false),
@@ -42,7 +41,7 @@ export default function RegulatoryPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      regulatoryStatus: (formData.regulatoryStatus as any) || "notStarted",
+      regulatoryStatusType: formData.regulatoryStatusType || "notStarted",
       approvalType: formData.approvalType || "",
       approvalDetails: formData.approvalDetails || "",
       hasRiskAssessment: formData.hasRiskAssessment || false,
@@ -56,7 +55,13 @@ export default function RegulatoryPage() {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     // Update form data in context
     updateFormData({
-      ...data
+      ...data,
+      // Add the regulatoryStatus object to match the type definition
+      regulatoryStatus: {
+        compliant: data.regulatoryStatusType === 'approved',
+        certifications: [],
+        pendingApprovals: []
+      }
     });
     
     // Mark this step as completed
@@ -86,7 +91,7 @@ export default function RegulatoryPage() {
   };
   
   // Watch regulatory status to conditionally show fields
-  const regulatoryStatus = form.watch('regulatoryStatus');
+  const regulatoryStatusType = form.watch('regulatoryStatusType');
 
   return (
     <SubmissionLayout onNext={handleNext} nextButtonText="Continue to Contact Information">
@@ -100,7 +105,7 @@ export default function RegulatoryPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="regulatoryStatus"
+              name="regulatoryStatusType"
               render={({ field }) => (
                 <FormItem className="space-y-3">
                   <FormLabel>Regulatory Approval Status</FormLabel>
@@ -136,7 +141,7 @@ export default function RegulatoryPage() {
               )}
             />
             
-            {(regulatoryStatus === 'inProgress' || regulatoryStatus === 'approved') && (
+            {(regulatoryStatusType === 'inProgress' || regulatoryStatusType === 'approved') && (
               <>
                 <FormField
                   control={form.control}

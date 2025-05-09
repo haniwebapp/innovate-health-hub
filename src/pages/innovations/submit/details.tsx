@@ -22,10 +22,10 @@ import { Label } from "@/components/ui/label";
 
 // Form schema
 const formSchema = z.object({
-  fullDescription: z.string().min(100, "Full description must be at least 100 characters").max(2000),
-  implementationStatus: z.enum(['concept', 'prototype', 'pilot', 'market']),
-  problemStatement: z.string().min(50, "Problem statement must be at least 50 characters").max(1000),
-  solutionDescription: z.string().min(50, "Solution description must be at least 50 characters").max(1000),
+  longDescription: z.string().min(100, "Full description must be at least 100 characters").max(2000),
+  implementationStatus: z.enum(['Concept', 'Prototype', 'Pilot', 'Deployed']),
+  problem: z.string().min(50, "Problem statement must be at least 50 characters").max(1000),
+  solution: z.string().min(50, "Solution description must be at least 50 characters").max(1000),
 });
 
 export default function DetailsPage() {
@@ -36,10 +36,10 @@ export default function DetailsPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullDescription: formData.fullDescription || "",
-      implementationStatus: (formData.implementationStatus as any) || "concept",
-      problemStatement: formData.problemStatement || "",
-      solutionDescription: formData.solutionDescription || "",
+      longDescription: formData.longDescription || "",
+      implementationStatus: (formData.implementationStatus as any) || "Concept",
+      problem: formData.problem || "",
+      solution: formData.solution || "",
     },
   });
   
@@ -87,7 +87,7 @@ export default function DetailsPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="fullDescription"
+              name="longDescription"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Description</FormLabel>
@@ -119,20 +119,20 @@ export default function DetailsPage() {
                       className="flex flex-col space-y-1"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="concept" id="concept" />
+                        <RadioGroupItem value="Concept" id="concept" />
                         <Label htmlFor="concept">Concept - Early idea stage</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="prototype" id="prototype" />
+                        <RadioGroupItem value="Prototype" id="prototype" />
                         <Label htmlFor="prototype">Prototype - Working model developed</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="pilot" id="pilot" />
+                        <RadioGroupItem value="Pilot" id="pilot" />
                         <Label htmlFor="pilot">Pilot - Testing with users</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="market" id="market" />
-                        <Label htmlFor="market">Market - Ready for or in market</Label>
+                        <RadioGroupItem value="Deployed" id="market" />
+                        <Label htmlFor="market">Deployed - Ready for or in market</Label>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -146,7 +146,7 @@ export default function DetailsPage() {
             
             <FormField
               control={form.control}
-              name="problemStatement"
+              name="problem"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Problem Statement</FormLabel>
@@ -167,7 +167,7 @@ export default function DetailsPage() {
             
             <FormField
               control={form.control}
-              name="solutionDescription"
+              name="solution"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Solution Description</FormLabel>

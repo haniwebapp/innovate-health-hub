@@ -23,7 +23,7 @@ import { Upload, X, FileText, Image, Video } from "lucide-react";
 // Form schema
 const formSchema = z.object({
   videoUrl: z.string().url("Please enter a valid URL").or(z.string().length(0)).optional(),
-  websiteUrl: z.string().url("Please enter a valid URL").or(z.string().length(0)).optional(),
+  website: z.string().url("Please enter a valid URL").or(z.string().length(0)).optional(),
 });
 
 export default function MediaPage() {
@@ -32,7 +32,7 @@ export default function MediaPage() {
   const [images, setImages] = useState<File[]>([]);
   const [documents, setDocuments] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>(
-    formData.imageUrls ? formData.imageUrls.map(url => url) : []
+    formData.imageUrls ? formData.imageUrls : []
   );
   const [documentNames, setDocumentNames] = useState<string[]>(
     formData.documentNames ? formData.documentNames : []
@@ -43,7 +43,7 @@ export default function MediaPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       videoUrl: formData.videoUrl || "",
-      websiteUrl: formData.websiteUrl || "",
+      website: formData.website || "",
     },
   });
   
@@ -116,7 +116,7 @@ export default function MediaPage() {
     updateFormData({
       ...data,
       images,
-      documents,
+      documentFiles: documents,
       imageUrls: imagePreviewUrls,
       documentNames
     });
@@ -283,7 +283,7 @@ export default function MediaPage() {
             {/* Website URL */}
             <FormField
               control={form.control}
-              name="websiteUrl"
+              name="website"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Website URL</FormLabel>

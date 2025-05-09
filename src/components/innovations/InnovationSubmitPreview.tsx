@@ -57,8 +57,8 @@ export default function InnovationSubmitPreview() {
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold text-xl text-moh-darkGreen">{formData.title}</h3>
-                {formData.shortDescription && (
-                  <p className="text-sm text-gray-600 mt-1">{formData.shortDescription}</p>
+                {formData.description && (
+                  <p className="text-sm text-gray-600 mt-1">{formData.description}</p>
                 )}
               </div>
               
@@ -84,8 +84,8 @@ export default function InnovationSubmitPreview() {
               <div className="space-y-2 pt-2 border-t">
                 {formData.implementationStatus && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Badge variant={formData.implementationStatus === 'concept' ? 'outline' : 'default'}>
-                      {formData.implementationStatus.charAt(0).toUpperCase() + formData.implementationStatus.slice(1)}
+                    <Badge variant={formData.implementationStatus === 'Concept' ? 'outline' : 'default'}>
+                      {formData.implementationStatus}
                     </Badge>
                     <span className="text-gray-500">Status</span>
                   </div>
@@ -99,14 +99,14 @@ export default function InnovationSubmitPreview() {
                   </div>
                 )}
                 
-                {formData.regulatoryStatus && (
+                {formData.regulatoryStatusType && (
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-gray-500">Regulatory:</span>
                     <Badge variant="outline" className="text-xs">
-                      {formData.regulatoryStatus === 'notStarted' && "Not Started"}
-                      {formData.regulatoryStatus === 'inProgress' && "In Progress"}
-                      {formData.regulatoryStatus === 'approved' && "Approved"}
-                      {formData.regulatoryStatus === 'notApplicable' && "N/A"}
+                      {formData.regulatoryStatusType === 'notStarted' && "Not Started"}
+                      {formData.regulatoryStatusType === 'inProgress' && "In Progress"}
+                      {formData.regulatoryStatusType === 'approved' && "Approved"}
+                      {formData.regulatoryStatusType === 'notApplicable' && "N/A"}
                     </Badge>
                   </div>
                 )}
