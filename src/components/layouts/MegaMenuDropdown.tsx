@@ -28,7 +28,7 @@ export default function MegaMenuDropdown({ categories }: MegaMenuDropdownProps) 
       <div className="flex p-6 gap-6">
         {categories.map((category, idx) => (
           <div key={idx} className="flex-1 min-w-[250px]">
-            <h4 className="font-medium text-moh-darkGreen mb-4 pb-2 border-b border-gray-100">
+            <h4 className="font-medium text-[11px] text-moh-darkGreen mb-4 pb-2 border-b border-gray-100">
               {category.title}
             </h4>
             <ul className="space-y-2">
@@ -36,7 +36,7 @@ export default function MegaMenuDropdown({ categories }: MegaMenuDropdownProps) 
                 <li key={itemIdx}>
                   <Link 
                     to={item.path}
-                    className="text-gray-600 hover:text-moh-green flex items-center py-1 transition-colors"
+                    className="text-[11px] text-gray-600 hover:text-moh-green flex items-center py-1 transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -48,12 +48,12 @@ export default function MegaMenuDropdown({ categories }: MegaMenuDropdownProps) 
       </div>
       
       <div className="bg-gray-50 p-4 flex justify-between items-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-[11px] text-gray-500">
           Discover more resources and tools in the {categories[0]?.title?.toLowerCase() || ""} section
         </p>
         <Link 
           to={categories[0]?.items[0]?.path || "#"}
-          className="text-sm text-moh-green hover:text-moh-darkGreen font-medium"
+          className="text-[11px] text-moh-green hover:text-moh-darkGreen font-medium"
         >
           View All
         </Link>
