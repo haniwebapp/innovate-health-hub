@@ -9,6 +9,8 @@ import FeaturedSection from "@/components/home/FeaturedSection";
 import ChallengesSection from "@/components/home/ChallengesSection";
 import InnovationJourney from "@/components/home/InnovationJourney";
 import ProcessFlowSection from "@/components/home/ProcessFlowSection";
+import InnovationGallery from "@/components/home/InnovationGallery";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -35,8 +37,10 @@ const Index = () => {
           <PlatformHighlights />
           <ProcessFlowSection />
           <AIDrivenSection />
+          <InnovationGallery />
           <FeaturedSection />
           <ChallengesSection />
+          <TestimonialsSection />
         </TooltipProvider>
       </main>
       <Footer />

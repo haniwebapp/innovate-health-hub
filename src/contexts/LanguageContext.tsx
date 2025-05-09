@@ -1,406 +1,388 @@
+
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define available languages
 export type Language = 'en' | 'ar';
 
-// Define context type
-type LanguageContextType = {
+// Define the context type
+interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (language: Language) => void;
   t: (key: string) => string;
-};
+}
 
-// Create context with default values
-const LanguageContext = createContext<LanguageContextType>({
+// Create context
+export const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
   setLanguage: () => {},
-  t: (key: string) => key,
+  t: () => '',
 });
 
-// Translation data
+// Define the provider props
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+// Translation dictionary
 const translations: Record<Language, Record<string, string>> = {
   en: {
     // Navigation
+    'nav.home': 'Home',
     'nav.about': 'About',
     'nav.challenges': 'Challenges',
     'nav.innovations': 'Innovations',
     'nav.investment': 'Investment',
     'nav.regulatory': 'Regulatory',
     'nav.knowledgeHub': 'Knowledge Hub',
-    'nav.allResources': 'All Resources',
-    'nav.articles': 'Articles',
-    'nav.videos': 'Videos',
-    'nav.guides': 'Guides',
-    'nav.researchPapers': 'Research Papers',
-    'nav.search': 'Search',
-    'nav.language': 'Language',
-    'nav.dashboard': 'Dashboard',
-    'nav.logout': 'Logout',
-    'nav.signIn': 'Sign In',
+    'nav.contact': 'Contact',
+    'nav.login': 'Login',
     'nav.register': 'Register',
-    
-    // Login page
-    'login.title': 'Innovation Platform',
-    'login.description': 'Enter your credentials to access the healthcare innovation ecosystem',
-    'login.signIn': 'Sign In',
-    'login.accessAccount': 'Access your account to manage innovations and challenges',
-    'login.termsAndPrivacy': 'By signing in, you agree to our Terms of Service and Privacy Policy',
-    'login.invalidCredentials': 'Invalid email or password. Please check your credentials and try again.',
-    'login.genericError': 'An error occurred during login. Please try again.',
-    'login.signingIn': 'Signing In...',
-    'login.dontHaveAccount': 'Don\'t have an account?',
-    
-    // Registration page
-    'register.title': 'Create an Account',
-    'register.description': 'Join the Saudi Ministry of Health Innovation Platform',
-    'register.firstName': 'First Name',
-    'register.lastName': 'Last Name',
-    'register.email': 'Email',
-    'register.password': 'Password',
-    'register.confirmPassword': 'Confirm Password',
-    'register.createAccount': 'Create Account',
-    'register.alreadyHaveAccount': 'Already have an account?',
-    'register.signin': 'Sign in',
-    'register.termsAgree': 'By registering, you agree to our Terms of Service and Privacy Policy',
-    'register.userType': 'User Type',
-    'register.individual': 'Individual',
-    'register.healthcareProfessional': 'Healthcare Professional',
-    'register.innovator': 'Innovator',
-    'register.investor': 'Investor',
-    'register.organization': 'Organization',
-    'register.organizationName': 'Organization Name',
-    'register.selectUserType': 'Select user type',
-    'register.creatingAccount': 'Creating Account...',
-    
-    // Verification page
-    'verification.title': 'Verify Your Email',
-    'verification.description': 'We\'ve sent you a verification email',
-    'verification.checkInbox': 'Please check your inbox and click the verification link to complete your registration.',
-    'verification.notReceived': 'Didn\'t receive the email?',
-    'verification.resendEmail': 'Resend verification email',
-    'verification.goToLogin': 'Back to login',
-    
-    // Dashboard
-    'dashboard.welcome': 'Welcome',
-    'dashboard.description': 'Manage your activities on the Ministry of Health Innovation Platform.',
-    'dashboard.overview': 'Overview',
-    'dashboard.myInnovations': 'My Innovations',
-    'dashboard.myChallenges': 'My Challenges',
-    'dashboard.activeChallenges': 'Active Challenges',
-    'dashboard.currentChallenges': 'Current challenges you can participate in',
-    'dashboard.yourInnovations': 'Your Innovations',
-    'dashboard.submittedInnovations': 'Innovations you\'ve submitted',
-    'dashboard.knowledgeHub': 'Knowledge Hub',
-    'dashboard.articlesResources': 'Articles and resources',
-    'dashboard.gettingStarted': 'Getting Started',
-    'dashboard.quickLinks': 'Quick links to help you navigate the platform',
-    'dashboard.submitInnovation': 'Submit an Innovation',
-    'dashboard.shareInnovation': 'Share your healthcare innovation with the Ministry of Health.',
-    'dashboard.getStarted': 'Get Started',
-    'dashboard.joinChallenge': 'Join a Challenge',
-    'dashboard.participateChallenges': 'Participate in healthcare innovation challenges.',
-    'dashboard.viewChallenges': 'View Challenges',
-    'dashboard.completeProfile': 'Complete Your Profile',
-    'dashboard.updateInfo': 'Update your information to get personalized opportunities.',
-    'dashboard.updateProfile': 'Update Profile',
-    'dashboard.exploreResources': 'Explore Resources',
-    'dashboard.accessResources': 'Access healthcare innovation resources and guides.',
-    'dashboard.browseResources': 'Browse Resources',
-    'dashboard.noInnovations': 'You haven\'t submitted any innovations yet.',
-    'dashboard.submitFirst': 'Submit your first innovation',
-    'dashboard.noChallenges': 'You haven\'t joined any challenges yet.',
-    'dashboard.browseAvailable': 'Browse available challenges',
-    
-    // Profile page
-    'profile.title': 'Profile',
-    'profile.description': 'Manage your account settings and profile information.',
-    'profile.accountSettings': 'Account Settings',
-    'profile.preferences': 'Manage your account preferences and security.',
-    'profile.emailNotifications': 'Email Notifications',
-    'profile.notificationsDesc': 'We\'ll notify you about important updates related to your activities on the platform.',
-    'profile.changeSettings': 'To change your notification settings, please contact support.',
-    'profile.password': 'Password',
-    'profile.passwordDesc': 'Make sure to use a strong, unique password to secure your account.',
-    'profile.passwordChange': 'Password changes are handled through the Supabase authentication system.',
-    
-    // About page
-    'about.title': 'About Our Health Innovation Platform',
-    'about.description': 'Transforming healthcare delivery through innovation, collaboration, and strategic partnerships across Saudi Arabia\'s healthcare ecosystem.',
-    'about.innovators': 'Innovators',
-    'about.challenges': 'Challenges',
-    'about.impact': 'National Impact',
-    'about.vision': 'Our Vision',
-    'about.visionText': 'To establish Saudi Arabia as a global leader in healthcare innovation, fostering a dynamic ecosystem that addresses national health priorities and improves the quality of life for all citizens in line with Vision 2030.',
-    'about.mission': 'Our Mission',
-    'about.missionText': 'We connect innovators, healthcare providers, regulators, and investors to accelerate the development and deployment of transformative healthcare solutions, creating a seamless pathway from idea to implementation across the Kingdom.',
-    'about.focusAreas': 'Our Key Focus Areas',
-    'about.focusDescription': 'We are committed to addressing Saudi Arabia\'s most pressing healthcare challenges through innovation and collaboration.',
-    'about.preventative': 'Preventative Healthcare',
-    'about.preventativeDesc': 'Shifting from treatment to prevention with innovative solutions for early detection and monitoring.',
-    'about.infrastructure': 'Healthcare Infrastructure',
-    'about.infrastructureDesc': 'Building resilient healthcare infrastructure that efficiently delivers services across the Kingdom.',
-    'about.digital': 'Digital Health',
-    'about.digitalDesc': 'Leveraging technology to provide accessible, personalized, and efficient healthcare services.',
-    'about.partners': 'Our Strategic Partners',
-    'about.joinCommunity': 'Join Our Innovation Community',
-    'about.joinDescription': 'Be part of Saudi Arabia\'s healthcare transformation. Whether you\'re an innovator, investor, or healthcare provider, there\'s a place for you in our growing community.',
-    'about.registerNow': 'Register Now',
-    'about.learnMore': 'Learn More',
-    
-    // Challenge detail page
-    'challenge.backToChallenges': 'Back to Challenges',
-    'challenge.overview': 'Overview',
-    'challenge.requirements': 'Requirements',
-    'challenge.timeline': 'Timeline',
-    'challenge.notFound': 'Challenge Not Found',
-    'challenge.notFoundDesc': 'The challenge you\'re looking for doesn\'t exist or has been removed.',
-    
-    // 404 Not Found page
-    'notFound.title': '404',
-    'notFound.description': 'Oops! Page not found',
-    'notFound.returnHome': 'Return to Home',
+    'nav.dashboard': 'Dashboard',
+    'nav.profile': 'Profile',
+    'nav.logout': 'Logout',
     
     // General
     'general.english': 'English',
     'general.arabic': 'Arabic',
+    'general.readMore': 'Read More',
+    'general.viewAll': 'View All',
+    'general.learnMore': 'Learn More',
+    'general.getStarted': 'Get Started',
+    'general.seeMore': 'See More',
+    'general.back': 'Back',
+    'general.next': 'Next',
+    'general.previous': 'Previous',
+    'general.or': 'or',
     
-    // Home Hero Section
-    'home.hero.titleGradient': 'Empowering Health Innovation',
-    'home.hero.titleDark': 'for a Better Tomorrow',
-    'home.hero.description': 'A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.',
+    // Hero section
+    'home.hero.titleGradient': 'Health Innovation Platform',
+    'home.hero.titleDark': 'Empowering Health Innovation for a Better Tomorrow',
+    'home.hero.description': 'A one-stop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.',
     'home.hero.exploreButton': 'Explore Innovations',
     'home.hero.joinButton': 'Join a Challenge',
     'home.hero.investmentButton': 'Access Investment',
-    'home.hero.stats.innovators': 'Innovators',
+    'home.hero.stats.innovators': 'Registered Innovators',
     'home.hero.stats.investments': 'Investments (SAR)',
     'home.hero.stats.challenges': 'Active Challenges',
     
-    // About Section
-    'home.about.tag': 'About the Platform',
-    'home.about.title': 'Transforming Healthcare Through Innovation',
-    'home.about.paragraph1': 'The Health Innovation Platform is a key initiative aligned with Saudi Arabia\'s Vision 2030 and the Ministry of Health\'s strategic goals to transform healthcare delivery across the Kingdom.',
-    'home.about.paragraph2': 'Our platform serves as a comprehensive ecosystem connecting innovators, investors, and regulators, streamlining the journey from idea to implementation.',
-    'home.about.vision2030Button': 'Learn About Vision 2030',
-    'home.about.strategyButton': 'Ministry Strategy',
-    'home.about.videoOverlay': 'Overview Video',
-    'home.about.videoDuration': '2:45',
+    // About section
+    'home.about.title': 'Transforming Saudi Healthcare',
+    'home.about.subtitle': 'Aligned with Vision 2030',
+    'home.about.description': 'The Health Innovation Platform supports the digital transformation of healthcare delivery in Saudi Arabia, in line with the goals of Vision 2030 and the Ministry of Health's strategic objectives.',
+    'home.about.videoCaption': 'Discover how our platform streamlines the innovation journey',
+    'home.about.statTitle1': 'Faster Innovation',
+    'home.about.statDescription1': 'Reduce time to market by connecting innovators with regulators and investors',
+    'home.about.statTitle2': 'Better Access',
+    'home.about.statDescription2': 'Improve healthcare accessibility through technologies that reach more patients',
+    'home.about.statTitle3': 'Lower Costs',
+    'home.about.statDescription3': 'Drive efficiency and reduce healthcare delivery costs through innovation',
     
-    // Platform Highlights
-    'home.highlights.tag': 'Platform Highlights',
-    'home.highlights.title': 'Your Complete Innovation Ecosystem',
-    'home.highlights.description': 'Our comprehensive suite of tools and services designed to support healthcare innovators at every stage of development.',
+    // Platform highlights
+    'home.highlights.tag': 'Platform Features',
+    'home.highlights.title': 'A Complete Health Innovation Ecosystem',
+    'home.highlights.description': 'Our platform brings together all elements of the healthcare innovation ecosystem in one integrated environment.',
     'home.highlights.feature1.title': 'AI-Powered Innovation Matching',
-    'home.highlights.feature1.description': 'Our advanced AI algorithms connect innovators with the right investors, mentors, and resources.',
+    'home.highlights.feature1.description': 'Advanced algorithms match innovations with the right investors, regulators, and healthcare providers.',
     'home.highlights.feature2.title': 'Regulatory Sandbox Access',
-    'home.highlights.feature2.description': 'Test your innovations in a controlled environment with direct access to MOH regulatory guidance.',
+    'home.highlights.feature2.description': 'Streamlined access to regulatory testing environments for faster approval and implementation.',
     'home.highlights.feature3.title': 'Investment Marketplace',
-    'home.highlights.feature3.description': 'Connect with qualified investors seeking to fund the next breakthrough in healthcare innovation.',
+    'home.highlights.feature3.description': 'Connect with public and private investors interested in healthcare innovation.',
     'home.highlights.feature4.title': 'Knowledge Hub',
-    'home.highlights.feature4.description': 'Access resources, case studies, and best practices to accelerate your innovation journey.',
-    'home.highlights.feature5.title': 'Challenge Submissions',
-    'home.highlights.feature5.description': 'Participate in MOH-sponsored innovation challenges to solve critical healthcare problems.',
-    'home.highlights.feature6.title': 'Global Health Network',
-    'home.highlights.feature6.description': 'Connect with international partners and access global health innovation trends and insights.',
+    'home.highlights.feature4.description': 'Access resources, research, and best practices to inform your innovation journey.',
+    'home.highlights.feature5.title': 'Challenge Submission Platform',
+    'home.highlights.feature5.description': 'Participate in challenges from the Ministry of Health and healthcare providers.',
+    'home.highlights.feature6.title': 'Global Collaboration Network',
+    'home.highlights.feature6.description': 'Connect with international healthcare innovators and experts.',
     
-    // Featured Section
-    'home.featured.title': 'Platform Impact',
-    'home.featured.description': 'Driving real-world healthcare transformation through innovation and collaboration.',
+    // AI-driven section
+    'home.ai.title': 'AI-Driven Innovation',
+    'home.ai.subtitle': 'Powering the Future of Healthcare',
+    'home.ai.description': 'Our platform leverages artificial intelligence to accelerate innovation, improve matching, and provide predictive insights.',
+    'home.ai.feature1': 'Personalized Recommendations',
+    'home.ai.feature2': 'Predictive Success Modeling',
+    'home.ai.feature3': 'Trend Analysis',
+    'home.ai.feature4': 'Automated Documentation',
+    
+    // Featured section
+    'home.featured.title': 'Success Stories',
+    'home.featured.description': 'Discover innovations that have successfully navigated the healthcare ecosystem through our platform.',
+    'home.featured.readMore': 'Read the full story',
     'home.featured.stats.innovators': 'Registered Innovators',
-    'home.featured.stats.investments': 'Investment Deals Closed',
+    'home.featured.stats.investments': 'Total Investment (SAR)',
     'home.featured.stats.launched': 'Solutions Launched',
     'home.featured.stats.success': 'Success Rate',
-    'home.featured.stories.title': 'Success Stories',
-    'home.featured.readMore': 'Read More',
-    'home.featured.story1.title': 'AI Diagnostic Platform',
-    'home.featured.story1.category': 'Healthcare Tech',
-    'home.featured.story1.description': 'An innovative AI platform that helps diagnose respiratory conditions with 97% accuracy, now deployed in 12 MOH hospitals.',
-    'home.featured.story2.title': 'Portable Dialysis Device',
-    'home.featured.story2.category': 'Medical Device',
-    'home.featured.story2.description': 'Revolutionary portable dialysis technology making treatment accessible to remote communities across Saudi Arabia.',
-    'home.featured.story3.title': 'Healthcare Data Platform',
-    'home.featured.story3.category': 'Digital Health',
-    'home.featured.story3.description': 'Secure patient data platform enabling seamless communication between providers while maintaining strict privacy standards.',
+    'home.featured.stories.title': 'Featured Success Stories',
+    'home.featured.story1.title': 'AI-Powered Diagnostic Tool',
+    'home.featured.story1.category': 'Artificial Intelligence',
+    'home.featured.story1.description': 'A machine learning algorithm that improves early cancer detection by analyzing medical imaging data.',
+    'home.featured.story2.title': 'Remote Patient Monitoring System',
+    'home.featured.story2.category': 'Digital Health',
+    'home.featured.story2.description': 'IoT-enabled remote monitoring system for chronic disease management, reducing hospital readmissions by 35%.',
+    'home.featured.story3.title': 'Healthcare Supply Chain Platform',
+    'home.featured.story3.category': 'Infrastructure',
+    'home.featured.story3.description': 'Blockchain-based platform improving medical supply chain transparency and efficiency across Saudi hospitals.',
     
-    // Challenges Section
-    'home.challenges.tag': 'Innovation Challenges',
-    'home.challenges.title': 'Upcoming Opportunities',
-    'home.challenges.description': 'Join MOH-sponsored challenges to solve critical healthcare issues and unlock funding opportunities.',
-    'home.challenges.viewAll': 'View All Challenges',
-    'home.challenges.viewChallenge': 'View Challenge',
-    'home.challenges.deadline': 'Deadline',
-    'home.challenges.participants': 'Participants',
-    'home.challenges.prize': 'Prize',
-    'home.challenges.nextDeadline': 'Next challenge submission deadline',
-    'home.challenges.challenge1.title': 'Remote Patient Monitoring Solutions',
-    'home.challenges.challenge1.description': 'Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.',
+    // Challenges section
+    'home.challenges.title': 'Current Innovation Challenges',
+    'home.challenges.description': 'Join these healthcare challenges and contribute your innovations to solving critical issues.',
+    'home.challenges.viewAllButton': 'View All Challenges',
+    'home.challenges.daysLeft': 'days left',
+    'home.challenges.challenge1.title': 'Diabetes Management Solutions',
+    'home.challenges.challenge1.description': 'Seeking innovative technologies to improve diabetes management and patient outcomes.',
     'home.challenges.challenge1.deadline': 'June 30, 2025',
-    'home.challenges.challenge1.category': 'Digital Health',
-    'home.challenges.challenge2.title': 'AI for Early Disease Detection',
-    'home.challenges.challenge2.description': 'Develop AI algorithms to detect early signs of diseases using existing health data from MOH facilities.',
+    'home.challenges.challenge1.category': 'Chronic Disease Management',
+    'home.challenges.challenge2.title': 'Medical Imaging AI',
+    'home.challenges.challenge2.description': 'AI solutions to enhance diagnostic accuracy and efficiency in medical imaging.',
     'home.challenges.challenge2.deadline': 'July 15, 2025',
     'home.challenges.challenge2.category': 'AI & Machine Learning',
     'home.challenges.challenge3.title': 'Healthcare Supply Chain Optimization',
-    'home.challenges.challenge3.description': 'Create solutions to improve the efficiency and resilience of medical supply chains across Saudi Arabia.',
+    'home.challenges.challenge3.description': 'Create solutions to improve efficiency and resilience of medical supply chains across Saudi Arabia.',
     'home.challenges.challenge3.deadline': 'August 22, 2025',
     'home.challenges.challenge3.category': 'Logistics',
     
-    // Footer Section
+    // Innovation Gallery
+    'home.innovations.tag': 'Featured Innovations',
+    'home.innovations.title': 'Discover Healthcare Innovations',
+    'home.innovations.description': 'Explore cutting-edge solutions transforming healthcare delivery in Saudi Arabia and beyond.',
+    'home.innovations.viewAllButton': 'View All Innovations',
+    'home.innovations.filters.all': 'All',
+    'home.innovations.filters.featured': 'Featured',
+    'home.innovations.filters.highTRL': 'Market-Ready',
+    'home.innovations.filters.digitalHealth': 'Digital Health',
+    'home.innovations.filters.ai': 'AI & ML',
+    'home.innovations.filters.devices': 'Devices',
+    
+    // Testimonials section
+    'home.testimonials.tag': 'Testimonials',
+    'home.testimonials.title': 'What Our Users Say',
+    'home.partners.title': 'Our Strategic Partners',
+    'home.partners.subtitle': 'Collaborating to transform healthcare innovation across Saudi Arabia',
+    
+    // Footer
     'footer.mohLogo': 'Ministry of Health Logo',
-    'footer.description': 'A Ministry of Health initiative supporting healthcare innovation across Saudi Arabia.',
+    'footer.description': 'The Health Innovation Platform connects healthcare innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.',
     'footer.quickLinks': 'Quick Links',
-    'footer.aboutPlatform': 'About the Platform',
-    'footer.innovationChallenges': 'Innovation Challenges',
-    'footer.investmentOpportunities': 'Investment Opportunities',
-    'footer.regulatorySandbox': 'Regulatory Sandbox',
-    'footer.knowledgeHub': 'Knowledge Hub',
     'footer.resources': 'Resources',
-    'footer.vision2030': 'Vision 2030',
-    'footer.mohStrategy': 'MOH Strategy',
-    'footer.policies': 'Policies & Guidelines',
-    'footer.successStories': 'Success Stories',
-    'footer.contactSupport': 'Contact Support',
     'footer.newsletter': 'Newsletter',
-    'footer.subscribeText': 'Subscribe to stay updated with the latest innovations and opportunities.',
-    'footer.emailPlaceholder': 'Email address',
+    'footer.subscribeText': 'Stay updated with the latest innovations and challenges',
+    'footer.emailPlaceholder': 'Your email',
     'footer.subscribe': 'Subscribe',
     'footer.copyright': 'Ministry of Health, Kingdom of Saudi Arabia. All rights reserved.',
     'footer.privacyPolicy': 'Privacy Policy',
     'footer.termsOfService': 'Terms of Service',
     'footer.accessibility': 'Accessibility',
+    'footer.aboutPlatform': 'About the Platform',
+    'footer.innovationChallenges': 'Innovation Challenges',
+    'footer.investmentOpportunities': 'Investment Opportunities',
+    'footer.regulatorySandbox': 'Regulatory Sandbox',
+    'footer.knowledgeHub': 'Knowledge Hub',
+    'footer.vision2030': 'Vision 2030',
+    'footer.mohStrategy': 'MoH Strategy',
+    'footer.policies': 'Healthcare Policies',
+    'footer.successStories': 'Success Stories',
+    'footer.contactSupport': 'Contact Support',
+    
+    // About page
+    'about.title': 'About the Health Innovation Platform',
+    'about.subtitle': 'Accelerating Healthcare Transformation',
+    'about.description': 'The Health Innovation Platform is a Ministry of Health initiative designed to connect healthcare innovators with the resources, partners, and pathways they need to succeed.',
+    'about.vision': 'Our Vision',
+    'about.visionText': 'To create the leading healthcare innovation ecosystem in the Middle East, fostering solutions that improve health outcomes, enhance patient experience, and optimize healthcare delivery.',
+    'about.mission': 'Our Mission',
+    'about.missionText': 'To accelerate healthcare innovation by connecting innovators, investors, and regulators in a streamlined environment that supports rapid development and implementation of transformative healthcare solutions.',
+    'about.focusAreas': 'Our Focus Areas',
+    'about.prevention': 'Preventive Care',
+    'about.preventionDesc': 'Technologies and approaches that shift the focus from treatment to prevention.',
+    'about.access': 'Healthcare Access',
+    'about.accessDesc': 'Solutions that improve healthcare accessibility across all regions of Saudi Arabia.',
+    'about.quality': 'Quality Improvement',
+    'about.qualityDesc': 'Innovations that enhance the quality and safety of healthcare services.',
+    'about.efficiency': 'Operational Efficiency',
+    'about.efficiencyDesc': 'Technologies that optimize healthcare operations and resource utilization.',
+    'about.infrastructure': 'Healthcare Infrastructure',
+    'about.infrastructureDesc': 'Building resilient healthcare infrastructure that delivers services efficiently across the Kingdom.',
+    'about.digital': 'Digital Health',
+    'about.digitalDesc': 'Leveraging technology to provide accessible, personalized, and effective healthcare services.',
+    'about.partners': 'Our Strategic Partners',
+    'about.joinCommunity': 'Join Our Innovation Community',
+    'about.joinDescription': 'Be part of the healthcare transformation in Saudi Arabia. Whether you're an innovator, investor, or healthcare provider, there's a place for you in our growing community.',
+    'about.registerNow': 'Register Now',
+    'about.contactUs': 'Contact Us',
   },
   ar: {
     // Navigation
-    'nav.about': 'نبذة عنا',
+    'nav.home': 'الرئيسية',
+    'nav.about': 'عن المنصة',
     'nav.challenges': 'التحديات',
     'nav.innovations': 'الابتكارات',
     'nav.investment': 'الاستثمار',
     'nav.regulatory': 'التنظيم',
     'nav.knowledgeHub': 'مركز المعرفة',
-    'nav.allResources': 'جميع الموارد',
-    'nav.articles': 'المقالات',
-    'nav.videos': 'الفيديوهات',
-    'nav.guides': 'الأدلة',
-    'nav.researchPapers': 'الأبحاث',
-    'nav.search': 'بحث',
-    'nav.language': 'اللغة',
-    'nav.dashboard': 'لوحة التحكم',
-    'nav.logout': 'تسجيل الخروج',
-    'nav.signIn': 'تسجيل الدخول',
-    'nav.register': 'التسجيل',
+    'nav.contact': 'اتصل بنا',
     'nav.login': 'تسجيل الدخول',
+    'nav.register': 'التسجيل',
+    'nav.dashboard': 'لوحة التحكم',
+    'nav.profile': 'الملف الشخصي',
+    'nav.logout': 'تسجيل الخروج',
     
-    // Login page
-    'login.title': 'منصة الابتكار',
-    'login.description': 'أدخل بيانات الاعتماد للوصول إلى نظام الابتكار الصحي',
-    'login.signIn': 'تسجيل الدخول',
-    'login.accessAccount': 'الوصول إلى حسابك لإدارة الابتكارات والتحديات',
-    'login.termsAndPrivacy': 'بتسجيل الدخول، فإنك توافق على شروط الخدمة وسياسة الخصوصية',
-    'login.invalidCredentials': 'بريد إلكتروني أو كلمة مرور غير صالحة. يرجى التحقق من بيانات الاعتماد الخاصة بك والمحاولة مرة أخرى.',
-    'login.genericError': 'حدث خطأ أثناء تسجيل الدخول. الرجاء معاودة المحاولة في وقت لاحق.',
-    'login.signingIn': 'جاري تسجيل الدخول...',
-    'login.dontHaveAccount': 'ليس لديك حساب؟',
+    // General
+    'general.english': 'English',
+    'general.arabic': 'العربية',
+    'general.readMore': 'اقرأ المزيد',
+    'general.viewAll': 'عرض الكل',
+    'general.learnMore': 'تعرّف على المزيد',
+    'general.getStarted': 'ابدأ الآن',
+    'general.seeMore': 'شاهد المزيد',
+    'general.back': 'رجوع',
+    'general.next': 'التالي',
+    'general.previous': 'السابق',
+    'general.or': 'أو',
     
-    // Registration page
-    'register.title': 'إنشاء حساب',
-    'register.description': 'انضم إلى منصة الابتكار لوزارة الصحة السعودية',
-    'register.firstName': 'الاسم الأول',
-    'register.lastName': 'اسم العائلة',
-    'register.email': 'البريد الإلكتروني',
-    'register.password': 'كلمة المرور',
-    'register.confirmPassword': 'تأكيد كلمة المرور',
-    'register.createAccount': 'إنشاء حساب',
-    'register.alreadyHaveAccount': 'هل لديك حساب بالفعل؟',
-    'register.signin': 'تسجيل الدخول',
-    'register.termsAgree': 'بالتسجيل، فإنك توافق على شروط الخدمة وسياسة الخصوصية',
-    'register.userType': 'نوع المستخدم',
-    'register.individual': 'فرد',
-    'register.healthcareProfessional': 'متخصص رعاية صحية',
-    'register.innovator': 'مبتكر',
-    'register.investor': 'مستثمر',
-    'register.organization': 'مؤسسة',
-    'register.organizationName': 'اسم المؤسسة',
-    'register.selectUserType': 'اختر نوع المستخدم',
-    'register.creatingAccount': 'جاري إنشاء الحساب...',
+    // Hero section
+    'home.hero.titleGradient': 'منصة الابتكار الصحي',
+    'home.hero.titleDark': 'تمكين الابتكار الصحي لغد أفضل',
+    'home.hero.description': 'منصة شاملة تربط بين مبتكري الرعاية الصحية والمستثمرين والمنظمين لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
+    'home.hero.exploreButton': 'استكشاف الابتكارات',
+    'home.hero.joinButton': 'انضم إلى تحدي',
+    'home.hero.investmentButton': 'الوصول للاستثمار',
+    'home.hero.stats.innovators': 'المبتكرون',
+    'home.hero.stats.investments': 'الاستثمارات (ريال)',
+    'home.hero.stats.challenges': 'التحديات النشطة',
     
-    // Verification page
-    'verification.title': 'تحقق من بريدك الإلكتروني',
-    'verification.description': 'لقد أرسلنا إليك بريدًا إلكترونيًا للتحقق',
-    'verification.checkInbox': 'يرجى التحقق من صندوق الوارد الخاص بك والنقر على رابط التحقق لإكمال التسجيل.',
-    'verification.notReceived': 'لم تستلم البريد الإلكتروني؟',
-    'verification.resendEmail': 'إعادة إرسال البريد الإلكتروني للتحقق',
-    'verification.goToLogin': 'العودة لتسجيل الدخول',
+    // About section
+    'home.about.title': 'تحويل الرعاية الصحية في السعودية',
+    'home.about.subtitle': 'متوافق مع رؤية 2030',
+    'home.about.description': 'تدعم منصة الابتكار الصحي التحول الرقمي في تقديم الرعاية الصحية في المملكة العربية السعودية، بما يتماشى مع أهداف رؤية 2030 والأهداف الاستراتيجية لوزارة الصحة.',
+    'home.about.videoCaption': 'اكتشف كيف تقوم منصتنا بتبسيط رحلة الابتكار',
+    'home.about.statTitle1': 'ابتكار أسرع',
+    'home.about.statDescription1': 'تقليل الوقت اللازم للوصول إلى السوق من خلال ربط المبتكرين بالجهات التنظيمية والمستثمرين',
+    'home.about.statTitle2': 'وصول أفضل',
+    'home.about.statDescription2': 'تحسين إمكانية الوصول إلى الرعاية الصحية من خلال التقنيات التي تصل إلى المزيد من المرضى',
+    'home.about.statTitle3': 'تكاليف أقل',
+    'home.about.statDescription3': 'تعزيز الكفاءة وتقليل تكاليف تقديم الرعاية الصحية من خلال الابتكار',
     
-    // Dashboard
-    'dashboard.welcome': 'مرحبًا',
-    'dashboard.description': 'إدارة أنشطتك على منصة الابتكار لوزارة الصحة.',
-    'dashboard.overview': 'نظرة عامة',
-    'dashboard.myInnovations': 'ابتكاراتي',
-    'dashboard.myChallenges': 'تحدياتي',
-    'dashboard.activeChallenges': 'التحديات النشطة',
-    'dashboard.currentChallenges': 'التحديات الحالية التي يمكنك المشاركة فيها',
-    'dashboard.yourInnovations': 'ابتكاراتك',
-    'dashboard.submittedInnovations': 'الابتكارات التي قدمتها',
-    'dashboard.knowledgeHub': 'مركز المعرفة',
-    'dashboard.articlesResources': 'المقالات والموارد',
-    'dashboard.gettingStarted': 'البدء',
-    'dashboard.quickLinks': 'روابط سريعة لمساعدتك في استخدام المنصة',
-    'dashboard.submitInnovation': 'تقديم ابتكار',
-    'dashboard.shareInnovation': 'شارك ابتكارك الصحي مع وزارة الصحة.',
-    'dashboard.getStarted': 'ابدأ الآن',
-    'dashboard.joinChallenge': 'الانضمام إلى تحدي',
-    'dashboard.participateChallenges': 'المشاركة في تحديات الابتكار الصحي.',
-    'dashboard.viewChallenges': 'عرض التحديات',
-    'dashboard.completeProfile': 'إكمال ملفك الشخصي',
-    'dashboard.updateInfo': 'قم بتحديث معلوماتك للحصول على فرص مخصصة.',
-    'dashboard.updateProfile': 'تحديث الملف الشخصي',
-    'dashboard.exploreResources': 'استكشاف الموارد',
-    'dashboard.accessResources': 'الوصول إلى موارد وأدلة الابتكار الصحي.',
-    'dashboard.browseResources': 'تصفح الموارد',
-    'dashboard.noInnovations': 'لم تقدم أي ابتكارات حتى الآن.',
-    'dashboard.submitFirst': 'قدم أول ابتكار لك',
-    'dashboard.noChallenges': 'لم تنضم إلى أي تحديات حتى الآن.',
-    'dashboard.browseAvailable': 'تصفح التحديات المتاحة',
+    // Platform highlights
+    'home.highlights.tag': 'ميزات المنصة',
+    'home.highlights.title': 'نظام متكامل للابتكار الصحي',
+    'home.highlights.description': 'تجمع منصتنا جميع عناصر نظام ابتكار الرعاية الصحية في بيئة متكاملة واحدة.',
+    'home.highlights.feature1.title': 'مطابقة الابتكارات بالذكاء الاصطناعي',
+    'home.highlights.feature1.description': 'خوارزميات متقدمة تطابق الابتكارات مع المستثمرين والمنظمين ومقدمي الرعاية الصحية المناسبين.',
+    'home.highlights.feature2.title': 'الوصول إلى بيئة تجريبية تنظيمية',
+    'home.highlights.feature2.description': 'وصول مبسط إلى بيئات الاختبار التنظيمية للحصول على موافقة وتنفيذ أسرع.',
+    'home.highlights.feature3.title': 'سوق الاستثمار',
+    'home.highlights.feature3.description': 'التواصل مع المستثمرين من القطاعين العام والخاص المهتمين بابتكار الرعاية الصحية.',
+    'home.highlights.feature4.title': 'مركز المعرفة',
+    'home.highlights.feature4.description': 'الوصول إلى الموارد والأبحاث وأفضل الممارسات لإثراء رحلتك في الابتكار.',
+    'home.highlights.feature5.title': 'منصة تقديم التحديات',
+    'home.highlights.feature5.description': 'المشاركة في التحديات من وزارة الصحة ومقدمي الرعاية الصحية.',
+    'home.highlights.feature6.title': 'شبكة تعاون عالمية',
+    'home.highlights.feature6.description': 'التواصل مع مبتكري وخبراء الرعاية الصحية الدوليين.',
     
-    // Profile page
-    'profile.title': 'الملف الشخصي',
-    'profile.description': 'إدارة إعدادات حسابك ومعلومات ملفك الشخصي.',
-    'profile.accountSettings': 'إعدادات الحساب',
-    'profile.preferences': 'إدارة تفضيلات وأمان حسابك.',
-    'profile.emailNotifications': 'إشعارات البريد الإلكتروني',
-    'profile.notificationsDesc': 'سنخطرك بالتحديثات المهمة المتعلقة بأنشطتك على المنصة.',
-    'profile.changeSettings': 'لتغيير إعدادات الإشعارات، يرجى الاتصال بالدعم.',
-    'profile.password': 'كلمة المرور',
-    'profile.passwordDesc': 'تأكد من استخدام كلمة مرور قوية وفريدة لتأمين حسابك.',
-    'profile.passwordChange': 'يتم التعامل مع تغييرات كلمة المرور من خلال نظام المصادقة سوبابيس.',
+    // AI-driven section
+    'home.ai.title': 'الابتكار القائم على الذكاء الاصطناعي',
+    'home.ai.subtitle': 'تمكين مستقبل الرعاية الصحية',
+    'home.ai.description': 'تستخدم منصتنا الذكاء الاصطناعي لتسريع الابتكار، وتحسين المطابقة، وتقديم رؤى تنبؤية.',
+    'home.ai.feature1': 'توصيات شخصية',
+    'home.ai.feature2': 'نمذجة النجاح التنبؤية',
+    'home.ai.feature3': 'تحليل الاتجاهات',
+    'home.ai.feature4': 'التوثيق الآلي',
+    
+    // Featured section
+    'home.featured.title': 'قصص نجاح',
+    'home.featured.description': 'اكتشف الابتكارات التي نجحت في التنقل في نظام الرعاية الصحية من خلال منصتنا.',
+    'home.featured.readMore': 'اقرأ القصة كاملة',
+    'home.featured.stats.innovators': 'المبتكرون المسجلون',
+    'home.featured.stats.investments': 'إجمالي الاستثمار (ريال)',
+    'home.featured.stats.launched': 'الحلول المطلقة',
+    'home.featured.stats.success': 'معدل النجاح',
+    'home.featured.stories.title': 'قصص نجاح بارزة',
+    'home.featured.story1.title': 'أداة تشخيصية تعمل بالذكاء الاصطناعي',
+    'home.featured.story1.category': 'الذكاء الاصطناعي',
+    'home.featured.story1.description': 'خوارزمية تعلم آلي تحسن الكشف المبكر عن السرطان من خلال تحليل بيانات التصوير الطبي.',
+    'home.featured.story2.title': 'نظام مراقبة المرضى عن بعد',
+    'home.featured.story2.category': 'الصحة الرقمية',
+    'home.featured.story2.description': 'نظام مراقبة عن بعد يعمل بإنترنت الأشياء لإدارة الأمراض المزمنة، مما يقلل من إعادة دخول المستشفى بنسبة 35٪.',
+    'home.featured.story3.title': 'منصة سلسلة توريد الرعاية الصحية',
+    'home.featured.story3.category': 'البنية التحتية',
+    'home.featured.story3.description': 'منصة تعتمد على تقنية البلوك تشين لتحسين شفافية وكفاءة سلسلة التوريد الطبية عبر المستشفيات السعودية.',
+    
+    // Challenges section
+    'home.challenges.title': 'تحديات الابتكار الحالية',
+    'home.challenges.description': 'انضم إلى هذه التحديات الصحية وساهم بابتكاراتك في حل القضايا الحرجة.',
+    'home.challenges.viewAllButton': 'عرض جميع التحديات',
+    'home.challenges.daysLeft': 'يوم متبقي',
+    'home.challenges.challenge1.title': 'حلول إدارة مرض السكري',
+    'home.challenges.challenge1.description': 'البحث عن تقنيات مبتكرة لتحسين إدارة مرض السكري ونتائج المرضى.',
+    'home.challenges.challenge1.deadline': '30 يونيو 2025',
+    'home.challenges.challenge1.category': 'إدارة الأمراض المزمنة',
+    'home.challenges.challenge2.title': 'الذكاء الاصطناعي للتصوير الطبي',
+    'home.challenges.challenge2.description': 'حلول الذكاء الاصطناعي لتعزيز الدقة والكفاءة التشخيصية في التصوير الطبي.',
+    'home.challenges.challenge2.deadline': '15 يوليو 2025',
+    'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
+    'home.challenges.challenge3.title': 'تحسين سلسلة إمداد الرعاية الصحية',
+    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي across Saudi Arabia.',
+    'home.challenges.challenge3.deadline': '22 أغسطس 2025',
+    'home.challenges.challenge3.category': 'الخدمات اللوجستية',
+    
+    // Innovation Gallery
+    'home.innovations.tag': 'الابتكارات المميزة',
+    'home.innovations.title': 'اكتشف ابتكارات الرعاية الصحية',
+    'home.innovations.description': 'استكشف الحلول المتطورة التي تحول تقديم الرعاية الصحية في المملكة العربية السعودية وخارجها.',
+    'home.innovations.viewAllButton': 'عرض جميع الابتكارات',
+    'home.innovations.filters.all': 'الكل',
+    'home.innovations.filters.featured': 'مميزة',
+    'home.innovations.filters.highTRL': 'جاهزة للسوق',
+    'home.innovations.filters.digitalHealth': 'الصحة الرقمية',
+    'home.innovations.filters.ai': 'الذكاء الاصطناعي والتعلم الآلي',
+    'home.innovations.filters.devices': 'الأجهزة',
+    
+    // Testimonials section
+    'home.testimonials.tag': 'آراء المستخدمين',
+    'home.testimonials.title': 'ماذا يقول مستخدمونا',
+    'home.partners.title': 'شركاؤنا الاستراتيجيين',
+    'home.partners.subtitle': 'نتعاون لتحويل ابتكار الرعاية الصحية في جميع أنحاء المملكة العربية السعودية',
+    
+    // Footer
+    'footer.mohLogo': 'شعار وزارة الصحة',
+    'footer.description': 'تربط منصة الابتكار الصحي بين مبتكري الرعاية الصحية والمستثمرين والمنظمين لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
+    'footer.quickLinks': 'روابط سريعة',
+    'footer.resources': 'موارد',
+    'footer.newsletter': 'النشرة الإخبارية',
+    'footer.subscribeText': 'ابق على اطلاع بأحدث الابتكارات والتحديات',
+    'footer.emailPlaceholder': 'بريدك الإلكتروني',
+    'footer.subscribe': 'اشترك',
+    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
+    'footer.privacyPolicy': 'سياسة الخصوصية',
+    'footer.termsOfService': 'شروط الخدمة',
+    'footer.accessibility': 'إمكانية الوصول',
+    'footer.aboutPlatform': 'عن المنصة',
+    'footer.innovationChallenges': 'تحديات الابتكار',
+    'footer.investmentOpportunities': 'فرص الاستثمار',
+    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
+    'footer.knowledgeHub': 'مركز المعرفة',
+    'footer.vision2030': 'رؤية 2030',
+    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
+    'footer.policies': 'سياسات الرعاية الصحية',
+    'footer.successStories': 'قصص النجاح',
+    'footer.contactSupport': 'اتصل بالدعم',
     
     // About page
     'about.title': 'عن منصة الابتكار الصحي',
-    'about.description': 'تحويل تقديم الرعاية الصحية من خلال الابتكار والتعاون والشراكات الاستراتيجية عبر النظام البيئي للرعاية الصحية في المملكة العربية السعودية.',
-    'about.innovators': 'المبتكرون',
-    'about.innovatorsDescription': 'مبتكرون نشطون على المنصة',
-    'about.challenges': 'التحديات',
-    'about.challengesDescription': 'تحديات الابتكار المكتملة',
-    'about.solutions': 'الحلول',
-    'about.solutionsDescription': 'حلول مبتكرة تم تطويرها',
-    'about.patientsBenefited': 'المستفيدون',
-    'about.patientsBenefitedDescription': 'مرضى استفادوا من حلولنا',
-    'about.ourTeam': 'فريقنا',
-    'about.teamDescription': 'يعمل فريق متخصص من الخبراء على دفع مبادرات الابتكار الصحي في المملكة',
-    'about.chiefInnovationOfficer': 'رئيس قسم الابتكار',
-    'about.headOfResearch': 'رئيس قسم البحث والتطوير',
-    'about.digitalTransformationLead': 'قائد التحول الرقمي',
-    'about.healthcareAdvisor': 'مستشار الرعاية الصحية',
-    'about.ourImpact': 'تأثيرنا',
-    'about.impactDescription': 'منذ انطلاقتها، أحدثت منصة الابتكار الصحي تأثيرًا كبيرًا في قطاع الرعاية الصحية بالمملكة',
-    'about.impact': 'التأثير الوطني',
+    'about.subtitle': 'تسريع تحول الرعاية الصحية',
+    'about.description': 'منصة الابتكار الصحي هي مبادرة من وزارة الصحة مصممة لربط مبتكري الرعاية الصحية بالموارد والشركاء والمسارات التي يحتاجونها للنجاح.',
     'about.vision': 'رؤيتنا',
-    'about.visionText': 'أن تكون المملكة العربية السعودية رائدة عالمياً في مجال الابتكار الصحي، وتعزيز نظام بيئي ديناميكي يعالج أولويات الصحة الوطنية ويحسن جودة الحياة لجميع المواطنين بما يتماشى مع رؤية 2030.',
+    'about.visionText': 'إنشاء نظام ابتكار رائد للرعاية الصحية في الشرق الأوسط، ورعاية الحلول التي تحسن النتائج الصحية، وتعزز تجربة المريض، وتحسن تقديم الرعاية الصحية.',
     'about.mission': 'مهمتنا',
-    'about.missionText': 'نحن نربط المبتكرين ومقدمي الرعاية الصحية والمنظمين والمستثمرين لتسريع تطوير وتنفيذ حلول الرعاية الصحية التحويلية، وإنشاء مسار سلس من الفكرة إلى التنفيذ عبر المملكة.',
-    'about.focusAreas': 'مجالات التركيز الرئيسية',
-    'about.focusDescription': 'نحن ملتزمو بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
-    'about.preventative': 'الرعاية الصحية الوقائية',
-    'about.preventativeDesc': 'التحول من العلاج إلى الوقاية مع حلول مبتكرة للكشف المبكر والمراقبة.',
+    'about.missionText': 'تسريع ابتكار الرعاية الصحية من خلال ربط المبتكرين والمستثمرين والمنظمين في بيئة مبسطة تدعم التطوير السريع وتنفيذ حلول الرعاية الصحية التحويلية.',
+    'about.focusAreas': 'مجالات تركيزنا',
+    'about.prevention': 'الرعاية الوقائية',
+    'about.preventionDesc': 'التقنيات والنهج التي تحول التركيز من العلاج إلى الوقاية.',
+    'about.access': 'الوصول للرعاية الصحية',
+    'about.accessDesc': 'الحلول التي تحسن إمكانية الوصول إلى الرعاية الصحية في جميع مناطق المملكة العربية السعودية.',
+    'about.quality': 'تحسين الجودة',
+    'about.qualityDesc': 'الابتكارات التي تعزز جودة وسلامة خدمات الرعاية الصحية.',
+    'about.efficiency': 'الكفاءة التشغيلية',
+    'about.efficiencyDesc': 'التقنيات التي تحسن عمليات الرعاية الصحية واستخدام الموارد.',
     'about.infrastructure': 'البنية التحتية للرعاية الصحية',
     'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
     'about.digital': 'الصحة الرقمية',
@@ -409,193 +391,47 @@ const translations: Record<Language, Record<string, string>> = {
     'about.joinCommunity': 'انضم إلى مجتمع الابتكار لدينا',
     'about.joinDescription': 'كن جزءًا من تحول الرعاية الصحية في المملكة العربية السعودية. سواء كنت مبتكرًا أو مستثمرًا أو مقدم رعاية صحية، هناك مكان لك في مجتمعنا المتنامي.',
     'about.registerNow': 'سجل الآن',
-    'about.learnMore': 'اعرف المزيد',
-    
-    // Challenge detail page
-    'challenge.backToChallenges': 'العودة إلى التحديات',
-    'challenge.overview': 'نظرة عامة',
-    'challenge.requirements': 'المتطلبات',
-    'challenge.timeline': 'الجدول الزمني',
-    'challenge.notFound': 'التحدي غير موجود',
-    'challenge.notFoundDesc': 'التحدي الذي تبحث عنه غير موجود أو تمت إزالته.',
-    
-    // 404 Not Found page
-    'notFound.title': '404',
-    'notFound.description': 'عذراً! الصفحة غير موجودة',
-    'notFound.returnHome': 'العودة إلى الصفحة الرئيسية',
-    
-    // General
-    'general.english': 'الإنجليزية',
-    'general.arabic': 'العربية',
-    
-    // Home Hero Section
-    'home.hero.titleGradient': 'تمكين الابتكار الصحي',
-    'home.hero.titleDark': 'لغد أفضل',
-    'home.hero.description': 'منصة متكاملة تربط بين المبتكرين والمستثمرين والمنظمين في مجال الصحة لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
-    'home.hero.exploreButton': 'استكشاف الابتكارات',
-    'home.hero.joinButton': 'انضم إلى تحدي',
-    'home.hero.investmentButton': 'الوصول للاستثمار',
-    'home.hero.stats.innovators': '��لمبتكرون',
-    'home.hero.stats.investments': 'الاستثمارات (ريال)',
-    'home.hero.stats.challenges': 'التحديات النشطة',
-    
-    // About Section
-    'home.about.tag': 'عن المنصة',
-    'home.about.title': 'تحويل الرعاية الصحية من خلال الابتكار',
-    'home.about.paragraph1': 'تعد منصة الابتكار الصحي مبادرة رئيسية تتماشى مع رؤية المملكة 2030 والأهداف الاستراتيجية لوزارة الصحة لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة.',
-    'home.about.paragraph2': 'تعمل منصتنا كنظام بيئي شامل يربط المبتكرين والمستثمرين والمنظمين، مما يسهل الرحلة من الفكرة إلى التنفيذ.',
-    'home.about.vision2030Button': 'تعرف على رؤية 2030',
-    'home.about.strategyButton': 'استراتيجية الوزارة',
-    'home.about.videoOverlay': 'فيديو تعريفي',
-    'home.about.videoDuration': '2:45',
-    
-    // Platform Highlights
-    'home.highlights.tag': 'مميزات المنصة',
-    'home.highlights.title': 'نظام الابتكار المتكامل الخاص بك',
-    'home.highlights.description': 'مجموعة شاملة من الأدوات والخدمات المصممة لدعم مبتكري الرعاية الصحية في كل مرحلة من مراحل التطوير.',
-    'home.highlights.feature1.title': 'مطابقة الابتكار المدعومة بالذكاء الاصطناعي',
-    'home.highlights.feature1.description': 'خوارزمياتنا المتطورة للذكاء الاصطناعي تربط المبتكرين بالمستثمرين والموجهين والموارد المناسبة.',
-    'home.highlights.feature2.title': 'الوصول إلى البيئة التنظيمية التجريبية',
-    'home.highlights.feature2.description': 'اختبر ابتكاراتك في بيئة خاضعة للرقابة مع إمكانية الوصول المباشر إلى التوجيهات التنظيمية من وزارة الصحة.',
-    'home.highlights.feature3.title': 'سوق الاستثمار',
-    'home.highlights.feature3.description': 'تواصل مع مستثمرين مؤهلين يسعون لتمويل الابتكارات المستقبلية في الرعاية الصحية.',
-    'home.highlights.feature4.title': 'مركز المعرفة',
-    'home.highlights.feature4.description': 'الوصول إلى الموارد ودراسات الحالة وأفضل الممارسات لتسريع رحلة الابتكار الخاصة بك.',
-    'home.highlights.feature5.title': 'المشاركة في التحديات',
-    'home.highlights.feature5.description': 'شارك في تحديات الابتكار التي ترعاها وزارة الصحة لحل مشكلات الرعاية الصحية الحرجة.',
-    'home.highlights.feature6.title': 'شبكة الصحة العالمية',
-    'home.highlights.feature6.description': 'تواصل مع شركاء دوليين واطلع على اتجاهات ورؤى الابتكار الصحي العالمية.',
-    
-    // Featured Section
-    'home.featured.title': 'تأثير المنصة',
-    'home.featured.description': 'دفع التحول الواقعي للرعاية الصحية من خلال الابتكار والتعاون.',
-    'home.featured.stats.innovators': 'المبتكرون المسجلون',
-    'home.featured.stats.investments': 'صفقات الاستثمار المغلقة',
-    'home.featured.stats.launched': 'الحلول المطلقة',
-    'home.featured.stats.success': 'معدل النجاح',
-    'home.featured.stories.title': 'قصص النجاح',
-    'home.featured.readMore': 'قراءة المزيد',
-    'home.featured.story1.title': 'منصة التشخيص بالذكاء الاصطناعي',
-    'home.featured.story1.category': 'تقنية الرعاية الصحية',
-    'home.featured.story1.description': 'منصة ذكاء اصطناعي مبتكرة تساعد في تشخيص حالات الجهاز التنفسي بدقة 97٪، وتم نشرها الآن في 12 مستشفى تابع لوزارة الصحة.',
-    'home.featured.story2.title': 'جهاز غسيل كلى محمول',
-    'home.featured.story2.category': 'الأجهزة الطبية',
-    'home.featured.story2.description': 'تقنية غسيل الكلى المحمولة الثورية التي تجعل العلاج في متناول المجتمعات النائية في جميع أنحاء المملكة العربية السعودية.',
-    'home.featured.story3.title': 'منصة بيانات الرعاية الصحية',
-    'home.featured.story3.category': 'الصحة الرقمية',
-    'home.featured.story3.description': 'منصة بيانات المرضى الآمنة التي تمكن من التواصل السلس بين مقدمي الخدمة مع الحفاظ على معايير الخصوصية الصارمة.',
-    
-    // Challenges Section
-    'home.challenges.tag': 'تحديات الابتكار',
-    'home.challenges.title': 'الفرص القادمة',
-    'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة وفتح فرص التمويل.',
-    'home.challenges.viewAll': 'عرض جميع التحديات',
-    'home.challenges.viewChallenge': 'عرض التحدي',
-    'home.challenges.deadline': 'الموعد النهائي',
-    'home.challenges.participants': 'المشاركون',
-    'home.challenges.prize': 'الجائزة',
-    'home.challenges.nextDeadline': 'الموعد النهائي للتحدي القادم',
-    'home.challenges.challenge1.title': 'حلول مراقبة المرضى عن بعد',
-    'home.challenges.challenge1.description': 'تصميم حلول مبتكرة لمراقبة المرضى الذين يعانون من أمراض مزمنة في المناطق النائية من المملكة.',
-    'home.challenges.challenge1.deadline': '30 يونيو 2025',
-    'home.challenges.challenge1.category': 'الصحة الرقمية',
-    'home.challenges.challenge2.title': 'الذكاء الاصطناعي للكشف المبكر عن الأمراض',
-    'home.challenges.challenge2.description': 'تطوير خوارزميات الذكاء الاصطناعي للكشف عن العلامات المبكرة للأمراض باستخدام البيانات الصحية الموجودة من منشآت وزارة الصحة.',
-    'home.challenges.challenge2.deadline': '15 يوليو 2025',
-    'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
-    'home.challenges.challenge3.title': 'تحسين سلسلة إمداد الرعاية الصحية',
-    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي across Saudi Arabia.',
-    'home.challenges.challenge3.deadline': '22 أغسطس 2025',
-    'home.challenges.challenge3.category': 'الخدمات اللوجستية',
-    
-    // Footer Section
-    'footer.mohLogo': 'شعار وزارة الصحة',
-    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار الصحي في جميع أنحاء المملكة العربية السعودية.',
-    'footer.quickLinks': 'روابط سريعة',
-    'footer.aboutPlatform': 'عن المنصة',
-    'footer.innovationChallenges': 'تحديات الابتكار',
-    'footer.investmentOpportunities': 'فرص الاستثمار',
-    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
-    'footer.knowledgeHub': 'مركز المعرفة',
-    'footer.resources': 'الموارد',
-    'footer.vision2030': 'رؤية 2030',
-    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
-    'footer.policies': 'السياسات والإرشادات',
-    'footer.successStories': 'قصص النجاح',
-    'footer.contactSupport': 'الاتصال بالدعم',
-    'footer.newsletter': 'النشرة الإخبارية',
-    'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
-    'footer.emailPlaceholder': 'البريد الإلكتروني',
-    'footer.subscribe': 'اشتراك',
-    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
-    'footer.privacyPolicy': 'سياسة الخصوصية',
-    'footer.termsOfService': 'شروط الخدمة',
-    'footer.accessibility': 'إمكانية الوصول'
+    'about.contactUs': 'اتصل بنا',
   }
 };
 
-// Define props for the provider component
-interface LanguageProviderProps {
-  children: ReactNode;
-}
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  const [language, setLanguage] = useState<Language>('en');
 
-// Create the provider component
-export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Get language from local storage or default to English
-  const getInitialLanguage = (): Language => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('moh-language') as Language;
-      return savedLanguage === 'ar' ? 'ar' : 'en'; // Default to 'en' if not saved or invalid
+  // Function to translate keys
+  const t = (key: string): string => {
+    if (translations[language][key]) {
+      return translations[language][key];
     }
-    return 'en';
+    
+    // Fallback to English if the key doesn't exist in the current language
+    if (translations['en'][key]) {
+      return translations['en'][key];
+    }
+    
+    // If the key doesn't exist at all, return the key itself
+    console.warn(`Translation key not found: ${key}`);
+    return key;
   };
-
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
   
-  // Update HTML dir and lang attributes when language changes
+  // Use effect to set the document language and direction
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-      document.documentElement.lang = language;
-      localStorage.setItem('moh-language', language);
-      
-      // Add or remove the .lang-ar class on the body based on language
-      if (language === 'ar') {
-        document.body.classList.add('lang-ar');
-      } else {
-        document.body.classList.remove('lang-ar');
-      }
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    
+    // Add a CSS class to the body for easier targeting
+    if (language === 'ar') {
+      document.body.classList.add('lang-ar');
+    } else {
+      document.body.classList.remove('lang-ar');
     }
   }, [language]);
 
-  // Create a wrapper for setLanguage to also update localStorage
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-  };
-
-  // Translation function
-  const t = (key: string): string => {
-    return translations[language][key] || key;
-  };
-
-  const value = {
-    language,
-    setLanguage,
-    t,
-  };
-
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-// Custom hook for using the language context
-export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
+export const useLanguage = () => useContext(LanguageContext);
