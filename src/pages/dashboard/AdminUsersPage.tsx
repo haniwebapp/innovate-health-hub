@@ -40,14 +40,17 @@ export default function AdminUsersPage() {
       // Map profiles to UserProfile format
       const mappedUsers: UserProfile[] = profiles.map(profile => {
         // Generate an email from the profile data or use a placeholder
-        const email = profile.email || 
-          (profile.user_type === 'admin' 
-            ? `${profile.first_name || 'admin'}.${profile.last_name || 'user'}@moh.gov.sa` 
-            : `${profile.first_name || 'user'}.${profile.last_name || profile.id.substring(0, 5)}@example.com`);
+        // Use TypeScript type assertion to tell TypeScript this is safe
+        const emailFromAuth = (profile as any).email; // Try to get email if it exists
+        
+        // Generate email if not present in the profile data
+        const generatedEmail = profile.user_type === 'admin' 
+          ? `${profile.first_name || 'admin'}.${profile.last_name || 'user'}@moh.gov.sa` 
+          : `${profile.first_name || 'user'}.${profile.last_name || profile.id.substring(0, 5)}@example.com`;
         
         return {
           id: profile.id,
-          email: email, // Use the generated or placeholder email
+          email: emailFromAuth || generatedEmail, // Use auth email if it exists, otherwise use generated email
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",
