@@ -1,24 +1,26 @@
-
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
+export function ArabicVerticalText({
+  text,
+  className = "",
+  delay = 0
+}: ArabicVerticalTextProps) {
+  const {
+    language
+  } = useLanguage();
 
-export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVerticalTextProps) {
-  const { language } = useLanguage();
-  
   // Split text into characters
   const characters = text.split("");
 
   // Words grouping by spaces to create "snap" effect by words
   const wordsGroups: string[][] = [];
   let currentGroup: string[] = [];
-  
   characters.forEach(char => {
     if (char === " ") {
       if (currentGroup.length > 0) {
@@ -50,7 +52,6 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
       }
     }
   };
-  
   const itemVariants = {
     hidden: {
       y: 20,
@@ -77,7 +78,8 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
       opacity: 1,
       scale: 1,
       transition: {
-        delay: delay + 0.2 + i * 0.15, // Staggered delay between word groups
+        delay: delay + 0.2 + i * 0.15,
+        // Staggered delay between word groups
         type: "spring",
         stiffness: 260,
         damping: 20
@@ -87,58 +89,26 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
 
   // Shimmer effect for highlighting
   const shimmerEffect = {
-    initial: { backgroundPosition: "-200px 0" },
-    animate: { 
+    initial: {
+      backgroundPosition: "-200px 0"
+    },
+    animate: {
       backgroundPosition: "200px 0",
       transition: {
-        repeat: Infinity, 
+        repeat: Infinity,
         repeatType: "mirror" as const,
         duration: 2,
         ease: "linear"
       }
     }
   };
-
   const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
-
-  return (
-    <motion.div 
-      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`}
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
-      {wordsGroups.map((group, groupIndex) => (
-        <motion.div 
-          key={`group-${groupIndex}`} 
-          className="flex flex-col items-center" 
-          custom={groupIndex} 
-          variants={wordGroupVariants}
-        >
-          {group.map((char, charIndex) => (
-            <motion.div
-              key={`${groupIndex}-${charIndex}`}
-              className={defaultClasses}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.2, 
-                color: "#00A651", 
-                transition: { duration: 0.2 } 
-              }}
-            >
-              {char === " " ? <div className="h-4"></div> : char}
-            </motion.div>
-          ))}
-        </motion.div>
-      ))}
+  return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
+      {wordsGroups.map((group, groupIndex) => <motion.div key={`group-${groupIndex}`} className="flex flex-col items-center" custom={groupIndex} variants={wordGroupVariants}>
+          {group.map((char, charIndex) => {})}
+        </motion.div>)}
       
       {/* Special shimmer highlight effect */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none"
-        initial="initial"
-        animate="animate"
-        variants={shimmerEffect}
-      />
-    </motion.div>
-  );
+      <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
+    </motion.div>;
 }
