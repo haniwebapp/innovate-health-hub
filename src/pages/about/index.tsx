@@ -3,9 +3,46 @@ import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { ChevronRight, Users, Building, Globe, Award, Heart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
 
 const AboutPage = () => {
   const { t, language } = useLanguage();
+  
+  // Strategic partners data with logos
+  const partners = [
+    { 
+      name: "Ministry of Health", 
+      logo: "/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
+    },
+    { 
+      name: "King Salman Medical City", 
+      logo: "https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+    },
+    { 
+      name: "Saudi Digital Health Authority", 
+      logo: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+    },
+    { 
+      name: "King Abdulaziz University Hospital", 
+      logo: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+    },
+    { 
+      name: "Saudi Health Council", 
+      logo: "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+    },
+    { 
+      name: "King Faisal Specialist Hospital", 
+      logo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+    },
+    { 
+      name: "Saudi Medical Journal", 
+      logo: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+    },
+    { 
+      name: "Saudi Commission for Health Specialties", 
+      logo: "/public/lovable-uploads/bba68330-974d-4c62-a240-517e2bbdf8f9.png" 
+    },
+  ];
   
   return (
     <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -117,10 +154,25 @@ const AboutPage = () => {
           <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center text-moh-darkGreen">{t('about.partners')}</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="flex items-center justify-center p-4 h-24 bg-gray-50 rounded-lg">
-                <div className="bg-gray-200 h-12 w-36 rounded animate-pulse"></div>
-              </div>
+            {partners.map((partner, i) => (
+              <motion.div 
+                key={i} 
+                className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg h-32"
+                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+              >
+                <div className="h-16 flex items-center justify-center">
+                  <img 
+                    src={partner.logo} 
+                    alt={`${partner.name} logo`} 
+                    className="max-h-16 max-w-[140px] object-contain"
+                  />
+                </div>
+                <p className="mt-3 text-sm text-center text-gray-600 font-medium">{partner.name}</p>
+              </motion.div>
             ))}
           </div>
         </div>
