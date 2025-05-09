@@ -21,8 +21,8 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     { path: "/about", label: t('nav.about') },
     { path: "/challenges", label: t('nav.challenges') },
     { path: "/innovations", label: t('nav.innovations') },
-    { path: "/investment", label: "Investment" },
-    { path: "/regulatory", label: "Regulatory" },
+    { path: "/investment", label: t('nav.investment') },
+    { path: "/regulatory", label: t('nav.regulatory') },
     { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
   ];
 
@@ -36,7 +36,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
             <MotionLink
               to={link.path}
               className={cn(
-                "text-lg transition-colors px-3 py-2 rounded-md",
+                "text-lg transition-colors px-3 py-2 rounded-md arabic-text",
                 isRouteActive(link.path) 
                   ? 'text-moh-green font-medium' 
                   : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'

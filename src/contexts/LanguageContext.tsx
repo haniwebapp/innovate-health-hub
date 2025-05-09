@@ -24,6 +24,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.about': 'About',
     'nav.challenges': 'Challenges',
     'nav.innovations': 'Innovations',
+    'nav.investment': 'Investment',
+    'nav.regulatory': 'Regulatory',
     'nav.knowledgeHub': 'Knowledge Hub',
     'nav.allResources': 'All Resources',
     'nav.articles': 'Articles',
@@ -271,6 +273,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.about': 'نبذة عنا',
     'nav.challenges': 'التحديات',
     'nav.innovations': 'الابتكارات',
+    'nav.investment': 'الاستثمار',
+    'nav.regulatory': 'التنظيم',
     'nav.knowledgeHub': 'مركز المعرفة',
     'nav.allResources': 'جميع الموارد',
     'nav.articles': 'المقالات',
@@ -394,7 +398,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.mission': 'مهمتنا',
     'about.missionText': 'نحن نربط المبتكرين ومقدمي الرعاية الصحية والمنظمين والمستثمرين لتسريع تطوير وتنفيذ حلول الرعاية الصحية التحويلية، وإنشاء مسار سلس من الفكرة إلى التنفيذ عبر المملكة.',
     'about.focusAreas': 'مجالات التركيز الرئيسية',
-    'about.focusDescription': 'نحن ملتزمو�� بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
+    'about.focusDescription': 'نحن ملتزمو بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
     'about.preventative': 'الرعاية الصحية الوقائية',
     'about.preventativeDesc': 'التحول من العلاج إلى الوقاية مع حلول مبتكرة للكشف المبكر والمراقبة.',
     'about.infrastructure': 'البنية التحتية للرعاية الصحية',
@@ -448,7 +452,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Platform Highlights
     'home.highlights.tag': 'مميزات المنصة',
     'home.highlights.title': 'نظام الابتكار المتكامل الخاص بك',
-    'home.highlights.description': 'مجموع�� شاملة من الأدوات والخدمات المصممة لدعم مبتكري الرعاية الصحية في كل مرحلة من مراحل التطوير.',
+    'home.highlights.description': 'مجموعة شاملة من الأدوات والخدمات المصممة لدعم مبتكري الرعاية الصحية في كل مرحلة من مراحل التطوير.',
     'home.highlights.feature1.title': 'مطابقة الابتكار المدعومة بالذكاء الاصطناعي',
     'home.highlights.feature1.description': 'خوارزمياتنا المتطورة للذكاء الاصطناعي تربط المبتكرين بالمستثمرين والموجهين والموارد المناسبة.',
     'home.highlights.feature2.title': 'الوصول إلى البيئة التنظيمية التجريبية',
@@ -461,37 +465,6 @@ const translations: Record<Language, Record<string, string>> = {
     'home.highlights.feature5.description': 'شارك في تحديات الابتكار التي ترعاها وزارة الصحة لحل مشكلات الرعاية الصحية الحرجة.',
     'home.highlights.feature6.title': 'شبكة الصحة العالمية',
     'home.highlights.feature6.description': 'تواصل مع شركاء دوليين واطلع على اتجاهات ورؤى الابتكار الصحي العالمية.',
-    
-    // Innovation Journey Section
-    'home.journey.tag': 'رحلة الابتكار',
-    'home.journey.title': 'مسار رحلتك مع منصة الابتكار',
-    'home.journey.description': 'نقدم مساراً منظماً للمبتكرين لتطوير حلولهم من الفكرة إلى التنفيذ.',
-    'home.journey.ideation.title': 'توليد الأفكار',
-    'home.journey.ideation.description': 'حدد التحديات الصحية وطور أفكارًا مبتكرة للحلول المحتملة.',
-    'home.journey.development.title': 'التطوير',
-    'home.journey.development.description': 'تحويل الأفكار إلى نماذج أولية عملية مع دعم الخبراء والتوجيه.',
-    'home.journey.validation.title': 'التحقق',
-    'home.journey.validation.description': 'اختبار الحلول والتحقق من صحتها مع المتخصصين في الرعاية الصحية والمستخدمين النهائيين.',
-    'home.journey.implementation.title': 'التنفيذ',
-    'home.journey.implementation.description': 'نشر الحل في بيئات الرعاية الصحية الواقعية مع الدعم المستمر.',
-    'home.journey.impact.title': 'التأثير',
-    'home.journey.impact.description': 'قياس النتائج وتوسيع نطاق الحلول الناجحة عبر نظام الرعاية الصحية.',
-    
-    // Process Flow Section
-    'home.process.tag': 'عملية الابتكار',
-    'home.process.title': 'كيف تعمل منصتنا',
-    'home.process.description': 'عملية مبسطة تربط المبتكرين في مجال الرعاية الصحية بالفرص والموارد والدعم.',
-    'home.process.step1.title': 'إنشاء حساب',
-    'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخ��صة على المنصة.',
-    'home.process.step2.title': 'تقديم الابتكار',
-    'home.process.step2.description': 'قم بتحميل فكرتك أو مشروعك باستخدام نموذج التقديم الخاص بنا.',
-    'home.process.step3.title': 'الحصول على الملاحظات',
-    'home.process.step3.description': 'تلقي ملاحظات من خبراء وزارة الصحة والمتخصصين في المجال.',
-    'home.process.step4.title': 'الاتصال بالفرص',
-    'home.process.step4.description': 'المطابقة مع المستثمرين والتحديات والموارد المناسبة.',
-    'home.process.step5.title': 'تطوير وتوسيع النطاق',
-    'home.process.step5.description': 'الوصول إلى الدعم المستمر لتطوير وتوسيع نطاق ابتكارك.',
-    'home.process.buttonText': 'ابدأ رحلة الابتكار',
     
     // Featured Section
     'home.featured.title': 'تأثير المنصة',
@@ -536,102 +509,3 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.challenge3.category': 'الخدمات اللوجستية',
     
     // Footer Section
-    'footer.mohLogo': 'شعار وزارة الصحة',
-    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار في مجال الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
-    'footer.quickLinks': 'روابط سريعة',
-    'footer.aboutPlatform': 'عن المنصة',
-    'footer.innovationChallenges': 'تحديات الابتكار',
-    'footer.investmentOpportunities': 'فرص الاستثمار',
-    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
-    'footer.knowledgeHub': 'مركز المعرفة',
-    'footer.resources': 'الموارد',
-    'footer.vision2030': 'رؤية 2030',
-    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
-    'footer.policies': 'السياسات والإرشادات',
-    'footer.successStories': 'قصص النجاح',
-    'footer.contactSupport': 'اتصل بالدعم',
-    'footer.newsletter': 'النشرة الإخبارية',
-    'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
-    'footer.emailPlaceholder': 'عنوان البريد الإلكتروني',
-    'footer.subscribe': 'اشترك',
-    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
-    'footer.privacyPolicy': 'سياسة الخصوصية',
-    'footer.termsOfService': 'شروط الخدمة',
-    'footer.accessibility': 'إمكانية الوصول'
-  }
-};
-
-// Provider component
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    // Try to get language from localStorage
-    const savedLanguage = localStorage.getItem('language');
-    return (savedLanguage as Language) || 'en';
-  });
-
-  // Update localStorage when language changes
-  React.useEffect(() => {
-    localStorage.setItem('language', language);
-    // Update document direction based on language
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    
-    // Update document lang attribute
-    document.documentElement.lang = language;
-    
-    // Add or remove a class to the HTML element for RTL-specific styling
-    if (language === 'ar') {
-      document.documentElement.classList.add('rtl');
-      document.body.style.fontFamily = "'Tajawal', 'Noto Sans Arabic', sans-serif";
-    } else {
-      document.documentElement.classList.remove('rtl');
-      document.body.style.fontFamily = "'Inter', 'Poppins', sans-serif";
-    }
-    
-    // Add custom styles for RTL layout
-    const existingStyle = document.getElementById('rtl-style');
-    if (language === 'ar' && !existingStyle) {
-      const style = document.createElement('style');
-      style.id = 'rtl-style';
-      style.textContent = `
-        .rtl { text-align: right; }
-        .rtl .ltr-icon { transform: scaleX(-1); }
-        .rtl .ltr-margin { margin-right: 0.5rem; margin-left: 0; }
-        .rtl .ltr-padding { padding-right: 0.5rem; padding-left: 0; }
-        @font-face {
-          font-family: 'Tajawal';
-          src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-          font-display: swap;
-        }
-      `;
-      document.head.appendChild(style);
-    } else if (existingStyle && language !== 'ar') {
-      existingStyle.remove();
-    }
-    
-    // Add Arabic font if needed
-    if (language === 'ar') {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap';
-      link.id = 'arabic-font';
-      document.head.appendChild(link);
-    } else {
-      const arabicFont = document.getElementById('arabic-font');
-      if (arabicFont) arabicFont.remove();
-    }
-  }, [language]);
-
-  // Translate function
-  const t = (key: string): string => {
-    return translations[language][key] || key;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-// Hook for using the language context
-export const useLanguage = () => useContext(LanguageContext);

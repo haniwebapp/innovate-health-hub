@@ -138,11 +138,25 @@
   }
 }
 
-/* RTL Support */
+/* Improved RTL Support */
+html[dir="rtl"] {
+  text-align: right;
+}
+
+html[lang="ar"] body {
+  font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif !important;
+  letter-spacing: 0; /* Remove letter spacing for Arabic */
+}
+
+/* Enhanced Arabic text rendering */
 .lang-ar {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Tahoma", "Arial",
-    sans-serif;
+  font-family: 'Tajawal', 'Noto Sans Arabic', sans-serif !important;
+  text-align: right;
+}
+
+/* RTL specific styling */
+[dir="rtl"] {
+  text-align: right;
 }
 
 [dir="rtl"] .flex-row {
@@ -179,4 +193,11 @@
 [dir="rtl"] .mr-4 {
   margin-right: 0;
   margin-left: 1rem;
+}
+
+/* Fix Arabic text connection */
+.arabic-text {
+  font-feature-settings: "calt" 1;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
 }

@@ -32,7 +32,7 @@ export default function LanguageSwitcher() {
           <Globe className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={language === 'ar' ? "start" : "end"} className={language === 'ar' ? 'rtl-menu' : ''}>
+      <DropdownMenuContent align={language === 'ar' ? "start" : "end"} className={language === 'ar' ? 'rtl-menu arabic-text' : ''}>
         <DropdownMenuItem 
           onClick={() => setLanguage('en')} 
           className={`${language === 'en' ? 'bg-moh-lightGreen' : ''} flex items-center gap-2`}
@@ -44,7 +44,7 @@ export default function LanguageSwitcher() {
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => setLanguage('ar')} 
-          className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''} flex items-center gap-2`}
+          className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''} flex items-center gap-2 arabic-text`}
         >
           <span className="flex items-center">
             <span className="mr-2">🇸🇦</span>

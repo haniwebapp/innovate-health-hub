@@ -14,7 +14,7 @@ export default function VisionMissionSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="order-1 md:order-1"
+            className={`order-1 ${language === 'ar' ? 'md:order-2 arabic-text' : 'md:order-1'}`}
           >
             <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">{t('about.vision')}</h2>
             <p className="text-gray-700 mb-6 leading-relaxed">
