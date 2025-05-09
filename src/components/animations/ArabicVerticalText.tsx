@@ -69,11 +69,12 @@ export function ArabicVerticalText({
   
   return (
     <motion.div 
-      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
+      className={`inline-flex flex-col items-center justify-center mx-2 relative ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
       initial="hidden" 
       animate="visible" 
       variants={containerVariants}
     >
+      {/* For vertical text display, we render each character as its own element */}
       {characters.map((char, index) => (
         <motion.span
           key={index}
