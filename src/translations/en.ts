@@ -16,8 +16,6 @@ export const enTranslations = {
   'nav.signIn': 'Sign In',
   'nav.register': 'Register',
   'nav.login': 'Login',
-  'nav.regulatory': 'Regulatory',
-  'nav.investment': 'Investment',
   
   // Login page
   'login.title': 'Innovation Platform',

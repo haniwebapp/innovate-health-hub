@@ -23,8 +23,8 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     { path: "/about", label: t('nav.about') },
     { path: "/challenges", label: t('nav.challenges') },
     { path: "/innovations", label: t('nav.innovations') },
-    { path: "/investment", label: t('nav.investment') },
-    { path: "/regulatory", label: t('nav.regulatory') },
+    { path: "/investment", label: t('home.hero.investmentButton') },
+    { path: "/regulatory", label: "Regulatory" },
     { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
   ];
 

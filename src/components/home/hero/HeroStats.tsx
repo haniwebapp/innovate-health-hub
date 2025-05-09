@@ -2,15 +2,13 @@
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
-import { getRTLClasses } from "@/utils/rtlUtils";
 
 export function HeroStats() {
-  const { t, language } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
+  const { t } = useLanguage();
   
   return (
     <motion.div 
-      className={`mt-16 grid grid-cols-3 gap-4 ${rtlClasses.container}`}
+      className="mt-16 grid grid-cols-3 gap-4" 
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
