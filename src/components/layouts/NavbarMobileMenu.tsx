@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
@@ -124,18 +123,6 @@ export function NavbarMobileMenu({
       <div className="bg-white border-t border-gray-200 overflow-hidden">
         <div className="max-h-[80vh] overflow-y-auto">
           <nav className="flex flex-col p-4">
-            {/* Add prominent CTA for Submit Innovation */}
-            <Button 
-              className="bg-moh-green hover:bg-moh-darkGreen text-white w-full mb-4 flex items-center justify-center" 
-              onClick={() => handleLinkClick("/innovations/submit")}
-              asChild
-            >
-              <Link to="/innovations/submit">
-                <FileUp className="mr-2 h-4 w-4" />
-                Submit Innovation
-              </Link>
-            </Button>
-
             <Accordion type="single" collapsible className="w-full">
               {navigationLinks.map((link) => (
                 <AccordionItem key={link.path} value={link.path} className="border-none">
