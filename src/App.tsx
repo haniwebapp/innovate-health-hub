@@ -22,6 +22,8 @@ import InnovationDetailPage from "./pages/innovations/[id]";
 import KnowledgeHubPage from "./pages/knowledge-hub";
 import SubmissionsPage from "./pages/dashboard/submissions";
 import SubmitChallengePage from "./pages/dashboard/submit/[challengeId]";
+import AdminAnalyticsPage from "./pages/dashboard/AdminAnalyticsPage";
+import CreateChallengePage from "./pages/dashboard/CreateChallengePage";
 
 // Components and Context
 import { AuthProvider } from "./contexts/AuthContext";
@@ -69,8 +71,8 @@ const App = () => (
                 <Route index element={<DashboardPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="submissions" element={<SubmissionsPage />} />
-                <Route path="create-challenge" element={<NotFound />} />
-                <Route path="analytics" element={<NotFound />} />
+                <Route path="create-challenge" element={<CreateChallengePage />} />
+                <Route path="analytics" element={<AdminAnalyticsPage />} />
                 <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
                 {/* Add more dashboard routes as needed */}
               </Route>
