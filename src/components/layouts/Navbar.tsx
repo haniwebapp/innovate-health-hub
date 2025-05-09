@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, FileUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "@/components/layouts/NavbarMainLinks";
@@ -67,6 +67,24 @@ export default function Navbar() {
           <NavbarMainLinks isRouteActive={isRouteActive} />
           
           <div className="hidden md:flex items-center space-x-3">
+            {/* Add prominent CTA button for Submit Innovation */}
+            <Button 
+              className="bg-moh-green hover:bg-moh-darkGreen text-white flex items-center gap-2 group"
+              asChild
+            >
+              <Link to="/innovations/submit">
+                <FileUp className="h-4 w-4" />
+                Submit Innovation
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+                  className="ml-1"
+                >
+                  →
+                </motion.span>
+              </Link>
+            </Button>
+            
             <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
               <Search className="h-5 w-5" />
             </Button>

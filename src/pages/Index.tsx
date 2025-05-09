@@ -45,15 +45,16 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow pt-16">
         <TooltipProvider>
+          {/* Reordered sections for better user engagement */}
           <HeroSection />
-          <HealthcareAnimation />
-          <AboutSection />
-          <InnovationJourney />
           <PlatformHighlights />
           <InnovationGallery />
-          <ProcessFlowSection />
-          <AIDrivenSection />
           <ChallengesSection />
+          <AIDrivenSection />
+          <InnovationJourney />
+          <HealthcareAnimation />
+          <ProcessFlowSection />
+          <AboutSection />
           <FeaturedSection />
         </TooltipProvider>
       </main>

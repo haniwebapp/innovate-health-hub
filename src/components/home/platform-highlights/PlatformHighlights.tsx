@@ -18,7 +18,7 @@ export default function PlatformHighlights() {
   const verticalTexts = ["INNOVATE", "CONNECT", "TRANSFORM"];
   
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-moh-lightGreen/20 relative overflow-hidden">
+    <section id="platform-highlights" className="py-24 bg-gradient-to-b from-white to-moh-lightGreen/20 relative overflow-hidden">
       <BackgroundDecorations verticalTexts={verticalTexts} />
       
       <div className="container mx-auto px-4 relative z-10">

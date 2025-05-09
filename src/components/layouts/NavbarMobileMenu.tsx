@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings } from "lucide-react";
+import { LogOut, User, Settings, FileUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,14 +19,14 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, logout } = useAuth();
   
-  // Main navigation links without dropdown, using direct text
+  // Reordered navigation links to match desktop navigation
   const navigationLinks = [
-    { path: "/about", label: "About" },
-    { path: "/challenges", label: "Challenges" },
     { path: "/innovations", label: "Innovations" },
+    { path: "/challenges", label: "Challenges" },
     { path: "/investment", label: "Investment" },
     { path: "/regulatory", label: "Regulatory" },
     { path: "/knowledge-hub", label: "Knowledge Hub" },
+    { path: "/about", label: "About" },
   ];
   
   // Animation variants
@@ -64,6 +64,18 @@ export function NavbarMobileMenu({
       <div className="bg-white border-t border-gray-200 overflow-hidden">
         <div className="max-h-[80vh] overflow-y-auto">
           <nav className="flex flex-col p-4">
+            {/* Add prominent CTA for Submit Innovation */}
+            <Button 
+              className="bg-moh-green hover:bg-moh-darkGreen text-white w-full mb-4 flex items-center justify-center" 
+              onClick={() => handleLinkClick("/innovations/submit")}
+              asChild
+            >
+              <Link to="/innovations/submit">
+                <FileUp className="mr-2 h-4 w-4" />
+                Submit Innovation
+              </Link>
+            </Button>
+
             {navigationLinks.map((link) => (
               <div key={link.path} className="mb-1">
                 <Button

@@ -18,12 +18,19 @@ export interface Innovation {
     potentialReach?: number;
     costEfficiency?: number;
     implementationTime?: number;
+    successRate?: number;     // Added new metrics
+    returnOnInvestment?: number; // Added new metrics
   };
   regulatoryStatus?: {
     compliant: boolean;
     certifications: string[];
     pendingApprovals: string[];
+    lastUpdated?: string;     // Added for regulatory timeline
   };
+  teamSize?: number;         // Added for organization details
+  fundingStage?: "Pre-seed" | "Seed" | "Series A" | "Series B" | "Series C+" | "Bootstrapped";
+  targetUsers?: string[];    // Added to better describe the target audience
+  uniqueSellingPoints?: string[]; // Added for marketing highlights
 }
 
 export const statusColors: Record<string, string> = {
@@ -110,3 +117,15 @@ export interface SubmissionFormProgress {
 
 // Status for submission review
 export type SubmissionStatus = "Draft" | "Submitted" | "Under Review" | "Approved" | "Rejected" | "Needs Revision";
+
+// New type for segmenting users and personalizing content
+export type UserSegment = "Innovator" | "Investor" | "Healthcare Provider" | "Regulator" | "General";
+
+// New type for tracking user journey through the platform
+export interface UserJourneyStep {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  nextSteps?: string[];
+}

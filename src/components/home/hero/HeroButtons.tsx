@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Sparkles } from "lucide-react";
+import { ArrowRight, Award, Sparkles, FileUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -34,9 +34,14 @@ export function HeroButtons() {
       animate="visible"
     >
       <motion.div variants={itemVariants}>
-        <Button size="lg" className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group" asChild>
-          <Link to="/innovations">
-            Explore Innovations
+        <Button 
+          size="lg" 
+          className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group w-full sm:w-auto" 
+          asChild
+        >
+          <Link to="/innovations/submit">
+            <FileUp className="mr-2 h-4 w-4" />
+            Submit Innovation
             <motion.div 
               animate={{ x: [0, 5, 0] }}
               transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
@@ -48,7 +53,12 @@ export function HeroButtons() {
       </motion.div>
       
       <motion.div variants={itemVariants}>
-        <Button size="lg" variant="outline" className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm group" asChild>
+        <Button 
+          size="lg" 
+          variant="outline" 
+          className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm group w-full sm:w-auto" 
+          asChild
+        >
           <Link to="/challenges">
             <motion.div 
               animate={{ rotate: [0, 10, -10, 0] }}
@@ -62,10 +72,15 @@ export function HeroButtons() {
       </motion.div>
       
       <motion.div variants={itemVariants}>
-        <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm" asChild>
-          <Link to="/investment">
+        <Button 
+          size="lg" 
+          variant="outline" 
+          className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm w-full sm:w-auto" 
+          asChild
+        >
+          <Link to="/innovations">
             <Award className="mr-2 h-4 w-4" />
-            Access Investment
+            Explore Innovations
           </Link>
         </Button>
       </motion.div>

@@ -16,14 +16,14 @@ interface NavbarMainLinksProps {
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
   
-  // Main links without dropdown, using direct text instead of translation keys
+  // Reordered main links based on user journey priority
   const mainLinks = [
-    { path: "/about", label: "About" },
-    { path: "/challenges", label: "Challenges" },
     { path: "/innovations", label: "Innovations" },
+    { path: "/challenges", label: "Challenges" },
     { path: "/investment", label: "Investment" },
     { path: "/regulatory", label: "Regulatory" },
     { path: "/knowledge-hub", label: "Knowledge Hub" },
+    { path: "/about", label: "About" },
   ];
 
   const MotionLink = motion(Link);
