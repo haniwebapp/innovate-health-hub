@@ -68,7 +68,7 @@ const translations: Record<Language, Record<string, string>> = {
     // About section
     'home.about.title': 'Transforming Saudi Healthcare',
     'home.about.subtitle': 'Aligned with Vision 2030',
-    'home.about.description': 'The Health Innovation Platform supports the digital transformation of healthcare delivery in Saudi Arabia, in line with the goals of Vision 2030 and the Ministry of Health's strategic objectives.',
+    'home.about.description': 'The Health Innovation Platform supports the digital transformation of healthcare delivery in Saudi Arabia, in line with the goals of Vision 2030 and the Ministry of Health\'s strategic objectives.',
     'home.about.videoCaption': 'Discover how our platform streamlines the innovation journey',
     'home.about.statTitle1': 'Faster Innovation',
     'home.about.statDescription1': 'Reduce time to market by connecting innovators with regulators and investors',
@@ -205,7 +205,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.digitalDesc': 'Leveraging technology to provide accessible, personalized, and effective healthcare services.',
     'about.partners': 'Our Strategic Partners',
     'about.joinCommunity': 'Join Our Innovation Community',
-    'about.joinDescription': 'Be part of the healthcare transformation in Saudi Arabia. Whether you're an innovator, investor, or healthcare provider, there's a place for you in our growing community.',
+    'about.joinDescription': 'Be part of the healthcare transformation in Saudi Arabia. Whether you\'re an innovator, investor, or healthcare provider, there\'s a place for you in our growing community.',
     'about.registerNow': 'Register Now',
     'about.contactUs': 'Contact Us',
   },
@@ -320,7 +320,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.challenge2.deadline': '15 يوليو 2025',
     'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
     'home.challenges.challenge3.title': 'تحسين سلسلة إمداد الرعاية الصحية',
-    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي across Saudi Arabia.',
+    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي عبر المملكة العربية السعودية.',
     'home.challenges.challenge3.deadline': '22 أغسطس 2025',
     'home.challenges.challenge3.category': 'الخدمات اللوجستية',
     
@@ -339,7 +339,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Testimonials section
     'home.testimonials.tag': 'آراء المستخدمين',
     'home.testimonials.title': 'ماذا يقول مستخدمونا',
-    'home.partners.title': 'شركاؤنا الاستراتيجيين',
+    'home.partners.title': 'شركاؤنا الاستراتيجيون',
     'home.partners.subtitle': 'نتعاون لتحويل ابتكار الرعاية الصحية في جميع أنحاء المملكة العربية السعودية',
     
     // Footer
@@ -387,7 +387,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
     'about.digital': 'الصحة الرقمية',
     'about.digitalDesc': 'الاستفادة من التكنولوجيا لتوفير خدمات رعاية صحية يسهل الوصول إليها وشخصية وفعالة.',
-    'about.partners': 'شركاؤنا الاستراتيجيين',
+    'about.partners': 'شركاؤنا الاستراتيجيون',
     'about.joinCommunity': 'انضم إلى مجتمع الابتكار لدينا',
     'about.joinDescription': 'كن جزءًا من تحول الرعاية الصحية في المملكة العربية السعودية. سواء كنت مبتكرًا أو مستثمرًا أو مقدم رعاية صحية، هناك مكان لك في مجتمعنا المتنامي.',
     'about.registerNow': 'سجل الآن',
