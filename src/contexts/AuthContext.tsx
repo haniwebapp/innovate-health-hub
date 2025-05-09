@@ -1,167 +1,108 @@
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 
-type UserRole = 'admin' | 'user';
+// Mock authentication for development
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  role: string;
+}
 
-type AuthContextType = {
+export interface AuthContextType {
   user: User | null;
-  session: Session | null;
   isLoading: boolean;
-  userRole: UserRole;
   isAdmin: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, userData: any) => Promise<void>;
-  signOut: () => Promise<void>;
-};
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  register: (email: string, password: string, userData: any) => Promise<void>;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userRole, setUserRole] = useState<UserRole>('user');
-  const { toast } = useToast();
-
-  // Determine if user is admin based on email
-  const determineUserRole = (email: string | undefined): UserRole => {
-    // Check specifically if the email is admin@moh.gov.sa
-    if (email && email.toLowerCase() === 'admin@moh.gov.sa') {
-      return 'admin';
-    }
-    return 'user';
-  };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        if (currentSession?.user) {
-          // Use the email to determine role
-          const email = currentSession.user.email;
-          setUserRole(determineUserRole(email));
-        } else {
-          setUserRole('user');
+    // Simulate checking for an existing session
+    const checkAuth = async () => {
+      try {
+        // In a real app, this would check localStorage, cookies, or call an API
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
         }
-        
-        if (event === 'SIGNED_IN' && currentSession) {
-          toast({
-            title: "Welcome!",
-            description: "You have successfully signed in.",
-          });
-        }
-        
-        if (event === 'SIGNED_OUT') {
-          toast({
-            title: "Signed out",
-            description: "You have been signed out successfully.",
-          });
-        }
+      } catch (error) {
+        console.error("Auth error:", error);
+      } finally {
+        setIsLoading(false);
       }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      
-      if (currentSession?.user) {
-        // Use the email to determine role
-        const email = currentSession.user.email;
-        setUserRole(determineUserRole(email));
-      }
-      
-      setIsLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
     };
-  }, [toast]);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-    } catch (error: any) {
-      toast({
-        title: "Error signing in",
-        description: error.message,
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
+    checkAuth();
+  }, []);
 
-  const signUp = async (email: string, password: string, userData: any) => {
+  const login = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            userType: userData.userType || 'user',
-            organization: userData.organization,
-          },
-        },
-      });
+      // Mock login - in a real app, this would call an API
+      const mockUser = {
+        id: "user-1",
+        email: email,
+        name: email.split("@")[0],
+        role: email.includes("admin") ? "admin" : "user"
+      };
       
-      if (error) throw error;
-      
-      toast({
-        title: "Registration successful",
-        description: "Please check your email to confirm your account.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error signing up",
-        description: error.message,
-        variant: "destructive",
-      });
+      setUser(mockUser);
+      localStorage.setItem("user", JSON.stringify(mockUser));
+    } catch (error) {
+      console.error("Login error:", error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const signOut = async () => {
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
+
+  const register = async (email: string, password: string, userData: any) => {
+    setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-    } catch (error: any) {
-      toast({
-        title: "Error signing out",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Mock registration - in a real app, this would call an API
+      const mockUser = {
+        id: "user-" + Math.floor(Math.random() * 1000),
+        email: email,
+        name: userData.firstName,
+        role: "user"
+      };
+      
+      setUser(mockUser);
+      localStorage.setItem("user", JSON.stringify(mockUser));
+    } catch (error) {
+      console.error("Registration error:", error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const value = {
-    user,
-    session,
-    isLoading,
-    userRole,
-    isAdmin: userRole === 'admin',
-    signIn,
-    signUp,
-    signOut,
-  };
+  const isAdmin = user?.role === "admin";
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, isLoading, isAdmin, login, logout, register }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

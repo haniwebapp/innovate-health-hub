@@ -1,11 +1,11 @@
 
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { ThemeProvider } from '@/components/providers/theme-provider';
+import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 import HomePage from './pages/Index';
 import NotFound from './pages/NotFound';

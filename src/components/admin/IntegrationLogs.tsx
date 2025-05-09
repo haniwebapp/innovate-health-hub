@@ -4,45 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-
-interface Log {
-  id: string;
-  timestamp: string;
-  status: "success" | "error" | "info";
-  message: string;
-  details?: string;
-}
+import { generateMockLogs } from "@/utils/integrationConstants";
 
 interface IntegrationLogsProps {
   integrationName: string;
 }
-
-// Mock log data
-const generateMockLogs = (count: number): Log[] => {
-  const statuses: ("success" | "error" | "info")[] = ["success", "error", "info"];
-  const now = new Date();
-  
-  return Array.from({ length: count }).map((_, index) => {
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
-    const timestamp = new Date(now.getTime() - (index * 600000)).toISOString(); // 10 minutes apart
-    
-    return {
-      id: `log-${index}`,
-      timestamp,
-      status,
-      message: status === "success" 
-        ? "Request completed successfully" 
-        : status === "error" 
-          ? "Error processing request" 
-          : "Connection established",
-      details: status === "error" 
-        ? "API returned status code 500 - Internal Server Error" 
-        : status === "success" 
-          ? "Response received in 230ms with 2KB payload" 
-          : "Handshake completed with remote endpoint"
-    };
-  });
-};
 
 export default function IntegrationLogs({ integrationName }: IntegrationLogsProps) {
   const [timeRange, setTimeRange] = useState("24h");

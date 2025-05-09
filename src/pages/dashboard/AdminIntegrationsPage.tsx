@@ -8,17 +8,7 @@ import { PlusCircle } from "lucide-react";
 import IntegrationList from "@/components/admin/IntegrationList";
 import IntegrationForm from "@/components/admin/IntegrationForm";
 import IntegrationAIAssistant from "@/components/ai/IntegrationAIAssistant";
-
-const INTEGRATION_CATEGORIES = [
-  { id: "api", name: "APIs", description: "FHIR, HL7, REST APIs" },
-  { id: "communication", name: "Communication", description: "SMS, WhatsApp, Email" },
-  { id: "payment", name: "Payments", description: "Stripe, PayPal, SADAD" },
-  { id: "auth", name: "Authentication", description: "National ID, OAuth2, SSO" },
-  { id: "storage", name: "Storage & Files", description: "Supabase, AWS S3, Dropbox" },
-  { id: "analytics", name: "Analytics", description: "Redash, Metabase, Google Analytics" },
-  { id: "ai", name: "AI & NLP", description: "OpenAI, Hugging Face, Custom Models" },
-  { id: "meetings", name: "Meetings", description: "Zoom, Teams, Jitsi" }
-];
+import { INTEGRATION_CATEGORIES } from "@/utils/integrationConstants";
 
 export default function AdminIntegrationsPage() {
   const { toast } = useToast();
