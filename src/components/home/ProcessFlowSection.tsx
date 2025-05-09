@@ -7,42 +7,42 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function ProcessFlowSection() {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   
-  // Sample data to drive animations - In a real app, this would come from Supabase or an API
+  // Sample data with hardcoded text instead of translation keys
   const processSteps = [
     {
       icon: <ClipboardCheck className="w-6 h-6 text-moh-green" />,
-      title: t('home.process.step1.title'),
-      description: t('home.process.step1.description'),
+      title: "Data Collection",
+      description: "Gathering and organizing healthcare data from various sources across facilities",
       completionRate: 100, // Process step is complete
       timeMetric: 3 // 3 seconds process time
     },
     {
       icon: <Users className="w-6 h-6 text-moh-gold" />,
-      title: t('home.process.step2.title'),
-      description: t('home.process.step2.description'),
+      title: "Data Verification",
+      description: "Ensuring data accuracy and compliance with privacy standards",
       completionRate: 85, // Process step is mostly complete
       timeMetric: 12 // 12 seconds process time
     },
     {
       icon: <Database className="w-6 h-6 text-moh-darkGold" />,
-      title: t('home.process.step3.title'),
-      description: t('home.process.step3.description'),
+      title: "Analysis",
+      description: "Processing and identifying patterns and insights from healthcare data",
       completionRate: 60, // Process step is in progress
       timeMetric: 8 // 8 seconds process time
     },
     {
       icon: <BarChart3 className="w-6 h-6 text-moh-darkGreen" />,
-      title: t('home.process.step4.title'),
-      description: t('home.process.step4.description'),
+      title: "Reporting",
+      description: "Generating comprehensive reports and visualizations for stakeholders",
       completionRate: 30, // Process step is starting
       timeMetric: 5 // 5 seconds process time
     },
     {
       icon: <HeartPulse className="w-6 h-6 text-moh-green" />,
-      title: t('home.process.step5.title'),
-      description: t('home.process.step5.description'),
+      title: "Implementation",
+      description: "Applying insights to improve healthcare outcomes and decision-making",
       completionRate: 10, // Process step is just beginning
       timeMetric: 2 // 2 seconds process time
     }
@@ -63,13 +63,13 @@ export default function ProcessFlowSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollFadeIn className="text-center mb-16">
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium mb-4">
-            {t('home.process.tag')}
+            Process Management
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-moh-darkGreen mb-4">
             Process Workflow
           </h2>
           <p className="max-w-2xl mx-auto text-gray-700">
-            {t('home.process.description')}
+            Our streamlined healthcare data process ensures information flows efficiently from collection to actionable insights.
           </p>
           
           {/* Overall completion indicator */}
@@ -114,10 +114,10 @@ export default function ProcessFlowSection() {
             } text-white shadow-md group`}
           >
             {overallCompletion >= 100 
-              ? t('home.process.completedButtonText')
+              ? "Process Completed"
               : overallCompletion > 50
-              ? t('home.process.buttonText')
-              : t('home.process.startButtonText')}
+              ? "Continue Process"
+              : "Start Process"}
             <motion.div
               animate={{
                 x: [0, 5, 0],

@@ -9,14 +9,14 @@ import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
 export default function InnovationJourney() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   
-  // Sample data - in a real app this would come from Supabase or an API
+  // Sample data with hardcoded text instead of translation keys
   const timelineItems = [
     {
       icon: <Lightbulb className="text-moh-gold w-6 h-6" />,
-      title: t('home.journey.ideation.title'),
-      description: t('home.journey.ideation.description'),
+      title: "Ideation Phase",
+      description: "Gathering innovative ideas from healthcare professionals and entrepreneurs across the Kingdom",
       isActive: false,
       importance: 'high' as const,
       completionPercent: 100,
@@ -24,8 +24,8 @@ export default function InnovationJourney() {
     },
     {
       icon: <Beaker className="text-moh-green w-6 h-6" />,
-      title: t('home.journey.development.title'),
-      description: t('home.journey.development.description'),
+      title: "Development",
+      description: "Building prototypes and testing core functionality with stakeholder feedback",
       isActive: true, // Currently active phase
       importance: 'high' as const,
       completionPercent: 65,
@@ -33,8 +33,8 @@ export default function InnovationJourney() {
     },
     {
       icon: <Target className="text-moh-darkGreen w-6 h-6" />,
-      title: t('home.journey.validation.title'),
-      description: t('home.journey.validation.description'),
+      title: "Validation",
+      description: "Clinical trials and regulatory review to ensure safety and efficacy standards",
       isActive: false,
       importance: 'medium' as const,
       completionPercent: 15,
@@ -42,8 +42,8 @@ export default function InnovationJourney() {
     },
     {
       icon: <Rocket className="text-moh-darkGold w-6 h-6" />,
-      title: t('home.journey.implementation.title'),
-      description: t('home.journey.implementation.description'),
+      title: "Implementation",
+      description: "Scaling solutions across healthcare facilities and integrating with existing systems",
       isActive: false,
       importance: 'medium' as const,
       completionPercent: 0,
@@ -51,8 +51,8 @@ export default function InnovationJourney() {
     },
     {
       icon: <Award className="text-moh-gold w-6 h-6" />,
-      title: t('home.journey.impact.title'),
-      description: t('home.journey.impact.description'),
+      title: "Impact Measurement",
+      description: "Evaluating outcomes and optimizing solutions based on real-world performance data",
       isActive: false,
       importance: 'low' as const,
       completionPercent: 0,
@@ -65,13 +65,13 @@ export default function InnovationJourney() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollFadeIn className="text-center mb-16">
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
-            {t('home.journey.tag')}
+            Innovation Journey
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-moh-darkGreen mb-4">
-            {t('home.journey.title')}
+            Healthcare Innovation Roadmap
           </h2>
           <p className="max-w-2xl mx-auto text-gray-700">
-            {t('home.journey.description')}
+            Our structured approach to healthcare innovation ensures ideas are properly vetted, developed, and implemented across Saudi Arabia's healthcare system.
           </p>
           
           {/* Current phase indicator */}
