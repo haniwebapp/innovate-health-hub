@@ -24,9 +24,23 @@ export const HeroTitle = () => {
         splitBy="chars"
       />
       <TextReveal 
-        text={"Innovation Drives Healthcare"}
+        text="Empowering"}
         className="text-moh-darkGreen block mt-2"
         delay={1}
+        staggerDelay={0.04}
+        splitBy="words"
+      />
+      <TextReveal 
+        text="Health"}
+        className="text-moh-darkGreen block mt-1"
+        delay={1.2}
+        staggerDelay={0.04}
+        splitBy="words"
+      />
+      <TextReveal 
+        text="Innovation"}
+        className="text-moh-darkGreen block mt-1"
+        delay={1.4}
         staggerDelay={0.04}
         splitBy="words"
       />
