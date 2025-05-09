@@ -46,9 +46,6 @@ export default function InnovationJourney() {
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
             {t('home.journey.tag', 'Innovation Pathway')}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-4">
-            {t('home.journey.title', 'The Innovation Journey')}
-          </h2>
           <p className="max-w-2xl mx-auto text-gray-700">
             {t('home.journey.description', 'From ideation to implementation, our structured process guides healthcare innovations to success.')}
           </p>

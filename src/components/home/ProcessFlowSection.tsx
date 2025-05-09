@@ -44,9 +44,6 @@ export default function ProcessFlowSection() {
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium mb-4">
             {t('home.process.tag', 'Innovation Process')}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-4">
-            {t('home.process.title', 'How We Transform Healthcare')}
-          </h2>
           <p className="max-w-2xl mx-auto text-gray-700">
             {t('home.process.description', 'Our structured approach ensures innovations address real healthcare needs and create lasting impact.')}
           </p>
