@@ -6,6 +6,8 @@ import { FileSearch, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { ComplianceRequirement } from "./ComplianceRequirementCard";
+import { useMutation } from "@tanstack/react-query";
+import { updateComplianceStatus } from "@/utils/regulatoryUtils";
 
 export interface AIComplianceAnalysis {
   score: number;
@@ -17,10 +19,37 @@ export interface AIComplianceAnalysis {
 interface ComplianceAnalysisResultsProps {
   analysis: AIComplianceAnalysis;
   onMarkRequirementComplete: (id: string) => void;
+  refetchData?: () => void;
 }
 
-export function ComplianceAnalysisResults({ analysis, onMarkRequirementComplete }: ComplianceAnalysisResultsProps) {
+export function ComplianceAnalysisResults({ 
+  analysis, 
+  onMarkRequirementComplete,
+  refetchData 
+}: ComplianceAnalysisResultsProps) {
   const { toast } = useToast();
+  
+  const updateComplianceMutation = useMutation({
+    mutationFn: (args: { id: string, completed: boolean }) => 
+      updateComplianceStatus(args.id, args.completed),
+    onSuccess: () => {
+      if (refetchData) {
+        refetchData();
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Error updating compliance status",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    }
+  });
+  
+  const handleComplianceStatusUpdate = (id: string, completed: boolean) => {
+    updateComplianceMutation.mutate({ id, completed });
+    onMarkRequirementComplete(id);
+  };
   
   const handleGenerateReport = () => {
     toast({
@@ -80,7 +109,8 @@ export function ComplianceAnalysisResults({ analysis, onMarkRequirementComplete 
                   size="sm" 
                   variant={requirement.completed ? "outline" : "default"}
                   className={requirement.completed ? "border-green-500 text-green-500" : ""}
-                  onClick={() => onMarkRequirementComplete(requirement.id)}
+                  onClick={() => handleComplianceStatusUpdate(requirement.id, !requirement.completed)}
+                  disabled={updateComplianceMutation.isPending}
                 >
                   {requirement.completed ? (
                     <>

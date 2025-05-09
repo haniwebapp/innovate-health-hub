@@ -1,2 +1,5 @@
 
 project_id = "ntgrokpnwizohtfkcfec"
+
+[functions.seed-regulatory-data]
+verify_jwt = false

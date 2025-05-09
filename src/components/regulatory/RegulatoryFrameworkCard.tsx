@@ -2,14 +2,14 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle, Code, Flask } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
 export interface RegulatoryFramework {
   id: string;
   title: string;
-  icon: ReactNode;
+  icon: string;
   description: string;
   completedSteps: number;
   totalSteps: number;
@@ -27,6 +27,20 @@ export function RegulatoryFrameworkCard({
   isSelected, 
   onSelect 
 }: RegulatoryFrameworkCardProps) {
+  // Function to render the appropriate icon based on the framework's icon property
+  const renderIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'CheckCircle':
+        return <CheckCircle size={24} />;
+      case 'Code':
+        return <Code size={24} />;
+      case 'Flask':
+        return <Flask size={24} />;
+      default:
+        return <CheckCircle size={24} />;
+    }
+  };
+
   return (
     <Card 
       className={cn(
@@ -37,7 +51,7 @@ export function RegulatoryFrameworkCard({
     >
       <div className="flex items-start gap-3">
         <div className="p-2 bg-moh-green/10 rounded-md text-moh-green">
-          {framework.icon}
+          {renderIcon(framework.icon)}
         </div>
         <div className="flex-1">
           <h3 className="font-semibold text-lg">{framework.title}</h3>
