@@ -142,7 +142,7 @@ export default function FeaturedSection() {
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} duration={2} delay={0.5 + index * 0.2} />
                 </div>
               </motion.div>
-              <p className="text-gray-600 mt-2 my-[46px]">{t(stat.labelKey)}</p>
+              <p className="text-gray-600 mt-2 my-[46px] py-[25px]">{t(stat.labelKey)}</p>
               
               {/* Animated particle burst on hover */}
               <motion.div className="absolute inset-0 pointer-events-none" initial="hidden" whileHover="visible" variants={{
