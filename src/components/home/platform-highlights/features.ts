@@ -45,16 +45,16 @@ export const features = [
 export const getIconByName = (name: string, className: string = "h-5 w-5") => {
   switch (name) {
     case "Sparkles":
-      return <Sparkles className={className} />;
+      return React.createElement(Sparkles, { className });
     case "Users":
-      return <Users className={className} />;
+      return React.createElement(Users, { className });
     case "FileText":
-      return <FileText className={className} />;
+      return React.createElement(FileText, { className });
     case "BarChart3":
-      return <BarChart3 className={className} />;
+      return React.createElement(BarChart3, { className });
     case "Calendar":
-      return <Calendar className={className} />;
+      return React.createElement(Calendar, { className });
     default:
-      return <Sparkles className={className} />;
+      return React.createElement(Sparkles, { className });
   }
 };
