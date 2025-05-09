@@ -11,31 +11,52 @@ export default function InnovationJourney() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const { t } = useLanguage();
   
+  // Sample data - in a real app this would come from Supabase or an API
   const timelineItems = [
     {
       icon: <Lightbulb className="text-moh-gold w-6 h-6" />,
       title: t('home.journey.ideation.title'),
       description: t('home.journey.ideation.description'),
+      isActive: false,
+      importance: 'high' as const,
+      completionPercent: 100,
+      duration: 3
     },
     {
       icon: <Beaker className="text-moh-green w-6 h-6" />,
       title: t('home.journey.development.title'),
       description: t('home.journey.development.description'),
+      isActive: true, // Currently active phase
+      importance: 'high' as const,
+      completionPercent: 65,
+      duration: 8
     },
     {
       icon: <Target className="text-moh-darkGreen w-6 h-6" />,
       title: t('home.journey.validation.title'),
       description: t('home.journey.validation.description'),
+      isActive: false,
+      importance: 'medium' as const,
+      completionPercent: 15,
+      duration: 5
     },
     {
       icon: <Rocket className="text-moh-darkGold w-6 h-6" />,
       title: t('home.journey.implementation.title'),
       description: t('home.journey.implementation.description'),
+      isActive: false,
+      importance: 'medium' as const,
+      completionPercent: 0,
+      duration: 10
     },
     {
       icon: <Award className="text-moh-gold w-6 h-6" />,
       title: t('home.journey.impact.title'),
       description: t('home.journey.impact.description'),
+      isActive: false,
+      importance: 'low' as const,
+      completionPercent: 0,
+      duration: 4
     },
   ];
   
@@ -46,9 +67,17 @@ export default function InnovationJourney() {
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
             {t('home.journey.tag')}
           </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-moh-darkGreen mb-4">
+            {t('home.journey.title')}
+          </h2>
           <p className="max-w-2xl mx-auto text-gray-700">
             {t('home.journey.description')}
           </p>
+          
+          {/* Current phase indicator */}
+          <div className="mt-6 inline-block px-4 py-2 bg-white rounded-full text-sm font-medium text-moh-green shadow-sm">
+            Current Phase: {timelineItems.find(item => item.isActive)?.title || 'Planning'}
+          </div>
         </ScrollFadeIn>
 
         {/* Timeline */}
@@ -69,6 +98,9 @@ export default function InnovationJourney() {
                 <TimelineItem 
                   isLeft={index % 2 === 0} 
                   index={index}
+                  isActive={item.isActive}
+                  importance={item.importance}
+                  duration={item.duration}
                 >
                   <div className={`${index % 2 === 0 ? 'text-right' : 'text-left'}`}>
                     <div className="inline-flex items-center gap-2 mb-2">
@@ -77,6 +109,34 @@ export default function InnovationJourney() {
                       {index % 2 !== 0 && item.icon}
                     </div>
                     <p className="text-gray-600">{item.description}</p>
+                    
+                    {/* Completion percent indicator */}
+                    {item.completionPercent > 0 && (
+                      <motion.div 
+                        className="mt-2"
+                        initial={{ opacity: 0 }}
+                        animate={inView ? { opacity: 1 } : { opacity: 0 }}
+                        transition={{ delay: 1 + index * 0.1 }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="grow h-1 bg-gray-200 rounded-full overflow-hidden">
+                            <motion.div 
+                              className={`h-full ${
+                                item.completionPercent > 80 ? 'bg-moh-green' :
+                                item.completionPercent > 40 ? 'bg-moh-gold' :
+                                'bg-moh-lightGold'
+                              }`}
+                              initial={{ width: 0 }}
+                              animate={inView ? { width: `${item.completionPercent}%` } : { width: 0 }}
+                              transition={{ duration: 0.8, delay: 1.2 + index * 0.1 }}
+                            />
+                          </div>
+                          <span className="text-xs font-medium text-gray-600">
+                            {item.completionPercent}%
+                          </span>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
                 </TimelineItem>
               </div>
