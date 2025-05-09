@@ -91,9 +91,10 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
   delete insertData.submission_deadline;
   delete insertData.participants;
 
+  // Cast the insertData to the expected type for Supabase
   const { data, error } = await supabase
     .from('challenges')
-    .insert(insertData)
+    .insert(insertData as any)
     .select()
     .single();
   
@@ -124,7 +125,7 @@ export const updateChallenge = async (id: string, challenge: Partial<Challenge>)
 
   const { data, error } = await supabase
     .from('challenges')
-    .update(updateData)
+    .update(updateData as any)
     .eq('id', id)
     .select()
     .single();
