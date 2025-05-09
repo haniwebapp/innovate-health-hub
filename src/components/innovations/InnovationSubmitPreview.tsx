@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useSubmissionForm } from '@/contexts/SubmissionFormContext';
@@ -156,7 +155,7 @@ export default function InnovationSubmitPreview() {
                 <ChevronRight className="ml-1 h-3 w-3" />
               </Link>
             </Button>
-          ) : formData.title ? (
+          ) : (
             <Button variant="outline" size="sm" asChild>
               <Link to={`/innovations/submit/${
                 activeStep < totalSteps - 1 
@@ -164,13 +163,6 @@ export default function InnovationSubmitPreview() {
                 : 'review'
               }`}>
                 Next Step
-                <ChevronRight className="ml-1 h-3 w-3" />
-              </Link>
-            </Button>
-          ) : (
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/innovations/submit/basic-info">
-                Start
                 <ChevronRight className="ml-1 h-3 w-3" />
               </Link>
             </Button>

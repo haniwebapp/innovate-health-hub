@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { SubmissionFormProvider } from '@/contexts/SubmissionFormContext';
 import { Button } from '@/components/ui/button';
@@ -9,9 +9,13 @@ import InnovationSubmitPreview from '@/components/innovations/InnovationSubmitPr
 export default function InnovationSubmitPage() {
   const navigate = useNavigate();
 
-  const handleStartSubmission = () => {
-    navigate('/innovations/submit/basic-info');
-  };
+  // Automatically redirect to the first step when this page loads
+  useEffect(() => {
+    // Check if we're on the exact submission index page, not a subpage
+    if (window.location.pathname === '/innovations/submit') {
+      navigate('/innovations/submit/basic-info');
+    }
+  }, [navigate]);
 
   return (
     <SubmissionFormProvider>
