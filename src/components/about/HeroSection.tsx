@@ -6,7 +6,7 @@ import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 import { getRTLClasses } from "@/utils/rtlUtils";
 
 export default function HeroSection() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const rtlClasses = getRTLClasses(language);
   
   const fadeInUpVariants = {
@@ -44,11 +44,11 @@ export default function HeroSection() {
             {language === 'ar' ? (
               <div className="flex items-center">
                 <ArabicVerticalText text="منصة الابتكار الصحي" />
-                <span className="mr-4">{t('about.title')}</span>
+                <span className="mr-4">Saudi Healthcare Innovation Platform</span>
               </div>
             ) : (
               <>
-                {t('about.title')}
+                Saudi Healthcare Innovation Platform
                 <div className="inline-block ml-4">
                   <ArabicVerticalText text="منصة الابتكار الصحي" />
                 </div>
@@ -59,7 +59,7 @@ export default function HeroSection() {
             className={`text-lg text-gray-700 mb-8 leading-relaxed ${rtlClasses.text}`}
             variants={fadeInUpVariants}
           >
-            {t('about.description')}
+            Accelerating healthcare transformation across Saudi Arabia through innovation, collaboration, and strategic partnerships aligned with Vision 2030.
           </motion.p>
           
           <motion.div 
@@ -72,7 +72,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05 }}
             >
               <Users className={iconPosition} size={16} />
-              500+ {t('about.innovators')}
+              500+ Innovators
             </motion.span>
             <motion.span 
               className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium"
@@ -80,7 +80,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05 }}
             >
               <Award className={iconPosition} size={16} />
-              40+ {t('about.challenges')}
+              40+ Challenges
             </motion.span>
             <motion.span 
               className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium"
@@ -88,7 +88,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05 }}
             >
               <Globe className={iconPosition} size={16} />
-              {t('about.impact')}
+              Nationwide Impact
             </motion.span>
           </motion.div>
         </motion.div>

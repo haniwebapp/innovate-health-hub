@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export function HeroButtons() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   
   // Animation variants for staggered animations
   const containerVariants = {
@@ -36,7 +36,7 @@ export function HeroButtons() {
       <motion.div variants={itemVariants}>
         <Button size="lg" className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group" asChild>
           <Link to="/innovations">
-            {t('home.hero.exploreButton') || "Explore Innovations"}
+            Explore Innovations
             <motion.div 
               animate={{ x: language === 'ar' ? [-5, 0, -5] : [0, 5, 0] }}
               transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
@@ -60,7 +60,7 @@ export function HeroButtons() {
             >
               <Sparkles className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
             </motion.div>
-            {t('home.hero.joinButton') || "Join a Challenge"}
+            Join a Challenge
           </Link>
         </Button>
       </motion.div>
@@ -69,7 +69,7 @@ export function HeroButtons() {
         <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm" asChild>
           <Link to="/investment">
             <Award className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
-            {t('home.hero.investmentButton') || "Access Investment"}
+            Access Investment
           </Link>
         </Button>
       </motion.div>

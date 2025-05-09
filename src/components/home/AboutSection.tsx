@@ -10,7 +10,7 @@ import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
 
 export default function AboutSection() {
   const contentRef = useRef<HTMLDivElement>(null);
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   const inView = useInView(contentRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
@@ -41,13 +41,13 @@ export default function AboutSection() {
           <div className="order-2 md:order-1">
             <ScrollFadeIn delay={0.2} direction="right" className="mb-4">
               <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
-                {t('home.about.tag')}
+                Innovation Platform
               </div>
             </ScrollFadeIn>
             
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-moh-darkGreen leading-tight">
               <TextReveal 
-                text={t('home.about.title')} 
+                text="Transforming Healthcare Through Innovation" 
                 delay={0.3} 
                 splitBy="words" 
                 staggerDelay={0.06} 
@@ -56,10 +56,10 @@ export default function AboutSection() {
             
             <div className="space-y-4 mb-8">
               <ScrollFadeIn delay={0.6} className="text-gray-700 leading-relaxed">
-                {t('home.about.paragraph1')}
+                The Saudi Healthcare Innovation Platform is designed to accelerate healthcare transformation in alignment with Saudi Vision 2030, connecting innovators, investors, and regulators in one ecosystem.
               </ScrollFadeIn>
               <ScrollFadeIn delay={0.8} className="text-gray-700 leading-relaxed">
-                {t('home.about.paragraph2')}
+                Our platform provides the tools, resources, and connections needed to bring cutting-edge healthcare solutions from concept to implementation, addressing the unique needs of the Saudi healthcare sector.
               </ScrollFadeIn>
             </div>
             
@@ -68,7 +68,7 @@ export default function AboutSection() {
                 variant="outline" 
                 className="border-moh-green text-moh-green hover:bg-moh-lightGreen group"
               >
-                {t('home.about.vision2030Button')}
+                Vision 2030 Goals
                 <motion.div
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse", repeatDelay: 1 }}
@@ -80,7 +80,7 @@ export default function AboutSection() {
                 variant="outline" 
                 className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold group"
               >
-                {t('home.about.strategyButton')}
+                Health Sector Strategy
                 <motion.div
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse", repeatDelay: 1, delay: 0.5 }}
@@ -129,10 +129,10 @@ export default function AboutSection() {
                     transition={{ delay: 0.8, duration: 0.5 }}
                   >
                     <span className="bg-moh-green text-white px-4 py-2 text-sm rounded-md font-medium">
-                      {t('home.about.videoOverlay')}
+                      Platform Overview
                     </span>
                     <span className="bg-white/80 backdrop-blur-sm text-moh-darkGreen px-3 py-1 text-xs rounded-md">
-                      {t('home.about.videoDuration')}
+                      2:45
                     </span>
                   </motion.div>
                 </div>

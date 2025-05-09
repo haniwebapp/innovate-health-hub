@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define available languages (keeping just for RTL support)
@@ -32,6 +33,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Simplified t function that just returns the provided text
   // We're no longer using translations, but keeping the function for compatibility
   const t = (key: string): string => {
+    // This will just return the key since we're using direct text now
     return key;
   };
 

@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const NotFound = () => {
   const location = useLocation();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   useEffect(() => {
     console.error(
@@ -17,10 +17,10 @@ const NotFound = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">{t('notFound.title')}</h1>
-        <p className="text-xl text-gray-600 mb-4">{t('notFound.description')}</p>
+        <h1 className="text-4xl font-bold mb-4">Page Not Found</h1>
+        <p className="text-xl text-gray-600 mb-4">Sorry, the page you are looking for does not exist.</p>
         <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          {t('notFound.returnHome')}
+          Return to Home
         </a>
       </div>
     </div>

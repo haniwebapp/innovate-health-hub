@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { getRTLClasses } from "@/utils/rtlUtils";
 
 export default function JoinCommunitySection() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const rtlClasses = getRTLClasses(language);
   
   const fadeInVariants = {
@@ -34,10 +34,10 @@ export default function JoinCommunitySection() {
           className={language === 'ar' ? 'rtl-mode' : ''}
         >
           <h2 className={`text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen ${rtlClasses.text}`}>
-            {t('about.joinCommunity')}
+            Join Our Innovation Community
           </h2>
           <p className={`max-w-2xl mx-auto mb-8 text-gray-700 ${rtlClasses.text}`}>
-            {t('about.joinDescription')}
+            Be part of the healthcare transformation journey in Saudi Arabia. Connect with innovators, investors, and healthcare professionals.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <motion.button 
@@ -48,11 +48,11 @@ export default function JoinCommunitySection() {
               {language === 'ar' ? (
                 <>
                   <DirectionalChevron className="ml-2 h-5 w-5" />
-                  {t('about.registerNow')}
+                  Register Now
                 </>
               ) : (
                 <>
-                  {t('about.registerNow')}
+                  Register Now
                   <DirectionalChevron className="ml-2 h-5 w-5" />
                 </>
               )}
@@ -62,7 +62,7 @@ export default function JoinCommunitySection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t('about.learnMore')}
+              Learn More
             </motion.button>
           </div>
         </motion.div>
