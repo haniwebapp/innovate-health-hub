@@ -1,16 +1,19 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import GeneralSettingsTab from "@/components/admin/GeneralSettingsTab";
 import ChallengeSettingsTab from "@/components/admin/ChallengeSettingsTab";
 import NotificationSettingsTab from "@/components/admin/NotificationSettingsTab";
+import AdminSettingsAI from "@/components/ai/AdminSettingsAI";
 import { GeneralSettings, ChallengeSettings } from "@/types/admin";
 
 export default function AdminSettingsPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showAIRecommendations, setShowAIRecommendations] = useState(false);
   
   // Platform settings state
   const [platformSettings, setPlatformSettings] = useState<GeneralSettings>({
@@ -65,8 +68,28 @@ export default function AdminSettingsPage() {
     <AdminLayout 
       title="Platform Settings"
       description="Configure and manage system settings"
+      actions={
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowAIRecommendations(!showAIRecommendations)}
+          >
+            {showAIRecommendations ? "Hide AI Recommendations" : "Show AI Recommendations"}
+          </Button>
+          <Button onClick={handleSaveSettings} disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save All Settings"}
+          </Button>
+        </div>
+      }
     >
-      <Tabs defaultValue="general">
+      {showAIRecommendations && (
+        <AdminSettingsAI 
+          generalSettings={platformSettings}
+          challengeSettings={challengeSettings}
+        />
+      )}
+
+      <Tabs defaultValue="general" className="mt-6">
         <TabsList className="grid w-full grid-cols-3 mb-4">
           <TabsTrigger value="general">General Settings</TabsTrigger>
           <TabsTrigger value="challenges">Challenge Settings</TabsTrigger>

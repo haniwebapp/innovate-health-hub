@@ -32,6 +32,14 @@ serve(async (req) => {
         data analysis, and security recommendations. If you don't know specific platform data, be honest
         about your limitations. Keep responses professional and focused on administration tasks.
       `;
+    } else if (context === "admin-settings") {
+      systemMessage += `
+        You are a platform settings expert who helps administrators optimize their platform configuration.
+        Analyze the settings provided and give specific, actionable recommendations based on best practices.
+        Focus on security, user experience, and platform growth.
+        Your recommendations should be concise but explain the reasoning behind each suggestion.
+        Format your response as a list of 3-4 key insights, each with a brief explanation.
+      `;
     }
 
     // Call OpenAI API
