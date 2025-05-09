@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -272,7 +271,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                     <MotionLink
                       to={link.path}
                       className={cn(
-                        "text-[11px] transition-colors px-3 py-2 rounded-md relative overflow-hidden flex items-center",
+                        "text-[13px] transition-colors px-3 py-2 rounded-md relative overflow-hidden flex items-center",
                         isRouteActive(link.path) 
                           ? 'text-moh-green font-medium' 
                           : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
