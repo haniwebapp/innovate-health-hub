@@ -10,6 +10,8 @@ import { Search } from "lucide-react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import AdminUsersTable from "@/components/admin/AdminUsersTable";
 import AdminUserStats from "@/components/admin/AdminUserStats";
+import UserInsightsCard from "@/components/ai/UserInsightsCard";
+import AdminAIAssistant from "@/components/ai/AdminAIAssistant";
 import { UserProfile } from "@/types/admin";
 
 export default function AdminUsersPage() {
@@ -18,6 +20,7 @@ export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -83,11 +86,25 @@ export default function AdminUsersPage() {
       title="User Management"
       description="View and manage platform users"
       actions={
-        <Button onClick={fetchUsers} disabled={isLoading}>
-          {isLoading ? "Loading..." : "Refresh Users"}
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowAIAssistant(!showAIAssistant)}
+          >
+            {showAIAssistant ? "Hide AI Assistant" : "Show AI Assistant"}
+          </Button>
+          <Button onClick={fetchUsers} disabled={isLoading}>
+            {isLoading ? "Loading..." : "Refresh Users"}
+          </Button>
+        </div>
       }
     >
+      {showAIAssistant && (
+        <div className="mb-6">
+          <AdminAIAssistant />
+        </div>
+      )}
+
       <div className="relative w-full max-w-sm mb-4">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input 
@@ -115,6 +132,8 @@ export default function AdminUsersPage() {
       <div className="mt-6">
         <AdminUserStats users={users} />
       </div>
+
+      <UserInsightsCard users={users} />
     </AdminLayout>
   );
 }
