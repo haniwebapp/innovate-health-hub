@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { 
   Loader2, Lightbulb, CheckCircle, Clock, CheckSquare,
   Clipboard, FileText, ClipboardCheck, AlertCircle,

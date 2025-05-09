@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,23 +7,10 @@ import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Lightbulb, BarChart3, TrendingUp, Search, Zap } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-
-// Types for AI-generated investment data
-interface AIMatchScore {
-  name: string;
-  score: number;
-  reason: string;
-}
-
-interface AIMarketTrend {
-  sector: string;
-  growth: number;
-  confidence: number;
-  insight: string;
-}
+import { AIInsightsCard } from "@/components/investment/AIInsightsCard";
+import { AIMatchScoreCard, AIMatchScore } from "@/components/investment/AIMatchScoreCard";
+import { MarketTrendCard, AIMarketTrend } from "@/components/investment/MarketTrendCard";
 
 export default function InvestmentPage() {
   const { t, language } = useLanguage();
@@ -231,19 +217,7 @@ export default function InvestmentPage() {
           </Button>
         </div>
         
-        {aiRecommendations.length > 0 && (
-          <Card className="p-6 mb-8 border-l-4 border-l-yellow-400 bg-yellow-50">
-            <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
-              <Lightbulb className="h-5 w-5 text-yellow-500" />
-              AI Insights
-            </h3>
-            <div className="space-y-2">
-              {aiRecommendations.map((insight, i) => (
-                <p key={i} className="text-gray-700">{insight}</p>
-              ))}
-            </div>
-          </Card>
-        )}
+        <AIInsightsCard insights={aiRecommendations} />
         
         {aiMatchScores.length > 0 && (
           <Card className="p-6 mb-8">
@@ -278,21 +252,7 @@ export default function InvestmentPage() {
             <div className="space-y-4 mt-4">
               {filteredMatches.length > 0 ? (
                 filteredMatches.map((match, i) => (
-                  <div key={i} className="border rounded-md p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="font-medium text-lg">{match.name}</h4>
-                      <Badge className={match.score > 85 ? 'bg-green-500' : match.score > 75 ? 'bg-amber-500' : 'bg-gray-500'}>
-                        {match.score}/100
-                      </Badge>
-                    </div>
-                    <p className="text-gray-600 text-sm mb-2">{match.reason}</p>
-                    <div className="mt-2">
-                      <div className="text-xs text-gray-500 mb-1">Match Score</div>
-                      <Progress value={match.score} className="h-2" 
-                        style={{backgroundColor: '#e5e7eb'}} // light gray background
-                      />
-                    </div>
-                  </div>
+                  <AIMatchScoreCard key={i} match={match} />
                 ))
               ) : (
                 <p className="text-gray-500 italic">No matching opportunities found.</p>
@@ -309,18 +269,7 @@ export default function InvestmentPage() {
             </h3>
             <div className="space-y-4">
               {aiMarketTrends.map((trend, i) => (
-                <div key={i} className="border rounded-md p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-medium">{trend.sector}</h4>
-                      <p className="text-sm text-gray-600">{trend.insight}</p>
-                    </div>
-                    <div className="text-right">
-                      <Badge className="bg-blue-500 mb-1">+{trend.growth}% Growth</Badge>
-                      <div className="text-xs text-gray-500">Confidence: {trend.confidence}%</div>
-                    </div>
-                  </div>
-                </div>
+                <MarketTrendCard key={i} trend={trend} />
               ))}
             </div>
           </Card>
