@@ -4,7 +4,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 // Define available languages (keeping just for RTL support)
 export type Language = 'en' | 'ar';
 
-// Simple English translations mapping
+// Simple translations mapping
 const translations: Record<string, string> = {
   // Navigation items
   'nav.about': 'About',
@@ -79,6 +79,29 @@ const translations: Record<string, string> = {
   'home.featured.story3.category': 'Patient Experience',
   'home.featured.story3.description': 'A mobile platform that improved medication adherence by 60% for chronic disease patients.',
   
+  // Innovation Journey section
+  'home.journey.tag': 'Innovation Journey',
+  'home.journey.title': 'Healthcare Innovation Roadmap',
+  'home.journey.description': 'Our structured approach to healthcare innovation ensures ideas are properly vetted, developed, and implemented across Saudi Arabia's healthcare system.',
+  'home.journey.currentPhase': 'Current Phase',
+  
+  // Innovation Journey phases
+  'home.journey.ideation.title': 'Ideation',
+  'home.journey.ideation.description': 'Identifying healthcare challenges and developing innovative solutions',
+  'home.journey.development.title': 'Development',
+  'home.journey.development.description': 'Building prototypes and testing with stakeholders',
+  'home.journey.validation.title': 'Validation',
+  'home.journey.validation.description': 'Ensuring solutions meet clinical and regulatory standards',
+  'home.journey.implementation.title': 'Implementation',
+  'home.journey.implementation.description': 'Scaling solutions across healthcare facilities',
+  'home.journey.impact.title': 'Impact Measurement',
+  'home.journey.impact.description': 'Evaluating outcomes and optimizing solutions',
+  
+  // Innovation gallery section
+  'home.innovations.tag': 'Featured Innovations',
+  'home.innovations.title': 'Healthcare Solutions Gallery',
+  'home.innovations.subtitle': 'Discover innovative solutions transforming Saudi healthcare',
+  
   // Footer
   'footer.mohLogo': 'Ministry of Health Logo',
   'footer.description': 'The official innovation platform of the Saudi Ministry of Health, connecting healthcare innovators with resources and opportunities.',
@@ -108,14 +131,14 @@ const translations: Record<string, string> = {
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string; // Keep the function signature but now it will return translated text
+  t: (key: string) => string; 
 };
 
 // Create context with default values
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
   setLanguage: () => {},
-  t: (key: string) => key, // Just return the key itself as fallback
+  t: (key: string) => key, 
 });
 
 // Provider component
@@ -130,7 +153,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     return (storedLanguage === 'ar' ? 'ar' : 'en') as Language;
   });
 
-  // Improved t function that returns translations
+  // Translation function that returns translations based on the key
   const t = (key: string): string => {
     // Check if the key exists in our translations object
     if (translations[key]) {
