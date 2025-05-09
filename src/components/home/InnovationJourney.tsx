@@ -14,28 +14,28 @@ export default function InnovationJourney() {
   const timelineItems = [
     {
       icon: <Lightbulb className="text-moh-gold w-6 h-6" />,
-      title: t('home.journey.ideation.title', 'Ideation'),
-      description: t('home.journey.ideation.description', 'Healthcare innovators submit their innovative ideas and concepts to address critical challenges.'),
+      title: t('home.journey.ideation.title'),
+      description: t('home.journey.ideation.description'),
     },
     {
       icon: <Beaker className="text-moh-green w-6 h-6" />,
-      title: t('home.journey.development.title', 'Development'),
-      description: t('home.journey.development.description', 'Selected innovations receive support to develop proof-of-concepts and functional prototypes.'),
+      title: t('home.journey.development.title'),
+      description: t('home.journey.development.description'),
     },
     {
       icon: <Target className="text-moh-darkGreen w-6 h-6" />,
-      title: t('home.journey.validation.title', 'Validation'),
-      description: t('home.journey.validation.description', 'Rigorous testing and validation ensures innovations meet healthcare standards and requirements.'),
+      title: t('home.journey.validation.title'),
+      description: t('home.journey.validation.description'),
     },
     {
       icon: <Rocket className="text-moh-darkGold w-6 h-6" />,
-      title: t('home.journey.implementation.title', 'Implementation'),
-      description: t('home.journey.implementation.description', 'Successful innovations are implemented in healthcare facilities across the kingdom.'),
+      title: t('home.journey.implementation.title'),
+      description: t('home.journey.implementation.description'),
     },
     {
       icon: <Award className="text-moh-gold w-6 h-6" />,
-      title: t('home.journey.impact.title', 'Impact & Scale'),
-      description: t('home.journey.impact.description', 'Proven innovations scale nationally and internationally to maximize healthcare impact.'),
+      title: t('home.journey.impact.title'),
+      description: t('home.journey.impact.description'),
     },
   ];
   
@@ -44,10 +44,10 @@ export default function InnovationJourney() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollFadeIn className="text-center mb-16">
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
-            {t('home.journey.tag', 'Innovation Pathway')}
+            {t('home.journey.tag')}
           </div>
           <p className="max-w-2xl mx-auto text-gray-700">
-            {t('home.journey.description', 'From ideation to implementation, our structured process guides healthcare innovations to success.')}
+            {t('home.journey.description')}
           </p>
         </ScrollFadeIn>
 

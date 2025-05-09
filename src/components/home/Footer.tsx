@@ -211,7 +211,7 @@ export default function Footer() {
               >
                 <div className="w-2 h-2 rounded-full bg-moh-gold"></div>
                 <p className="text-sm text-white">
-                  {t('footer.newUpdatesNotification', 'Get notified about new healthcare innovation opportunities')}
+                  {t('footer.newUpdatesNotification')}
                 </p>
               </motion.div>
             </motion.div>

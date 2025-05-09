@@ -12,28 +12,28 @@ export default function ProcessFlowSection() {
   const processSteps = [
     {
       icon: <ClipboardCheck className="w-6 h-6 text-moh-green" />,
-      title: t('home.process.step1.title', 'Assess'),
-      description: t('home.process.step1.description', 'Thoroughly evaluate healthcare challenges')
+      title: t('home.process.step1.title'),
+      description: t('home.process.step1.description')
     },
     {
       icon: <Users className="w-6 h-6 text-moh-gold" />,
-      title: t('home.process.step2.title', 'Collaborate'),
-      description: t('home.process.step2.description', 'Connect innovators with experts')
+      title: t('home.process.step2.title'),
+      description: t('home.process.step2.description')
     },
     {
       icon: <Database className="w-6 h-6 text-moh-darkGold" />,
-      title: t('home.process.step3.title', 'Develop'),
-      description: t('home.process.step3.description', 'Build and test innovative solutions')
+      title: t('home.process.step3.title'),
+      description: t('home.process.step3.description')
     },
     {
       icon: <BarChart3 className="w-6 h-6 text-moh-darkGreen" />,
-      title: t('home.process.step4.title', 'Validate'),
-      description: t('home.process.step4.description', 'Ensure solutions meet standards')
+      title: t('home.process.step4.title'),
+      description: t('home.process.step4.description')
     },
     {
       icon: <HeartPulse className="w-6 h-6 text-moh-green" />,
-      title: t('home.process.step5.title', 'Implement'),
-      description: t('home.process.step5.description', 'Deploy solutions at scale')
+      title: t('home.process.step5.title'),
+      description: t('home.process.step5.description')
     }
   ];
   
@@ -42,10 +42,10 @@ export default function ProcessFlowSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollFadeIn className="text-center mb-16">
           <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium mb-4">
-            {t('home.process.tag', 'Innovation Process')}
+            {t('home.process.tag')}
           </div>
           <p className="max-w-2xl mx-auto text-gray-700">
-            {t('home.process.description', 'Our structured approach ensures innovations address real healthcare needs and create lasting impact.')}
+            {t('home.process.description')}
           </p>
         </ScrollFadeIn>
         
@@ -60,7 +60,7 @@ export default function ProcessFlowSection() {
             size="lg" 
             className="bg-gradient-to-r from-moh-green to-moh-darkGreen text-white shadow-md group"
           >
-            {t('home.process.buttonText', 'Start Your Innovation Journey')}
+            {t('home.process.buttonText')}
             <motion.div
               animate={{
                 x: [0, 5, 0],
