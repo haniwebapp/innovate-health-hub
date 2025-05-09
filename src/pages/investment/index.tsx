@@ -10,6 +10,8 @@ import { AIMatchScore } from "@/components/investment/AIMatchScoreCard";
 import { AIMarketTrend } from "@/components/investment/MarketTrendCard";
 import { AIAnalysisSection } from "@/components/investment/AIAnalysisSection";
 import { InvestmentTabs } from "@/components/investment/InvestmentTabs";
+import Navbar from "@/components/layouts/Navbar";
+import Footer from "@/components/home/Footer";
 
 export default function InvestmentPage() {
   const { t, language } = useLanguage();
@@ -164,51 +166,55 @@ export default function InvestmentPage() {
   };
   
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-6">Investment Platform</h1>
-        <p className="text-lg text-gray-700 mb-10">
-          Connect healthcare innovations with the right investment opportunities. Our AI-powered platform brings together startups, investors, and growth resources to accelerate healthcare solutions.
-        </p>
-        
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <Button 
-            onClick={generateRecommendations} 
-            className="bg-moh-green hover:bg-moh-darkGreen flex items-center gap-2"
-            disabled={isLoadingAI}
-          >
-            {isLoadingAI ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating Recommendations...
-              </>
-            ) : (
-              <>
-                <Lightbulb className="h-4 w-4" />
-                Get AI Recommendations
-              </>
-            )}
-          </Button>
+    <>
+      <Navbar />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-6">Investment Platform</h1>
+          <p className="text-lg text-gray-700 mb-10">
+            Connect healthcare innovations with the right investment opportunities. Our AI-powered platform brings together startups, investors, and growth resources to accelerate healthcare solutions.
+          </p>
+          
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <Button 
+              onClick={generateRecommendations} 
+              className="bg-moh-green hover:bg-moh-darkGreen flex items-center gap-2"
+              disabled={isLoadingAI}
+            >
+              {isLoadingAI ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Generating Recommendations...
+                </>
+              ) : (
+                <>
+                  <Lightbulb className="h-4 w-4" />
+                  Get AI Recommendations
+                </>
+              )}
+            </Button>
+          </div>
+          
+          <AIInsightsCard insights={aiRecommendations} />
+          
+          <AIAnalysisSection 
+            aiMatchScores={aiMatchScores}
+            aiMarketTrends={aiMarketTrends}
+            isAnalyzing={isAnalyzing}
+            selectedSector={selectedSector}
+            onSectorChange={setSelectedSector}
+            onAnalyzeClick={analyzeInvestmentOpportunities}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+          
+          <InvestmentTabs
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
-        
-        <AIInsightsCard insights={aiRecommendations} />
-        
-        <AIAnalysisSection 
-          aiMatchScores={aiMatchScores}
-          aiMarketTrends={aiMarketTrends}
-          isAnalyzing={isAnalyzing}
-          selectedSector={selectedSector}
-          onSectorChange={setSelectedSector}
-          onAnalyzeClick={analyzeInvestmentOpportunities}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
-        
-        <InvestmentTabs
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }

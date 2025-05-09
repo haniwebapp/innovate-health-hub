@@ -20,6 +20,8 @@ import { AIInsightsCard } from "@/components/investment/AIInsightsCard";
 import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
 import { ComplianceResults, AIComplianceAnalysis } from "@/components/regulatory/ComplianceResults";
 import { RegulatoryFrameworks } from "@/components/regulatory/RegulatoryFrameworks";
+import Navbar from "@/components/layouts/Navbar";
+import Footer from "@/components/home/Footer";
 
 export default function RegulatoryPage() {
   const { t, language } = useLanguage();
@@ -228,132 +230,136 @@ export default function RegulatoryPage() {
   };
   
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-6">Regulatory Sandbox</h1>
-        <p className="text-lg text-gray-700 mb-10">
-          Navigate the healthcare regulatory landscape with confidence. Our AI-powered Regulatory Sandbox provides a controlled environment to test innovative solutions against regulatory requirements.
-        </p>
-        
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <Button 
-            onClick={generateRecommendations} 
-            className="bg-moh-green hover:bg-moh-darkGreen flex items-center gap-2"
-            disabled={isLoadingAI}
-          >
-            {isLoadingAI ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Analyzing Regulatory Landscape...
-              </>
-            ) : (
-              <>
-                <Lightbulb className="h-4 w-4" />
-                Get AI Compliance Analysis
-              </>
-            )}
-          </Button>
-        </div>
-        
-        {/* AI Compliance Analyzer */}
-        <AIComplianceAnalyzer 
-          innovationDescription={innovationDescription}
-          innovationType={innovationType}
-          isAnalyzingCompliance={isAnalyzingCompliance}
-          onDescriptionChange={(value) => setInnovationDescription(value)}
-          onTypeChange={(value) => setInnovationType(value)}
-          onAnalyzeClick={analyzeCompliance}
-        />
-        
-        {/* Display compliance analysis results */}
-        {complianceAnalysis && (
-          <ComplianceResults 
-            analysis={complianceAnalysis}
-            onMarkRequirementComplete={markRequirementComplete}
+    <>
+      <Navbar />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-6">Regulatory Sandbox</h1>
+          <p className="text-lg text-gray-700 mb-10">
+            Navigate the healthcare regulatory landscape with confidence. Our AI-powered Regulatory Sandbox provides a controlled environment to test innovative solutions against regulatory requirements.
+          </p>
+          
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <Button 
+              onClick={generateRecommendations} 
+              className="bg-moh-green hover:bg-moh-darkGreen flex items-center gap-2"
+              disabled={isLoadingAI}
+            >
+              {isLoadingAI ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Analyzing Regulatory Landscape...
+                </>
+              ) : (
+                <>
+                  <Lightbulb className="h-4 w-4" />
+                  Get AI Compliance Analysis
+                </>
+              )}
+            </Button>
+          </div>
+          
+          {/* AI Compliance Analyzer */}
+          <AIComplianceAnalyzer 
+            innovationDescription={innovationDescription}
+            innovationType={innovationType}
+            isAnalyzingCompliance={isAnalyzingCompliance}
+            onDescriptionChange={(value) => setInnovationDescription(value)}
+            onTypeChange={(value) => setInnovationType(value)}
+            onAnalyzeClick={analyzeCompliance}
           />
-        )}
-        
-        {aiRecommendations.length > 0 && (
-          <AIInsightsCard 
-            insights={aiRecommendations} 
-            title="AI Regulatory Insights" 
+          
+          {/* Display compliance analysis results */}
+          {complianceAnalysis && (
+            <ComplianceResults 
+              analysis={complianceAnalysis}
+              onMarkRequirementComplete={markRequirementComplete}
+            />
+          )}
+          
+          {aiRecommendations.length > 0 && (
+            <AIInsightsCard 
+              insights={aiRecommendations} 
+              title="AI Regulatory Insights" 
+            />
+          )}
+          
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-10">
+            <h2 className="text-2xl font-semibold mb-4">How the Sandbox Works</h2>
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
+                  <CheckCircle className="h-6 w-6 text-moh-green" />
+                </div>
+                <h3 className="font-medium mb-2">1. Registration</h3>
+                <p className="text-sm text-gray-600">Register your innovation and select the applicable regulatory framework.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
+                  <ClipboardCheck className="h-6 w-6 text-moh-green" />
+                </div>
+                <h3 className="font-medium mb-2">2. Preparation</h3>
+                <p className="text-sm text-gray-600">Complete the required documentation and get ready for testing.</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
+                  <Clock className="h-6 w-6 text-moh-green" />
+                </div>
+                <h3 className="font-medium mb-2">3. Testing</h3>
+                <p className="text-sm text-gray-600">Test your innovation in a controlled environment with regulatory oversight.</p>
+              </div>
+            </div>
+            <Button className="w-full bg-moh-green hover:bg-moh-darkGreen">Apply to the Sandbox Program</Button>
+          </div>
+          
+          <h2 className="text-2xl font-semibold mb-4">Regulatory Frameworks</h2>
+          <RegulatoryFrameworks 
+            frameworks={regulatoryFrameworks}
+            selectedFramework={selectedRegulation}
+            onFrameworkSelect={setSelectedRegulation}
           />
-        )}
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-10">
-          <h2 className="text-2xl font-semibold mb-4">How the Sandbox Works</h2>
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
-                <CheckCircle className="h-6 w-6 text-moh-green" />
+          
+          <Separator className="my-8" />
+          
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">Regulatory Support Services</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-md border border-blue-100">
+                <h3 className="font-medium mb-2">Compliance Consultation</h3>
+                <p className="text-sm text-gray-600 mb-3">Get personalized guidance on your regulatory journey from our experts.</p>
+                <Button variant="outline" className="w-full text-blue-700 border-blue-200 hover:bg-blue-50">Book Consultation</Button>
               </div>
-              <h3 className="font-medium mb-2">1. Registration</h3>
-              <p className="text-sm text-gray-600">Register your innovation and select the applicable regulatory framework.</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
-                <ClipboardCheck className="h-6 w-6 text-moh-green" />
+              <div className="bg-white p-4 rounded-md border border-blue-100">
+                <h3 className="font-medium mb-2">Documentation Review</h3>
+                <p className="text-sm text-gray-600 mb-3">Have your regulatory documents reviewed by our compliance specialists.</p>
+                <Button variant="outline" className="w-full text-blue-700 border-blue-200 hover:bg-blue-50">Request Review</Button>
               </div>
-              <h3 className="font-medium mb-2">2. Preparation</h3>
-              <p className="text-sm text-gray-600">Complete the required documentation and get ready for testing.</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 rounded-full bg-moh-green/10 flex items-center justify-center mb-3">
-                <Clock className="h-6 w-6 text-moh-green" />
-              </div>
-              <h3 className="font-medium mb-2">3. Testing</h3>
-              <p className="text-sm text-gray-600">Test your innovation in a controlled environment with regulatory oversight.</p>
             </div>
           </div>
-          <Button className="w-full bg-moh-green hover:bg-moh-darkGreen">Apply to the Sandbox Program</Button>
+          
+          <Accordion type="single" collapsible className="mt-8">
+            <AccordionItem value="faq-1">
+              <AccordionTrigger className="text-lg font-medium">How does AI improve regulatory compliance?</AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                Our AI system analyzes your innovation against thousands of regulatory requirements, standards, and previous approvals to create a customized compliance pathway. It identifies gaps in documentation, suggests improvements, and continually updates recommendations based on regulatory changes.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq-2">
+              <AccordionTrigger className="text-lg font-medium">What types of innovations can be evaluated?</AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                Our system can analyze medical devices, digital health applications, AI/ML-based health solutions, telehealth platforms, diagnostics tools, and therapeutic interventions. The AI adapts recommendations based on the specific characteristics of your innovation.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq-3">
+              <AccordionTrigger className="text-lg font-medium">How accurate are the AI compliance recommendations?</AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                Our AI compliance engine has been trained on thousands of regulatory submissions and outcomes, achieving an accuracy rate of over 92% in identifying relevant requirements. All AI recommendations are reviewed by regulatory experts to ensure quality and correctness.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
-        
-        <h2 className="text-2xl font-semibold mb-4">Regulatory Frameworks</h2>
-        <RegulatoryFrameworks 
-          frameworks={regulatoryFrameworks}
-          selectedFramework={selectedRegulation}
-          onFrameworkSelect={setSelectedRegulation}
-        />
-        
-        <Separator className="my-8" />
-        
-        <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">Regulatory Support Services</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-md border border-blue-100">
-              <h3 className="font-medium mb-2">Compliance Consultation</h3>
-              <p className="text-sm text-gray-600 mb-3">Get personalized guidance on your regulatory journey from our experts.</p>
-              <Button variant="outline" className="w-full text-blue-700 border-blue-200 hover:bg-blue-50">Book Consultation</Button>
-            </div>
-            <div className="bg-white p-4 rounded-md border border-blue-100">
-              <h3 className="font-medium mb-2">Documentation Review</h3>
-              <p className="text-sm text-gray-600 mb-3">Have your regulatory documents reviewed by our compliance specialists.</p>
-              <Button variant="outline" className="w-full text-blue-700 border-blue-200 hover:bg-blue-50">Request Review</Button>
-            </div>
-          </div>
-        </div>
-        
-        <Accordion type="single" collapsible className="mt-8">
-          <AccordionItem value="faq-1">
-            <AccordionTrigger className="text-lg font-medium">How does AI improve regulatory compliance?</AccordionTrigger>
-            <AccordionContent className="text-gray-600">
-              Our AI system analyzes your innovation against thousands of regulatory requirements, standards, and previous approvals to create a customized compliance pathway. It identifies gaps in documentation, suggests improvements, and continually updates recommendations based on regulatory changes.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="faq-2">
-            <AccordionTrigger className="text-lg font-medium">What types of innovations can be evaluated?</AccordionTrigger>
-            <AccordionContent className="text-gray-600">
-              Our system can analyze medical devices, digital health applications, AI/ML-based health solutions, telehealth platforms, diagnostics tools, and therapeutic interventions. The AI adapts recommendations based on the specific characteristics of your innovation.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="faq-3">
-            <AccordionTrigger className="text-lg font-medium">How accurate are the AI compliance recommendations?</AccordionTrigger>
-            <AccordionContent className="text-gray-600">
-              Our AI compliance engine has been trained on thousands of regulatory submissions and outcomes, achieving an accuracy rate of over 92% in identifying relevant requirements. All AI recommendations are reviewed by regulatory experts to ensure quality and correctness.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
