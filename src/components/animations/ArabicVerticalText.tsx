@@ -64,9 +64,7 @@ export function ArabicVerticalText({
   };
   return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 relative ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
       {/* For vertical text display, we render each character as its own element */}
-      {characters.map((char, index) => <motion.span key={index} variants={charVariants} className="text-moh-lightGold font-semibold">
-          {char}
-        </motion.span>)}
+      {characters.map((char, index) => {})}
       
       {/* Special shimmer highlight effect */}
       <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
