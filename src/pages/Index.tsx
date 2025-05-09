@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@/components/layouts/Navbar";
 import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
@@ -10,6 +10,7 @@ import FeaturedSection from "@/components/home/FeaturedSection";
 import ChallengesSection from "@/components/home/ChallengesSection";
 import InnovationJourney from "@/components/home/InnovationJourney";
 import ProcessFlowSection from "@/components/home/ProcessFlowSection";
+import InnovationGallery from "@/components/home/InnovationGallery";
 import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +35,11 @@ const Index = () => {
     },
     exit: { opacity: 0 }
   };
+
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   return (
     <motion.div 
@@ -52,10 +58,11 @@ const Index = () => {
           <AboutSection />
           <InnovationJourney />
           <PlatformHighlights />
+          <InnovationGallery />
           <ProcessFlowSection />
           <AIDrivenSection />
-          <FeaturedSection />
           <ChallengesSection />
+          <FeaturedSection />
         </TooltipProvider>
       </main>
       <Footer />

@@ -1,146 +1,94 @@
 
-import { useEffect, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
+import { motion } from "framer-motion";
+import { Brain, FileText, TrendingUp, BookOpen, Flask } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getRTLClasses } from "@/utils/rtlUtils";
 
 interface FeatureCardProps {
-  icon: string;
-  titleKey: string;
-  descriptionKey: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
   delay: number;
 }
 
-const FeatureCard = ({ icon, titleKey, descriptionKey, delay }: FeatureCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { t } = useLanguage();
-  
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (cardRef.current) {
-            cardRef.current.classList.remove('opacity-0');
-            cardRef.current.classList.add('animate-fade-in');
-            cardRef.current.style.animationDelay = `${delay}ms`;
-          }
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
-      }
-    };
-  }, [delay]);
-  
+function FeatureCard({ icon, title, description, delay }: FeatureCardProps) {
   return (
-    <div ref={cardRef} className="opacity-0">
-      <Card className="h-full border-none shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group bg-white">
-        <div className="absolute -top-10 -right-10 w-20 h-20 bg-moh-lightGreen rounded-full opacity-70 group-hover:scale-150 transition-transform duration-500"></div>
-        <CardHeader className="pb-2 relative">
-          <div className="text-4xl mb-4">{icon}</div>
-          <CardTitle className="text-xl text-moh-darkGreen font-bold group-hover:text-moh-green transition-colors">
-            {t(titleKey)}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="relative">
-          <p className="text-gray-600">{t(descriptionKey)}</p>
-        </CardContent>
-      </Card>
-    </div>
+    <motion.div
+      className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay }}
+      whileHover={{ scale: 1.02 }}
+    >
+      <div className="mb-4 bg-gradient-to-r from-moh-green to-moh-darkGreen p-3 rounded-lg inline-block text-white">
+        {icon}
+      </div>
+      <h3 className="text-xl font-semibold mb-2 text-moh-darkGreen">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+    </motion.div>
   );
-};
+}
 
 export default function PlatformHighlights() {
-  const titleRef = useRef<HTMLDivElement>(null);
-  const { t } = useLanguage();
-  
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (titleRef.current) {
-            titleRef.current.classList.remove('opacity-0');
-            titleRef.current.classList.add('animate-fade-in');
-          }
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    if (titleRef.current) {
-      observer.observe(titleRef.current);
-    }
-
-    return () => {
-      if (titleRef.current) {
-        observer.unobserve(titleRef.current);
-      }
-    };
-  }, []);
+  const { t, language } = useLanguage();
+  const rtlClasses = getRTLClasses(language);
   
   const features = [
     {
-      icon: "🧠",
-      titleKey: "home.highlights.feature1.title",
-      descriptionKey: "home.highlights.feature1.description"
+      icon: <Brain className="h-6 w-6" />,
+      title: t('home.features.ai.title') || "AI-Powered Innovation Matching",
+      description: t('home.features.ai.description') || "Our advanced AI algorithms match your innovations with the right investors, challenges, and regulatory pathways for optimal success.",
     },
     {
-      icon: "🔬",
-      titleKey: "home.highlights.feature2.title",
-      descriptionKey: "home.highlights.feature2.description"
+      icon: <FileText className="h-6 w-6" />,
+      title: t('home.features.regulatory.title') || "Regulatory Sandbox Access",
+      description: t('home.features.regulatory.description') || "Test your healthcare solutions in a controlled environment with direct access to Ministry of Health guidance and support.",
     },
     {
-      icon: "📈",
-      titleKey: "home.highlights.feature3.title",
-      descriptionKey: "home.highlights.feature3.description"
+      icon: <TrendingUp className="h-6 w-6" />,
+      title: t('home.features.investment.title') || "Investment Marketplace",
+      description: t('home.features.investment.description') || "Connect directly with qualified healthcare investors looking for innovation opportunities in the Saudi healthcare sector.",
     },
     {
-      icon: "📚",
-      titleKey: "home.highlights.feature4.title",
-      descriptionKey: "home.highlights.feature4.description"
+      icon: <BookOpen className="h-6 w-6" />,
+      title: t('home.features.knowledge.title') || "Knowledge Hub",
+      description: t('home.features.knowledge.description') || "Access curated resources, research, and insights to help accelerate your healthcare innovation journey.",
     },
     {
-      icon: "🧪",
-      titleKey: "home.highlights.feature5.title",
-      descriptionKey: "home.highlights.feature5.description"
-    },
-    {
-      icon: "🌐",
-      titleKey: "home.highlights.feature6.title",
-      descriptionKey: "home.highlights.feature6.description"
+      icon: <Flask className="h-6 w-6" />,
+      title: t('home.features.challenges.title') || "Challenge Submissions",
+      description: t('home.features.challenges.description') || "Participate in healthcare innovation challenges posed by the Ministry of Health and other stakeholders.",
     }
   ];
 
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-white to-moh-gray/30">
+    <section className="py-20 bg-gray-50 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={titleRef} className="text-center mb-16 opacity-0">
-          <span className="inline-block px-4 py-1 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium mb-4">
-            {t('home.highlights.tag')}
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-moh-darkGreen">
-            {t('home.highlights.title')}
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-4">
+            {t('home.features.title') || "Platform Highlights"}
           </h2>
-          <p className="max-w-3xl mx-auto text-gray-700 text-lg">
-            {t('home.highlights.description')}
+          <p className="text-lg text-gray-600">
+            {t('home.features.subtitle') || "Discover the key features powering healthcare innovation across Saudi Arabia"}
           </p>
-        </div>
+        </motion.div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <FeatureCard 
+            <FeatureCard
               key={index}
               icon={feature.icon}
-              titleKey={feature.titleKey}
-              descriptionKey={feature.descriptionKey}
-              delay={(index + 1) * 100}
+              title={feature.title}
+              description={feature.description}
+              delay={0.1 + index * 0.1}
             />
           ))}
         </div>
