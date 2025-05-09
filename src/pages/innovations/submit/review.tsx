@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
@@ -64,6 +65,19 @@ export default function ReviewPage() {
   // Helper function to navigate to specific form sections for editing
   const navigateToSection = (section: string) => {
     navigate(`/innovations/submit/${section}`);
+  };
+
+  // Helper function to determine regulatory status display
+  const getRegultatoryStatusDisplay = () => {
+    if (!formData.regulatoryStatusType) return "Not specified";
+    
+    switch (formData.regulatoryStatusType) {
+      case 'notStarted': return "Not Started";
+      case 'inProgress': return "In Progress";
+      case 'approved': return "Approved";
+      case 'notApplicable': return "Not Applicable";
+      default: return "Not specified";
+    }
   };
 
   return (
@@ -237,9 +251,9 @@ export default function ReviewPage() {
                   
                   <div className="text-sm font-medium text-gray-500">Website:</div>
                   <div className="md:col-span-3">
-                    {formData.websiteUrl ? (
-                      <a href={formData.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                        {formData.websiteUrl}
+                    {formData.website ? (
+                      <a href={formData.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        {formData.website}
                       </a>
                     ) : "Not provided"}
                   </div>
@@ -327,14 +341,10 @@ export default function ReviewPage() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-x-4 gap-y-2">
                   <div className="text-sm font-medium text-gray-500">Regulatory Status:</div>
                   <div className="md:col-span-3">
-                    {formData.regulatoryStatus === 'notStarted' && "Not Started"}
-                    {formData.regulatoryStatus === 'inProgress' && "In Progress"}
-                    {formData.regulatoryStatus === 'approved' && "Approved"}
-                    {formData.regulatoryStatus === 'notApplicable' && "Not Applicable"}
-                    {!formData.regulatoryStatus && "Not specified"}
+                    {getRegultatoryStatusDisplay()}
                   </div>
                   
-                  {(formData.regulatoryStatus === 'inProgress' || formData.regulatoryStatus === 'approved') && (
+                  {(formData.regulatoryStatusType === 'inProgress' || formData.regulatoryStatusType === 'approved') && (
                     <>
                       <div className="text-sm font-medium text-gray-500">Approval Type:</div>
                       <div className="md:col-span-3">{formData.approvalType || "Not specified"}</div>
