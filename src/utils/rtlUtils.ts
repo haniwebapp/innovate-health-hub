@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 /**
  * Enhanced RTL utility to set document direction and related styles based on language

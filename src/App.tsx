@@ -1,5 +1,5 @@
 
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
@@ -44,58 +44,56 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider defaultTheme="light" storageKey="moh-theme-preference">
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <LanguageProvider>
-              <TooltipProvider>
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/challenges" element={<ChallengesPage />} />
-                  <Route path="/challenges/:id" element={<ChallengeDetails />} />
-                  <Route path="/innovations" element={<InnovationsPage />} />
-                  <Route path="/innovations/:id" element={<InnovationDetails />} />
-                  <Route path="/investment" element={<InvestmentPage />} />
-                  <Route path="/regulatory" element={<RegulatoryPage />} />
-                  <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
+    <ThemeProvider defaultTheme="light" storageKey="moh-theme-preference">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <LanguageProvider>
+            <TooltipProvider>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/challenges" element={<ChallengesPage />} />
+                <Route path="/challenges/:id" element={<ChallengeDetails />} />
+                <Route path="/innovations" element={<InnovationsPage />} />
+                <Route path="/innovations/:id" element={<InnovationDetails />} />
+                <Route path="/investment" element={<InvestmentPage />} />
+                <Route path="/regulatory" element={<RegulatoryPage />} />
+                <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
+                
+                {/* Auth Routes */}
+                <Route path="/auth/register" element={<RegisterPage />} />
+                <Route path="/auth/login" element={<LoginPage />} />
+                <Route path="/auth/verify" element={<VerificationPage />} />
+                
+                {/* Protected Dashboard Routes */}
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
+                  <Route path="submissions" element={<SubmissionsList />} />
+                  <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
+                  <Route path="create-challenge" element={<CreateChallengePage />} />
                   
-                  {/* Auth Routes */}
-                  <Route path="/auth/register" element={<RegisterPage />} />
-                  <Route path="/auth/login" element={<LoginPage />} />
-                  <Route path="/auth/verify" element={<VerificationPage />} />
-                  
-                  {/* Protected Dashboard Routes */}
-                  <Route path="/dashboard" element={
-                    <ProtectedRoute>
-                      <DashboardLayout />
-                    </ProtectedRoute>
-                  }>
-                    <Route index element={<DashboardPage />} />
-                    <Route path="profile" element={<ProfilePage />} />
-                    <Route path="submissions" element={<SubmissionsList />} />
-                    <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
-                    <Route path="create-challenge" element={<CreateChallengePage />} />
-                    
-                    {/* Admin Routes */}
-                    <Route path="admin/users" element={<AdminUsersPage />} />
-                    <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
-                    <Route path="admin/settings" element={<AdminSettingsPage />} />
-                    <Route path="admin/integrations" element={<AdminIntegrationsPage />} />
-                  </Route>
-                  
-                  {/* 404 Route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <Toaster />
-              </TooltipProvider>
-            </LanguageProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+                  {/* Admin Routes */}
+                  <Route path="admin/users" element={<AdminUsersPage />} />
+                  <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
+                  <Route path="admin/settings" element={<AdminSettingsPage />} />
+                  <Route path="admin/integrations" element={<AdminIntegrationsPage />} />
+                </Route>
+                
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </TooltipProvider>
+          </LanguageProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
