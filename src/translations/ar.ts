@@ -165,6 +165,23 @@ export const arTranslations = {
   'home.about.videoDuration': '2:45',
   
   // Platform Highlights
+  'home.features.tag': 'ميزات المنصة',
+  'home.features.title': 'تعزيز الابتكار في الرعاية الصحية',
+  'home.features.subtitle': 'توفر منصتنا أدوات وموارد شاملة لدعم ابتكارات الرعاية الصحية من الفكرة إلى التنفيذ.',
+  'home.features.ai.title': 'مطابقة الابتكار المدعومة بالذكاء الاصطناعي',
+  'home.features.ai.description': 'خوارزمياتنا المتقدمة للذكاء الاصطناعي تطابق ابتكاراتك مع المستثمرين والتحديات والمسارات التنظيمية المناسبة للنجاح الأمثل.',
+  'home.features.regulatory.title': 'الوصول إلى البيئة التنظيمية التجريبية',
+  'home.features.regulatory.description': 'اختبر حلول الرعاية الصحية الخاصة بك في بيئة خاضعة للرقابة مع الوصول المباشر إلى إرشادات ودعم وزارة الصحة.',
+  'home.features.investment.title': 'سوق الاستثمار',
+  'home.features.investment.description': 'تواصل مباشرة مع مستثمري الرعاية الصحية المؤهلين الذين يبحثون عن فرص ابتكار في قطاع الرعاية الصحية السعودي.',
+  'home.features.knowledge.title': 'مركز المعرفة',
+  'home.features.knowledge.description': 'الوصول إلى الموارد المنسقة والبحوث والرؤى للمساعدة في تسريع رحلة ابتكار الرعاية الصحية الخاصة بك.',
+  'home.features.challenges.title': 'تقديم التحديات',
+  'home.features.challenges.description': 'شارك في تحديات ابتكار الرعاية الصحية التي تطرحها وزارة الصحة وأصحاب المصلحة الآخرين.',
+  'home.features.cta': 'استكشاف جميع الميزات',
+  'home.features.learnMore': 'تعرف على مهمتنا',
+  
+  // Keep the existing highlights section (we're keeping both to avoid breaking anything)
   'home.highlights.tag': 'مميزات المنصة',
   'home.highlights.title': 'نظام الابتكار المتكامل الخاص بك',
   'home.highlights.description': 'مجموعة شاملة من الأدوات والخدمات المصممة لدعم مبتكري الرعاية الصحية في كل مرحلة من مراحل التطوير.',
@@ -198,19 +215,6 @@ export const arTranslations = {
   
   // Process Flow Section
   'home.process.tag': 'عملية الابتكار',
-  'home.process.title': 'كيف تعمل منصتنا',
-  'home.process.description': 'عملية مبسطة تربط المبتكرين في مجال الرعاية الصحية بالفرص والموارد والدعم.',
-  'home.process.step1.title': 'إنشاء حساب',
-  'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخصصة على المنصة.',
-  'home.process.step2.title': 'تقديم الابتكار',
-  'home.process.step2.description': 'قم بتحميل فكرتك أو مشروعك باستخدام نموذج التقديم الخاص بنا.',
-  'home.process.step3.title': 'الحصول على الملاحظات',
-  'home.process.step3.description': 'تلقي ملاحظات من خبراء وزارة الصحة والمتخصصين في المجال.',
-  'home.process.step4.title': 'الاتصال بالفرص',
-  'home.process.step4.description': 'المطابقة مع المستثمرين والتحديات والموارد المناسبة.',
-  'home.process.step5.title': 'تطوير وتوسيع النطاق',
-  'home.process.step5.description': 'الوصول إلى الدعم المستمر لتطوير وتوسيع نطاق ابتكارك.',
-  'home.process.buttonText': 'ابدأ رحلة الابتكار',
   
   // Featured Section
   'home.featured.title': 'تأثير المنصة',
@@ -277,4 +281,9 @@ export const arTranslations = {
   'footer.privacyPolicy': 'سياسة الخصوصية',
   'footer.termsOfService': 'شروط الخدمة',
   'footer.accessibility': 'إمكانية الوصول',
+  
+  // Innovation Gallery Section
+  'home.innovations.tag': 'معرض الابتكارات',
+  'home.innovations.title': 'ابتكارات الرعاية الصحية',
+  'home.innovations.subtitle': 'اكتشف أحدث ابتكارات الرعاية الصحية من جميع أنحاء المملكة العربية السعودية.',
 };

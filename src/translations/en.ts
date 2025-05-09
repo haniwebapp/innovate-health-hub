@@ -165,6 +165,23 @@ export const enTranslations = {
   'home.about.videoDuration': '2:45',
   
   // Platform Highlights
+  'home.features.tag': 'Platform Features',
+  'home.features.title': 'Advancing Healthcare Innovation',
+  'home.features.subtitle': 'Our platform provides comprehensive tools and resources to support healthcare innovations from concept to implementation.',
+  'home.features.ai.title': 'AI-Powered Innovation Matching',
+  'home.features.ai.description': 'Our advanced AI algorithms match your innovations with the right investors, challenges, and regulatory pathways for optimal success.',
+  'home.features.regulatory.title': 'Regulatory Sandbox Access',
+  'home.features.regulatory.description': 'Test your healthcare solutions in a controlled environment with direct access to Ministry of Health guidance and support.',
+  'home.features.investment.title': 'Investment Marketplace',
+  'home.features.investment.description': 'Connect directly with qualified healthcare investors looking for innovation opportunities in the Saudi healthcare sector.',
+  'home.features.knowledge.title': 'Knowledge Hub',
+  'home.features.knowledge.description': 'Access curated resources, research, and insights to help accelerate your healthcare innovation journey.',
+  'home.features.challenges.title': 'Challenge Submissions',
+  'home.features.challenges.description': 'Participate in healthcare innovation challenges posed by the Ministry of Health and other stakeholders.',
+  'home.features.cta': 'Explore All Features',
+  'home.features.learnMore': 'Learn About Our Mission',
+  
+  // Keep the existing highlights section (we're keeping both to avoid breaking anything)
   'home.highlights.tag': 'Platform Highlights',
   'home.highlights.title': 'Your Complete Innovation Ecosystem',
   'home.highlights.description': 'Our comprehensive suite of tools and services designed to support healthcare innovators at every stage of development.',
@@ -265,4 +282,9 @@ export const enTranslations = {
   'footer.privacyPolicy': 'Privacy Policy',
   'footer.termsOfService': 'Terms of Service',
   'footer.accessibility': 'Accessibility',
+  
+  // Innovation Gallery Section
+  'home.innovations.tag': 'Innovation Showcase',
+  'home.innovations.title': 'Healthcare Innovations',
+  'home.innovations.subtitle': 'Discover the latest healthcare innovations from across Saudi Arabia.',
 };
