@@ -18,26 +18,31 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { createChallenge } from "@/services/challengeService";
 
 // Form schema validation
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   description: z.string().min(20, "Description must be at least 20 characters"),
+  long_description: z.string().optional(),
   category: z.string().min(1, "Please select a category"),
-  startDate: z.date(),
-  endDate: z.date(),
+  start_date: z.date(),
+  end_date: z.date(),
   prize: z.string().optional(),
   eligibility: z.string().min(10, "Eligibility criteria must be at least 10 characters"),
   requirements: z.string().min(10, "Requirements must be at least 10 characters"),
+  image_url: z.string().optional(),
   isPublished: z.boolean().default(false),
+  organizer: z.string().default("Ministry of Health"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 const CreateChallengePage = () => {
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
   // Initialize form
@@ -46,13 +51,16 @@ const CreateChallengePage = () => {
     defaultValues: {
       title: "",
       description: "",
+      long_description: "",
       category: "",
-      startDate: new Date(),
-      endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      start_date: new Date(),
+      end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)),
       prize: "",
       eligibility: "",
       requirements: "",
+      image_url: "",
       isPublished: false,
+      organizer: "Ministry of Health",
     },
   });
 
@@ -66,28 +74,65 @@ const CreateChallengePage = () => {
       return;
     }
 
-    // Here you would typically submit to your API
-    console.log("Form values:", values);
-    console.log("Files:", files);
+    setIsSubmitting(true);
+    try {
+      // Parse requirements from text to array (splitting by new lines)
+      const requirementsArray = values.requirements
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
 
-    toast({
-      title: "Challenge Created",
-      description: "Your challenge has been created successfully.",
-    });
+      // Create challenge in database
+      await createChallenge({
+        title: values.title,
+        description: values.description,
+        long_description: values.long_description || null,
+        category: values.category,
+        start_date: values.start_date.toISOString(),
+        end_date: values.end_date.toISOString(),
+        status: values.isPublished ? 'active' : 'draft',
+        prize: values.prize || null,
+        eligibility: values.eligibility,
+        requirements: requirementsArray,
+        image_url: values.image_url || null,
+        organizer: values.organizer,
+        created_by: user?.id,
+      });
 
-    // In a real app you would navigate to the new challenge
-    setTimeout(() => navigate("/challenges"), 1000);
-  };
+      toast({
+        title: "Challenge Created",
+        description: "Your challenge has been created successfully.",
+      });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files);
-      setFiles((prev) => [...prev, ...newFiles]);
+      navigate("/admin/challenges");
+    } catch (error: any) {
+      console.error("Error creating challenge:", error);
+      toast({
+        variant: "destructive",
+        title: "Failed to create challenge",
+        description: error.message || "An unexpected error occurred",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    
+    // In a real implementation, you would upload the file to Supabase Storage
+    // For now, we'll just set a placeholder URL
+    form.setValue('image_url', URL.createObjectURL(file));
+    
+    // Add file to the state for display purposes
+    setFiles([...files, file]);
+  };
+
+  const removeFile = () => {
+    form.setValue('image_url', '');
+    setFiles([]);
   };
 
   if (!isAdmin) {
@@ -144,13 +189,34 @@ const CreateChallengePage = () => {
                     <FormLabel>Challenge Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Describe the challenge in detail"
+                        placeholder="Describe the challenge in brief"
+                        className="min-h-24"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Provide a concise description (2-3 sentences) of the challenge.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="long_description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Detailed Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Provide comprehensive details about the challenge"
                         className="min-h-32"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Provide a comprehensive description of the challenge, its goals, and expected outcomes.
+                      Add a more detailed explanation of the challenge, its goals, and expected outcomes.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -170,16 +236,36 @@ const CreateChallengePage = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="healthcare-innovation">Healthcare Innovation</SelectItem>
-                        <SelectItem value="patient-care">Patient Care</SelectItem>
-                        <SelectItem value="digital-health">Digital Health</SelectItem>
-                        <SelectItem value="medical-devices">Medical Devices</SelectItem>
-                        <SelectItem value="public-health">Public Health</SelectItem>
-                        <SelectItem value="healthcare-management">Healthcare Management</SelectItem>
+                        <SelectItem value="Digital Health">Digital Health</SelectItem>
+                        <SelectItem value="AI & Machine Learning">AI & Machine Learning</SelectItem>
+                        <SelectItem value="Patient Care">Patient Care</SelectItem>
+                        <SelectItem value="Medical Devices">Medical Devices</SelectItem>
+                        <SelectItem value="Public Health">Public Health</SelectItem>
+                        <SelectItem value="Healthcare Management">Healthcare Management</SelectItem>
+                        <SelectItem value="Mental Health">Mental Health</SelectItem>
+                        <SelectItem value="Elder Care">Elder Care</SelectItem>
+                        <SelectItem value="Logistics">Logistics</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
                       Select the category that best fits your challenge.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="organizer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Organizer</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ministry of Health" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Specify which department or organization is running this challenge.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -199,7 +285,7 @@ const CreateChallengePage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="startDate"
+                  name="start_date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Start Date</FormLabel>
@@ -241,7 +327,7 @@ const CreateChallengePage = () => {
 
                 <FormField
                   control={form.control}
-                  name="endDate"
+                  name="end_date"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>End Date</FormLabel>
@@ -338,13 +424,13 @@ const CreateChallengePage = () => {
                     <FormLabel>Submission Requirements</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="What should participants submit?"
+                        placeholder="List each requirement on a new line"
                         className="min-h-32"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Clearly outline what participants need to include in their submissions.
+                      Enter each requirement on a new line. These will be displayed as a list to participants.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -352,50 +438,46 @@ const CreateChallengePage = () => {
               />
 
               <div className="space-y-2">
-                <FormLabel>Supporting Documents (optional)</FormLabel>
+                <FormLabel>Challenge Image (optional)</FormLabel>
                 <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center">
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <div className="flex flex-col items-center gap-1">
                       <Upload className="h-10 w-10 text-muted-foreground" />
-                      <p className="text-sm font-medium">Click to upload files</p>
+                      <p className="text-sm font-medium">Click to upload an image</p>
                       <p className="text-xs text-muted-foreground">
-                        PDF, Word, Excel or image files (max 5MB)
+                        PNG, JPG, WEBP files up to 5MB
                       </p>
                     </div>
                     <Input
                       id="file-upload"
                       type="file"
                       className="hidden"
-                      multiple
                       onChange={handleFileChange}
-                      accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
+                      accept="image/png,image/jpeg,image/jpg,image/webp"
                     />
                   </label>
                 </div>
 
-                {/* File list */}
-                {files.length > 0 && (
+                {/* File preview */}
+                {form.watch('image_url') && (
                   <div className="mt-4">
-                    <p className="text-sm font-medium mb-2">Uploaded Files:</p>
-                    <ul className="space-y-2">
-                      {files.map((file, index) => (
-                        <li
-                          key={index}
-                          className="bg-muted rounded-md px-3 py-2 text-sm flex items-center justify-between"
-                        >
-                          <span className="truncate max-w-[80%]">{file.name}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={() => removeFile(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-sm font-medium mb-2">Preview:</p>
+                    <div className="relative w-full h-40 rounded-md overflow-hidden">
+                      <img 
+                        src={form.watch('image_url')} 
+                        alt="Challenge preview" 
+                        className="w-full h-full object-cover"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2 h-8 w-8 p-0"
+                        onClick={removeFile}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -435,9 +517,18 @@ const CreateChallengePage = () => {
               <Button type="button" variant="outline" onClick={() => navigate(-1)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-moh-green hover:bg-moh-darkGreen">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create Challenge
+              <Button type="submit" className="bg-moh-green hover:bg-moh-darkGreen" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></span>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create Challenge
+                  </>
+                )}
               </Button>
             </CardFooter>
           </Card>
