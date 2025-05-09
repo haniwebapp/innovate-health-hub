@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavbarLogo } from "./NavbarLogo";
 import { NavbarMainLinks } from "./NavbarMainLinks";
@@ -9,6 +9,7 @@ import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarAuth } from "./NavbarAuth";
 import { NavbarLanguageSwitcher } from "./NavbarLanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useRTLDirection } from "@/utils/rtlUtils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -16,6 +17,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { language } = useLanguage();
+  
+  // Set RTL direction based on language
+  useRTLDirection(language);
   
   const isRouteActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(`${path}/`);
@@ -40,10 +44,9 @@ export default function Navbar() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
       }`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className={`flex items-center justify-between ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
           {/* Logo */}
           <NavbarLogo scrolled={scrolled} />
           
@@ -51,7 +54,7 @@ export default function Navbar() {
           <NavbarMainLinks isRouteActive={isRouteActive} />
           
           {/* Right Side Items */}
-          <div className={`flex items-center space-x-4 ${language === 'ar' ? 'space-x-reverse' : ''}`}>
+          <div className={`flex items-center ${language === 'ar' ? 'flex-row-reverse space-x-reverse' : ''} space-x-4`}>
             <NavbarLanguageSwitcher />
             <NavbarAuth />
             

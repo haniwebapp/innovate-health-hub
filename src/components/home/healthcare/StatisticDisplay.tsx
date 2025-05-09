@@ -1,6 +1,8 @@
 
 import { motion } from "framer-motion";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getRTLClasses } from "@/utils/rtlUtils";
 
 interface Statistic {
   label: string;
@@ -16,6 +18,9 @@ interface StatisticDisplayProps {
 }
 
 export function StatisticDisplay({ statistics, isVisible }: StatisticDisplayProps) {
+  const { language } = useLanguage();
+  const rtlClasses = getRTLClasses(language);
+  
   // Calculate if a stat is showing improvement
   const getTrendColor = (trend?: 'up' | 'down' | 'stable') => {
     if (!trend || trend === 'stable') return "bg-gray-400";
@@ -35,7 +40,7 @@ export function StatisticDisplay({ statistics, isVisible }: StatisticDisplayProp
       initial={{ opacity: 0, y: 20 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.8, delay: 1 }}
-      className="flex flex-wrap justify-center gap-4 md:gap-8"
+      className={`flex flex-wrap justify-center gap-4 md:gap-8 ${language === 'ar' ? 'flex-row-reverse' : ''}`}
     >
       {statistics.map((stat, index) => (
         <motion.div 
@@ -71,7 +76,7 @@ export function StatisticDisplay({ statistics, isVisible }: StatisticDisplayProp
             />
           </motion.div>
           <motion.p 
-            className="text-sm text-gray-600 mt-1"
+            className={`text-sm text-gray-600 mt-1 ${language === 'ar' ? 'font-tajawal' : ''}`}
             initial={{ opacity: 0 }}
             animate={isVisible ? { 
               opacity: 1,

@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
@@ -17,7 +18,7 @@ export function NavbarMobileMenu({
   setMobileMenuOpen,
 }: NavbarMobileMenuProps) {
   const { t, language } = useLanguage();
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const rtlClasses = getRTLClasses(language);
   
   // Main navigation links without dropdown
@@ -114,7 +115,7 @@ export function NavbarMobileMenu({
                   className={`justify-start text-left mb-1 text-red-600 hover:text-red-700 hover:bg-red-50 ${language === 'ar' ? 'flex-row-reverse text-right' : ''}`}
                   onClick={() => {
                     handleLinkClick("/");
-                    logout();
+                    signOut();
                   }}
                 >
                   <LogOut className="h-4 w-4" style={{margin: language === 'ar' ? '0 0 0 8px' : '0 8px 0 0'}} />

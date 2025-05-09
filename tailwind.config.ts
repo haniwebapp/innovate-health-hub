@@ -19,6 +19,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+				tajawal: ['Tajawal', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -67,17 +71,13 @@ export default {
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#F8F8F8', // Updated to a very light white shade
+					lightGreen: '#F8F8F8', 
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',
 					gray: '#F5F7FA',
 					darkGray: '#4A5568',
 				}
-			},
-			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				arabic: ['Tajawal', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -14,9 +14,7 @@ export function ArabicVerticalText({
   className = "",
   delay = 0
 }: ArabicVerticalTextProps) {
-  const {
-    language
-  } = useLanguage();
+  const { language } = useLanguage();
 
   // Split text into characters
   const characters = text.split("");
@@ -107,14 +105,15 @@ export function ArabicVerticalText({
     }
   };
   
-  const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
+  const defaultClasses = `text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green ${language === 'ar' ? 'font-tajawal' : ''}`;
   
   return (
     <motion.div 
-      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
+      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content font-tajawal' : ''}`} 
       initial="hidden" 
       animate="visible" 
       variants={containerVariants}
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       {wordsGroups.map((group, groupIndex) => (
         <motion.div
