@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
@@ -26,8 +25,8 @@ export function NavbarMobileMenu({
     { path: "/about", label: t('nav.about') },
     { path: "/challenges", label: t('nav.challenges') },
     { path: "/innovations", label: t('nav.innovations') },
-    { path: "/investment", label: "Investment" },
-    { path: "/regulatory", label: "Regulatory" },
+    { path: "/investment", label: t('nav.investment') },
+    { path: "/regulatory", label: t('nav.regulatory') },
     { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
   ];
   

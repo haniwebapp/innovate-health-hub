@@ -16,6 +16,8 @@ export const arTranslations = {
   'nav.signIn': 'تسجيل الدخول',
   'nav.register': 'التسجيل',
   'nav.login': 'تسجيل الدخول',
+  'nav.regulatory': 'تنظيمي',
+  'nav.investment': 'استثمار',
   
   // Login page
   'login.title': 'منصة الابتكار',
@@ -119,7 +121,7 @@ export const arTranslations = {
   'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
   'about.digital': 'الصحة الرقمية',
   'about.digitalDesc': 'الاستفادة من التكنولوجيا لتوفير خدمات رعاية صحية يسهل الوصول إليها وشخصية وفعالة.',
-  'about.partners': 'شركاؤنا الاستراتيجيون',
+  'about.partners': 'شركاؤنا الاستراتيجيين',
   'about.joinCommunity': 'انضم إلى مجتمع الابتكار لدينا',
   'about.joinDescription': 'كن جزءًا من تحول الرعاية الصحية في المملكة العربية السعودية. سواء كنت مبتكرًا أو مستثمرًا أو مقدم رعاية صحية، هناك مكان لك في مجتمعنا المتنامي.',
   'about.registerNow': 'سجل الآن',
@@ -203,7 +205,7 @@ export const arTranslations = {
   'home.process.step1.title': 'إنشاء حساب',
   'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخصصة على المنصة.',
   'home.process.step2.title': 'تقديم الابتكار',
-  'home.process.step2.description': 'قم بتحميل فكرتك أو مشروعك باستخدام نموذج التقديم الخاص بنا.',
+  'home.process.step2.description': 'قم بتحميل فكرتك أو مشر��عك باستخدام نموذج التقديم الخاص بنا.',
   'home.process.step3.title': 'الحصول على الملاحظات',
   'home.process.step3.description': 'تلقي ملاحظات من خبراء وزارة الصحة والمتخصصين في المجال.',
   'home.process.step4.title': 'الاتصال بالفرص',
