@@ -79,16 +79,26 @@ export function ParallaxCard({
     }
   };
   
-  // Add subtle animation for non-interactive cards
-  const idleAnimation = !interactive ? {
+  // Create separate animation objects for interactive and non-interactive states
+  // to avoid type conflicts
+  const nonInteractiveAnimation = !interactive ? {
     y: [0, -5, 0],
+    rotateX: tilt.x,
+    rotateY: tilt.y,
+    scale: 1,
     transition: { 
       duration: 3, 
       repeat: Infinity, 
-      repeatType: "reverse",
+      repeatType: "reverse" as const,
       ease: "easeInOut" 
     }
-  } : {};
+  } : undefined;
+  
+  const interactiveAnimation = interactive ? {
+    rotateX: tilt.x,
+    rotateY: tilt.y,
+    scale: isHovering ? getHoverScale() : 1
+  } : undefined;
   
   return (
     <motion.div
@@ -101,18 +111,13 @@ export function ParallaxCard({
         perspective: `${perspective}px`,
         transformStyle: "preserve-3d"
       }}
-      animate={{
-        rotateX: tilt.x,
-        rotateY: tilt.y,
-        scale: isHovering ? getHoverScale() : 1,
-        ...idleAnimation
-      }}
-      transition={{
+      animate={nonInteractiveAnimation || interactiveAnimation}
+      transition={interactive ? {
         type: "spring",
         stiffness: 400,
         damping: 15,
         mass: 0.5
-      }}
+      } : undefined}
     >
       {children}
       

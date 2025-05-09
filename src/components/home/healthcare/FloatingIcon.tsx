@@ -14,6 +14,7 @@ interface FloatingIconProps {
   };
   animationDelay: number;
   isVisible: boolean;
+  pulseIntensity?: 'low' | 'medium' | 'high'; // Added this prop
 }
 
 export function FloatingIcon({ 
@@ -21,8 +22,27 @@ export function FloatingIcon({
   color, 
   position, 
   animationDelay, 
-  isVisible 
+  isVisible,
+  pulseIntensity = 'medium'  // Default value
 }: FloatingIconProps) {
+  // Get the pulse scale based on intensity
+  const getPulseScale = () => {
+    switch (pulseIntensity) {
+      case 'low': return [1, 1.05, 1];
+      case 'high': return [1, 1.2, 1];
+      default: return [1, 1.1, 1];
+    }
+  };
+
+  // Get the pulse opacity based on intensity
+  const getPulseOpacity = () => {
+    switch (pulseIntensity) {
+      case 'low': return [0.6, 0.8, 0.6];
+      case 'high': return [0.7, 1, 0.7];
+      default: return [0.7, 0.9, 0.7];
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -52,8 +72,8 @@ export function FloatingIcon({
       >
         <motion.div 
           animate={isVisible ? {
-            scale: [1, 1.1, 1],
-            opacity: [0.7, 1, 0.7],
+            scale: getPulseScale(),
+            opacity: getPulseOpacity(),
           } : {}}
           transition={{
             duration: 2,
@@ -72,8 +92,8 @@ export function FloatingIcon({
             zIndex: -1
           }}
           animate={isVisible ? {
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3]
+            scale: getPulseScale().map(s => s * 1.1),
+            opacity: getPulseOpacity()
           } : {}}
           transition={{
             duration: 2.5,
