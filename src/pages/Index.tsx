@@ -3,6 +3,7 @@ import Navbar from "@/components/layouts/Navbar";
 import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
 import PlatformHighlights from "@/components/home/PlatformHighlights";
+import AIDrivenSection from "@/components/home/AIDrivenSection";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import ChallengesSection from "@/components/home/ChallengesSection";
 import Footer from "@/components/home/Footer";
@@ -18,6 +19,7 @@ const Index = () => {
         <HeroSection />
         <AboutSection />
         <PlatformHighlights />
+        <AIDrivenSection />
         <FeaturedSection />
         <ChallengesSection />
       </main>
