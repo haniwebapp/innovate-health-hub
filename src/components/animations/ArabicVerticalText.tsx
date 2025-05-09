@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -105,17 +104,7 @@ export function ArabicVerticalText({
   };
   const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
   return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
-      {wordsGroups.map((group, groupIndex) => <motion.div key={`group-${groupIndex}`} className="flex flex-col items-center" custom={groupIndex} variants={wordGroupVariants}>
-          {group.map((char, charIndex) => (
-            <motion.span 
-              key={`char-${groupIndex}-${charIndex}`}
-              variants={itemVariants}
-              className={char === " " ? "h-2" : ""}
-            >
-              {char}
-            </motion.span>
-          ))}
-        </motion.div>)}
+      {wordsGroups.map((group, groupIndex) => {})}
       
       {/* Special shimmer highlight effect */}
       <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
