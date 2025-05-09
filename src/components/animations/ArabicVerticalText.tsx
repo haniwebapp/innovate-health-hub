@@ -1,27 +1,28 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
-
 export function ArabicVerticalText({
   text,
   className = "",
   delay = 0
 }: ArabicVerticalTextProps) {
-  const { language } = useLanguage();
-  
+  const {
+    language
+  } = useLanguage();
+
   // Split text into characters
   const characters = text.split("");
-  
+
   // Animation variants for characters
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {
+      opacity: 0
+    },
     visible: {
       opacity: 1,
       transition: {
@@ -30,9 +31,11 @@ export function ArabicVerticalText({
       }
     }
   };
-  
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: {
+      y: 20,
+      opacity: 0
+    },
     visible: {
       y: 0,
       opacity: 1,
@@ -43,7 +46,7 @@ export function ArabicVerticalText({
       }
     }
   };
-  
+
   // Shimmer effect for highlighting
   const shimmerVariants = {
     initial: {
@@ -59,33 +62,11 @@ export function ArabicVerticalText({
       }
     }
   };
-  
   const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
-  
-  return (
-    <motion.div 
-      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
-      initial="hidden" 
-      animate="visible" 
-      variants={containerVariants}
-    >
-      {characters.map((char, index) => (
-        <motion.span 
-          key={index} 
-          className={`${defaultClasses} ${char === " " ? "h-4" : ""}`}
-          variants={itemVariants}
-        >
-          {char !== " " ? char : "\u00A0"}
-        </motion.span>
-      ))}
+  return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
+      {characters.map((char, index) => {})}
       
       {/* Special shimmer highlight effect */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" 
-        initial="initial" 
-        animate="animate" 
-        variants={shimmerVariants} 
-      />
-    </motion.div>
-  );
+      <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerVariants} />
+    </motion.div>;
 }
