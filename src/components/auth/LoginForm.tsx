@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Info } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -25,6 +26,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { t, language } = useLanguage();
   
   // Get the location they were trying to access
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || "/dashboard";
@@ -47,9 +49,9 @@ export default function LoginForm() {
     } catch (error: any) {
       console.error("Login error:", error);
       if (error.message === "Invalid login credentials") {
-        setErrorMessage("Invalid email or password. Please check your credentials and try again.");
+        setErrorMessage(t('login.invalidCredentials'));
       } else {
-        setErrorMessage(error.message || "An error occurred during login. Please try again.");
+        setErrorMessage(error.message || t('login.genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -78,10 +80,10 @@ export default function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('register.email')}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="you@example.com" 
+                  placeholder={t('footer.emailPlaceholder')} 
                   {...field} 
                   disabled={isLoading}
                   autoComplete="email"
@@ -97,7 +99,7 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('register.password')}</FormLabel>
               <FormControl>
                 <Input 
                   type="password" 
@@ -116,17 +118,17 @@ export default function LoginForm() {
           {isLoading ? (
             <>
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-              Signing In...
+              {t('login.signingIn')}
             </>
           ) : (
-            "Sign In"
+            t('login.signIn')
           )}
         </Button>
         
         <div className="text-center text-sm">
-          Don't have an account?{" "}
+          {t('register.dontHaveAccount')}{" "}
           <Link to="/auth/register" className="text-moh-green hover:underline font-medium">
-            Register
+            {t('nav.register')}
           </Link>
         </div>
       </form>

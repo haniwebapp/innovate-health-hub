@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
@@ -29,6 +30,7 @@ export default function RegisterForm() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useLanguage();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -65,9 +67,9 @@ export default function RegisterForm() {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First Name</FormLabel>
+                <FormLabel>{t('register.firstName')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="John" {...field} disabled={isLoading} />
+                  <Input placeholder={t('register.firstName')} {...field} disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -79,9 +81,9 @@ export default function RegisterForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Name</FormLabel>
+                <FormLabel>{t('register.lastName')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Doe" {...field} disabled={isLoading} />
+                  <Input placeholder={t('register.lastName')} {...field} disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -94,10 +96,10 @@ export default function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('register.email')}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="you@example.com" 
+                  placeholder={t('footer.emailPlaceholder')} 
                   {...field} 
                   disabled={isLoading} 
                   autoComplete="email"
@@ -114,7 +116,7 @@ export default function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('register.password')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="password" 
@@ -134,7 +136,7 @@ export default function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>{t('register.confirmPassword')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="password" 
@@ -155,7 +157,7 @@ export default function RegisterForm() {
           name="userType"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>User Type</FormLabel>
+              <FormLabel>{t('register.userType')}</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value} 
@@ -163,15 +165,15 @@ export default function RegisterForm() {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select user type" />
+                    <SelectValue placeholder={t('register.selectUserType')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="individual">Individual</SelectItem>
-                  <SelectItem value="healthcare_professional">Healthcare Professional</SelectItem>
-                  <SelectItem value="innovator">Innovator</SelectItem>
-                  <SelectItem value="investor">Investor</SelectItem>
-                  <SelectItem value="organization">Organization</SelectItem>
+                  <SelectItem value="individual">{t('register.individual')}</SelectItem>
+                  <SelectItem value="healthcare_professional">{t('register.healthcareProfessional')}</SelectItem>
+                  <SelectItem value="innovator">{t('register.innovator')}</SelectItem>
+                  <SelectItem value="investor">{t('register.investor')}</SelectItem>
+                  <SelectItem value="organization">{t('register.organization')}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -185,9 +187,9 @@ export default function RegisterForm() {
             name="organization"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Organization Name</FormLabel>
+                <FormLabel>{t('register.organizationName')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Organization Name" {...field} disabled={isLoading} />
+                  <Input placeholder={t('register.organizationName')} {...field} disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -199,17 +201,17 @@ export default function RegisterForm() {
           {isLoading ? (
             <>
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-              Creating Account...
+              {t('register.creatingAccount')}
             </>
           ) : (
-            "Create Account"
+            t('register.createAccount')
           )}
         </Button>
         
         <div className="text-center text-sm">
-          Already have an account?{" "}
+          {t('register.alreadyHaveAccount')}{" "}
           <Link to="/auth/login" className="text-moh-green hover:underline font-medium">
-            Sign In
+            {t('login.signIn')}
           </Link>
         </div>
       </form>

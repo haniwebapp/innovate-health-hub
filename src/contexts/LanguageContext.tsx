@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available languages
@@ -44,6 +43,10 @@ const translations: Record<Language, Record<string, string>> = {
     'login.signIn': 'Sign In',
     'login.accessAccount': 'Access your account to manage innovations and challenges',
     'login.termsAndPrivacy': 'By signing in, you agree to our Terms of Service and Privacy Policy',
+    'login.invalidCredentials': 'Invalid email or password. Please check your credentials and try again.',
+    'login.genericError': 'An error occurred during login. Please try again.',
+    'login.signingIn': 'Signing In...',
+    'login.dontHaveAccount': 'Don\'t have an account?',
     
     // Registration page
     'register.title': 'Create an Account',
@@ -57,6 +60,15 @@ const translations: Record<Language, Record<string, string>> = {
     'register.alreadyHaveAccount': 'Already have an account?',
     'register.signin': 'Sign in',
     'register.termsAgree': 'By registering, you agree to our Terms of Service and Privacy Policy',
+    'register.userType': 'User Type',
+    'register.individual': 'Individual',
+    'register.healthcareProfessional': 'Healthcare Professional',
+    'register.innovator': 'Innovator',
+    'register.investor': 'Investor',
+    'register.organization': 'Organization',
+    'register.organizationName': 'Organization Name',
+    'register.selectUserType': 'Select user type',
+    'register.creatingAccount': 'Creating Account...',
     
     // Verification page
     'verification.title': 'Verify Your Email',
@@ -278,6 +290,10 @@ const translations: Record<Language, Record<string, string>> = {
     'login.signIn': 'تسجيل الدخول',
     'login.accessAccount': 'الوصول إلى حسابك لإدارة الابتكارات والتحديات',
     'login.termsAndPrivacy': 'بتسجيل الدخول، فإنك توافق على شروط الخدمة وسياسة الخصوصية',
+    'login.invalidCredentials': 'بريد إلكتروني أو كلمة مرور غير صالحة. يرجى التحقق من بيانات الاعتماد الخاصة بك والمحاولة مرة أخرى.',
+    'login.genericError': 'حدث خطأ أثناء تسجيل الدخول. الرجاء معاودة المحاولة في وقت لاحق.',
+    'login.signingIn': 'جاري تسجيل الدخول...',
+    'login.dontHaveAccount': 'ليس لديك حساب؟',
     
     // Registration page
     'register.title': 'إنشاء حساب',
@@ -291,12 +307,21 @@ const translations: Record<Language, Record<string, string>> = {
     'register.alreadyHaveAccount': 'هل لديك حساب بالفعل؟',
     'register.signin': 'تسجيل الدخول',
     'register.termsAgree': 'بالتسجيل، فإنك توافق على شروط الخدمة وسياسة الخصوصية',
+    'register.userType': 'نوع المستخدم',
+    'register.individual': 'فرد',
+    'register.healthcareProfessional': 'متخصص رعاية صحية',
+    'register.innovator': 'مبتكر',
+    'register.investor': 'مستثمر',
+    'register.organization': 'مؤسسة',
+    'register.organizationName': 'اسم المؤسسة',
+    'register.selectUserType': 'اختر نوع المستخدم',
+    'register.creatingAccount': 'جاري إنشاء الحساب...',
     
     // Verification page
     'verification.title': 'تحقق من بريدك الإلكتروني',
     'verification.description': 'لقد أرسلنا إليك بريدًا إلكترونيًا للتحقق',
     'verification.checkInbox': 'يرجى التحقق من صندوق الوارد الخاص بك والنقر على رابط التحقق لإكمال التسجيل.',
-    'verification.notReceived': 'لم تستلم البريد الإلكتروني؟',
+    'verification.notReceived': 'لم تستلم البريد الإلكتروني?',
     'verification.resendEmail': 'إعادة إرسال البريد الإلكتروني للتحقق',
     'verification.goToLogin': 'العودة لتسجيل الدخول',
     
@@ -419,7 +444,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.highlights.feature4.description': 'الوصول إلى الموارد ودراسات الحالة وأفضل الممارسات لتسريع رحلة الابتكار الخاصة بك.',
     'home.highlights.feature5.title': 'المشاركة في التحديات',
     'home.highlights.feature5.description': 'شارك في تحديات الابتكار التي ترعاها وزارة الصحة لحل مشكلات الرعاية الصحية الحرجة.',
-    'home.highlights.feature6.title': 'شبكة الصحة العالمية',
+    'home.highlights.feature6.title': 'شبكة الصحة ا��عالمية',
     'home.highlights.feature6.description': 'تواصل مع شركاء دوليين واطلع على اتجاهات ورؤى الابتكار الصحي العالمية.',
     
     // Featured Section
@@ -526,4 +551,3 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
 // Custom hook for using language context
 export const useLanguage = () => useContext(LanguageContext);
-
