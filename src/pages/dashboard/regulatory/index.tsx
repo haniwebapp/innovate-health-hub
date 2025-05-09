@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,8 +89,8 @@ const frameworks = [
   }
 ];
 
-// Mock compliance requirements
-const complianceRequirements = [
+// Mock compliance requirements - fixing the status type to use string literals
+const complianceRequirements: ComplianceRequirement[] = [
   {
     id: "1",
     title: "Data Privacy Impact Assessment",
