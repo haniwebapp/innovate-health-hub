@@ -1,245 +1,189 @@
 
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
-import { LucideIcon, Home, User, Info, Lightbulb, Award, BookOpen, BarChart3, PanelLeft, LogOut, Plus, FileText, Settings, Shield } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  ChevronLeft, ChevronRight, LayoutDashboard, Users, Settings, BarChart3, 
+  MessageSquare, FilePlus, Box, FileText, LogOut, PlusCircle, Plug
+} from "lucide-react";
 
-type SidebarNavItem = {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-  adminOnly?: boolean;
-  description?: string;
-};
+interface DashboardSidebarProps {
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+}
 
-const navItems: SidebarNavItem[] = [
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-    description: "Overview and summary"
-  }, 
-  {
-    title: "Profile",
-    href: "/dashboard/profile",
-    icon: User,
-    description: "Manage your account"
-  }, 
-  {
-    title: "My Submissions",
-    href: "/dashboard/submissions",
-    icon: FileText,
-    description: "Your challenge submissions"
-  },
-  {
-    title: "Analytics",
-    href: "/dashboard/analytics",
-    icon: BarChart3,
-    adminOnly: true,
-    description: "Platform insights"
-  },
-  {
-    title: "User Management",
-    href: "/dashboard/admin/users",
-    icon: User,
-    adminOnly: true,
-    description: "Manage platform users"
-  },
-  {
-    title: "Platform Settings",
-    href: "/dashboard/admin/settings",
-    icon: Settings,
-    adminOnly: true,
-    description: "Configure system settings"
-  },
-  {
-    title: "About",
-    href: "/about",
-    icon: Info,
-    description: "About the platform"
-  }, 
-  {
-    title: "Challenges",
-    href: "/challenges",
-    icon: Award,
-    description: "Browse open challenges"
-  }, 
-  {
-    title: "Innovations",
-    href: "/innovations",
-    icon: Lightbulb,
-    description: "Explore innovations"
-  }, 
-  {
-    title: "Knowledge Hub",
-    href: "/knowledge-hub",
-    icon: BookOpen,
-    description: "Resources and articles"
-  }
-];
-
-export default function DashboardSidebar({
-  isCollapsed = false,
-  onToggleCollapse
-}: {
-  isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
-}) {
-  const { pathname } = useLocation();
-  const { user, signOut, isAdmin } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Filter items based on user role
-  const filteredNavItems = navItems.filter(item => {
-    if (item.adminOnly) {
-      return isAdmin;
-    }
-    return true;
-  });
-
-  const handleSignOut = async () => {
-    setIsLoading(true);
-    try {
-      await signOut();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+export default function DashboardSidebar({ 
+  isCollapsed, 
+  onToggleCollapse 
+}: DashboardSidebarProps) {
+  const { logout, isAdmin } = useAuth();
+  
   return (
-    <aside className={cn("fixed h-screen z-30 bg-sidebar-background border-r border-sidebar-border transition-all duration-300 ease-in-out", isCollapsed ? "w-16" : "w-64")}>
-      <div className="h-full flex flex-col">
-        <div className="h-14 flex items-center px-4 border-b border-sidebar-border">
-          {!isCollapsed ? (
-            <Link to="/" className="flex items-center space-x-2">
-              <img src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" alt="Ministry of Health Logo" className="h-8 w-auto" />
-              
-            </Link>
-          ) : (
-            <Link to="/" className="mx-auto">
-              <img src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" alt="Ministry of Health Logo" className="h-8 w-auto" />
-            </Link>
-          )}
-        </div>
-        
-        <ScrollArea className="flex-1">
-          <div className="p-2">
-            <TooltipProvider delayDuration={300}>
-              <nav className="grid gap-1">
-                {filteredNavItems.map((item, index) => (
-                  <Tooltip key={index}>
-                    <TooltipTrigger asChild>
-                      <Link 
-                        to={item.href} 
-                        className={cn(
-                          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors", 
-                          pathname === item.href 
-                            ? "bg-sidebar-primary text-sidebar-primary-foreground" 
-                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                        )}
-                      >
-                        <item.icon className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "")} />
-                        {!isCollapsed && <span>{item.title}</span>}
-                      </Link>
-                    </TooltipTrigger>
-                    {isCollapsed && (
-                      <TooltipContent side="right">
-                        <p>{item.title}</p>
-                        <p className="text-xs text-muted-foreground">{item.description}</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                ))}
-                
-                {isAdmin && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Link 
-                        to="/dashboard/create-challenge" 
-                        className={cn(
-                          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors mt-4 bg-moh-lightGreen text-moh-green", 
-                          pathname === "/dashboard/create-challenge" 
-                            ? "bg-moh-green text-white" 
-                            : ""
-                        )}
-                      >
-                        <Plus className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "")} />
-                        {!isCollapsed && <span>Create Challenge</span>}
-                      </Link>
-                    </TooltipTrigger>
-                    {isCollapsed && (
-                      <TooltipContent side="right">
-                        <p>Create Challenge</p>
-                        <p className="text-xs text-muted-foreground">Add a new challenge</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                )}
-              </nav>
-            </TooltipProvider>
-          </div>
-        </ScrollArea>
-        
-        <div className="p-2 mt-auto border-t border-sidebar-border">
-          <TooltipProvider delayDuration={300}>
-            <nav className="grid gap-1">
-              {onToggleCollapse && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={onToggleCollapse} 
-                      className="justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    >
-                      <PanelLeft className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "mr-2")} />
-                      {!isCollapsed && <span>{isCollapsed ? "Expand" : "Collapse"}</span>}
-                    </Button>
-                  </TooltipTrigger>
-                  {isCollapsed && (
-                    <TooltipContent side="right">
-                      <p>{isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}</p>
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              )}
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleSignOut} 
-                    disabled={isLoading} 
-                    className="justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                  >
-                    {isLoading ? (
-                      <>
-                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-b-transparent mx-auto" />
-                        {!isCollapsed && <span className="ml-2">Signing Out...</span>}
-                      </>
-                    ) : (
-                      <>
-                        <LogOut className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "mr-2")} />
-                        {!isCollapsed && <span>Sign Out</span>}
-                      </>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                {isCollapsed && !isLoading && (
-                  <TooltipContent side="right">
-                    <p>Sign Out</p>
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </nav>
-          </TooltipProvider>
-        </div>
+    <div
+      className={cn(
+        "h-screen border-r bg-background fixed left-0 top-0 z-40 flex flex-col transition-all duration-300",
+        isCollapsed ? "w-16" : "w-64"
+      )}
+    >
+      {/* Logo and collapse button */}
+      <div className={cn(
+        "flex h-14 items-center border-b px-4",
+        isCollapsed ? "justify-center" : "justify-between"
+      )}>
+        {!isCollapsed && (
+          <div className="font-semibold text-moh-green text-lg">MoH Platform</div>
+        )}
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={onToggleCollapse}
+          className="ml-auto"
+        >
+          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </Button>
       </div>
-    </aside>
+      
+      {/* Navigation links */}
+      <div className="flex-1 overflow-auto py-4">
+        <nav className="grid gap-1 px-2">
+          {/* Regular user links */}
+          <NavItem 
+            to="/dashboard" 
+            icon={<LayoutDashboard size={18} />} 
+            text="Dashboard" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/profile" 
+            icon={<Users size={18} />} 
+            text="Profile" 
+            isCollapsed={isCollapsed} 
+          />
+          <NavItem 
+            to="/dashboard/submissions" 
+            icon={<FileText size={18} />} 
+            text="My Submissions" 
+            isCollapsed={isCollapsed}
+          />
+          
+          {/* Admin only links */}
+          {isAdmin && (
+            <>
+              <div className={cn(
+                "my-2 border-t",
+                isCollapsed ? "mx-2" : "mx-4"
+              )}></div>
+              <div className={cn(
+                "mb-2 px-4 text-xs uppercase text-muted-foreground",
+                isCollapsed && "sr-only"
+              )}>
+                Administration
+              </div>
+              <NavItem 
+                to="/dashboard/admin/users" 
+                icon={<Users size={18} />} 
+                text="Users" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+              <NavItem 
+                to="/dashboard/admin/analytics" 
+                icon={<BarChart3 size={18} />} 
+                text="Analytics" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+              <NavItem 
+                to="/dashboard/admin/settings" 
+                icon={<Settings size={18} />} 
+                text="Settings" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+              <NavItem 
+                to="/dashboard/admin/integrations" 
+                icon={<Plug size={18} />} 
+                text="Integrations" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+            </>
+          )}
+          
+          <div className={cn(
+            "my-2 border-t",
+            isCollapsed ? "mx-2" : "mx-4"
+          )}></div>
+          
+          {/* Quick actions */}
+          <NavItem 
+            to="/dashboard/create-challenge" 
+            icon={<PlusCircle size={18} />} 
+            text="Create Challenge" 
+            isCollapsed={isCollapsed}
+          />
+        </nav>
+      </div>
+      
+      {/* Logout button */}
+      <div className="border-t p-4">
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size={isCollapsed ? "icon" : "default"}
+              className={cn(
+                "w-full justify-start",
+                isCollapsed && "h-9 w-9"
+              )}
+              onClick={logout}
+            >
+              <LogOut size={18} className={cn(isCollapsed ? "" : "mr-2")} />
+              {!isCollapsed && <span>Logout</span>}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Logout</TooltipContent>
+        </Tooltip>
+      </div>
+    </div>
+  );
+}
+
+interface NavItemProps {
+  to: string;
+  icon: React.ReactNode;
+  text: string;
+  isCollapsed: boolean;
+  badge?: string;
+}
+
+function NavItem({ to, icon, text, isCollapsed, badge }: NavItemProps) {
+  return (
+    <Tooltip delayDuration={0}>
+      <TooltipTrigger asChild>
+        <NavLink
+          to={to}
+          className={({ isActive }) => cn(
+            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+            isActive
+              ? "bg-moh-green text-white"
+              : "text-muted-foreground hover:bg-muted",
+            isCollapsed && "justify-center px-0"
+          )}
+          end={to === "/dashboard"}
+        >
+          {icon}
+          {!isCollapsed && <span>{text}</span>}
+          {!isCollapsed && badge && (
+            <span className="ml-auto text-xs bg-secondary text-secondary-foreground rounded px-1">
+              {badge}
+            </span>
+          )}
+        </NavLink>
+      </TooltipTrigger>
+      <TooltipContent side="right">{text}</TooltipContent>
+    </Tooltip>
   );
 }

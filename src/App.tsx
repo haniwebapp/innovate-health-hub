@@ -1,100 +1,94 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@/components/providers/theme-provider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
+import { LanguageProvider } from './contexts/LanguageContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
-// Pages
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import LoginPage from "./pages/auth/LoginPage";
-import RegisterPage from "./pages/auth/RegisterPage";
-import VerificationPage from "./pages/auth/VerificationPage";
-import DashboardPage from "./pages/dashboard/DashboardPage";
-import ProfilePage from "./pages/dashboard/ProfilePage";
-import ChallengesPage from "./pages/challenges";
-import ChallengeDetailPage from "./pages/challenges/[id]";
-import AboutPage from "./pages/about";
-import InnovationsPage from "./pages/innovations";
-import InnovationDetailPage from "./pages/innovations/[id]";
-import KnowledgeHubPage from "./pages/knowledge-hub";
-import SubmissionsPage from "./pages/dashboard/submissions";
-import SubmitChallengePage from "./pages/dashboard/submit/[challengeId]";
-import AdminAnalyticsPage from "./pages/dashboard/AdminAnalyticsPage";
-import CreateChallengePage from "./pages/dashboard/CreateChallengePage";
-import AdminUsersPage from "./pages/dashboard/AdminUsersPage";
-import AdminSettingsPage from "./pages/dashboard/AdminSettingsPage";
+import HomePage from './pages/Index';
+import NotFound from './pages/NotFound';
+import AboutPage from './pages/about';
+import RegisterPage from './pages/auth/RegisterPage';
+import LoginPage from './pages/auth/LoginPage';
+import VerificationPage from './pages/auth/VerificationPage';
 
-// Components and Context
-import { AuthProvider } from "./contexts/AuthContext";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import DashboardLayout from "./components/layouts/DashboardLayout";
+import DashboardLayout from './components/layouts/DashboardLayout';
+import DashboardPage from './pages/dashboard/DashboardPage';
+import ProfilePage from './pages/dashboard/ProfilePage';
+import SubmissionsList from './pages/dashboard/submissions/index';
+import SubmitChallengePage from './pages/dashboard/submit/[challengeId]';
+import CreateChallengePage from './pages/dashboard/CreateChallengePage';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import AdminUsersPage from './pages/dashboard/AdminUsersPage';
+import AdminAnalyticsPage from './pages/dashboard/AdminAnalyticsPage';
+import AdminSettingsPage from './pages/dashboard/AdminSettingsPage';
+import AdminIntegrationsPage from './pages/dashboard/AdminIntegrationsPage';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/auth/login" element={<LoginPage />} />
-              <Route path="/auth/register" element={<RegisterPage />} />
-              <Route path="/auth/verification" element={<VerificationPage />} />
-              <Route path="/challenges" element={<ChallengesPage />} />
-              <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
-              <Route path="/innovations" element={<InnovationsPage />} />
-              <Route path="/innovations/:id" element={<InnovationDetailPage />} />
-              
-              {/* Protected Routes - Dashboard */}
-              <Route 
-                path="/dashboard" 
-                element={
+import ChallengesPage from './pages/challenges';
+import ChallengeDetails from './pages/challenges/[id]';
+
+import InnovationsPage from './pages/innovations';
+import InnovationDetails from './pages/innovations/[id]';
+
+import KnowledgeHubPage from './pages/knowledge-hub';
+
+import './App.css';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <BrowserRouter>
+      <ThemeProvider defaultTheme="light" storageKey="moh-theme-preference">
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <LanguageProvider>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/challenges" element={<ChallengesPage />} />
+                <Route path="/challenges/:id" element={<ChallengeDetails />} />
+                <Route path="/innovations" element={<InnovationsPage />} />
+                <Route path="/innovations/:id" element={<InnovationDetails />} />
+                <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
+                
+                {/* Auth Routes */}
+                <Route path="/auth/register" element={<RegisterPage />} />
+                <Route path="/auth/login" element={<LoginPage />} />
+                <Route path="/auth/verify" element={<VerificationPage />} />
+                
+                {/* Protected Dashboard Routes */}
+                <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <DashboardLayout />
                   </ProtectedRoute>
-                }
-              >
-                <Route index element={<DashboardPage />} />
-                <Route path="profile" element={<ProfilePage />} />
-                <Route path="submissions" element={<SubmissionsPage />} />
-                <Route path="create-challenge" element={<CreateChallengePage />} />
-                <Route path="analytics" element={<AdminAnalyticsPage />} />
-                <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
+                }>
+                  <Route index element={<DashboardPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
+                  <Route path="submissions" element={<SubmissionsList />} />
+                  <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
+                  <Route path="create-challenge" element={<CreateChallengePage />} />
+                  
+                  {/* Admin Routes */}
+                  <Route path="admin/users" element={<AdminUsersPage />} />
+                  <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
+                  <Route path="admin/settings" element={<AdminSettingsPage />} />
+                  <Route path="admin/integrations" element={<AdminIntegrationsPage />} />
+                </Route>
                 
-                {/* New Admin Routes */}
-                <Route path="admin/users" element={<AdminUsersPage />} />
-                <Route path="admin/settings" element={<AdminSettingsPage />} />
-              </Route>
-              
-              {/* Static Routes */}
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/innovations" element={<InnovationsPage />} />
-              <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
-              
-              {/* 404 - Catch-all */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </LanguageProvider>
-  </QueryClientProvider>
-);
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </LanguageProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  );
+}
 
 export default App;

@@ -40,6 +40,23 @@ serve(async (req) => {
         Your recommendations should be concise but explain the reasoning behind each suggestion.
         Format your response as a list of 3-4 key insights, each with a brief explanation.
       `;
+    } else if (context === "admin-integrations") {
+      systemMessage += `
+        You are an integration specialist for healthcare platforms. You provide recommendations on which 
+        third-party services and APIs would benefit the healthcare platform based on industry standards
+        and best practices. Focus on these key integration categories:
+        
+        - Healthcare standards (FHIR, HL7)
+        - Authentication and security
+        - Payment processing
+        - Communication channels
+        - AI and data processing
+        - Storage and file management
+        
+        For each recommendation, explain its benefits, implementation complexity, and how it would
+        enhance the platform's capabilities. Format your response with clear sections for insights
+        and specific integration recommendations.
+      `;
     }
 
     // Call OpenAI API
