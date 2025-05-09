@@ -13,7 +13,7 @@ const mockUsers = [
     firstName: "John",
     lastName: "Doe",
     email: "john@example.com",
-    status: "active",
+    status: "active" as "active" | "inactive",
     lastSignIn: "2023-04-12",
     userType: "Innovator"
   },
@@ -22,7 +22,7 @@ const mockUsers = [
     firstName: "Jane",
     lastName: "Smith",
     email: "jane@example.com",
-    status: "active",
+    status: "active" as "active" | "inactive",
     lastSignIn: "2023-04-10",
     userType: "Investor"
   },
@@ -31,7 +31,7 @@ const mockUsers = [
     firstName: "Admin",
     lastName: "User",
     email: "admin@moh.gov.sa",
-    status: "active",
+    status: "active" as "active" | "inactive",
     lastSignIn: "2023-04-15",
     userType: "Administrator"
   },
@@ -40,7 +40,7 @@ const mockUsers = [
     firstName: "Sarah",
     lastName: "Brown",
     email: "sarah@example.com",
-    status: "inactive",
+    status: "inactive" as "active" | "inactive",
     lastSignIn: "2023-03-20",
     userType: "Healthcare Provider"
   }
