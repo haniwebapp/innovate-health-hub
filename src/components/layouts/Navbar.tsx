@@ -2,17 +2,20 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Globe, Menu, X } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "./NavbarMainLinks";
 import { NavbarUserMenu } from "./NavbarUserMenu";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -52,7 +55,7 @@ export default function Navbar() {
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
+        <div className={`flex justify-between items-center ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
               <motion.img 
@@ -71,9 +74,7 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
-              <Globe className="h-5 w-5" />
-            </Button>
+            <LanguageSwitcher />
             
             <NavbarUserMenu user={user} navigate={navigate} />
           </div>

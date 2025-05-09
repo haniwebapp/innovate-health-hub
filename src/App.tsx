@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 // Pages
 import Index from "./pages/Index";
@@ -39,51 +40,53 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route path="/auth/register" element={<RegisterPage />} />
-            <Route path="/auth/verification" element={<VerificationPage />} />
-            <Route path="/challenges" element={<ChallengesPage />} />
-            <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
-            <Route path="/innovations" element={<InnovationsPage />} />
-            <Route path="/innovations/:id" element={<InnovationDetailPage />} />
-            
-            {/* Protected Routes - Dashboard */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<DashboardPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="submissions" element={<SubmissionsPage />} />
-              <Route path="create-challenge" element={<NotFound />} />
-              <Route path="analytics" element={<NotFound />} />
-              <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
-              {/* Add more dashboard routes as needed */}
-            </Route>
-            
-            {/* Static Routes */}
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/innovations" element={<InnovationsPage />} />
-            <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
-            
-            {/* 404 - Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/auth/login" element={<LoginPage />} />
+              <Route path="/auth/register" element={<RegisterPage />} />
+              <Route path="/auth/verification" element={<VerificationPage />} />
+              <Route path="/challenges" element={<ChallengesPage />} />
+              <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
+              <Route path="/innovations" element={<InnovationsPage />} />
+              <Route path="/innovations/:id" element={<InnovationDetailPage />} />
+              
+              {/* Protected Routes - Dashboard */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<DashboardPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="submissions" element={<SubmissionsPage />} />
+                <Route path="create-challenge" element={<NotFound />} />
+                <Route path="analytics" element={<NotFound />} />
+                <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
+                {/* Add more dashboard routes as needed */}
+              </Route>
+              
+              {/* Static Routes */}
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/innovations" element={<InnovationsPage />} />
+              <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
+              
+              {/* 404 - Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 

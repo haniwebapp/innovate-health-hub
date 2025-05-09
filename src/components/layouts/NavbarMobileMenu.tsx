@@ -1,10 +1,11 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Search, Globe, User, LogIn, UserPlus, LogOut } from "lucide-react";
+import { Search, User, LogIn, UserPlus, LogOut } from "lucide-react";
 import { NavigateFunction } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Accordion,
   AccordionContent,
@@ -26,20 +27,21 @@ export function NavbarMobileMenu({
   navigate 
 }: NavbarMobileMenuProps) {
   const { signOut } = useAuth();
+  const { t, language, setLanguage } = useLanguage();
   
   const mainLinks = [
-    { path: "/about", label: "About" },
-    { path: "/challenges", label: "Challenges" },
-    { path: "/innovations", label: "Innovations" },
+    { path: "/about", label: t('nav.about') },
+    { path: "/challenges", label: t('nav.challenges') },
+    { path: "/innovations", label: t('nav.innovations') },
     { 
       path: "/knowledge-hub", 
-      label: "Knowledge Hub",
+      label: t('nav.knowledgeHub'),
       hasDropdown: true,
       dropdownItems: [
-        { label: "Articles", path: "/knowledge-hub?category=article" },
-        { label: "Videos", path: "/knowledge-hub?category=video" },
-        { label: "Guides", path: "/knowledge-hub?category=guide" },
-        { label: "Research Papers", path: "/knowledge-hub?category=research" },
+        { label: t('nav.articles'), path: "/knowledge-hub?category=article" },
+        { label: t('nav.videos'), path: "/knowledge-hub?category=video" },
+        { label: t('nav.guides'), path: "/knowledge-hub?category=guide" },
+        { label: t('nav.researchPapers'), path: "/knowledge-hub?category=research" },
       ]
     }
   ];
@@ -91,9 +93,10 @@ export function NavbarMobileMenu({
       animate="visible"
       exit="exit"
       variants={containerVariants}
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="px-4 pt-4 pb-6 space-y-3">
-        {mainLinks.map((link, index) => (
+        {mainLinks.map((link) => (
           <motion.div key={link.path} variants={itemVariants}>
             {link.hasDropdown ? (
               <Accordion type="single" collapsible className="border-none">
@@ -119,7 +122,7 @@ export function NavbarMobileMenu({
                         className="py-2 text-moh-darkGreen hover:text-moh-green"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        All Resources
+                        {t('nav.allResources')}
                       </Link>
                       {link.dropdownItems?.map((item) => (
                         <Link
@@ -158,15 +161,29 @@ export function NavbarMobileMenu({
             className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
           >
             <Search className="h-4 w-4 mr-2" />
-            Search
+            {t('nav.search')}
+          </Button>
+        </motion.div>
+
+        {/* Language Switcher */}
+        <motion.div variants={itemVariants} className="flex items-center justify-between pt-2 pb-3 border-b border-gray-100">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
+            onClick={() => setLanguage('en')}
+          >
+            <span className="mr-2">🇬🇧</span>
+            {t('general.english')}
           </Button>
           <Button 
             variant="ghost" 
             size="sm" 
             className="flex-1 justify-center text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green"
+            onClick={() => setLanguage('ar')}
           >
-            <Globe className="h-4 w-4 mr-2" />
-            Language
+            <span className="mr-2">🇸🇦</span>
+            {t('general.arabic')}
           </Button>
         </motion.div>
         
@@ -178,7 +195,7 @@ export function NavbarMobileMenu({
                 className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center btn-hover"
               >
                 <User className="h-4 w-4" />
-                Dashboard
+                {t('nav.dashboard')}
               </Button>
               <Button 
                 variant="outline"
@@ -186,7 +203,7 @@ export function NavbarMobileMenu({
                 className="w-full border-red-500 text-red-500 hover:bg-red-50 btn-hover"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Logout
+                {t('nav.logout')}
               </Button>
             </>
           ) : (
@@ -197,14 +214,14 @@ export function NavbarMobileMenu({
                 className="w-full border-moh-green text-moh-green hover:bg-gray-50 flex gap-2 items-center justify-center btn-hover"
               >
                 <LogIn className="h-4 w-4" />
-                Sign In
+                {t('nav.signIn')}
               </Button>
               <Button 
                 onClick={() => handleNavigate('/auth/register')} 
                 className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex gap-2 items-center justify-center btn-hover"
               >
                 <UserPlus className="h-4 w-4" />
-                Register
+                {t('nav.register')}
               </Button>
             </>
           )}

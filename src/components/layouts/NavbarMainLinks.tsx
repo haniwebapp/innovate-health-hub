@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,20 +17,22 @@ interface NavbarMainLinksProps {
 }
 
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
+  const { t, language } = useLanguage();
+  
   // Main links with dropdown options for Knowledge Hub
   const mainLinks = [
-    { path: "/about", label: "About" },
-    { path: "/challenges", label: "Challenges" },
-    { path: "/innovations", label: "Innovations" },
+    { path: "/about", label: t('nav.about') },
+    { path: "/challenges", label: t('nav.challenges') },
+    { path: "/innovations", label: t('nav.innovations') },
     { 
       path: "/knowledge-hub", 
-      label: "Knowledge Hub",
+      label: t('nav.knowledgeHub'),
       hasDropdown: true,
       dropdownItems: [
-        { label: "Articles", path: "/knowledge-hub?category=article" },
-        { label: "Videos", path: "/knowledge-hub?category=video" },
-        { label: "Guides", path: "/knowledge-hub?category=guide" },
-        { label: "Research Papers", path: "/knowledge-hub?category=research" },
+        { label: t('nav.articles'), path: "/knowledge-hub?category=article" },
+        { label: t('nav.videos'), path: "/knowledge-hub?category=video" },
+        { label: t('nav.guides'), path: "/knowledge-hub?category=guide" },
+        { label: t('nav.researchPapers'), path: "/knowledge-hub?category=research" },
       ]
     }
   ];
@@ -38,7 +41,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
 
   return (
     <NavigationMenu className="hidden md:flex">
-      <NavigationMenuList className="space-x-6">
+      <NavigationMenuList className={`space-x-6 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
         {mainLinks.map((link) => (
           link.hasDropdown ? (
             <NavigationMenuItem key={link.path}>
@@ -58,7 +61,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                         to={link.path}
                         className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-50 hover:text-moh-green focus:bg-gray-50 focus:text-moh-green"
                       >
-                        <div className="text-sm font-medium">All Resources</div>
+                        <div className="text-sm font-medium">{t('nav.allResources')}</div>
                       </Link>
                     </NavigationMenuLink>
                   </li>

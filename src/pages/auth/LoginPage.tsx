@@ -4,9 +4,11 @@ import LoginForm from '@/components/auth/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
+  const { t, language } = useLanguage();
 
   // Redirect authenticated users to dashboard
   if (user && !isLoading) {
@@ -14,7 +16,8 @@ export default function LoginPage() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4" 
+      dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="w-full max-w-md">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -27,9 +30,9 @@ export default function LoginPage() {
             alt="Ministry of Health Logo" 
             className="h-16 mx-auto" 
           />
-          <h1 className="text-2xl md:text-3xl font-bold text-moh-darkGreen">Innovation Platform</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-moh-darkGreen">{t('login.title')}</h1>
           <p className="text-moh-darkGreen/70 text-sm max-w-sm mx-auto">
-            Enter your credentials to access the healthcare innovation ecosystem
+            {t('login.description')}
           </p>
         </motion.div>
         
@@ -40,9 +43,9 @@ export default function LoginPage() {
         >
           <Card className="border-gray-100 shadow-lg bg-white/80 backdrop-blur-sm">
             <CardHeader className="pb-4 space-y-1">
-              <CardTitle className="text-moh-darkGreen text-xl md:text-2xl">Sign In</CardTitle>
+              <CardTitle className="text-moh-darkGreen text-xl md:text-2xl">{t('login.signIn')}</CardTitle>
               <CardDescription className="text-moh-darkGreen/70">
-                Access your account to manage innovations and challenges
+                {t('login.accessAccount')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -56,7 +59,7 @@ export default function LoginPage() {
             transition={{ delay: 0.5 }}
             className="text-center text-sm text-moh-darkGreen/60 mt-4"
           >
-            By signing in, you agree to our Terms of Service and Privacy Policy
+            {t('login.termsAndPrivacy')}
           </motion.p>
         </motion.div>
       </div>
