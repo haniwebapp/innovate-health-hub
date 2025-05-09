@@ -1,32 +1,23 @@
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
 import { LogOut, User, Settings } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
-
-// Define our own User type to avoid the Supabase import error
-interface User {
-  id: string;
-  email?: string;
-  user_metadata?: Record<string, any>;
-}
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavbarMobileMenuProps {
   isRouteActive: (path: string) => boolean;
   setMobileMenuOpen: (open: boolean) => void;
-  user: User | null;
-  navigate: ReturnType<typeof useNavigate>;
 }
 
 export function NavbarMobileMenu({
   isRouteActive,
   setMobileMenuOpen,
-  user,
-  navigate,
 }: NavbarMobileMenuProps) {
   const { t, language } = useLanguage();
+  const { user, logout } = useAuth();
   
   // Main navigation links without dropdown
   const navigationLinks = [
@@ -58,7 +49,6 @@ export function NavbarMobileMenu({
   };
   
   const handleLinkClick = (path: string) => {
-    navigate(path);
     setMobileMenuOpen(false);
   };
 
@@ -83,8 +73,11 @@ export function NavbarMobileMenu({
                       : "text-moh-darkGreen hover:text-moh-green"
                   } ${language === 'ar' ? 'text-right' : 'text-left'}`}
                   onClick={() => handleLinkClick(link.path)}
+                  asChild
                 >
-                  {link.label}
+                  <Link to={link.path}>
+                    {link.label}
+                  </Link>
                 </Button>
               </div>
             ))}
@@ -106,15 +99,21 @@ export function NavbarMobileMenu({
                   variant="ghost"
                   className="justify-start text-left mb-1"
                   onClick={() => handleLinkClick("/dashboard")}
+                  asChild
                 >
-                  <Settings className="h-4 w-4 mr-2" />
-                  {t('nav.dashboard')}
+                  <Link to="/dashboard">
+                    <Settings className="h-4 w-4 mr-2" />
+                    {t('nav.dashboard')}
+                  </Link>
                 </Button>
                 
                 <Button
                   variant="ghost"
                   className="justify-start text-left mb-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={() => handleLinkClick("/auth/logout")}
+                  onClick={() => {
+                    handleLinkClick("/");
+                    logout();
+                  }}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   {t('nav.logout')}
@@ -122,11 +121,20 @@ export function NavbarMobileMenu({
               </>
             ) : (
               <>
-                <Button className="bg-moh-green hover:bg-moh-darkGreen w-full mb-2" onClick={() => handleLinkClick("/auth/login")}>
-                  {t('nav.login')}
+                <Button 
+                  className="bg-moh-green hover:bg-moh-darkGreen w-full mb-2" 
+                  onClick={() => handleLinkClick("/auth/login")}
+                  asChild
+                >
+                  <Link to="/auth/login">{t('nav.login')}</Link>
                 </Button>
-                <Button variant="outline" className="w-full" onClick={() => handleLinkClick("/auth/register")}>
-                  {t('nav.register')}
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={() => handleLinkClick("/auth/register")}
+                  asChild
+                >
+                  <Link to="/auth/register">{t('nav.register')}</Link>
                 </Button>
               </>
             )}

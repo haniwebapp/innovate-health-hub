@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { 
   Tooltip, 
   TooltipContent, 
-  TooltipProvider, 
   TooltipTrigger 
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
@@ -52,109 +51,105 @@ export default function DashboardSidebar({
       
       {/* Navigation links */}
       <div className="flex-1 overflow-auto py-4">
-        <TooltipProvider>
-          <nav className="grid gap-1 px-2">
-            {/* Regular user links */}
-            <NavItem 
-              to="/dashboard" 
-              icon={<LayoutDashboard size={18} />} 
-              text="Dashboard" 
-              isCollapsed={isCollapsed}
-            />
-            <NavItem 
-              to="/dashboard/profile" 
-              icon={<Users size={18} />} 
-              text="Profile" 
-              isCollapsed={isCollapsed} 
-            />
-            <NavItem 
-              to="/dashboard/submissions" 
-              icon={<FileText size={18} />} 
-              text="My Submissions" 
-              isCollapsed={isCollapsed}
-            />
-            
-            {/* Admin only links */}
-            {isAdmin && (
-              <>
-                <div className={cn(
-                  "my-2 border-t",
-                  isCollapsed ? "mx-2" : "mx-4"
-                )}></div>
-                <div className={cn(
-                  "mb-2 px-4 text-xs uppercase text-muted-foreground",
-                  isCollapsed && "sr-only"
-                )}>
-                  Administration
-                </div>
-                <NavItem 
-                  to="/dashboard/admin/users" 
-                  icon={<Users size={18} />} 
-                  text="Users" 
-                  isCollapsed={isCollapsed}
-                  badge="Admin"
-                />
-                <NavItem 
-                  to="/dashboard/admin/analytics" 
-                  icon={<BarChart3 size={18} />} 
-                  text="Analytics" 
-                  isCollapsed={isCollapsed}
-                  badge="Admin"
-                />
-                <NavItem 
-                  to="/dashboard/admin/settings" 
-                  icon={<Settings size={18} />} 
-                  text="Settings" 
-                  isCollapsed={isCollapsed}
-                  badge="Admin"
-                />
-                <NavItem 
-                  to="/dashboard/admin/integrations" 
-                  icon={<Plug size={18} />} 
-                  text="Integrations" 
-                  isCollapsed={isCollapsed}
-                  badge="Admin"
-                />
-              </>
-            )}
-            
-            <div className={cn(
-              "my-2 border-t",
-              isCollapsed ? "mx-2" : "mx-4"
-            )}></div>
-            
-            {/* Quick actions */}
-            <NavItem 
-              to="/dashboard/create-challenge" 
-              icon={<PlusCircle size={18} />} 
-              text="Create Challenge" 
-              isCollapsed={isCollapsed}
-            />
-          </nav>
-        </TooltipProvider>
+        <nav className="grid gap-1 px-2">
+          {/* Regular user links */}
+          <NavItem 
+            to="/dashboard" 
+            icon={<LayoutDashboard size={18} />} 
+            text="Dashboard" 
+            isCollapsed={isCollapsed}
+          />
+          <NavItem 
+            to="/dashboard/profile" 
+            icon={<Users size={18} />} 
+            text="Profile" 
+            isCollapsed={isCollapsed} 
+          />
+          <NavItem 
+            to="/dashboard/submissions" 
+            icon={<FileText size={18} />} 
+            text="My Submissions" 
+            isCollapsed={isCollapsed}
+          />
+          
+          {/* Admin only links */}
+          {isAdmin && (
+            <>
+              <div className={cn(
+                "my-2 border-t",
+                isCollapsed ? "mx-2" : "mx-4"
+              )}></div>
+              <div className={cn(
+                "mb-2 px-4 text-xs uppercase text-muted-foreground",
+                isCollapsed && "sr-only"
+              )}>
+                Administration
+              </div>
+              <NavItem 
+                to="/dashboard/admin/users" 
+                icon={<Users size={18} />} 
+                text="Users" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+              <NavItem 
+                to="/dashboard/admin/analytics" 
+                icon={<BarChart3 size={18} />} 
+                text="Analytics" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+              <NavItem 
+                to="/dashboard/admin/settings" 
+                icon={<Settings size={18} />} 
+                text="Settings" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+              <NavItem 
+                to="/dashboard/admin/integrations" 
+                icon={<Plug size={18} />} 
+                text="Integrations" 
+                isCollapsed={isCollapsed}
+                badge="Admin"
+              />
+            </>
+          )}
+          
+          <div className={cn(
+            "my-2 border-t",
+            isCollapsed ? "mx-2" : "mx-4"
+          )}></div>
+          
+          {/* Quick actions */}
+          <NavItem 
+            to="/dashboard/create-challenge" 
+            icon={<PlusCircle size={18} />} 
+            text="Create Challenge" 
+            isCollapsed={isCollapsed}
+          />
+        </nav>
       </div>
       
       {/* Logout button */}
       <div className="border-t p-4">
-        <TooltipProvider>
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size={isCollapsed ? "icon" : "default"}
-                className={cn(
-                  "w-full justify-start",
-                  isCollapsed && "h-9 w-9"
-                )}
-                onClick={logout}
-              >
-                <LogOut size={18} className={cn(isCollapsed ? "" : "mr-2")} />
-                {!isCollapsed && <span>Logout</span>}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Logout</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size={isCollapsed ? "icon" : "default"}
+              className={cn(
+                "w-full justify-start",
+                isCollapsed && "h-9 w-9"
+              )}
+              onClick={logout}
+            >
+              <LogOut size={18} className={cn(isCollapsed ? "" : "mr-2")} />
+              {!isCollapsed && <span>Logout</span>}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Logout</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Search, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
@@ -15,8 +15,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
-  const { t, language } = useLanguage();
-  const navigate = useNavigate();
+  const { language } = useLanguage();
   const location = useLocation();
 
   // Handle scrolling effect with throttling for better performance
@@ -106,8 +105,6 @@ export default function Navbar() {
           <NavbarMobileMenu 
             isRouteActive={isRouteActive} 
             setMobileMenuOpen={setMobileMenuOpen} 
-            user={user} 
-            navigate={navigate} 
           />
         )}
       </AnimatePresence>
