@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
           className={`${language === 'en' ? 'bg-moh-lightGreen' : ''}`}
         >
           <span className="flex items-center">
-            <span className="mr-2">🇬🇧</span>
+            <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇬🇧</span>
             {t('general.english')}
           </span>
         </DropdownMenuItem>
@@ -34,7 +34,7 @@ export default function LanguageSwitcher() {
           className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''}`}
         >
           <span className="flex items-center">
-            <span className="mr-2">🇸🇦</span>
+            <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇸🇦</span>
             {t('general.arabic')}
           </span>
         </DropdownMenuItem>

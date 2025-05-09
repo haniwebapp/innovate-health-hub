@@ -5,13 +5,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock, Users, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ChallengeCardProps {
   id: string;
-  title: string;
-  description: string;
-  deadline: string;
-  category: string;
+  titleKey: string;
+  descriptionKey: string;
+  deadlineKey: string;
+  categoryKey: string;
   participants: number;
   prize: string;
   delay: number;
@@ -19,9 +20,10 @@ interface ChallengeCardProps {
 }
 
 const ChallengeCard = ({ 
-  id, title, description, deadline, category, participants, prize, delay, image
+  id, titleKey, descriptionKey, deadlineKey, categoryKey, participants, prize, delay, image
 }: ChallengeCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -53,39 +55,39 @@ const ChallengeCard = ({
         <div className="h-40 overflow-hidden">
           <img 
             src={image} 
-            alt={title} 
+            alt={t(titleKey)} 
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
         </div>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
-            <Badge className="bg-moh-gold hover:bg-moh-darkGold">{category}</Badge>
+            <Badge className="bg-moh-gold hover:bg-moh-darkGold">{t(categoryKey)}</Badge>
             <div className="text-sm text-moh-darkGreen flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              <span>Deadline: {deadline}</span>
+              <span>{t('home.challenges.deadline')}: {t(deadlineKey)}</span>
             </div>
           </div>
           <CardTitle className="text-xl text-moh-darkGreen mt-2 group-hover:text-moh-green transition-colors">
-            {title}
+            {t(titleKey)}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600 mb-4">{description}</p>
+          <p className="text-gray-600 mb-4">{t(descriptionKey)}</p>
           <div className="flex justify-between text-sm text-gray-500">
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
-              {participants} Participants
+              {participants} {t('home.challenges.participants')}
             </span>
             <span className="flex items-center gap-1">
               <Trophy className="h-3 w-3" />
-              Prize: {prize}
+              {t('home.challenges.prize')}: {prize}
             </span>
           </div>
         </CardContent>
         <CardFooter>
           <Button asChild className="w-full bg-moh-green hover:bg-moh-darkGreen text-white group">
             <Link to={`/challenges/${id}`}>
-              View Challenge
+              {t('home.challenges.viewChallenge')}
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
@@ -98,6 +100,7 @@ const ChallengeCard = ({
 export default function ChallengesSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -133,30 +136,30 @@ export default function ChallengesSection() {
   const challenges = [
     {
       id: "1",
-      title: "Remote Patient Monitoring Solutions",
-      description: "Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.",
-      deadline: "June 30, 2025",
-      category: "Digital Health",
+      titleKey: "home.challenges.challenge1.title",
+      descriptionKey: "home.challenges.challenge1.description",
+      deadlineKey: "home.challenges.challenge1.deadline",
+      categoryKey: "home.challenges.challenge1.category",
       participants: 47,
       prize: "SAR 500,000",
       image: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
     },
     {
       id: "2",
-      title: "AI for Early Disease Detection",
-      description: "Develop AI algorithms to detect early signs of diseases using existing health data from MOH facilities.",
-      deadline: "July 15, 2025",
-      category: "AI & Machine Learning",
+      titleKey: "home.challenges.challenge2.title",
+      descriptionKey: "home.challenges.challenge2.description",
+      deadlineKey: "home.challenges.challenge2.deadline",
+      categoryKey: "home.challenges.challenge2.category",
       participants: 32,
       prize: "SAR 750,000",
       image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
     },
     {
       id: "3",
-      title: "Healthcare Supply Chain Optimization",
-      description: "Create solutions to improve the efficiency and resilience of medical supply chains across Saudi Arabia.",
-      deadline: "August 22, 2025",
-      category: "Logistics",
+      titleKey: "home.challenges.challenge3.title",
+      descriptionKey: "home.challenges.challenge3.description",
+      deadlineKey: "home.challenges.challenge3.deadline",
+      categoryKey: "home.challenges.challenge3.category",
       participants: 21,
       prize: "SAR 350,000",
       image: "https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
@@ -169,14 +172,13 @@ export default function ChallengesSection() {
         <div ref={titleRef} className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 opacity-0">
           <div>
             <span className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
-              Innovation Challenges
+              {t('home.challenges.tag')}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-moh-darkGreen">
-              Upcoming Opportunities
+              {t('home.challenges.title')}
             </h2>
             <p className="text-gray-700 max-w-3xl">
-              Join MOH-sponsored challenges to solve critical healthcare issues and 
-              unlock funding opportunities.
+              {t('home.challenges.description')}
             </p>
           </div>
           <Button 
@@ -185,7 +187,7 @@ export default function ChallengesSection() {
             className="mt-6 md:mt-0 border-moh-green text-moh-green hover:bg-moh-lightGreen group"
           >
             <Link to="/challenges">
-              View All Challenges
+              {t('home.challenges.viewAll')}
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
@@ -196,10 +198,10 @@ export default function ChallengesSection() {
             <ChallengeCard 
               key={index}
               id={challenge.id}
-              title={challenge.title}
-              description={challenge.description}
-              deadline={challenge.deadline}
-              category={challenge.category}
+              titleKey={challenge.titleKey}
+              descriptionKey={challenge.descriptionKey}
+              deadlineKey={challenge.deadlineKey}
+              categoryKey={challenge.categoryKey}
               participants={challenge.participants}
               prize={challenge.prize}
               delay={(index + 1) * 150}
@@ -212,7 +214,7 @@ export default function ChallengesSection() {
           <div className="inline-block bg-white rounded-lg p-6 shadow-lg border border-moh-lightGreen">
             <div className="flex items-center gap-4">
               <div className="w-3 h-3 bg-moh-green rounded-full animate-pulse"></div>
-              <span className="text-moh-darkGreen font-medium">Next challenge submission deadline: June 30, 2025</span>
+              <span className="text-moh-darkGreen font-medium">{t('home.challenges.nextDeadline')}: {t('home.challenges.challenge1.deadline')}</span>
             </div>
           </div>
         </div>

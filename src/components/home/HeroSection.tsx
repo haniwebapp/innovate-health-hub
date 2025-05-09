@@ -1,14 +1,20 @@
+
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Users, Award } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export default function HeroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const { t, language } = useLanguage();
+  
   useEffect(() => {
     const titleElement = titleRef.current;
     if (titleElement) {
       titleElement.classList.add('animate-fade-in');
     }
   }, []);
+  
   return <section className="pt-24 pb-16 md:pt-28 md:pb-20 lg:pt-32 lg:pb-24 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -21,41 +27,43 @@ export default function HeroSection() {
           </div>
           
           <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 opacity-0 tracking-tight">
-            <span className="text-gradient">Empowering Health Innovation</span>
+            <span className="text-gradient">{t('home.hero.titleGradient')}</span>
             <br />
-            <span className="text-moh-darkGreen">for a Better Tomorrow</span>
+            <span className="text-moh-darkGreen">{t('home.hero.titleDark')}</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-2xl mx-auto opacity-0 animate-fade-in animation-delay-200 leading-relaxed">A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.</p>
+          <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-2xl mx-auto opacity-0 animate-fade-in animation-delay-200 leading-relaxed">
+            {t('home.hero.description')}
+          </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-fade-in animation-delay-300">
             <Button size="lg" className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md">
-              Explore Innovations
+              {t('home.hero.exploreButton')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button size="lg" variant="outline" className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm">
               <Sparkles className="mr-2 h-4 w-4" />
-              Join a Challenge
+              {t('home.hero.joinButton')}
             </Button>
             <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm">
               <Award className="mr-2 h-4 w-4" />
-              Access Investment
+              {t('home.hero.investmentButton')}
             </Button>
           </div>
           
-          {/* New Feature: Quick Stats */}
+          {/* Quick Stats */}
           <div className="mt-16 grid grid-cols-3 gap-4 opacity-0 animate-fade-in animation-delay-500">
             <div className="text-center">
               <div className="font-bold text-2xl text-moh-green">500+</div>
-              <div className="text-sm text-gray-600">Innovators</div>
+              <div className="text-sm text-gray-600">{t('home.hero.stats.innovators')}</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-2xl text-moh-darkGold">250M+</div>
-              <div className="text-sm text-gray-600">Investments (SAR)</div>
+              <div className="text-sm text-gray-600">{t('home.hero.stats.investments')}</div>
             </div>
             <div className="text-center">
               <div className="font-bold text-2xl text-moh-green">40+</div>
-              <div className="text-sm text-gray-600">Active Challenges</div>
+              <div className="text-sm text-gray-600">{t('home.hero.stats.challenges')}</div>
             </div>
           </div>
         </div>

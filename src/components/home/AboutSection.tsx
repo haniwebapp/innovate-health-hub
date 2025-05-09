@@ -2,9 +2,11 @@
 import { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Play } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AboutSection() {
   const contentRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -33,29 +35,26 @@ export default function AboutSection() {
         <div ref={contentRef} className="grid md:grid-cols-2 gap-12 items-center opacity-0">
           <div className="order-2 md:order-1">
             <div className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
-              About the Platform
+              {t('home.about.tag')}
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-moh-darkGreen leading-tight">
-              Transforming Healthcare Through Innovation
+              {t('home.about.title')}
             </h2>
             <div className="space-y-4 mb-8">
               <p className="text-gray-700 leading-relaxed">
-                The Health Innovation Platform is a key initiative aligned with Saudi Arabia's 
-                Vision 2030 and the Ministry of Health's strategic goals to transform healthcare 
-                delivery across the Kingdom.
+                {t('home.about.paragraph1')}
               </p>
               <p className="text-gray-700 leading-relaxed">
-                Our platform serves as a comprehensive ecosystem connecting innovators, investors, 
-                and regulators, streamlining the journey from idea to implementation.
+                {t('home.about.paragraph2')}
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
               <Button variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen group">
-                Learn About Vision 2030
+                {t('home.about.vision2030Button')}
                 <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="outline" className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold group">
-                Ministry Strategy
+                {t('home.about.strategyButton')}
                 <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
@@ -77,10 +76,10 @@ export default function AboutSection() {
                 
                 <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
                   <span className="bg-moh-green text-white px-4 py-2 text-sm rounded-md font-medium">
-                    Overview Video
+                    {t('home.about.videoOverlay')}
                   </span>
                   <span className="bg-white/80 backdrop-blur-sm text-moh-darkGreen px-3 py-1 text-xs rounded-md">
-                    2:45
+                    {t('home.about.videoDuration')}
                   </span>
                 </div>
               </div>

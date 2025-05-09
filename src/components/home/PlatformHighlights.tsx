@@ -1,16 +1,18 @@
 
 import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FeatureCardProps {
   icon: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   delay: number;
 }
 
-const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
+const FeatureCard = ({ icon, titleKey, descriptionKey, delay }: FeatureCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -44,11 +46,11 @@ const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
         <CardHeader className="pb-2 relative">
           <div className="text-4xl mb-4">{icon}</div>
           <CardTitle className="text-xl text-moh-darkGreen font-bold group-hover:text-moh-green transition-colors">
-            {title}
+            {t(titleKey)}
           </CardTitle>
         </CardHeader>
         <CardContent className="relative">
-          <p className="text-gray-600">{description}</p>
+          <p className="text-gray-600">{t(descriptionKey)}</p>
         </CardContent>
       </Card>
     </div>
@@ -57,6 +59,7 @@ const FeatureCard = ({ icon, title, description, delay }: FeatureCardProps) => {
 
 export default function PlatformHighlights() {
   const titleRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -85,33 +88,33 @@ export default function PlatformHighlights() {
   const features = [
     {
       icon: "🧠",
-      title: "AI-Powered Innovation Matching",
-      description: "Our advanced AI algorithms connect innovators with the right investors, mentors, and resources."
+      titleKey: "home.highlights.feature1.title",
+      descriptionKey: "home.highlights.feature1.description"
     },
     {
       icon: "🔬",
-      title: "Regulatory Sandbox Access",
-      description: "Test your innovations in a controlled environment with direct access to MOH regulatory guidance."
+      titleKey: "home.highlights.feature2.title",
+      descriptionKey: "home.highlights.feature2.description"
     },
     {
       icon: "📈",
-      title: "Investment Marketplace",
-      description: "Connect with qualified investors seeking to fund the next breakthrough in healthcare innovation."
+      titleKey: "home.highlights.feature3.title",
+      descriptionKey: "home.highlights.feature3.description"
     },
     {
       icon: "📚",
-      title: "Knowledge Hub",
-      description: "Access resources, case studies, and best practices to accelerate your innovation journey."
+      titleKey: "home.highlights.feature4.title",
+      descriptionKey: "home.highlights.feature4.description"
     },
     {
       icon: "🧪",
-      title: "Challenge Submissions",
-      description: "Participate in MOH-sponsored innovation challenges to solve critical healthcare problems."
+      titleKey: "home.highlights.feature5.title",
+      descriptionKey: "home.highlights.feature5.description"
     },
     {
       icon: "🌐",
-      title: "Global Health Network",
-      description: "Connect with international partners and access global health innovation trends and insights."
+      titleKey: "home.highlights.feature6.title",
+      descriptionKey: "home.highlights.feature6.description"
     }
   ];
 
@@ -120,14 +123,13 @@ export default function PlatformHighlights() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={titleRef} className="text-center mb-16 opacity-0">
           <span className="inline-block px-4 py-1 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium mb-4">
-            Platform Highlights
+            {t('home.highlights.tag')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-moh-darkGreen">
-            Your Complete Innovation Ecosystem
+            {t('home.highlights.title')}
           </h2>
           <p className="max-w-3xl mx-auto text-gray-700 text-lg">
-            Our comprehensive suite of tools and services designed to support healthcare innovators 
-            at every stage of development.
+            {t('home.highlights.description')}
           </p>
         </div>
         
@@ -136,8 +138,8 @@ export default function PlatformHighlights() {
             <FeatureCard 
               key={index}
               icon={feature.icon}
-              title={feature.title}
-              description={feature.description}
+              titleKey={feature.titleKey}
+              descriptionKey={feature.descriptionKey}
               delay={(index + 1) * 100}
             />
           ))}
