@@ -2,9 +2,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings } from "lucide-react";
+import { LogOut, User, Settings, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
+import { useState } from "react";
 
 // Define our own User type to avoid the Supabase import error
 interface User {
@@ -27,6 +28,7 @@ export function NavbarMobileMenu({
   navigate,
 }: NavbarMobileMenuProps) {
   const { t, language } = useLanguage();
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   // Main navigation links
   const navigationLinks = [
@@ -35,7 +37,17 @@ export function NavbarMobileMenu({
     { path: "/innovations", label: t('nav.innovations') },
     { path: "/investment", label: "Investment" },
     { path: "/regulatory", label: "Regulatory" },
-    { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
+    { 
+      path: "/knowledge-hub", 
+      label: t('nav.knowledgeHub'),
+      hasDropdown: true,
+      dropdownItems: [
+        { label: t('nav.articles'), path: "/knowledge-hub?category=article" },
+        { label: t('nav.videos'), path: "/knowledge-hub?category=video" },
+        { label: t('nav.guides'), path: "/knowledge-hub?category=guide" },
+        { label: t('nav.researchPapers'), path: "/knowledge-hub?category=research" },
+      ]
+    },
   ];
   
   // Animation variants
@@ -62,6 +74,12 @@ export function NavbarMobileMenu({
     setMobileMenuOpen(false);
   };
 
+  const toggleExpand = (path: string) => {
+    setExpandedItems(prev => 
+      prev.includes(path) ? prev.filter(p => p !== path) : [...prev, path]
+    );
+  };
+
   return (
     <motion.div
       initial="hidden"
@@ -74,18 +92,62 @@ export function NavbarMobileMenu({
         <div className="max-h-[80vh] overflow-y-auto">
           <nav className="flex flex-col p-4">
             {navigationLinks.map((link) => (
-              <Button
-                key={link.path}
-                variant="ghost"
-                className={`justify-start text-left mb-1 ${
-                  isRouteActive(link.path)
-                    ? "bg-gray-50 text-moh-green font-medium"
-                    : "text-moh-darkGreen hover:text-moh-green"
-                } ${language === 'ar' ? 'text-right' : 'text-left'}`}
-                onClick={() => handleLinkClick(link.path)}
-              >
-                {link.label}
-              </Button>
+              <div key={link.path} className="mb-1">
+                {link.hasDropdown ? (
+                  <>
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-between text-left mb-1 ${
+                        isRouteActive(link.path)
+                          ? "bg-gray-50 text-moh-green font-medium"
+                          : "text-moh-darkGreen hover:text-moh-green"
+                      } ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                      onClick={() => toggleExpand(link.path)}
+                    >
+                      {link.label}
+                      {expandedItems.includes(link.path) ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                    
+                    {expandedItems.includes(link.path) && (
+                      <div className="pl-4 py-1 space-y-1 bg-gray-50 rounded-md mt-1 mb-2">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start text-left text-sm py-2"
+                          onClick={() => handleLinkClick(link.path)}
+                        >
+                          {t('nav.allResources')}
+                        </Button>
+                        {link.dropdownItems?.map((item) => (
+                          <Button
+                            key={item.path}
+                            variant="ghost"
+                            className="w-full justify-start text-left text-sm py-2"
+                            onClick={() => handleLinkClick(item.path)}
+                          >
+                            {item.label}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start text-left mb-1 ${
+                      isRouteActive(link.path)
+                        ? "bg-gray-50 text-moh-green font-medium"
+                        : "text-moh-darkGreen hover:text-moh-green"
+                    } ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    onClick={() => handleLinkClick(link.path)}
+                  >
+                    {link.label}
+                  </Button>
+                )}
+              </div>
             ))}
             
             <Separator className="my-4" />
