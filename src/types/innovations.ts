@@ -42,16 +42,55 @@ export const categoryColors: Record<string, string> = {
 };
 
 export interface InnovationSubmission {
+  // Basic info (Step 1)
   title: string;
   description: string;
   category: string;
   tags: string[];
-  organization: string;
-  contactName: string;
-  contactEmail: string;
-  website?: string;
+  
+  // Details (Step 2)
+  longDescription: string;
   implementationStatus: "Concept" | "Prototype" | "Pilot" | "Deployed";
+  problem: string;
+  solution: string;
+  
+  // Media (Step 3)
   images: File[];
   documentationFiles?: File[];
   videoUrl?: string;
+  
+  // Technical (Step 4)
+  technicalSpecifications?: string;
+  integrationRequirements?: string;
+  hardwareRequirements?: string;
+  compatibilityInfo?: string;
+  
+  // Regulatory (Step 5)
+  regulatoryStatus?: {
+    compliant: boolean;
+    certifications: string[];
+    pendingApprovals: string[];
+  };
+  
+  // Contact (Step 6)
+  organization: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string;
+  website?: string;
+  address?: string;
 }
+
+// Progress tracking for multi-step form
+export interface SubmissionFormProgress {
+  basicInfo: boolean;
+  details: boolean;
+  media: boolean;
+  technical: boolean;
+  regulatory: boolean;
+  contact: boolean;
+  review: boolean;
+}
+
+// Status for submission review
+export type SubmissionStatus = "Draft" | "Submitted" | "Under Review" | "Approved" | "Rejected" | "Needs Revision";

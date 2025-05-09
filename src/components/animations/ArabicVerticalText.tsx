@@ -1,19 +1,20 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
+
 export function ArabicVerticalText({
   text,
   className = "",
   delay = 0
 }: ArabicVerticalTextProps) {
-  const {
-    language
-  } = useLanguage();
+  const { language } = useLanguage();
 
   // Split text into characters
   const characters = text.split("");
@@ -31,6 +32,7 @@ export function ArabicVerticalText({
       }
     }
   };
+  
   const charVariants = {
     hidden: {
       y: 20,
@@ -62,11 +64,32 @@ export function ArabicVerticalText({
       }
     }
   };
-  return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 relative ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
+  
+  return (
+    <motion.div 
+      className={`inline-flex flex-col items-center justify-center mx-2 relative ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
+      initial="hidden" 
+      animate="visible" 
+      variants={containerVariants}
+    >
       {/* For vertical text display, we render each character as its own element */}
-      {characters.map((char, index) => {})}
+      {characters.map((char, index) => (
+        <motion.span
+          key={index}
+          variants={charVariants}
+          className="text-xl md:text-2xl font-medium my-0.5"
+        >
+          {char}
+        </motion.span>
+      ))}
       
       {/* Special shimmer highlight effect */}
-      <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
-    </motion.div>;
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" 
+        initial="initial" 
+        animate="animate" 
+        variants={shimmerEffect} 
+      />
+    </motion.div>
+  );
 }

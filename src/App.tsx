@@ -32,6 +32,8 @@ import ChallengeDetails from './pages/challenges/[id]';
 
 import InnovationsPage from './pages/innovations';
 import InnovationDetails from './pages/innovations/[id]';
+import InnovationSubmitPage from './pages/innovations/submit/index';
+import ContactInformationPage from './pages/innovations/submit/contact';
 
 import InvestmentPage from './pages/investment';
 import RegulatoryPage from './pages/regulatory';
@@ -58,6 +60,14 @@ function App() {
                   <Route path="/challenges/:id" element={<ChallengeDetails />} />
                   <Route path="/innovations" element={<InnovationsPage />} />
                   <Route path="/innovations/:id" element={<InnovationDetails />} />
+                  
+                  {/* Innovation Submission Flow */}
+                  <Route path="/innovations/submit" element={<InnovationSubmitPage />}>
+                    <Route index element={<InnovationSubmitPreview />} />
+                    <Route path="contact" element={<ContactInformationPage />} />
+                    {/* We'll add the rest of the submission flow routes later */}
+                  </Route>
+                  
                   <Route path="/investment" element={<InvestmentPage />} />
                   <Route path="/regulatory" element={<RegulatoryPage />} />
                   <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />

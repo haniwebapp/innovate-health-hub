@@ -1,10 +1,15 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { FileUp, CheckCircle, ArrowRight, Lightbulb } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FileUp, CheckCircle, ArrowRight, Lightbulb, FileText, Image, ClipboardList, Shield, Building, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSubmissionForm } from "@/contexts/SubmissionFormContext";
 
 export default function InnovationSubmitPreview() {
+  const navigate = useNavigate();
+  const { formProgress, activeStep } = useSubmissionForm();
+  
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -30,37 +35,73 @@ export default function InnovationSubmitPreview() {
     }
   };
 
-  // Steps in the innovation submission process
+  // Steps in the innovation submission process with icons
   const submissionSteps = [
     {
       title: "Basic Information",
-      description: "Enter your innovation details, category, and basic description"
+      description: "Enter your innovation details, category, and basic description",
+      icon: <FileText size={16} />,
+      path: "/innovations/submit/basic-info",
+      key: "basicInfo"
     },
     {
       title: "Detailed Description",
-      description: "Provide comprehensive information about your healthcare solution"
+      description: "Provide comprehensive information about your healthcare solution",
+      icon: <ClipboardList size={16} />,
+      path: "/innovations/submit/details",
+      key: "details"
     },
     {
       title: "Upload Media",
-      description: "Add images, videos, and documentation about your innovation"
+      description: "Add images, videos, and documentation about your innovation",
+      icon: <Image size={16} />,
+      path: "/innovations/submit/media",
+      key: "media"
     },
     {
       title: "Technical Specifications",
-      description: "Share technical details and implementation requirements"
+      description: "Share technical details and implementation requirements",
+      icon: <FileUp size={16} />,
+      path: "/innovations/submit/technical",
+      key: "technical"
     },
     {
       title: "Regulatory Information",
-      description: "Add details about compliance status and certifications"
+      description: "Add details about compliance status and certifications",
+      icon: <Shield size={16} />,
+      path: "/innovations/submit/regulatory",
+      key: "regulatory"
+    },
+    {
+      title: "Contact Information",
+      description: "Provide organizational and contact details",
+      icon: <Building size={16} />,
+      path: "/innovations/submit/contact",
+      key: "contact"
+    },
+    {
+      title: "Review & Submit",
+      description: "Review your innovation details before final submission",
+      icon: <CheckCircle size={16} />,
+      path: "/innovations/submit/review",
+      key: "review"
     }
   ];
+
+  const handleStartSubmission = () => {
+    navigate("/innovations/submit/basic-info");
+  };
 
   return (
     <div className="bg-white rounded-lg border shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold text-moh-darkGreen">Submit Your Innovation</h3>
-        <Button className="bg-moh-green hover:bg-moh-darkGreen text-white">
+        <Button 
+          className="bg-moh-green hover:bg-moh-darkGreen text-white"
+          onClick={handleStartSubmission}
+        >
           <FileUp size={16} className="mr-2" />
-          Start Submission
+          {activeStep === 0 ? "Start Submission" : "Continue"}
         </Button>
       </div>
 
@@ -75,21 +116,56 @@ export default function InnovationSubmitPreview() {
         </p>
 
         <div className="space-y-3 mb-6">
-          {submissionSteps.map((step, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="flex items-start bg-gray-50 p-3 rounded-md"
-            >
-              <div className="mr-3 mt-1 bg-moh-lightGreen h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium text-moh-darkGreen">
-                {index + 1}
-              </div>
-              <div>
-                <h4 className="font-medium text-moh-darkGreen">{step.title}</h4>
-                <p className="text-sm text-gray-600">{step.description}</p>
-              </div>
-            </motion.div>
-          ))}
+          {submissionSteps.map((step, index) => {
+            const isCompleted = formProgress[step.key as keyof typeof formProgress];
+            const isCurrent = activeStep === index;
+            
+            return (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className={`flex items-start p-3 rounded-md transition-all ${
+                  isCurrent 
+                    ? 'bg-moh-lightGreen/20 border border-moh-lightGreen/50' 
+                    : isCompleted 
+                    ? 'bg-gray-50 border border-moh-green/20' 
+                    : 'bg-gray-50'
+                }`}
+                onClick={() => {
+                  if (isCompleted || isCurrent) {
+                    navigate(step.path);
+                  }
+                }}
+                style={{ cursor: isCompleted || isCurrent ? 'pointer' : 'default' }}
+              >
+                <div className={`mr-3 mt-1 h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium ${
+                  isCompleted 
+                    ? 'bg-moh-green text-white' 
+                    : isCurrent 
+                    ? 'bg-moh-lightGreen text-moh-darkGreen' 
+                    : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {isCompleted ? (
+                    <CheckCircle size={12} />
+                  ) : (
+                    <span>{index + 1}</span>
+                  )}
+                </div>
+                <div>
+                  <h4 className={`font-medium flex items-center ${
+                    isCurrent ? 'text-moh-darkGreen' : isCompleted ? 'text-moh-green' : 'text-gray-700'
+                  }`}>
+                    {step.icon && <span className="mr-1">{step.icon}</span>}
+                    {step.title}
+                    {isCompleted && (
+                      <CheckCircle size={14} className="ml-2 text-moh-green" />
+                    )}
+                  </h4>
+                  <p className="text-sm text-gray-600">{step.description}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         <div className="border-t border-gray-200 pt-4">
