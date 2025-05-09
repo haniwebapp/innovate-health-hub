@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 /**
  * Enhanced RTL utility to set document direction and related styles based on language
@@ -108,8 +108,8 @@ export const useRTLDirection = (language: string): void => {
     
     // Cleanup function
     return () => {
-      const styleEl = document.getElementById('rtl-dynamic-styles');
-      if (styleEl) styleEl.textContent = '';
+      const styleId = document.getElementById('rtl-dynamic-styles');
+      if (styleId) styleId.textContent = '';
     };
   }, [language]);
 };

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 interface WindowSize {
   width: number;
@@ -11,7 +11,7 @@ interface WindowSize {
 
 export function useWindowSize(): WindowSize {
   // Initialize with reasonable defaults
-  const [windowSize, setWindowSize] = useState<WindowSize>({
+  const [windowSize, setWindowSize] = React.useState<WindowSize>({
     width: typeof window !== 'undefined' ? window.innerWidth : 768,
     height: typeof window !== 'undefined' ? window.innerHeight : 800,
     isMobile: typeof window !== 'undefined' ? window.innerWidth < 640 : false,
@@ -19,7 +19,7 @@ export function useWindowSize(): WindowSize {
     isDesktop: typeof window !== 'undefined' ? window.innerWidth >= 1024 : false,
   });
   
-  useEffect(() => {
+  React.useEffect(() => {
     // Handler to call on window resize
     function handleResize() {
       const width = window.innerWidth;

@@ -1,4 +1,5 @@
 
+import React from "react";
 import Navbar from "@/components/layouts/Navbar";
 import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
