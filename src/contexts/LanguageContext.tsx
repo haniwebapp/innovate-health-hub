@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define available languages
@@ -43,7 +42,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // General
     'general.english': 'English',
-    'general.arabic': 'Arabic',
+    'general.arabic': 'العربية',
     'general.readMore': 'Read More',
     'general.viewAll': 'View All',
     'general.learnMore': 'Learn More',
@@ -54,9 +53,9 @@ const translations: Record<Language, Record<string, string>> = {
     'general.previous': 'Previous',
     'general.or': 'or',
     
-    // Hero section
-    'home.hero.titleGradient': 'Health Innovation Platform',
-    'home.hero.titleDark': 'Empowering Health Innovation for a Better Tomorrow',
+    // Hero section - Updated titles
+    'home.hero.titleGradient': 'Healthcare Innovation Hub',
+    'home.hero.titleDark': 'Transforming Saudi Healthcare Through Innovation',
     'home.hero.description': 'A one-stop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.',
     'home.hero.exploreButton': 'Explore Innovations',
     'home.hero.joinButton': 'Join a Challenge',
@@ -238,9 +237,9 @@ const translations: Record<Language, Record<string, string>> = {
     'general.previous': 'السابق',
     'general.or': 'أو',
     
-    // Hero section
-    'home.hero.titleGradient': 'منصة الابتكار الصحي',
-    'home.hero.titleDark': 'تمكين الابتكار الصحي لغد أفضل',
+    // Hero section - Updated titles
+    'home.hero.titleGradient': 'منصة الابتكار الصحي المتقدمة',
+    'home.hero.titleDark': 'تحويل الرعاية الصحية السعودية من خلال الابتكار',
     'home.hero.description': 'منصة شاملة تربط بين مبتكري الرعاية الصحية والمستثمرين والمنظمين لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
     'home.hero.exploreButton': 'استكشاف الابتكارات',
     'home.hero.joinButton': 'انضم إلى تحدي',
@@ -308,7 +307,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Challenges section
     'home.challenges.title': 'تحديات الابتكار الحالية',
-    'home.challenges.description': 'انضم إلى هذه التحديات الصحية وساهم بابتكاراتك في حل القضايا الحرجة.',
+    'home.challenges.description': 'انضم إلى هذه التحديات الصحي�� وساهم بابتكاراتك في حل القضايا الحرجة.',
     'home.challenges.viewAllButton': 'عرض جميع التحديات',
     'home.challenges.daysLeft': 'يوم متبقي',
     'home.challenges.challenge1.title': 'حلول إدارة مرض السكري',
@@ -358,7 +357,7 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.aboutPlatform': 'عن المنصة',
     'footer.innovationChallenges': 'تحديات الابتكار',
     'footer.investmentOpportunities': 'فرص الاستثمار',
-    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
+    'footer.regulatorySandbox': 'البيئة التن��يمية التجريبية',
     'footer.knowledgeHub': 'مركز المعرفة',
     'footer.vision2030': 'رؤية 2030',
     'footer.mohStrategy': 'استراتيجية وزارة الصحة',
