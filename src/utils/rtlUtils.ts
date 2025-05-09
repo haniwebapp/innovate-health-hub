@@ -12,8 +12,10 @@ export const applyRTLDirection = (language: string): void => {
   // Add special RTL class to document for global RTL styles
   if (language === 'ar') {
     document.documentElement.classList.add('rtl-layout');
+    document.documentElement.classList.add('lang-ar');
   } else {
     document.documentElement.classList.remove('rtl-layout');
+    document.documentElement.classList.remove('lang-ar');
   }
   
   // Add global inline override for alignment in RTL mode

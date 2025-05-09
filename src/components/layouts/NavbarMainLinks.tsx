@@ -21,7 +21,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     { path: "/about", label: t('nav.about') },
     { path: "/challenges", label: t('nav.challenges') },
     { path: "/innovations", label: t('nav.innovations') },
-    { path: "/investment", label: "Investment" },
+    { path: "/investment", label: t('home.hero.investmentButton') },
     { path: "/regulatory", label: "Regulatory" },
     { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
   ];

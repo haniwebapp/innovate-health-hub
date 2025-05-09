@@ -35,6 +35,6 @@ const AboutPage = () => {
       <Footer />
     </motion.div>
   );
-}
+};
 
 export default AboutPage;

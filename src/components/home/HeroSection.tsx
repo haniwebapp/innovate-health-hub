@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Users, Award } from "lucide-react";
@@ -7,12 +8,14 @@ import { motion } from "framer-motion";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
 import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
+
 export default function HeroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const {
     t,
     language
   } = useLanguage();
+  
   useEffect(() => {
     const titleElement = titleRef.current;
     if (titleElement) {
@@ -33,6 +36,7 @@ export default function HeroSection() {
       }
     }
   };
+  
   const itemVariants = {
     hidden: {
       y: 20,
@@ -48,7 +52,14 @@ export default function HeroSection() {
       }
     }
   };
-  return <section className="pt-24 pb-16 md:pt-28 md:pb-20 lg:pt-32 lg:pb-24 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden">
+  
+  // Determine which arrow direction to use based on language
+  const ArrowIcon = language === 'ar' ? 
+    ({ className }: { className?: string }) => <ArrowRight className={`${className} transform rotate-180`} /> : 
+    ArrowRight;
+  
+  return (
+    <section className="pt-24 pb-16 md:pt-28 md:pb-20 lg:pt-32 lg:pb-24 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -74,20 +85,28 @@ export default function HeroSection() {
             repeatType: "reverse",
             ease: "easeInOut"
           }}>
-              <img alt="MOH Innovation Logo" className="w-18 h-18 object-contain" src="/lovable-uploads/bba68330-974d-4c62-a240-517e2bbdf8f9.png" />
+              <img alt={t('home.hero.logoAlt') || "MOH Innovation Logo"} className="w-18 h-18 object-contain" src="/lovable-uploads/bba68330-974d-4c62-a240-517e2bbdf8f9.png" />
             </motion.div>
           </motion.div>
           
           <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-tight">
             <div className="flex flex-row justify-center items-start py-0">
-              {language === 'ar'}
+              {language === 'ar' && (
+                <div className="mr-4">
+                  <ArabicVerticalText text="منصة الابتكار الصحي" />
+                </div>
+              )}
               
               <div className={language === 'ar' ? 'ml-4' : 'mr-4'}>
                 <TextReveal text={t('home.hero.titleGradient')} className="text-gradient block" delay={0.6} staggerDelay={0.05} splitBy="words" />
                 <TextReveal text={t('home.hero.titleDark')} className="text-moh-darkGreen block mt-2" delay={1} staggerDelay={0.04} splitBy="words" />
               </div>
               
-              {language === 'en'}
+              {language === 'en' && (
+                <div className="ml-4">
+                  <ArabicVerticalText text="منصة الابتكار الصحي" />
+                </div>
+              )}
             </div>
           </h1>
           
@@ -110,14 +129,18 @@ export default function HeroSection() {
                 <Link to="/innovations">
                   {t('home.hero.exploreButton')}
                   <motion.div animate={{
-                  x: [0, 5, 0]
-                }} transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 2
-                }}>
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    x: language === 'ar' ? [-5, 0, -5] : [0, 5, 0]
+                  }} transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    repeatDelay: 2
+                  }}>
+                    {language === 'ar' ? (
+                      <ArrowRight className="mr-2 h-4 w-4 transform rotate-180" />
+                    ) : (
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    )}
                   </motion.div>
                 </Link>
               </Button>
@@ -133,7 +156,7 @@ export default function HeroSection() {
                   repeat: Infinity,
                   repeatDelay: 3
                 }}>
-                    <Sparkles className="mr-2 h-4 w-4" />
+                    <Sparkles className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
                   </motion.div>
                   {t('home.hero.joinButton')}
                 </Link>
@@ -143,7 +166,7 @@ export default function HeroSection() {
             <motion.div variants={itemVariants}>
               <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm" asChild>
                 <Link to="/investment">
-                  <Award className="mr-2 h-4 w-4" />
+                  <Award className={language === 'ar' ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
                   {t('home.hero.investmentButton')}
                 </Link>
               </Button>
@@ -224,5 +247,6 @@ export default function HeroSection() {
       repeat: Infinity,
       repeatType: "mirror"
     }}></motion.div>
-    </section>;
+    </section>
+  );
 }

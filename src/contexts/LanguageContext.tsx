@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available languages
@@ -164,6 +163,7 @@ const translations: Record<Language, Record<string, string>> = {
     'general.arabic': 'Arabic',
     
     // Home Hero Section
+    'home.hero.logoAlt': 'MOH Innovation Logo',
     'home.hero.titleGradient': 'Empowering Health Innovation',
     'home.hero.titleDark': 'for a Better Tomorrow',
     'home.hero.description': 'A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.',
@@ -412,6 +412,7 @@ const translations: Record<Language, Record<string, string>> = {
     'general.arabic': 'العربية',
     
     // Home Hero Section
+    'home.hero.logoAlt': 'شعار ابتكار وزارة الصحة',
     'home.hero.titleGradient': 'تمكين الابتكار الصحي',
     'home.hero.titleDark': 'لغد أفضل',
     'home.hero.description': 'منصة متكاملة تربط بين المبتكرين والمستثمرين والمنظمين في مجال الصحة لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
@@ -505,69 +506,4 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة وفتح فرص التمويل.',
     'home.challenges.viewAll': 'عرض جميع التحديات',
     'home.challenges.viewChallenge': 'عرض التحدي',
-    'home.challenges.deadline': 'الموعد النهائي',
-    'home.challenges.participants': 'المشاركون',
-    'home.challenges.prize': 'الجائزة',
-    'home.challenges.nextDeadline': 'الموعد النهائي للتحدي القادم',
-    
-    // Footer Section
-    'footer.mohLogo': 'شعار وزارة الصحة',
-    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار في مجال الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.',
-    'footer.quickLinks': 'روابط سريعة',
-    'footer.aboutPlatform': 'عن المنصة',
-    'footer.innovationChallenges': 'تحديات الابتكار',
-    'footer.investmentOpportunities': 'فرص الاستثمار',
-    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
-    'footer.knowledgeHub': 'مركز المعرفة',
-    'footer.resources': 'الموارد',
-    'footer.vision2030': 'رؤية 2030',
-    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
-    'footer.policies': 'السياسات والإرشادات',
-    'footer.successStories': 'قصص النجاح',
-    'footer.contactSupport': 'اتصل بالدعم',
-    'footer.newsletter': 'النشرة الإخبارية',
-    'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
-    'footer.emailPlaceholder': 'عنوان البريد الإلكتروني',
-    'footer.subscribe': 'اشترك',
-    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
-    'footer.privacyPolicy': 'سياسة الخصوصية',
-    'footer.termsOfService': 'شروط الخدمة',
-    'footer.accessibility': 'إمكانية الوصول'
-  }
-};
-
-// Provider component
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    // Try to get language from localStorage
-    const savedLanguage = localStorage.getItem('language');
-    return (savedLanguage as Language) || 'en';
-  });
-
-  // Update localStorage when language changes
-  React.useEffect(() => {
-    localStorage.setItem('language', language);
-    // Update document direction based on language
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    // Add or remove a class to the HTML element for RTL-specific styling
-    if (language === 'ar') {
-      document.documentElement.classList.add('rtl');
-    } else {
-      document.documentElement.classList.remove('rtl');
-    }
-  }, [language]);
-
-  // Translate function
-  const t = (key: string): string => {
-    return translations[language][key] || key;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-// Hook for using the language context
-export const useLanguage = () => useContext(LanguageContext);
+    'home.challenges.deadline': 'الموعد

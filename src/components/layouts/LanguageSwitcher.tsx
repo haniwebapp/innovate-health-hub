@@ -40,6 +40,7 @@ export default function LanguageSwitcher() {
           variant="ghost" 
           size="icon" 
           className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full relative"
+          aria-label={t('nav.language')}
         >
           <AnimatePresence mode="wait">
             <motion.div
