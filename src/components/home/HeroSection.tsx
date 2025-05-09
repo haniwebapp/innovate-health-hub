@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Users, Award } from "lucide-react";
@@ -7,6 +6,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
+import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 
 export default function HeroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -78,20 +78,36 @@ export default function HeroSection() {
           </motion.div>
           
           <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-tight">
-            <TextReveal 
-              text={t('home.hero.titleGradient')}
-              className="text-gradient block"
-              delay={0.6}
-              staggerDelay={0.05}
-              splitBy="chars"
-            />
-            <TextReveal 
-              text={t('home.hero.titleDark')}
-              className="text-moh-darkGreen block mt-2"
-              delay={1}
-              staggerDelay={0.04}
-              splitBy="words"
-            />
+            <div className="flex flex-row justify-center items-start">
+              {language === 'ar' && (
+                <div className="mx-4">
+                  <ArabicVerticalText text="تمكين الابتكار الصحي" />
+                </div>
+              )}
+              
+              <div className={language === 'ar' ? 'ml-4' : 'mr-4'}>
+                <TextReveal 
+                  text={t('home.hero.titleGradient')}
+                  className="text-gradient block"
+                  delay={0.6}
+                  staggerDelay={0.05}
+                  splitBy="words"
+                />
+                <TextReveal 
+                  text={t('home.hero.titleDark')}
+                  className="text-moh-darkGreen block mt-2"
+                  delay={1}
+                  staggerDelay={0.04}
+                  splitBy="words"
+                />
+              </div>
+              
+              {language === 'en' && (
+                <div className="mx-4">
+                  <ArabicVerticalText text="تمكين الابتكار الصحي" />
+                </div>
+              )}
+            </div>
           </h1>
           
           <motion.p 
@@ -177,7 +193,7 @@ export default function HeroSection() {
         </div>
       </div>
       
-      {/* Decorative Elements - Enhanced with animations */}
+      {/* Decorative Elements - Keep existing animations */}
       <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent"></div>
       
       <motion.div 
