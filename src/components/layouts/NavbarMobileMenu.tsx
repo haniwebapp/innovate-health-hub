@@ -29,6 +29,11 @@ export function NavbarMobileMenu({
   // Reordered navigation links to match desktop navigation
   const navigationLinks = [
     { 
+      path: "/", 
+      label: "Home",
+      submenu: []
+    },
+    { 
       path: "/innovations", 
       label: "Innovations",
       submenu: [
@@ -140,33 +145,51 @@ export function NavbarMobileMenu({
             <Accordion type="single" collapsible className="w-full">
               {navigationLinks.map((link) => (
                 <AccordionItem key={link.path} value={link.path} className="border-none">
-                  <AccordionTrigger 
-                    className={`p-2 text-lg font-normal ${
-                      isRouteActive(link.path)
-                      ? "text-moh-green font-medium"
-                      : "text-moh-darkGreen"
-                    }`}
-                  >
-                    {link.label}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="pl-4 py-2 space-y-2">
-                      {link.submenu.map((subItem) => (
-                        <Button
-                          key={subItem.path}
-                          variant="ghost"
-                          className="w-full justify-start text-left"
-                          onClick={() => handleLinkClick(subItem.path)}
-                          asChild
-                        >
-                          <Link to={subItem.path} className="flex items-center">
-                            <span>{subItem.label}</span>
-                            <ChevronRight className="h-4 w-4 ml-auto" />
-                          </Link>
-                        </Button>
-                      ))}
-                    </div>
-                  </AccordionContent>
+                  {link.submenu.length > 0 ? (
+                    <AccordionTrigger 
+                      className={`p-2 text-lg font-normal ${
+                        isRouteActive(link.path)
+                        ? "text-moh-green font-medium"
+                        : "text-moh-darkGreen"
+                      }`}
+                    >
+                      {link.label}
+                    </AccordionTrigger>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-start text-left p-2 text-lg font-normal ${
+                        isRouteActive(link.path)
+                        ? "text-moh-green font-medium"
+                        : "text-moh-darkGreen"
+                      }`}
+                      onClick={() => handleLinkClick(link.path)}
+                      asChild
+                    >
+                      <Link to={link.path}>{link.label}</Link>
+                    </Button>
+                  )}
+                  
+                  {link.submenu.length > 0 && (
+                    <AccordionContent>
+                      <div className="pl-4 py-2 space-y-2">
+                        {link.submenu.map((subItem) => (
+                          <Button
+                            key={subItem.path}
+                            variant="ghost"
+                            className="w-full justify-start text-left"
+                            onClick={() => handleLinkClick(subItem.path)}
+                            asChild
+                          >
+                            <Link to={subItem.path} className="flex items-center">
+                              <span>{subItem.label}</span>
+                              <ChevronRight className="h-4 w-4 ml-auto" />
+                            </Link>
+                          </Button>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  )}
                 </AccordionItem>
               ))}
             </Accordion>

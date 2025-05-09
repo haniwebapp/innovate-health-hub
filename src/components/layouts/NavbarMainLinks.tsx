@@ -22,6 +22,11 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   // Reordered main links based on user journey priority
   const mainLinks = [
     { 
+      path: "/", 
+      label: "Home",
+      megaMenu: false
+    },
+    { 
       path: "/innovations", 
       label: "Innovations",
       megaMenu: true,
@@ -271,7 +276,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                     <MotionLink
                       to={link.path}
                       className={cn(
-                        "text-[13px] transition-colors px-3 py-2 rounded-md relative overflow-hidden flex items-center",
+                        "text-[15px] transition-colors px-3 py-2 rounded-md relative overflow-hidden flex items-center",
                         isRouteActive(link.path) 
                           ? 'text-moh-green font-medium' 
                           : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
