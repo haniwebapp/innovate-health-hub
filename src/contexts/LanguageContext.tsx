@@ -283,6 +283,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logout': 'تسجيل الخروج',
     'nav.signIn': 'تسجيل الدخول',
     'nav.register': 'التسجيل',
+    'nav.login': 'تسجيل الدخول',
     
     // Login page
     'login.title': 'منصة الابتكار',
@@ -380,7 +381,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.missionText': 'نحن نربط المبتكرين ومقدمي الرعاية الصحية والمنظمين والمستثمرين لتسريع تطوير وتنفيذ حلول الرعاية الصحية التحويلية، وإنشاء مسار سلس من الفكرة إلى التنفيذ عبر المملكة.',
     'about.focusAreas': 'مجالات التركيز الرئيسية',
     'about.focusDescription': 'نحن ملتزمون بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
-    'about.preventative': 'الرع��ية الصحية الوقائية',
+    'about.preventative': 'الرعاية الصحية الوقائية',
     'about.preventativeDesc': 'التحول من العلاج إلى الوقاية مع حلول مبتكرة للكشف المبكر والمراقبة.',
     'about.infrastructure': 'البنية التحتية للرعاية الصحية',
     'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
@@ -444,8 +445,39 @@ const translations: Record<Language, Record<string, string>> = {
     'home.highlights.feature4.description': 'الوصول إلى الموارد ودراسات الحالة وأفضل الممارسات لتسريع رحلة الابتكار الخاصة بك.',
     'home.highlights.feature5.title': 'المشاركة في التحديات',
     'home.highlights.feature5.description': 'شارك في تحديات الابتكار التي ترعاها وزارة الصحة لحل مشكلات الرعاية الصحية الحرجة.',
-    'home.highlights.feature6.title': 'شبكة الصحة ا��عالمية',
+    'home.highlights.feature6.title': 'شبكة الصحة العالمية',
     'home.highlights.feature6.description': 'تواصل مع شركاء دوليين واطلع على اتجاهات ورؤى الابتكار الصحي العالمية.',
+    
+    // Innovation Journey Section
+    'home.journey.tag': 'رحلة الابتكار',
+    'home.journey.title': 'مسار رحلتك مع منصة الابتكار',
+    'home.journey.description': 'نقدم مساراً منظماً للمبتكرين لتطوير حلولهم من الفكرة إلى التنفيذ.',
+    'home.journey.ideation.title': 'توليد الأفكار',
+    'home.journey.ideation.description': 'حدد التحديات الصحية وطور أفكارًا مبتكرة للحلول المحتملة.',
+    'home.journey.development.title': 'التطوير',
+    'home.journey.development.description': 'تحويل الأفكار إلى نماذج أولية عملية مع دعم الخبراء والتوجيه.',
+    'home.journey.validation.title': 'التحقق',
+    'home.journey.validation.description': 'اختبار الحلول والتحقق من صحتها مع المتخصصين في الرعاية الصحية والمستخدمين النهائيين.',
+    'home.journey.implementation.title': 'التنفيذ',
+    'home.journey.implementation.description': 'نشر الحل في بيئات الرعاية الصحية الواقعية مع الدعم المستمر.',
+    'home.journey.impact.title': 'التأثير',
+    'home.journey.impact.description': 'قياس النتائج وتوسيع نطاق الحلول الناجحة عبر نظام الرعاية الصحية.',
+    
+    // Process Flow Section
+    'home.process.tag': 'عملية الابتكار',
+    'home.process.title': 'كيف تعمل منصتنا',
+    'home.process.description': 'عملية مبسطة تربط المبتكرين في مجال الرعاية الصحية بالفرص والموارد والدعم.',
+    'home.process.step1.title': 'إنشاء حساب',
+    'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخصصة على المنصة.',
+    'home.process.step2.title': 'تقديم الابتكار',
+    'home.process.step2.description': 'قم بتحميل فكرتك أو مشروعك باستخدام نموذج التقديم الخاص بنا.',
+    'home.process.step3.title': 'الحصول على الملاحظات',
+    'home.process.step3.description': 'تلقي ملاحظات من خبراء وزارة الصحة والمتخصصين في المجال.',
+    'home.process.step4.title': 'الاتصال بالفرص',
+    'home.process.step4.description': 'المطابقة مع المستثمرين والتحديات والموارد المناسبة.',
+    'home.process.step5.title': 'تطوير وتوسيع النطاق',
+    'home.process.step5.description': 'الوصول إلى الدعم المستمر لتطوير وتوسيع نطاق ابتكارك.',
+    'home.process.buttonText': 'ابدأ رحلة الابتكار',
     
     // Featured Section
     'home.featured.title': 'تأثير المنصة',
@@ -475,79 +507,4 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.deadline': 'الموعد النهائي',
     'home.challenges.participants': 'المشاركون',
     'home.challenges.prize': 'الجائزة',
-    'home.challenges.nextDeadline': 'الموعد النهائي للتحدي القادم',
-    'home.challenges.challenge1.title': 'حلول مراقبة المرضى عن بعد',
-    'home.challenges.challenge1.description': 'تصميم حلول مبتكرة لمراقبة المرضى الذين يعانون من حالات مزمنة في المناطق النائية من المملكة.',
-    'home.challenges.challenge1.deadline': '30 يونيو 2025',
-    'home.challenges.challenge1.category': 'الصحة الرقمية',
-    'home.challenges.challenge2.title': 'الذكاء الاصطناعي للكشف المبكر عن الأمراض',
-    'home.challenges.challenge2.description': 'تطوير خوارزميات الذكاء الاصطناعي للكشف عن العلامات المبكرة للأمراض باستخدام البيانات الصحية الموجودة من مرافق وزارة الصحة.',
-    'home.challenges.challenge2.deadline': '15 يوليو 2025',
-    'home.challenges.challenge2.category': 'الذكاء الاصطناعي وتعلم الآلة',
-    'home.challenges.challenge3.title': 'تحسين سلسلة التوريد الصحية',
-    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل التوريد الطبية في جميع أنحاء المملكة العربية السعودية.',
-    'home.challenges.challenge3.deadline': '22 أغسطس 2025',
-    'home.challenges.challenge3.category': 'اللوجستيات',
-    
-    // Footer Section
-    'footer.mohLogo': 'شعار وزارة الصحة',
-    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار في مجال الرعاية الصحية في المملكة العربية السعودية.',
-    'footer.quickLinks': 'روابط سريعة',
-    'footer.aboutPlatform': 'عن المنصة',
-    'footer.innovationChallenges': 'تحديات الابتكار',
-    'footer.investmentOpportunities': 'فرص الاستثمار',
-    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
-    'footer.knowledgeHub': 'مركز المعرفة',
-    'footer.resources': 'الموارد',
-    'footer.vision2030': 'رؤية 2030',
-    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
-    'footer.policies': 'السياسات والإرشادات',
-    'footer.successStories': 'قصص النجاح',
-    'footer.contactSupport': 'التواصل مع الدعم',
-    'footer.newsletter': 'النشرة الإخبارية',
-    'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
-    'footer.emailPlaceholder': 'البريد الإلكتروني',
-    'footer.subscribe': 'اشتراك',
-    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
-    'footer.privacyPolicy': 'سياسة الخصوصية',
-    'footer.termsOfService': 'شروط الخدمة',
-    'footer.accessibility': 'إمكانية الوصول',
-  }
-};
-
-// Create provider component
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  // Get saved language from localStorage or default to English
-  const savedLanguage = localStorage.getItem('language') as Language;
-  const [language, setLanguage] = useState<Language>(savedLanguage || 'en');
-
-  // Update language and save to localStorage
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('language', lang);
-    // Update document direction
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    // Add language class to document for CSS adjustments
-    document.documentElement.lang = lang;
-    document.documentElement.classList.remove('lang-en', 'lang-ar');
-    document.documentElement.classList.add(`lang-${lang}`);
-  };
-
-  // Translation function
-  const translate = (key: string): string => {
-    if (!translations[language][key]) {
-      console.warn(`Translation missing for key: ${key}`);
-      return key;
-    }
-    return translations[language][key];
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t: translate }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-// Custom hook for using language context
-export const useLanguage = () => useContext(LanguageContext);
+    'home.
