@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -145,6 +144,12 @@ function App() {
                     <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
                     <Route path="admin/settings" element={<AdminSettingsPage />} />
                     <Route path="admin/integrations" element={<AdminIntegrationsPage />} />
+                    
+                    {/* New Regulatory Routes */}
+                    <Route path="/dashboard/regulatory/applications/new" element={<DashboardLayout><NewRegulatoryApplicationPage /></DashboardLayout>} />
+                    <Route path="/dashboard/regulatory/applications/:id" element={<DashboardLayout><ApplicationDetailsPage /></DashboardLayout>} />
+                    <Route path="/dashboard/regulatory/testing/:id" element={<DashboardLayout><SandboxTestingPage /></DashboardLayout>} />
+                    <Route path="/dashboard/regulatory/documents/upload" element={<DashboardLayout><DocumentUploadPage /></DashboardLayout>} />
                   </Route>
                   
                   {/* Admin Portal Routes */}
