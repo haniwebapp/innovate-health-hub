@@ -1,11 +1,11 @@
 
 import { motion } from "framer-motion";
+
 interface ArabicVerticalTextProps {
   text: string;
 }
-export function ArabicVerticalText({
-  text
-}: ArabicVerticalTextProps) {
+
+export function ArabicVerticalText({ text }: ArabicVerticalTextProps) {
   // Split text into characters
   const characters = text.split("");
 

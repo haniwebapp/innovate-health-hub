@@ -17,11 +17,21 @@ const AboutPage = () => {
   useEffect(() => {
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
+    
+    // Add special RTL class to document for global RTL styles if needed
+    if (language === 'ar') {
+      document.documentElement.classList.add('rtl-layout');
+    } else {
+      document.documentElement.classList.remove('rtl-layout');
+    }
+    
+    // Add global inline override for alignment in RTL mode
+    document.documentElement.style.textAlign = language === 'ar' ? 'right' : 'left';
   }, [language]);
   
   return (
     <motion.div 
-      className="min-h-screen flex flex-col bg-white" 
+      className={`min-h-screen flex flex-col bg-white ${language === 'ar' ? 'rtl-mode' : ''}`}
       dir={language === 'ar' ? 'rtl' : 'ltr'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

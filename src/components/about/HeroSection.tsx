@@ -7,10 +7,34 @@ import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 export default function HeroSection() {
   const { t, language } = useLanguage();
   
+  const fadeInUpVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+  
+  const staggerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+  
   return (
     <section className="pt-28 pb-16 bg-gradient-to-br from-moh-lightGreen to-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-3xl">
+        <motion.div 
+          className="max-w-3xl"
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUpVariants}
+        >
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-moh-darkGreen">
             {language === 'ar' ? (
               <div className="flex items-center">
@@ -26,25 +50,43 @@ export default function HeroSection() {
               </>
             )}
           </h1>
-          <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+          <motion.p 
+            className="text-lg text-gray-700 mb-8 leading-relaxed"
+            variants={fadeInUpVariants}
+          >
             {t('about.description')}
-          </p>
+          </motion.p>
           
-          <div className="flex flex-wrap gap-3">
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
-              <Users className="h-4 w-4 mr-1.5" />
+          <motion.div 
+            className="flex flex-wrap gap-3"
+            variants={staggerVariants}
+          >
+            <motion.span 
+              className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium"
+              variants={fadeInUpVariants}
+              whileHover={{ scale: 1.05 }}
+            >
+              <Users className={`h-4 w-4 ${language === 'ar' ? 'ml-1.5' : 'mr-1.5'}`} />
               500+ {t('about.innovators')}
-            </span>
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium">
-              <Award className="h-4 w-4 mr-1.5" />
+            </motion.span>
+            <motion.span 
+              className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium"
+              variants={fadeInUpVariants}
+              whileHover={{ scale: 1.05 }}
+            >
+              <Award className={`h-4 w-4 ${language === 'ar' ? 'ml-1.5' : 'mr-1.5'}`} />
               40+ {t('about.challenges')}
-            </span>
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
-              <Globe className="h-4 w-4 mr-1.5" />
+            </motion.span>
+            <motion.span 
+              className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium"
+              variants={fadeInUpVariants}
+              whileHover={{ scale: 1.05 }}
+            >
+              <Globe className={`h-4 w-4 ${language === 'ar' ? 'ml-1.5' : 'mr-1.5'}`} />
               {t('about.impact')}
-            </span>
-          </div>
-        </div>
+            </motion.span>
+          </motion.div>
+        </motion.div>
       </div>
       <div className="absolute bottom-0 right-0 opacity-20">
         <svg width="300" height="300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
