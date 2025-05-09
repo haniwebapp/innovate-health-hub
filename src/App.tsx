@@ -32,6 +32,9 @@ import ChallengeDetails from './pages/challenges/[id]';
 import InnovationsPage from './pages/innovations';
 import InnovationDetails from './pages/innovations/[id]';
 
+import InvestmentPage from './pages/investment';
+import RegulatoryPage from './pages/regulatory';
+
 import KnowledgeHubPage from './pages/knowledge-hub';
 
 import './App.css';
@@ -53,6 +56,8 @@ function App() {
                 <Route path="/challenges/:id" element={<ChallengeDetails />} />
                 <Route path="/innovations" element={<InnovationsPage />} />
                 <Route path="/innovations/:id" element={<InnovationDetails />} />
+                <Route path="/investment" element={<InvestmentPage />} />
+                <Route path="/regulatory" element={<RegulatoryPage />} />
                 <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
                 
                 {/* Auth Routes */}
