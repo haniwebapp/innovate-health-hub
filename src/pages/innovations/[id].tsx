@@ -24,7 +24,7 @@ export default function InnovationDetailPage() {
           title: "AI-Powered Diabetes Management System",
           description: "An innovative solution that combines continuous glucose monitoring with AI to predict blood sugar fluctuations and recommend preventive actions.",
           longDescription: "This comprehensive platform integrates seamlessly with continuous glucose monitoring devices, collecting real-time data to build a personalized health profile. Our proprietary AI algorithms analyze this data alongside nutritional information, physical activity, and medical history to provide predictive insights about potential blood sugar fluctuations hours before they occur. The system sends timely alerts and personalized recommendations for diet adjustments, activity suggestions, or medication reminders, empowering patients to take proactive control of their health. Healthcare providers can access aggregated data through a dedicated portal, enabling more informed treatment decisions and remote patient monitoring capabilities.",
-          imageUrl: "https://images.unsplash.com/photo-1576671081837-49000212a370",
+          imageUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
           category: "Digital Health",
           tags: ["Artificial Intelligence", "Diabetes Care", "Remote Monitoring", "Preventive Health"],
           rating: 4.8,
