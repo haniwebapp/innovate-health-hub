@@ -4,12 +4,32 @@ import { motion } from "framer-motion";
 import { Users, Award, Globe } from "lucide-react";
 
 export default function HeroSection() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
+  
+  const badges = [
+    {
+      icon: <Users className="h-4 w-4 mr-1.5" />,
+      text: `500+ ${t('about.innovators')}`
+    },
+    {
+      icon: <Award className="h-4 w-4 mr-1.5" />,
+      text: `40+ ${t('about.challenges')}`
+    },
+    {
+      icon: <Globe className="h-4 w-4 mr-1.5" />,
+      text: t('about.impact')
+    }
+  ];
   
   return (
     <section className="pt-28 pb-16 bg-gradient-to-br from-moh-lightGreen to-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-3xl">
+        <motion.div 
+          className="max-w-3xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-moh-darkGreen">
             {t('about.title')}
           </h1>
@@ -18,27 +38,32 @@ export default function HeroSection() {
           </p>
           
           <div className="flex flex-wrap gap-3">
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
-              <Users className="h-4 w-4 mr-1.5" />
-              500+ {t('about.innovators')}
-            </span>
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium">
-              <Award className="h-4 w-4 mr-1.5" />
-              40+ {t('about.challenges')}
-            </span>
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
-              <Globe className="h-4 w-4 mr-1.5" />
-              {t('about.impact')}
-            </span>
+            {badges.map((badge, index) => (
+              <motion.span 
+                key={index}
+                className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                {badge.icon}
+                {badge.text}
+              </motion.span>
+            ))}
           </div>
-        </div>
+        </motion.div>
       </div>
-      <div className="absolute bottom-0 right-0 opacity-20">
+      <motion.div 
+        className="absolute bottom-0 right-0 opacity-20"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.2, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
         <svg width="300" height="300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="40" stroke="#00814A" strokeWidth="2" />
           <path d="M30,50 L45,65 L70,35" stroke="#00814A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </div>
+      </motion.div>
     </section>
   );
 }
