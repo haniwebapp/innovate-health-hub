@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available languages
@@ -374,14 +373,28 @@ const translations: Record<Language, Record<string, string>> = {
     'about.title': 'عن منصة الابتكار الصحي',
     'about.description': 'تحويل تقديم الرعاية الصحية من خلال الابتكار والتعاون والشراكات الاستراتيجية عبر النظام البيئي للرعاية الصحية في المملكة العربية السعودية.',
     'about.innovators': 'المبتكرون',
+    'about.innovatorsDescription': 'مبتكرون نشطون على المنصة',
     'about.challenges': 'التحديات',
+    'about.challengesDescription': 'تحديات الابتكار المكتملة',
+    'about.solutions': 'الحلول',
+    'about.solutionsDescription': 'حلول مبتكرة تم تطويرها',
+    'about.patientsBenefited': 'المستفيدون',
+    'about.patientsBenefitedDescription': 'مرضى استفادوا من حلولنا',
+    'about.ourTeam': 'فريقنا',
+    'about.teamDescription': 'يعمل فريق متخصص من الخبراء على دفع مبادرات الابتكار الصحي في المملكة',
+    'about.chiefInnovationOfficer': 'رئيس قسم الابتكار',
+    'about.headOfResearch': 'رئيس قسم البحث والتطوير',
+    'about.digitalTransformationLead': 'قائد التحول الرقمي',
+    'about.healthcareAdvisor': 'مستشار الرعاية الصحية',
+    'about.ourImpact': 'تأثيرنا',
+    'about.impactDescription': 'منذ انطلاقتها، أحدثت منصة الابتكار الصحي تأثيرًا كبيرًا في قطاع الرعاية الصحية بالمملكة',
     'about.impact': 'التأثير الوطني',
     'about.vision': 'رؤيتنا',
     'about.visionText': 'أن تكون المملكة العربية السعودية رائدة عالمياً في مجال الابتكار الصحي، وتعزيز نظام بيئي ديناميكي يعالج أولويات الصحة الوطنية ويحسن جودة الحياة لجميع المواطنين بما يتماشى مع رؤية 2030.',
     'about.mission': 'مهمتنا',
     'about.missionText': 'نحن نربط المبتكرين ومقدمي الرعاية الصحية والمنظمين والمستثمرين لتسريع تطوير وتنفيذ حلول الرعاية الصحية التحويلية، وإنشاء مسار سلس من الفكرة إلى التنفيذ عبر المملكة.',
     'about.focusAreas': 'مجالات التركيز الرئيسية',
-    'about.focusDescription': 'نحن ملتزمون بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
+    'about.focusDescription': 'نحن ملتزمو�� بمعالجة أكثر تحديات الرعاية الصحية إلحاحًا في المملكة العربية السعودية من خلال الابتكار والتعاون.',
     'about.preventative': 'الرعاية الصحية الوقائية',
     'about.preventativeDesc': 'التحول من العلاج إلى الوقاية مع حلول مبتكرة للكشف المبكر والمراقبة.',
     'about.infrastructure': 'البنية التحتية للرعاية الصحية',
@@ -435,7 +448,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Platform Highlights
     'home.highlights.tag': 'مميزات المنصة',
     'home.highlights.title': 'نظام الابتكار المتكامل الخاص بك',
-    'home.highlights.description': 'مجموعة شاملة من الأدوات والخدمات المصممة لدعم مبتكري الرعاية الصحية في كل مرحلة من مراحل التطوير.',
+    'home.highlights.description': 'مجموع�� شاملة من الأدوات والخدمات المصممة لدعم مبتكري الرعاية الصحية في كل مرحلة من مراحل التطوير.',
     'home.highlights.feature1.title': 'مطابقة الابتكار المدعومة بالذكاء الاصطناعي',
     'home.highlights.feature1.description': 'خوارزمياتنا المتطورة للذكاء الاصطناعي تربط المبتكرين بالمستثمرين والموجهين والموارد المناسبة.',
     'home.highlights.feature2.title': 'الوصول إلى البيئة التنظيمية التجريبية',
@@ -469,7 +482,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.process.title': 'كيف تعمل منصتنا',
     'home.process.description': 'عملية مبسطة تربط المبتكرين في مجال الرعاية الصحية بالفرص والموارد والدعم.',
     'home.process.step1.title': 'إنشاء حساب',
-    'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخصصة على المنصة.',
+    'home.process.step1.description': 'سجل وأكمل ملفك الشخصي لتحصل على تجربة مخ��صة على المنصة.',
     'home.process.step2.title': 'تقديم الابتكار',
     'home.process.step2.description': 'قم بتحميل فكرتك أو مشروعك باستخدام نموذج التقديم الخاص بنا.',
     'home.process.step3.title': 'الحصول على الملاحظات',
@@ -509,6 +522,18 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.participants': 'المشاركون',
     'home.challenges.prize': 'الجائزة',
     'home.challenges.nextDeadline': 'الموعد النهائي للتحدي القادم',
+    'home.challenges.challenge1.title': 'حلول مراقبة المرضى عن بعد',
+    'home.challenges.challenge1.description': 'تصميم حلول مبتكرة لمراقبة المرضى الذين يعانون من أمراض مزمنة في المناطق النائية من المملكة.',
+    'home.challenges.challenge1.deadline': '30 يونيو 2025',
+    'home.challenges.challenge1.category': 'الصحة الرقمية',
+    'home.challenges.challenge2.title': 'الذكاء الاصطناعي للكشف المبكر عن الأمراض',
+    'home.challenges.challenge2.description': 'تطوير خوارزميات الذكاء الاصطناعي للكشف عن العلامات المبكرة للأمراض باستخدام البيانات الصحية الموجودة من منشآت وزارة الصحة.',
+    'home.challenges.challenge2.deadline': '15 يوليو 2025',
+    'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
+    'home.challenges.challenge3.title': 'تحسين سلسلة إمداد الرعاية الصحية',
+    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي عبر المملكة العربية السعودية.',
+    'home.challenges.challenge3.deadline': '22 أغسطس 2025',
+    'home.challenges.challenge3.category': 'الخدمات اللوجستية',
     
     // Footer Section
     'footer.mohLogo': 'شعار وزارة الصحة',
@@ -549,11 +574,50 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('language', language);
     // Update document direction based on language
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    
+    // Update document lang attribute
+    document.documentElement.lang = language;
+    
     // Add or remove a class to the HTML element for RTL-specific styling
     if (language === 'ar') {
       document.documentElement.classList.add('rtl');
+      document.body.style.fontFamily = "'Tajawal', 'Noto Sans Arabic', sans-serif";
     } else {
       document.documentElement.classList.remove('rtl');
+      document.body.style.fontFamily = "'Inter', 'Poppins', sans-serif";
+    }
+    
+    // Add custom styles for RTL layout
+    const existingStyle = document.getElementById('rtl-style');
+    if (language === 'ar' && !existingStyle) {
+      const style = document.createElement('style');
+      style.id = 'rtl-style';
+      style.textContent = `
+        .rtl { text-align: right; }
+        .rtl .ltr-icon { transform: scaleX(-1); }
+        .rtl .ltr-margin { margin-right: 0.5rem; margin-left: 0; }
+        .rtl .ltr-padding { padding-right: 0.5rem; padding-left: 0; }
+        @font-face {
+          font-family: 'Tajawal';
+          src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+          font-display: swap;
+        }
+      `;
+      document.head.appendChild(style);
+    } else if (existingStyle && language !== 'ar') {
+      existingStyle.remove();
+    }
+    
+    // Add Arabic font if needed
+    if (language === 'ar') {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap';
+      link.id = 'arabic-font';
+      document.head.appendChild(link);
+    } else {
+      const arabicFont = document.getElementById('arabic-font');
+      if (arabicFont) arabicFont.remove();
     }
   }, [language]);
 

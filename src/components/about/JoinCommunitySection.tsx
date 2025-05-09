@@ -1,11 +1,13 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function JoinCommunitySection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  const ChevronIcon = language === 'ar' ? ChevronLeft : ChevronRight;
   
   return (
     <section className="py-16 bg-gradient-to-br from-moh-lightGreen to-white">
@@ -41,7 +43,7 @@ export default function JoinCommunitySection() {
               whileTap={{ scale: 0.95 }}
             >
               {t('about.registerNow')} 
-              <ChevronRight className="ml-2 h-5 w-5" />
+              <ChevronIcon className={`${language === 'ar' ? 'mr-2' : 'ml-2'} h-5 w-5`} />
             </motion.button>
           </Link>
           <Link to="/challenges">

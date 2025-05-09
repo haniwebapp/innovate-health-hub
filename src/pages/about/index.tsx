@@ -12,14 +12,19 @@ import PartnersSection from "@/components/about/PartnersSection";
 import TeamMembersSection from "@/components/about/TeamMembersSection";
 import ImpactMetricsSection from "@/components/about/ImpactMetricsSection";
 import JoinCommunitySection from "@/components/about/JoinCommunitySection";
+import { useEffect } from "react";
 
 const AboutPage = () => {
   const { language } = useLanguage();
   
+  // On mount and language change, scroll to top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [language]);
+  
   return (
     <motion.div 
       className="min-h-screen flex flex-col bg-white" 
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
