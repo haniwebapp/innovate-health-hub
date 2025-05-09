@@ -47,7 +47,7 @@ export default function AdminUsersPage() {
         
         return {
           id: profile.id,
-          email: email,
+          email: email, // Use the generated or placeholder email
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",

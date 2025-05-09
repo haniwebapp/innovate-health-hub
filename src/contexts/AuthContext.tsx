@@ -54,9 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .eq('id', sessionData.session.user.id)
             .single();
 
-          // Set user data
+          // Set user data, ensuring email is included
           setUser({
             ...sessionData.session.user,
+            email: sessionData.session.user.email || '', // Ensure email is not undefined
             role: profileData?.roles?.includes('admin') ? 'admin' : 'user',
             user_metadata: {
               firstName: profileData?.first_name || '',
@@ -90,9 +91,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .eq('id', session.user.id)
             .single();
           
-          // Set user data
+          // Set user data, ensuring email is included
           setUser({
             ...session.user,
+            email: session.user.email || '', // Ensure email is not undefined
             role: profileData?.roles?.includes('admin') ? 'admin' : 'user',
             user_metadata: {
               firstName: profileData?.first_name || '',
