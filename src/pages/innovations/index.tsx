@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/layouts/Navbar";
@@ -40,13 +39,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// Mock data for innovations with enhanced properties
+// Updated mock data for innovations with real photos
 const mockInnovations: Innovation[] = [
   {
     id: "1",
     title: "AI-Powered Diagnostic Assistant",
     description: "Machine learning tool that helps doctors diagnose complex conditions with higher accuracy. The system uses pattern recognition and deep learning to identify potential conditions based on symptoms, medical history, and diagnostic tests, offering suggestions with probability ratings.",
-    imageUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     category: "Digital Health",
     tags: ["AI", "Diagnostics", "Machine Learning"],
     rating: 4.8,
@@ -71,7 +70,7 @@ const mockInnovations: Innovation[] = [
     id: "2",
     title: "Remote Patient Monitoring Platform",
     description: "Comprehensive system for monitoring patients at home with real-time data transmission to healthcare providers. The platform connects to various medical devices and wearables to track vital signs, medication adherence, and other health metrics with alert systems for critical situations.",
-    imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     category: "Telehealth",
     tags: ["Remote Care", "IoT", "Patient Monitoring"],
     rating: 4.5,
@@ -96,7 +95,7 @@ const mockInnovations: Innovation[] = [
     id: "3",
     title: "Smart Medication Dispenser",
     description: "Device that helps patients adhere to complex medication regimens with reminders and monitoring. The smart dispenser automatically sorts medications, provides timely alerts, tracks adherence, and can notify caregivers or healthcare providers when doses are missed.",
-    imageUrl: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     category: "Medical Devices",
     tags: ["IoT", "Medication Management", "Elderly Care"],
     rating: 4.2,

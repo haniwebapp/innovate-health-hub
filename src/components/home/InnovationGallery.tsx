@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ParallaxCard } from "@/components/animations/ParallaxCard";
-import GeneratedLogo from "@/components/logos/GeneratedLogo";
 
 interface Innovation {
   id: string;
@@ -26,6 +25,7 @@ const innovationsMock: Innovation[] = [{
   category: "Digital Health",
   trl: 7,
   featured: true,
+  image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   summary: "Continuous glucose monitoring with AI-powered insights and predictive analytics."
 }, {
   id: "2",
@@ -33,6 +33,7 @@ const innovationsMock: Innovation[] = [{
   category: "Telehealth",
   trl: 8,
   featured: true,
+  image: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   summary: "End-to-end platform for remote patient monitoring with integrated vital signs tracking."
 }, {
   id: "3",
@@ -40,6 +41,7 @@ const innovationsMock: Innovation[] = [{
   category: "Healthcare IT",
   trl: 6,
   featured: false,
+  image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   summary: "Comprehensive hospital management system with resource optimization algorithms."
 }, {
   id: "4",
@@ -47,6 +49,7 @@ const innovationsMock: Innovation[] = [{
   category: "MedTech",
   trl: 5,
   featured: false,
+  image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   summary: "Handheld device capable of running multiple diagnostic tests with cloud connectivity."
 }, {
   id: "5",
@@ -54,6 +57,7 @@ const innovationsMock: Innovation[] = [{
   category: "Digital Health",
   trl: 9,
   featured: true,
+  image: "https://images.unsplash.com/photo-1576153192396-180ecef2a715?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   summary: "App for tracking mental well-being with personalized recommendations and professional support."
 }];
 
@@ -134,19 +138,19 @@ export default function InnovationGallery() {
     };
   }, []);
   
-  // Function to determine logo style based on category
-  const getLogoStyleForCategory = (category: string) => {
+  // Function to get appropriate background color based on category
+  const getCategoryColor = (category: string) => {
     switch(category) {
       case "Digital Health":
-        return { shape: "circle" as const, style: "gradient" as const, primaryColor: "#00814A", secondaryColor: "#0EA5E9" };
+        return "bg-blue-100 text-blue-800";
       case "Telehealth":
-        return { shape: "hexagon" as const, style: "gradient" as const, primaryColor: "#F97316", secondaryColor: "#FB923C" };
+        return "bg-orange-100 text-orange-800";
       case "MedTech":
-        return { shape: "square" as const, style: "pattern" as const, primaryColor: "#8B5CF6", secondaryColor: "#D946EF" };
+        return "bg-purple-100 text-purple-800";
       case "Healthcare IT":
-        return { shape: "hexagon" as const, style: "solid" as const, primaryColor: "#0EA5E9", secondaryColor: "#38BDF8" };
+        return "bg-cyan-100 text-cyan-800";
       default:
-        return { shape: "circle" as const, style: "gradient" as const, primaryColor: "#00814A", secondaryColor: "#C3A86B" };
+        return "bg-gray-100 text-gray-800";
     }
   };
   
@@ -169,11 +173,11 @@ export default function InnovationGallery() {
           </span>
           
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-moh-darkGreen">
-            {t('home.innovations.title') || "Explore Healthcare Innovations"}
+            {t('home.innovations.title') || "Healthcare Solutions Gallery"}
           </h2>
           
           <p className="max-w-2xl mx-auto text-gray-700">
-            {t('home.innovations.subtitle') || "Discover groundbreaking healthcare solutions developed by innovators across Saudi Arabia."}
+            {t('home.innovations.subtitle') || "Discover innovative solutions transforming Saudi healthcare"}
           </p>
         </motion.div>
         
@@ -270,15 +274,12 @@ export default function InnovationGallery() {
                   >
                     <Card className="overflow-hidden h-full border-none shadow-md">
                       <div className="relative h-48 overflow-hidden">
-                        {/* Replace static image with GeneratedLogo */}
-                        <div className="w-full h-full bg-gray-50 flex items-center justify-center">
-                          <GeneratedLogo 
-                            name={innovation.title}
-                            size={200}
-                            {...getLogoStyleForCategory(innovation.category)}
-                            className="w-40 h-40 mx-auto"
-                          />
-                        </div>
+                        {/* Real photo instead of generated logo */}
+                        <img 
+                          src={innovation.image} 
+                          alt={innovation.title}
+                          className="w-full h-full object-cover"
+                        />
                         {innovation.featured && (
                           <div className="absolute top-3 right-3 bg-moh-gold/90 text-white px-2 py-1 rounded-md text-sm font-medium flex items-center">
                             <Star className="h-3 w-3 mr-1 fill-white" />
@@ -286,7 +287,7 @@ export default function InnovationGallery() {
                           </div>
                         )}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                          <Badge className="bg-moh-lightGreen text-moh-darkGreen">
+                          <Badge className={`${getCategoryColor(innovation.category)}`}>
                             {innovation.category}
                           </Badge>
                         </div>
