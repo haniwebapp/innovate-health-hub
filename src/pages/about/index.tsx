@@ -4,43 +4,60 @@ import Footer from "@/components/home/Footer";
 import { ChevronRight, Users, Building, Globe, Award, Heart } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
+import GeneratedLogo from "@/components/logos/GeneratedLogo";
 
 const AboutPage = () => {
   const { t, language } = useLanguage();
   
-  // Strategic partners data with logos
+  // Strategic partners data with logos - updated to use generative logos where needed
   const partners = [
     { 
       name: "Ministry of Health", 
-      logo: "/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
+      logo: "/public/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png",
+      useRealLogo: true 
     },
     { 
-      name: "King Salman Medical City", 
-      logo: "https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+      name: "King Salman Medical City",
+      shape: "hexagon",
+      style: "gradient", 
+      primaryColor: "#00814A",
+      secondaryColor: "#6b9bc3"
     },
     { 
-      name: "Saudi Digital Health Authority", 
-      logo: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+      name: "Saudi Digital Health Authority",
+      shape: "square",
+      style: "pattern",
+      primaryColor: "#00814A" 
     },
     { 
-      name: "King Abdulaziz University Hospital", 
-      logo: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+      name: "King Abdulaziz University Hospital",
+      shape: "circle",
+      style: "gradient",
+      primaryColor: "#135D80",
+      secondaryColor: "#4ec3a9"
     },
     { 
-      name: "Saudi Health Council", 
-      logo: "https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+      name: "Saudi Health Council",
+      shape: "triangle",
+      style: "outline",
+      primaryColor: "#00814A"
     },
     { 
-      name: "King Faisal Specialist Hospital", 
-      logo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+      name: "King Faisal Specialist Hospital",
+      shape: "hexagon",
+      style: "solid",
+      primaryColor: "#2596be"
     },
     { 
-      name: "Saudi Medical Journal", 
-      logo: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+      name: "Saudi Medical Journal",
+      shape: "square",
+      style: "pattern",
+      primaryColor: "#C3A86B"
     },
     { 
       name: "Saudi Commission for Health Specialties", 
-      logo: "/public/lovable-uploads/bba68330-974d-4c62-a240-517e2bbdf8f9.png" 
+      logo: "/public/lovable-uploads/bba68330-974d-4c62-a240-517e2bbdf8f9.png",
+      useRealLogo: true
     },
   ];
   
@@ -165,11 +182,23 @@ const AboutPage = () => {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
               >
                 <div className="h-16 flex items-center justify-center">
-                  <img 
-                    src={partner.logo} 
-                    alt={`${partner.name} logo`} 
-                    className="max-h-16 max-w-[140px] object-contain"
-                  />
+                  {partner.useRealLogo ? (
+                    <img 
+                      src={partner.logo} 
+                      alt={`${partner.name} logo`} 
+                      className="max-h-16 max-w-[140px] object-contain"
+                    />
+                  ) : (
+                    <GeneratedLogo 
+                      name={partner.name}
+                      shape={partner.shape as any}
+                      style={partner.style as any}
+                      primaryColor={partner.primaryColor}
+                      secondaryColor={partner.secondaryColor}
+                      size={64}
+                      className="max-h-16 max-w-[140px] object-contain"
+                    />
+                  )}
                 </div>
                 <p className="mt-3 text-sm text-center text-gray-600 font-medium">{partner.name}</p>
               </motion.div>
