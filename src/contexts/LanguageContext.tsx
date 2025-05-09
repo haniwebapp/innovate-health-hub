@@ -1,5 +1,4 @@
-
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define available languages
 export type Language = 'en' | 'ar';
@@ -406,7 +405,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.infrastructureDesc': 'بناء بنية تحتية مرنة للرعاية الصحية تقدم الخدمات بكفاءة في جميع أنحاء المملكة.',
     'about.digital': 'الصحة الرقمية',
     'about.digitalDesc': 'الاستفادة من التكنولوجيا لتوفير خدمات رعاية صحية يسهل الوصول إليها وشخصية وفعالة.',
-    'about.partners': 'شركاؤنا الاستراتيجيون',
+    'about.partners': 'شركاؤنا الاستراتيجيين',
     'about.joinCommunity': 'انضم إلى مجتمع الابتكار لدينا',
     'about.joinDescription': 'كن جزءًا من تحول الرعاية الصحية في المملكة العربية السعودية. سواء كنت مبتكرًا أو مستثمرًا أو مقدم رعاية صحية، هناك مكان لك في مجتمعنا المتنامي.',
     'about.registerNow': 'سجل الآن',
@@ -436,7 +435,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.hero.exploreButton': 'استكشاف الابتكارات',
     'home.hero.joinButton': 'انضم إلى تحدي',
     'home.hero.investmentButton': 'الوصول للاستثمار',
-    'home.hero.stats.innovators': 'المبتكرون',
+    'home.hero.stats.innovators': '��لمبتكرون',
     'home.hero.stats.investments': 'الاستثمارات (ريال)',
     'home.hero.stats.challenges': 'التحديات النشطة',
     
@@ -505,7 +504,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.challenge2.deadline': '15 يوليو 2025',
     'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
     'home.challenges.challenge3.title': 'تحسين سلسلة إمداد الرعاية الصحية',
-    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي عبر المملكة العربية السعودية.',
+    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل الإمداد الطبي across Saudi Arabia.',
     'home.challenges.challenge3.deadline': '22 أغسطس 2025',
     'home.challenges.challenge3.category': 'الخدمات اللوجستية',
     
