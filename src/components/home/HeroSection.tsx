@@ -8,7 +8,7 @@ import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 
 export default function HeroSection() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   
   return (
     <section className="pt-24 pb-16 md:pt-28 md:pb-20 lg:pt-32 lg:pb-24 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden">
@@ -24,7 +24,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.4 }}
           >
-            {t('home.hero.description')}
+            {language === 'ar' ? 'منصة متكاملة تربط بين المبتكرين والمستثمرين والمنظمين في مجال الصحة لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.' : 'A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.'}
           </motion.p>
           
           <HeroButtons />
