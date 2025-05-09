@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -24,11 +23,11 @@ export default function AdminSettingsPage() {
   });
   
   // Challenge settings state
-  const [challengeSettings, setChallengeSettings] = useState<ChallengeSettings>({
+  const [settings, setSettings] = useState<ChallengeSettings>({
     requireApproval: true,
     allowPublicSubmissions: false,
     autoCloseExpiredChallenges: true,
-    submissionTimeLimit: "30", // days
+    submissionTimeLimit: 30 // Change this from string to number
   });
 
   const handlePlatformSettingsChange = (setting: string) => {
@@ -39,17 +38,17 @@ export default function AdminSettingsPage() {
   };
 
   const handleChallengeSettingsChange = (setting: string) => {
-    setChallengeSettings({
-      ...challengeSettings,
-      [setting]: !challengeSettings[setting as keyof typeof challengeSettings]
+    setSettings({
+      ...settings,
+      [setting]: !settings[setting as keyof typeof settings]
     });
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChallengeSettings({
-      ...challengeSettings,
-      submissionTimeLimit: e.target.value,
-    });
+    setSettings(prev => ({
+      ...prev,
+      submissionTimeLimit: parseInt(e.target.value) || 0
+    }));
   };
 
   const handleSaveSettings = () => {
@@ -85,7 +84,7 @@ export default function AdminSettingsPage() {
       {showAIRecommendations && (
         <AdminSettingsAI 
           generalSettings={platformSettings}
-          challengeSettings={challengeSettings}
+          challengeSettings={settings}
         />
       )}
 
@@ -107,7 +106,7 @@ export default function AdminSettingsPage() {
         
         <TabsContent value="challenges">
           <ChallengeSettingsTab 
-            settings={challengeSettings}
+            settings={settings}
             onSettingsChange={handleChallengeSettingsChange}
             onTimeChange={handleTimeChange}
             onSave={handleSaveSettings}

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -20,16 +21,19 @@ const mockChallenges: Challenge[] = [
     title: "Remote Patient Monitoring Solutions",
     description: "Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.",
     long_description: `Challenge details...`,
-    deadline: "June 30, 2025",
-    submission_deadline: "2025-06-30T23:59:59+03:00",
     category: "Digital Health",
-    participants: 47,
-    prize: "SAR 500,000",
-    image_url: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    organizer: "Ministry of Health - Innovation Department",
+    start_date: "2025-01-01T00:00:00+03:00",
+    end_date: "2025-06-30T23:59:59+03:00",
     status: "Open",
+    prize: "SAR 500,000",
     eligibility: "Healthcare professionals and innovators",
     requirements: ["Solution must be applicable within Saudi healthcare system"],
+    image_url: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    organizer: "Ministry of Health - Innovation Department",
+    created_at: "2025-01-01T00:00:00+03:00",
+    updated_at: "2025-01-01T00:00:00+03:00",
+    created_by: null,
+    participants: 47,
     timeline: [{ date: "June 30, 2025", event: "Submission Deadline" }]
   },
   // Additional challenges would be here

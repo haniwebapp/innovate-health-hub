@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +25,12 @@ const mockSubmissions: Submission[] = [
     submitted_at: "2025-05-01T14:30:00",
     updated_at: "2025-05-01T14:30:00",
     category: "Digital Health",
+    user_id: "user1",
+    summary: "A remote monitoring system for patients",
+    description: "Detailed description of the health monitoring system",
+    team_members: null,
+    feedback: null,
+    score: null
   },
   {
     id: "2",
@@ -31,9 +38,15 @@ const mockSubmissions: Submission[] = [
     challenge_id: "3",
     challenge_title: "Healthcare Supply Chain Optimization",
     status: "Draft",
-    submitted_at: null,
+    submitted_at: "2025-04-28T10:15:00",
     updated_at: "2025-04-28T10:15:00",
     category: "Logistics",
+    user_id: "user1",
+    summary: "Supply chain optimization system",
+    description: "Detailed description of the supply chain system",
+    team_members: null,
+    feedback: null,
+    score: null
   },
   {
     id: "3",
@@ -44,6 +57,12 @@ const mockSubmissions: Submission[] = [
     submitted_at: "2025-04-15T09:45:00",
     updated_at: "2025-04-15T09:45:00",
     category: "AI & Machine Learning",
+    user_id: "user1",
+    summary: "AI-powered disease detection",
+    description: "Detailed description of the AI disease detection system",
+    team_members: null,
+    feedback: null,
+    score: null
   }
 ];
 
@@ -149,7 +168,7 @@ export default function SubmissionsPage() {
   // Filter submissions based on status and search
   const filteredSubmissions = submissions?.filter(submission => {
     const matchesSearch = submission.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         submission.challenge_title.toLowerCase().includes(searchQuery.toLowerCase());
+                         (submission.challenge_title && submission.challenge_title.toLowerCase().includes(searchQuery.toLowerCase()));
                          
     const matchesStatus = statusFilter === "all" || submission.status.toLowerCase() === statusFilter;
     

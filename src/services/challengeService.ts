@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Challenge } from "@/types/challenges";
+import { Challenge, Submission } from "@/types/challenges";
 
 /**
  * Fetch all challenges with optional filters
@@ -17,7 +17,32 @@ export const fetchChallenges = async (status?: string) => {
   const { data, error } = await query.order('created_at', { ascending: false });
   
   if (error) throw error;
-  return data;
+  
+  // Process requirements to ensure it's an array
+  return data.map(challenge => ({
+    ...challenge,
+    requirements: parseRequirements(challenge.requirements)
+  }));
+};
+
+/**
+ * Parse requirements from JSON/string to array
+ */
+const parseRequirements = (requirements: any): string[] => {
+  if (!requirements) return [];
+  
+  try {
+    if (typeof requirements === 'string') {
+      const parsed = JSON.parse(requirements);
+      return Array.isArray(parsed) ? parsed : [];
+    } else if (Array.isArray(requirements)) {
+      return requirements;
+    }
+    return [];
+  } catch (e) {
+    console.error("Error parsing requirements:", e);
+    return [];
+  }
 };
 
 /**
@@ -33,7 +58,12 @@ export const fetchChallengeById = async (id: string) => {
     .single();
   
   if (error) throw error;
-  return data;
+  
+  // Process requirements to ensure it's an array
+  return {
+    ...data,
+    requirements: parseRequirements(data.requirements)
+  };
 };
 
 /**
@@ -42,12 +72,20 @@ export const fetchChallengeById = async (id: string) => {
  * @returns Created challenge
  */
 export const createChallenge = async (challenge: Partial<Challenge>) => {
+  // Ensure we have the required fields for the database
+  if (!challenge.title || !challenge.description || !challenge.category || !challenge.end_date) {
+    throw new Error('Missing required challenge fields');
+  }
+
+  // If requirements is an array, we need to stringify it
+  const insertData = { ...challenge };
+  if (insertData.requirements && Array.isArray(insertData.requirements)) {
+    insertData.requirements = JSON.stringify(insertData.requirements);
+  }
+
   const { data, error } = await supabase
     .from('challenges')
-    .insert([{
-      ...challenge,
-      requirements: JSON.stringify(challenge.requirements || [])
-    }])
+    .insert(insertData)
     .select()
     .single();
   
@@ -99,17 +137,33 @@ export const deleteChallenge = async (id: string) => {
  * @returns Array of submissions
  */
 export const fetchSubmissionsForChallenge = async (challengeId: string) => {
-  const { data, error } = await supabase
-    .from('challenge_submissions')
-    .select(`
-      *,
-      profiles:user_id (first_name, last_name, organization)
-    `)
-    .eq('challenge_id', challengeId)
-    .order('submitted_at', { ascending: false });
+  // Use the RPC function we created
+  const { data, error } = await supabase.rpc('get_challenge_submissions', {
+    challenge_id: challengeId
+  });
   
   if (error) throw error;
-  return data;
+  
+  // Map to our Submission type
+  return data.map(item => ({
+    id: item.id,
+    title: item.title,
+    summary: item.summary,
+    description: item.description,
+    challenge_id: item.challenge_id,
+    user_id: item.user_id,
+    team_members: item.team_members,
+    status: item.status,
+    submitted_at: item.submitted_at,
+    updated_at: item.updated_at,
+    score: item.score,
+    feedback: item.feedback,
+    profiles: {
+      first_name: item.user_first_name,
+      last_name: item.user_last_name,
+      organization: item.user_organization
+    }
+  }));
 };
 
 /**

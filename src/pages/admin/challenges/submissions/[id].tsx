@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -59,7 +58,35 @@ export default function ChallengeSubmissionsPage() {
     refetch: refetchSubmissions,
   } = useQuery({
     queryKey: ['challenge-submissions', id],
-    queryFn: () => fetchSubmissionsForChallenge(id!),
+    queryFn: async () => {
+      // Use our new function to get submissions with user data
+      const { data, error } = await supabase.rpc('get_challenge_submissions', {
+        challenge_id: id
+      });
+      
+      if (error) throw error;
+      
+      // Map the results to our Submission type
+      return data.map(item => ({
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        description: item.description,
+        challenge_id: item.challenge_id,
+        user_id: item.user_id,
+        team_members: item.team_members,
+        status: item.status,
+        submitted_at: item.submitted_at,
+        updated_at: item.updated_at,
+        score: item.score,
+        feedback: item.feedback,
+        profiles: {
+          first_name: item.user_first_name,
+          last_name: item.user_last_name,
+          organization: item.user_organization
+        }
+      }));
+    },
     enabled: !!id && isAdmin,
   });
 

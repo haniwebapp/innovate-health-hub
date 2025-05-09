@@ -3,10 +3,16 @@ import { Challenge } from "@/types/challenges";
 import { Calendar } from "lucide-react";
 
 interface ChallengeTimelineProps {
-  timeline: Challenge['timeline'];
+  challenge: Challenge;
 }
 
-export default function ChallengeTimeline({ timeline }: ChallengeTimelineProps) {
+export default function ChallengeTimeline({ challenge }: ChallengeTimelineProps) {
+  // Generate default timeline from challenge start and end dates if timeline is not provided
+  const timeline = challenge.timeline || [
+    { date: new Date(challenge.start_date).toLocaleDateString(), event: "Challenge Launch" },
+    { date: new Date(challenge.end_date).toLocaleDateString(), event: "Submission Deadline" }
+  ];
+
   return (
     <div className="relative pl-8 border-l border-gray-200 space-y-8">
       {timeline.map((event, index) => (

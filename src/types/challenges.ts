@@ -16,6 +16,11 @@ export interface Challenge {
   created_at: string;
   updated_at: string;
   created_by: string | null;
+  // Adding fields used by frontend components that aren't in the DB
+  deadline?: string;
+  submission_deadline?: string;
+  participants?: number;
+  timeline?: {date: string; event: string}[];
 }
 
 export interface Submission {
@@ -31,6 +36,9 @@ export interface Submission {
   updated_at: string;
   score: number | null;
   feedback: string | null;
+  // Adding fields used by frontend components
+  challenge_title?: string;
+  category?: string;
   profiles?: {
     first_name: string | null;
     last_name: string | null;

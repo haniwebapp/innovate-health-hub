@@ -1,7 +1,7 @@
 
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import HomePage from './pages/home';
-import DashboardPage from './pages/dashboard';
+import HomePage from './pages/home/index';
+import DashboardPage from './pages/dashboard/index';
 import AdminUsersPage from './pages/dashboard/AdminUsersPage';
 import CreateChallengePage from './pages/dashboard/CreateChallengePage';
 import ChallengesPage from './pages/challenges/index';

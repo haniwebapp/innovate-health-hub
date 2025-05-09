@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
+import { format, parseISO } from "date-fns";
 
 interface ChallengeSidebarProps {
   challenge: Challenge;
@@ -29,6 +30,15 @@ export default function ChallengeSidebar({ challenge }: ChallengeSidebarProps) {
     const diffTime = deadline.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays > 0 ? diffDays : 0;
+  };
+
+  // Format date helper
+  const formatDate = (dateString: string) => {
+    try {
+      return format(parseISO(dateString), 'MMM dd, yyyy');
+    } catch (e) {
+      return 'Invalid date';
+    }
   };
 
   // Function to handle apply button click
@@ -85,14 +95,14 @@ export default function ChallengeSidebar({ challenge }: ChallengeSidebarProps) {
             <Clock className="h-4 w-4" />
             Submission Deadline
           </span>
-          <p className="font-medium">{challenge.deadline}</p>
+          <p className="font-medium">{formatDate(challenge.end_date)}</p>
         </div>
         
         <div className="bg-moh-lightGreen/50 p-4 rounded-md mb-6">
           <div className="text-center">
             <span className="text-sm text-gray-600">Days Remaining</span>
             <p className="text-2xl font-bold text-moh-green">
-              {getDaysRemaining(challenge.submission_deadline)}
+              {getDaysRemaining(challenge.end_date)}
             </p>
           </div>
         </div>
@@ -103,14 +113,14 @@ export default function ChallengeSidebar({ challenge }: ChallengeSidebarProps) {
               <Trophy className="h-4 w-4" />
               Prize
             </span>
-            <p className="font-medium">{challenge.prize}</p>
+            <p className="font-medium">{challenge.prize || 'Not specified'}</p>
           </div>
           <div>
             <span className="inline-flex gap-1 items-center text-sm text-gray-500 mb-1">
               <Users className="h-4 w-4" />
               Participants
             </span>
-            <p className="font-medium">{challenge.participants}</p>
+            <p className="font-medium">{challenge.participants || '0'}</p>
           </div>
         </div>
         
