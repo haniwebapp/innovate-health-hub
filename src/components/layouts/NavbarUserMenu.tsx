@@ -15,7 +15,7 @@ import { LogOut, User } from "lucide-react";
 
 export default function NavbarUserMenu() {
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   
   // Get user initials for avatar
   const getInitials = () => {
@@ -31,10 +31,10 @@ export default function NavbarUserMenu() {
     return (
       <div className="flex items-center gap-2">
         <Button variant="ghost" asChild>
-          <Link to="/auth/login">{t('nav.signIn')}</Link>
+          <Link to="/auth/login">Sign In</Link>
         </Button>
         <Button asChild>
-          <Link to="/auth/register">{t('nav.register')}</Link>
+          <Link to="/auth/register">Register</Link>
         </Button>
       </div>
     );
@@ -64,7 +64,7 @@ export default function NavbarUserMenu() {
         <DropdownMenuItem asChild>
           <Link to="/dashboard" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
-            <span>{t('nav.dashboard')}</span>
+            <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -73,7 +73,7 @@ export default function NavbarUserMenu() {
           className="text-red-600 focus:text-red-600 cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>{t('nav.logout')}</span>
+          <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

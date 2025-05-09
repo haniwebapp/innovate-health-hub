@@ -15,17 +15,17 @@ interface NavbarMainLinksProps {
 }
 
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const rtlClasses = getRTLClasses(language);
   
-  // Main links without dropdown
+  // Main links without dropdown, using direct text instead of translation keys
   const mainLinks = [
-    { path: "/about", label: t('nav.about') },
-    { path: "/challenges", label: t('nav.challenges') },
-    { path: "/innovations", label: t('nav.innovations') },
-    { path: "/investment", label: t('home.hero.investmentButton') },
+    { path: "/about", label: "About" },
+    { path: "/challenges", label: "Challenges" },
+    { path: "/innovations", label: "Innovations" },
+    { path: "/investment", label: "Investment" },
     { path: "/regulatory", label: "Regulatory" },
-    { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
+    { path: "/knowledge-hub", label: "Knowledge Hub" },
   ];
 
   const MotionLink = motion(Link);

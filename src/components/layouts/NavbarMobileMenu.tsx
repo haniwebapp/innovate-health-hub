@@ -17,18 +17,18 @@ export function NavbarMobileMenu({
   isRouteActive,
   setMobileMenuOpen,
 }: NavbarMobileMenuProps) {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { user, logout } = useAuth();
   const rtlClasses = getRTLClasses(language);
   
-  // Main navigation links without dropdown
+  // Main navigation links without dropdown, using direct text
   const navigationLinks = [
-    { path: "/about", label: t('nav.about') },
-    { path: "/challenges", label: t('nav.challenges') },
-    { path: "/innovations", label: t('nav.innovations') },
+    { path: "/about", label: "About" },
+    { path: "/challenges", label: "Challenges" },
+    { path: "/innovations", label: "Innovations" },
     { path: "/investment", label: "Investment" },
     { path: "/regulatory", label: "Regulatory" },
-    { path: "/knowledge-hub", label: t('nav.knowledgeHub') },
+    { path: "/knowledge-hub", label: "Knowledge Hub" },
   ];
   
   // Animation variants
@@ -106,7 +106,7 @@ export function NavbarMobileMenu({
                 >
                   <Link to="/dashboard" className={`flex items-center ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <Settings className="h-4 w-4" style={{margin: language === 'ar' ? '0 0 0 8px' : '0 8px 0 0'}} />
-                    {t('nav.dashboard')}
+                    Dashboard
                   </Link>
                 </Button>
                 
@@ -119,7 +119,7 @@ export function NavbarMobileMenu({
                   }}
                 >
                   <LogOut className="h-4 w-4" style={{margin: language === 'ar' ? '0 0 0 8px' : '0 8px 0 0'}} />
-                  {t('nav.logout')}
+                  Logout
                 </Button>
               </>
             ) : (
@@ -129,7 +129,7 @@ export function NavbarMobileMenu({
                   onClick={() => handleLinkClick("/auth/login")}
                   asChild
                 >
-                  <Link to="/auth/login">{t('nav.login')}</Link>
+                  <Link to="/auth/login">Login</Link>
                 </Button>
                 <Button 
                   variant="outline" 
@@ -137,7 +137,7 @@ export function NavbarMobileMenu({
                   onClick={() => handleLinkClick("/auth/register")}
                   asChild
                 >
-                  <Link to="/auth/register">{t('nav.register')}</Link>
+                  <Link to="/auth/register">Register</Link>
                 </Button>
               </>
             )}

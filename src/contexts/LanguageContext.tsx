@@ -4,11 +4,111 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 // Define available languages (keeping just for RTL support)
 export type Language = 'en' | 'ar';
 
+// Simple English translations mapping
+const translations: Record<string, string> = {
+  // Navigation items
+  'nav.about': 'About',
+  'nav.challenges': 'Challenges',
+  'nav.innovations': 'Innovations',
+  'nav.knowledgeHub': 'Knowledge Hub',
+  'nav.signIn': 'Sign In',
+  'nav.login': 'Login',
+  'nav.register': 'Register',
+  'nav.logout': 'Logout',
+  'nav.dashboard': 'Dashboard',
+  
+  // Hero section
+  'home.hero.title': 'Empowering Health Innovation',
+  'home.hero.subtitle': 'for a Better Tomorrow',
+  'home.hero.description': 'A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia.',
+  'home.hero.exploreButton': 'Explore Innovations',
+  'home.hero.joinButton': 'Join a Challenge',
+  'home.hero.investmentButton': 'Access Investment',
+  
+  // Challenge section
+  'home.challenges.tag': 'Innovation Challenges',
+  'home.challenges.title': 'Current Healthcare Challenges',
+  'home.challenges.description': 'Join our innovation challenges to solve pressing healthcare problems and make a difference in the Kingdom.',
+  'home.challenges.viewAll': 'View All Challenges',
+  'home.challenges.deadline': 'Deadline',
+  'home.challenges.participants': 'Participants',
+  'home.challenges.prize': 'Prize',
+  'home.challenges.viewChallenge': 'View Challenge',
+  'home.challenges.nextDeadline': 'Next Deadline',
+  
+  // Challenge 1
+  'home.challenges.challenge1.title': 'Remote Patient Monitoring Solutions',
+  'home.challenges.challenge1.description': 'Develop innovative solutions for monitoring patients with chronic conditions remotely.',
+  'home.challenges.challenge1.deadline': 'June 30, 2025',
+  'home.challenges.challenge1.category': 'Digital Health',
+  
+  // Challenge 2
+  'home.challenges.challenge2.title': 'Hospital Resource Optimization',
+  'home.challenges.challenge2.description': 'Create AI-driven tools to optimize hospital resource allocation and improve operational efficiency.',
+  'home.challenges.challenge2.deadline': 'August 15, 2025',
+  'home.challenges.challenge2.category': 'Healthcare Operations',
+  
+  // Challenge 3
+  'home.challenges.challenge3.title': 'Mental Health Applications',
+  'home.challenges.challenge3.description': 'Design accessible mental health support applications tailored for Saudi citizens.',
+  'home.challenges.challenge3.deadline': 'September 22, 2025',
+  'home.challenges.challenge3.category': 'Mental Health',
+  
+  // Featured section
+  'home.featured.title': 'Success Stories',
+  'home.featured.description': 'Discover how innovations on our platform are transforming healthcare delivery across Saudi Arabia.',
+  'home.featured.readMore': 'Read More',
+  
+  // Featured stats
+  'home.featured.stats.innovators': 'Active Innovators',
+  'home.featured.stats.investments': 'Total Investment (SAR)',
+  'home.featured.stats.launched': 'Solutions Launched',
+  'home.featured.stats.success': 'Implementation Success Rate',
+  
+  // Featured stories
+  'home.featured.stories.title': 'Highlighted Success Stories',
+  'home.featured.story1.title': 'AI-Powered Diagnostic Tool',
+  'home.featured.story1.category': 'Digital Diagnostics',
+  'home.featured.story1.description': 'An AI solution that helps radiologists detect abnormalities in medical images with 95% accuracy.',
+  
+  'home.featured.story2.title': 'Smart Hospital Management System',
+  'home.featured.story2.category': 'Healthcare Operations',
+  'home.featured.story2.description': 'A comprehensive system that reduced administrative workload by 40% in 15 hospitals across the Kingdom.',
+  
+  'home.featured.story3.title': 'Patient Engagement Platform',
+  'home.featured.story3.category': 'Patient Experience',
+  'home.featured.story3.description': 'A mobile platform that improved medication adherence by 60% for chronic disease patients.',
+  
+  // Footer
+  'footer.mohLogo': 'Ministry of Health Logo',
+  'footer.description': 'The official innovation platform of the Saudi Ministry of Health, connecting healthcare innovators with resources and opportunities.',
+  'footer.quickLinks': 'Quick Links',
+  'footer.resources': 'Resources',
+  'footer.newsletter': 'Newsletter',
+  'footer.subscribeText': 'Stay updated with the latest healthcare innovation news and opportunities.',
+  'footer.emailPlaceholder': 'Your Email',
+  'footer.subscribe': 'Subscribe',
+  'footer.copyright': 'Ministry of Health, Kingdom of Saudi Arabia. All rights reserved.',
+  'footer.privacyPolicy': 'Privacy Policy',
+  'footer.termsOfService': 'Terms of Service',
+  'footer.accessibility': 'Accessibility',
+  'footer.aboutPlatform': 'About the Platform',
+  'footer.innovationChallenges': 'Innovation Challenges',
+  'footer.investmentOpportunities': 'Investment Opportunities',
+  'footer.regulatorySandbox': 'Regulatory Sandbox',
+  'footer.knowledgeHub': 'Knowledge Hub',
+  'footer.vision2030': 'Vision 2030',
+  'footer.mohStrategy': 'MOH Strategy',
+  'footer.policies': 'Policies & Guidelines',
+  'footer.successStories': 'Success Stories',
+  'footer.contactSupport': 'Contact Support'
+};
+
 // Define context type
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string; // Keep the function signature but it will return hardcoded text
+  t: (key: string) => string; // Keep the function signature but now it will return translated text
 };
 
 // Create context with default values
@@ -30,10 +130,13 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     return (storedLanguage === 'ar' ? 'ar' : 'en') as Language;
   });
 
-  // Simplified t function that just returns the provided text
-  // We're no longer using translations, but keeping the function for compatibility
+  // Improved t function that returns translations
   const t = (key: string): string => {
-    // This will just return the key since we're using direct text now
+    // Check if the key exists in our translations object
+    if (translations[key]) {
+      return translations[key];
+    }
+    // If the key doesn't exist, return the key itself to make missing translations obvious
     return key;
   };
 
