@@ -77,8 +77,10 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
     throw new Error('Missing required challenge fields');
   }
 
-  // If requirements is an array, we need to stringify it
+  // Create a copy of the challenge object to modify
   const insertData = { ...challenge };
+  
+  // If requirements is an array, we need to stringify it
   if (insertData.requirements && Array.isArray(insertData.requirements)) {
     insertData.requirements = JSON.stringify(insertData.requirements);
   }
@@ -100,10 +102,12 @@ export const createChallenge = async (challenge: Partial<Challenge>) => {
  * @returns Updated challenge
  */
 export const updateChallenge = async (id: string, challenge: Partial<Challenge>) => {
-  // If requirements is an array, we need to stringify it
+  // Create a copy of the challenge object to modify
   const updateData = { ...challenge };
-  if (challenge.requirements && Array.isArray(challenge.requirements)) {
-    updateData.requirements = JSON.stringify(challenge.requirements);
+  
+  // If requirements is an array, we need to stringify it
+  if (updateData.requirements && Array.isArray(updateData.requirements)) {
+    updateData.requirements = JSON.stringify(updateData.requirements);
   }
 
   const { data, error } = await supabase

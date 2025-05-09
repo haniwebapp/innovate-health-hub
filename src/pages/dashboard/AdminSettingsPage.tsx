@@ -24,7 +24,7 @@ export default function AdminSettingsPage() {
     maintenanceMode: false,
   });
   
-  // Challenge settings state
+  // Challenge settings state - make sure submissionTimeLimit is a number
   const [settings, setSettings] = useState<ChallengeSettings>({
     requireApproval: true,
     allowPublicSubmissions: false,
