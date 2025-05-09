@@ -35,7 +35,7 @@ export default function PlatformHighlights() {
           {features.map((feature, index) => (
             <FeatureCard
               key={index}
-              icon={feature.icon}
+              iconName={feature.iconName}
               title={feature.title}
               description={feature.description}
               delay={index}

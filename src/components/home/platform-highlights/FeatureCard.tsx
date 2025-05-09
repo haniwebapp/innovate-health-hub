@@ -3,9 +3,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getIconByName } from "./features";
 
 interface FeatureCardProps {
-  icon: React.ReactNode;
+  iconName: string;
   title: string;
   description: string;
   delay: number;
@@ -15,7 +16,7 @@ interface FeatureCardProps {
 }
 
 export function FeatureCard({
-  icon,
+  iconName,
   title,
   description,
   delay,
@@ -51,7 +52,7 @@ export function FeatureCard({
       
       <div className="mb-4 p-3 rounded-full bg-gradient-to-r from-moh-lightGreen to-moh-lightGold/30 group-hover:from-moh-green group-hover:to-moh-lightGold/50 transition-all duration-300">
         <div className="text-moh-green group-hover:text-white transition-colors duration-300">
-          {icon}
+          {getIconByName(iconName, "h-6 w-6")}
         </div>
       </div>
       
