@@ -40,7 +40,7 @@ export function TextReveal({
         duration: 0.5,
         delay: delay + i * staggerDelay,
         ease: [0.215, 0.61, 0.355, 1] // easeOutCubic
-      }} className="inline-block text-moh-darkGreen">
+      }} className="inline-block text-moh-darkGreen py-[10px]">
             {splitBy === "words" ? item : item === " " ? "\u00A0" : item}
             {splitBy === "words" && i < items.length - 1 ? "\u00A0" : ""}
           </motion.span>)}
