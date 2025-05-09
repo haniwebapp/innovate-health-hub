@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Challenge } from "@/types/challenges";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Component imports
 import ChallengeHeader from "@/components/challenges/ChallengeHeader";
@@ -118,6 +120,7 @@ const mockChallenges: Challenge[] = [
 const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState("overview");
+  const { t, language } = useLanguage();
   
   // Fetch challenge details from API with proper typing
   const { data: challenge, isLoading, error } = useQuery({
@@ -144,7 +147,7 @@ const ChallengeDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <Navbar />
         <main className="flex-grow pt-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -175,14 +178,14 @@ const ChallengeDetail = () => {
 
   if (error || !challenge) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <Navbar />
         <main className="flex-grow pt-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Challenge Not Found</h1>
-            <p className="text-gray-600 mb-8">The challenge you're looking for doesn't exist or has been removed.</p>
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('challenge.notFound')}</h1>
+            <p className="text-gray-600 mb-8">{t('challenge.notFoundDesc')}</p>
             <Button asChild>
-              <Link to="/challenges">Back to Challenges</Link>
+              <Link to="/challenges">{t('challenge.backToChallenges')}</Link>
             </Button>
           </div>
         </main>
@@ -192,7 +195,7 @@ const ChallengeDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
       <main className="flex-grow pt-24">
         {/* Hero Banner */}
@@ -201,7 +204,7 @@ const ChallengeDetail = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Breadcrumb Navigation */}
           <BreadcrumbNav 
-            items={[{label: 'Challenges', href: '/challenges'}]} 
+            items={[{label: t('nav.challenges'), href: '/challenges'}]} 
             currentPage={challenge.title}
           />
           
@@ -210,9 +213,9 @@ const ChallengeDetail = () => {
             <div className="flex-1">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="mb-6">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="requirements">Requirements</TabsTrigger>
-                  <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                  <TabsTrigger value="overview">{t('challenge.overview')}</TabsTrigger>
+                  <TabsTrigger value="requirements">{t('challenge.requirements')}</TabsTrigger>
+                  <TabsTrigger value="timeline">{t('challenge.timeline')}</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="overview" className="space-y-6">

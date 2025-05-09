@@ -2,10 +2,13 @@
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { ChevronRight, Users, Building, Globe, Award, Heart } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const AboutPage = () => {
+  const { t, language } = useLanguage();
+  
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
       
       {/* Hero section */}
@@ -13,25 +16,24 @@ const AboutPage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-moh-darkGreen">
-              About Our Health Innovation Platform
+              {t('about.title')}
             </h1>
             <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-              Transforming healthcare delivery through innovation, collaboration, and strategic partnerships 
-              across Saudi Arabia's healthcare ecosystem.
+              {t('about.description')}
             </p>
             
             <div className="flex flex-wrap gap-3">
               <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
                 <Users className="h-4 w-4 mr-1.5" />
-                500+ Innovators
+                500+ {t('about.innovators')}
               </span>
               <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium">
                 <Award className="h-4 w-4 mr-1.5" />
-                40+ Challenges
+                40+ {t('about.challenges')}
               </span>
               <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium">
                 <Globe className="h-4 w-4 mr-1.5" />
-                National Impact
+                {t('about.impact')}
               </span>
             </div>
           </div>
@@ -49,18 +51,14 @@ const AboutPage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">Our Vision</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">{t('about.vision')}</h2>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                To establish Saudi Arabia as a global leader in healthcare innovation, fostering 
-                a dynamic ecosystem that addresses national health priorities and improves the quality 
-                of life for all citizens in line with Vision 2030.
+                {t('about.visionText')}
               </p>
               
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">Our Mission</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">{t('about.mission')}</h2>
               <p className="text-gray-700 leading-relaxed">
-                We connect innovators, healthcare providers, regulators, and investors to accelerate 
-                the development and deployment of transformative healthcare solutions, creating a seamless 
-                pathway from idea to implementation across the Kingdom.
+                {t('about.missionText')}
               </p>
             </div>
             
@@ -79,9 +77,9 @@ const AboutPage = () => {
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-moh-darkGreen">Our Key Focus Areas</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-moh-darkGreen">{t('about.focusAreas')}</h2>
             <p className="max-w-2xl mx-auto text-gray-700">
-              We are committed to addressing Saudi Arabia's most pressing healthcare challenges through innovation and collaboration.
+              {t('about.focusDescription')}
             </p>
           </div>
           
@@ -89,18 +87,18 @@ const AboutPage = () => {
             {[
               {
                 icon: <Heart className="h-8 w-8 text-moh-green" />,
-                title: "Preventative Healthcare",
-                description: "Shifting from treatment to prevention with innovative solutions for early detection and monitoring."
+                title: t('about.preventative'),
+                description: t('about.preventativeDesc')
               },
               {
                 icon: <Building className="h-8 w-8 text-moh-green" />,
-                title: "Healthcare Infrastructure",
-                description: "Building resilient healthcare infrastructure that efficiently delivers services across the Kingdom."
+                title: t('about.infrastructure'),
+                description: t('about.infrastructureDesc')
               },
               {
                 icon: <Globe className="h-8 w-8 text-moh-green" />,
-                title: "Digital Health",
-                description: "Leveraging technology to provide accessible, personalized, and efficient healthcare services."
+                title: t('about.digital'),
+                description: t('about.digitalDesc')
               }
             ].map((item, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
@@ -116,7 +114,7 @@ const AboutPage = () => {
       {/* Strategic Partners */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center text-moh-darkGreen">Our Strategic Partners</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center text-moh-darkGreen">{t('about.partners')}</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
@@ -131,18 +129,17 @@ const AboutPage = () => {
       {/* Join Us CTA */}
       <section className="py-16 bg-gradient-to-br from-moh-lightGreen to-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">Join Our Innovation Community</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">{t('about.joinCommunity')}</h2>
           <p className="max-w-2xl mx-auto mb-8 text-gray-700">
-            Be part of Saudi Arabia's healthcare transformation. Whether you're an innovator, investor, or healthcare provider, 
-            there's a place for you in our growing community.
+            {t('about.joinDescription')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <button className="bg-moh-green hover:bg-moh-darkGreen text-white px-6 py-3 rounded-md font-medium inline-flex items-center">
-              Register Now 
+              {t('about.registerNow')} 
               <ChevronRight className="ml-2 h-5 w-5" />
             </button>
             <button className="border border-moh-green text-moh-green hover:bg-moh-lightGreen px-6 py-3 rounded-md font-medium">
-              Learn More
+              {t('about.learnMore')}
             </button>
           </div>
         </div>
@@ -151,6 +148,6 @@ const AboutPage = () => {
       <Footer />
     </div>
   );
-};
+}
 
 export default AboutPage;

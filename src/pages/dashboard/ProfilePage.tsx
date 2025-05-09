@@ -1,14 +1,17 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import UserProfileForm from "@/components/auth/UserProfileForm";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ProfilePage() {
+  const { t, language } = useLanguage();
+  
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('profile.title')}</h1>
         <p className="text-muted-foreground">
-          Manage your account settings and profile information.
+          {t('profile.description')}
         </p>
       </div>
       
@@ -17,27 +20,27 @@ export default function ProfilePage() {
         
         <Card>
           <CardHeader>
-            <CardTitle>Account Settings</CardTitle>
-            <CardDescription>Manage your account preferences and security.</CardDescription>
+            <CardTitle>{t('profile.accountSettings')}</CardTitle>
+            <CardDescription>{t('profile.preferences')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <h3 className="font-medium mb-2">Email Notifications</h3>
+              <h3 className="font-medium mb-2">{t('profile.emailNotifications')}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                We'll notify you about important updates related to your activities on the platform.
+                {t('profile.notificationsDesc')}
               </p>
               <p className="text-sm">
-                To change your notification settings, please contact support.
+                {t('profile.changeSettings')}
               </p>
             </div>
             
             <div>
-              <h3 className="font-medium mb-2">Password</h3>
+              <h3 className="font-medium mb-2">{t('profile.password')}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Make sure to use a strong, unique password to secure your account.
+                {t('profile.passwordDesc')}
               </p>
               <p className="text-sm">
-                Password changes are handled through the Supabase authentication system.
+                {t('profile.passwordChange')}
               </p>
             </div>
           </CardContent>
