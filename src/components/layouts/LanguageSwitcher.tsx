@@ -14,12 +14,22 @@ import { useEffect, useState } from "react";
 export default function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   
   // Animation when language changes
   useEffect(() => {
     if (isChangingLanguage) {
+      // Show spinner/animation for a brief period
       const timer = setTimeout(() => {
         setIsChangingLanguage(false);
+        setShowNotification(true);
+        
+        // Hide notification after some time
+        const notificationTimer = setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+        
+        return () => clearTimeout(notificationTimer);
       }, 800);
       
       return () => clearTimeout(timer);
@@ -34,67 +44,84 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full relative"
-          aria-label={t('nav.language')}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={isChangingLanguage ? 'changing' : 'static'}
-              initial={{ rotate: 0 }}
-              animate={isChangingLanguage ? { rotate: 360 } : {}}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Globe className="h-5 w-5" />
-            </motion.div>
-          </AnimatePresence>
-          <motion.div 
-            className="absolute -top-1 -right-1 w-3 h-3 bg-moh-gold rounded-full"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full relative"
+            aria-label={t('nav.language')}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={isChangingLanguage ? 'changing' : 'static'}
+                initial={{ rotate: 0 }}
+                animate={isChangingLanguage ? { rotate: 360 } : {}}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Globe className="h-5 w-5" />
+              </motion.div>
+            </AnimatePresence>
+            <motion.div 
+              className="absolute -top-1 -right-1 w-3 h-3 bg-moh-gold rounded-full"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[150px] bg-white">
+          <DropdownMenuItem 
+            onClick={() => handleLanguageChange('en')} 
+            className={`${language === 'en' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}
+          >
+            <span className="flex items-center">
+              <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇬🇧</span>
+              {t('general.english')}
+            </span>
+            {language === 'en' && (
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }} 
+                className="w-2 h-2 bg-moh-green rounded-full"
+              />
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => handleLanguageChange('ar')} 
+            className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}
+          >
+            <span className="flex items-center">
+              <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇸🇦</span>
+              {t('general.arabic')}
+            </span>
+            {language === 'ar' && (
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }} 
+                className="w-2 h-2 bg-moh-green rounded-full"
+              />
+            )}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      
+      {/* Language change notification */}
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-          />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[150px] bg-white">
-        <DropdownMenuItem 
-          onClick={() => handleLanguageChange('en')} 
-          className={`${language === 'en' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}
-        >
-          <span className="flex items-center">
-            <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇬🇧</span>
-            {t('general.english')}
-          </span>
-          {language === 'en' && (
-            <motion.div 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }} 
-              className="w-2 h-2 bg-moh-green rounded-full"
-            />
-          )}
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => handleLanguageChange('ar')} 
-          className={`${language === 'ar' ? 'bg-moh-lightGreen' : ''} cursor-pointer flex items-center justify-between px-4 py-2`}
-        >
-          <span className="flex items-center">
-            <span className={language === 'ar' ? 'ml-2' : 'mr-2'}>🇸🇦</span>
-            {t('general.arabic')}
-          </span>
-          {language === 'ar' && (
-            <motion.div 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }} 
-              className="w-2 h-2 bg-moh-green rounded-full"
-            />
-          )}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-moh-green text-white px-4 py-2 rounded-md shadow-lg"
+          >
+            {language === 'ar' ? 'تم تغيير اللغة إلى العربية' : 'Language changed to English'}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

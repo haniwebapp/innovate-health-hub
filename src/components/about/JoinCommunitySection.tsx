@@ -2,9 +2,11 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { getRTLClasses } from "@/utils/rtlUtils";
 
 export default function JoinCommunitySection() {
   const { t, language } = useLanguage();
+  const rtlClasses = getRTLClasses(language);
   
   const fadeInVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -18,6 +20,7 @@ export default function JoinCommunitySection() {
     }
   };
   
+  // Choose the correct chevron based on language direction
   const DirectionalChevron = language === 'ar' ? ChevronLeft : ChevronRight;
   
   return (
@@ -28,9 +31,12 @@ export default function JoinCommunitySection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeInVariants}
+          className={language === 'ar' ? 'rtl-mode' : ''}
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen">{t('about.joinCommunity')}</h2>
-          <p className="max-w-2xl mx-auto mb-8 text-gray-700">
+          <h2 className={`text-2xl md:text-3xl font-bold mb-6 text-moh-darkGreen ${rtlClasses.text}`}>
+            {t('about.joinCommunity')}
+          </h2>
+          <p className={`max-w-2xl mx-auto mb-8 text-gray-700 ${rtlClasses.text}`}>
             {t('about.joinDescription')}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -41,13 +47,13 @@ export default function JoinCommunitySection() {
             >
               {language === 'ar' ? (
                 <>
-                  <ChevronLeft className="ml-2 h-5 w-5" />
+                  <DirectionalChevron className="ml-2 h-5 w-5" />
                   {t('about.registerNow')}
                 </>
               ) : (
                 <>
                   {t('about.registerNow')}
-                  <ChevronRight className="ml-2 h-5 w-5" />
+                  <DirectionalChevron className="ml-2 h-5 w-5" />
                 </>
               )}
             </motion.button>

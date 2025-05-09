@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ArabicVerticalTextProps {
   text: string;
@@ -8,6 +9,8 @@ interface ArabicVerticalTextProps {
 }
 
 export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVerticalTextProps) {
+  const { language } = useLanguage();
+  
   // Split text into characters
   const characters = text.split("");
 
@@ -36,7 +39,7 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
   // Animation variants for characters
   const containerVariants = {
     hidden: {
-      opacity: 1
+      opacity: 0
     },
     visible: {
       opacity: 1,
@@ -66,21 +69,40 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
   // Special animation for word groups - this creates the "snap" effect
   const wordGroupVariants = {
     hidden: {
-      opacity: 0
+      opacity: 0,
+      scale: 0.9
     },
     visible: (i: number) => ({
       opacity: 1,
+      scale: 1,
       transition: {
-        delay: delay + 0.5 + i * 0.5 // Staggered delay between word groups
+        delay: delay + 0.2 + i * 0.15, // Staggered delay between word groups
+        type: "spring",
+        stiffness: 260,
+        damping: 20
       }
     })
+  };
+
+  // Shimmer effect for highlighting
+  const shimmerEffect = {
+    initial: { backgroundPosition: "-200px 0" },
+    animate: { 
+      backgroundPosition: "200px 0",
+      transition: {
+        repeat: Infinity, 
+        repeatType: "mirror" as const,
+        duration: 2,
+        ease: "linear"
+      }
+    }
   };
 
   const defaultClasses = "text-3xl md:text-4xl lg:text-5xl font-bold text-moh-green";
 
   return (
     <motion.div 
-      className={`inline-flex flex-col items-center justify-center mx-2 ${className}`}
+      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`}
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -97,12 +119,25 @@ export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVe
               key={`${groupIndex}-${charIndex}`}
               className={defaultClasses}
               variants={itemVariants}
+              whileHover={() => ({ 
+                scale: 1.2, 
+                color: "#00A651", 
+                transition: { duration: 0.2 } 
+              })}
             >
-              {char}
+              {char === " " ? <div className="h-4"></div> : char}
             </motion.div>
           ))}
         </motion.div>
       ))}
+      
+      {/* Special shimmer highlight effect */}
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none"
+        initial="initial"
+        animate="animate"
+        variants={shimmerEffect}
+      />
     </motion.div>
   );
 }

@@ -6,6 +6,7 @@ import { LogOut, User, Settings } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
+import { getRTLClasses } from "@/utils/rtlUtils";
 
 interface NavbarMobileMenuProps {
   isRouteActive: (path: string) => boolean;
@@ -18,6 +19,7 @@ export function NavbarMobileMenu({
 }: NavbarMobileMenuProps) {
   const { t, language } = useLanguage();
   const { user, logout } = useAuth();
+  const rtlClasses = getRTLClasses(language);
   
   // Main navigation links without dropdown
   const navigationLinks = [
@@ -59,6 +61,7 @@ export function NavbarMobileMenu({
       exit="exit"
       variants={menuVariants}
       className="md:hidden shadow-lg"
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="bg-white border-t border-gray-200 overflow-hidden">
         <div className="max-h-[80vh] overflow-y-auto">
@@ -71,7 +74,7 @@ export function NavbarMobileMenu({
                     isRouteActive(link.path)
                       ? "bg-gray-50 text-moh-green font-medium"
                       : "text-moh-darkGreen hover:text-moh-green"
-                  } ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                  } ${rtlClasses.text}`}
                   onClick={() => handleLinkClick(link.path)}
                   asChild
                 >
@@ -86,36 +89,36 @@ export function NavbarMobileMenu({
             
             {user ? (
               <>
-                <div className="flex items-center justify-between p-2 mb-3">
-                  <div className="flex items-center">
+                <div className={`flex items-center justify-between p-2 mb-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-center ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <div className="w-8 h-8 rounded-full bg-moh-green/10 flex items-center justify-center text-moh-green">
                       <User className="h-4 w-4" />
                     </div>
-                    <span className="ml-2 font-medium">{user.email}</span>
+                    <span className={language === 'ar' ? 'mr-2 text-right' : 'ml-2'}>{user.email}</span>
                   </div>
                 </div>
                 
                 <Button
                   variant="ghost"
-                  className="justify-start text-left mb-1"
+                  className={`justify-start text-left mb-1 ${language === 'ar' ? 'flex-row-reverse text-right' : ''}`}
                   onClick={() => handleLinkClick("/dashboard")}
                   asChild
                 >
-                  <Link to="/dashboard">
-                    <Settings className="h-4 w-4 mr-2" />
+                  <Link to="/dashboard" className={`flex items-center ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                    <Settings className="h-4 w-4" style={{margin: language === 'ar' ? '0 0 0 8px' : '0 8px 0 0'}} />
                     {t('nav.dashboard')}
                   </Link>
                 </Button>
                 
                 <Button
                   variant="ghost"
-                  className="justify-start text-left mb-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className={`justify-start text-left mb-1 text-red-600 hover:text-red-700 hover:bg-red-50 ${language === 'ar' ? 'flex-row-reverse text-right' : ''}`}
                   onClick={() => {
                     handleLinkClick("/");
                     logout();
                   }}
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
+                  <LogOut className="h-4 w-4" style={{margin: language === 'ar' ? '0 0 0 8px' : '0 8px 0 0'}} />
                   {t('nav.logout')}
                 </Button>
               </>

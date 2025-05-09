@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available languages
@@ -36,6 +37,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logout': 'Logout',
     'nav.signIn': 'Sign In',
     'nav.register': 'Register',
+    'nav.login': 'Login',
     
     // Login page
     'login.title': 'Innovation Platform',
@@ -506,4 +508,76 @@ const translations: Record<Language, Record<string, string>> = {
     'home.challenges.description': 'انضم إلى التحديات التي ترعاها وزارة الصحة لحل قضايا الرعاية الصحية الحرجة وفتح فرص التمويل.',
     'home.challenges.viewAll': 'عرض جميع التحديات',
     'home.challenges.viewChallenge': 'عرض التحدي',
-    'home.challenges.deadline': 'الموعد
+    'home.challenges.deadline': 'الموعد النهائي',
+    'home.challenges.participants': 'المشاركون',
+    'home.challenges.prize': 'الجائزة',
+    'home.challenges.nextDeadline': 'الموعد النهائي للتحدي القادم',
+    'home.challenges.challenge1.title': 'حلول مراقبة المرضى عن بعد',
+    'home.challenges.challenge1.description': 'تصميم حلول مبتكرة لمراقبة المرضى المصابين بأمراض مزمنة في المناطق النائية من المملكة.',
+    'home.challenges.challenge1.deadline': '30 يونيو، 2025',
+    'home.challenges.challenge1.category': 'الصحة الرقمية',
+    'home.challenges.challenge2.title': 'الذكاء الاصطناعي للكشف المبكر عن الأمراض',
+    'home.challenges.challenge2.description': 'تطوير خوارزميات الذكاء الاصطناعي للكشف عن العلامات المبكرة للأمراض باستخدام بيانات الصحة الموجودة من مرافق وزارة الصحة.',
+    'home.challenges.challenge2.deadline': '15 يوليو، 2025',
+    'home.challenges.challenge2.category': 'الذكاء الاصطناعي والتعلم الآلي',
+    'home.challenges.challenge3.title': 'تحسين سلسلة التوريد الطبية',
+    'home.challenges.challenge3.description': 'إنشاء حلول لتحسين كفاءة ومرونة سلاسل التوريد الطبية في جميع أنحاء المملكة العربية السعودية.',
+    'home.challenges.challenge3.deadline': '22 أغسطس، 2025',
+    'home.challenges.challenge3.category': 'الخدمات اللوجستية',
+    
+    // Footer Section
+    'footer.mohLogo': 'شعار وزارة الصحة',
+    'footer.description': 'مبادرة من وزارة الصحة لدعم الابتكار الصحي في جميع أنحاء المملكة العربية السعودية.',
+    'footer.quickLinks': 'روابط سريعة',
+    'footer.aboutPlatform': 'عن المنصة',
+    'footer.innovationChallenges': 'تحديات الابتكار',
+    'footer.investmentOpportunities': 'فرص الاستثمار',
+    'footer.regulatorySandbox': 'البيئة التنظيمية التجريبية',
+    'footer.knowledgeHub': 'مركز المعرفة',
+    'footer.resources': 'الموارد',
+    'footer.vision2030': 'رؤية 2030',
+    'footer.mohStrategy': 'استراتيجية وزارة الصحة',
+    'footer.policies': 'السياسات والإرشادات',
+    'footer.successStories': 'قصص النجاح',
+    'footer.contactSupport': 'اتصل بالدعم',
+    'footer.newsletter': 'النشرة الإخبارية',
+    'footer.subscribeText': 'اشترك للبقاء على اطلاع بأحدث الابتكارات والفرص.',
+    'footer.emailPlaceholder': 'البريد الإلكتروني',
+    'footer.subscribe': 'اشتراك',
+    'footer.copyright': 'وزارة الصحة، المملكة العربية السعودية. جميع الحقوق محفوظة.',
+    'footer.privacyPolicy': 'سياسة الخصوصية',
+    'footer.termsOfService': 'شروط الخدمة',
+    'footer.accessibility': 'إمكانية الوصول',
+  },
+};
+
+// Provider component
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  const [language, setLanguage] = useState<Language>(() => {
+    // Check if language is stored in localStorage
+    const storedLanguage = localStorage.getItem('language');
+    return (storedLanguage === 'ar' ? 'ar' : 'en') as Language;
+  });
+
+  const t = (key: string): string => {
+    return translations[language][key] || key;
+  };
+
+  // Save language to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+// Custom hook to use the language context
+export const useLanguage = () => useContext(LanguageContext);
