@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -54,6 +55,12 @@ import DashboardKnowledgePage from './pages/dashboard/knowledge/index';
 import DashboardInvestmentPage from './pages/dashboard/investment/index';
 import DashboardRegulatoryPage from './pages/dashboard/regulatory/index';
 import DashboardCollaborationPage from './pages/dashboard/collaboration/index';
+
+// Regulatory Applications
+import NewRegulatoryApplicationPage from './pages/dashboard/regulatory/applications/new';
+import ApplicationDetailsPage from './pages/dashboard/regulatory/applications/[id]';
+import SandboxTestingPage from './pages/dashboard/regulatory/testing/[id]';
+import DocumentUploadPage from './pages/dashboard/regulatory/documents/upload';
 
 // New imports for admin portal
 import AdminDashboardPage from './pages/admin/index';
@@ -130,9 +137,13 @@ function App() {
                     <Route path="innovations/:id" element={<DashboardInnovationDetailsPage />} />
                     <Route path="activity" element={<DashboardActivityPage />} />
                     
-                    {/* User Portal Routes - Phase 2 (placeholders) */}
+                    {/* User Portal Routes - Phase 2 */}
                     <Route path="investment" element={<DashboardInvestmentPage />} />
                     <Route path="regulatory" element={<DashboardRegulatoryPage />} />
+                    <Route path="regulatory/applications/new" element={<NewRegulatoryApplicationPage />} />
+                    <Route path="regulatory/applications/:id" element={<ApplicationDetailsPage />} />
+                    <Route path="regulatory/testing/:id" element={<SandboxTestingPage />} />
+                    <Route path="regulatory/documents/upload" element={<DocumentUploadPage />} />
                     <Route path="knowledge" element={<DashboardKnowledgePage />} />
                     <Route path="collaboration" element={<DashboardCollaborationPage />} />
                     
@@ -144,12 +155,6 @@ function App() {
                     <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
                     <Route path="admin/settings" element={<AdminSettingsPage />} />
                     <Route path="admin/integrations" element={<AdminIntegrationsPage />} />
-                    
-                    {/* New Regulatory Routes */}
-                    <Route path="/dashboard/regulatory/applications/new" element={<DashboardLayout><NewRegulatoryApplicationPage /></DashboardLayout>} />
-                    <Route path="/dashboard/regulatory/applications/:id" element={<DashboardLayout><ApplicationDetailsPage /></DashboardLayout>} />
-                    <Route path="/dashboard/regulatory/testing/:id" element={<DashboardLayout><SandboxTestingPage /></DashboardLayout>} />
-                    <Route path="/dashboard/regulatory/documents/upload" element={<DashboardLayout><DocumentUploadPage /></DashboardLayout>} />
                   </Route>
                   
                   {/* Admin Portal Routes */}
