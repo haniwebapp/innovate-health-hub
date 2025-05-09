@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 interface ArabicVerticalTextProps {
   text: string;
@@ -71,28 +70,9 @@ export function ArabicVerticalText({
       }
     })
   };
-  return (
-    <div className="inline-flex flex-col items-center justify-center mx-2">
-      {wordsGroups.map((group, groupIndex) => (
-        <motion.div 
-          key={`group-${groupIndex}`} 
-          className="flex flex-col items-center" 
-          custom={groupIndex} 
-          initial="hidden" 
-          animate="visible" 
-          variants={wordGroupVariants}
-        >
-          {group.map((char, charIndex) => (
-            <motion.div
-              key={`char-${groupIndex}-${charIndex}`}
-              className="text-2xl md:text-3xl lg:text-4xl font-bold mb-1"
-              variants={itemVariants}
-            >
-              {char}
-            </motion.div>
-          ))}
-        </motion.div>
-      ))}
-    </div>
-  );
+  return <div className="inline-flex flex-col items-center justify-center mx-2">
+      {wordsGroups.map((group, groupIndex) => <motion.div key={`group-${groupIndex}`} className="flex flex-col items-center" custom={groupIndex} initial="hidden" animate="visible" variants={wordGroupVariants}>
+          {group.map((char, charIndex) => {})}
+        </motion.div>)}
+    </div>;
 }
