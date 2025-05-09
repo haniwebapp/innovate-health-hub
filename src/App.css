@@ -47,6 +47,47 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* New particle animations */
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-15px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-25px) translateX(0);
+  }
+  75% {
+    transform: translateY(-15px) translateX(-10px);
+  }
+}
+
+.animate-particle {
+  animation: particle-float 15s ease-in-out infinite;
+}
+
+/* New shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
 /* Radial gradient backgrounds */
 .radial-gradient-green {
   background: radial-gradient(circle at center, rgba(0, 129, 74, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
@@ -54,4 +95,27 @@
 
 .radial-gradient-gold {
   background: radial-gradient(circle at center, rgba(195, 168, 107, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+/* Bubble animation */
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(100%) translateX(0) scale(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.3;
+  }
+  95% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-100%) translateX(20px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-bubble {
+  animation: bubble-rise 20s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
 }
