@@ -7,6 +7,14 @@ interface User {
   email: string;
   name?: string;
   role: string;
+  user_metadata: {
+    firstName?: string;
+    lastName?: string;
+    organization?: string;
+  };
+  app_metadata: Record<string, any>;
+  aud: string;
+  created_at: string;
 }
 
 export interface AuthContextType {
@@ -16,6 +24,10 @@ export interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (email: string, password: string, userData: any) => Promise<void>;
+  // Add these methods to match what's being used in components
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, userData: any) => Promise<void>;
+  signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,11 +59,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       // Mock login - in a real app, this would call an API
-      const mockUser = {
+      const mockUser: User = {
         id: "user-1",
         email: email,
         name: email.split("@")[0],
-        role: email.includes("admin") ? "admin" : "user"
+        role: email.includes("admin") ? "admin" : "user",
+        user_metadata: {
+          firstName: email.split("@")[0],
+          lastName: "User",
+          organization: "Health Organization",
+        },
+        app_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
       };
       
       setUser(mockUser);
@@ -73,11 +93,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       // Mock registration - in a real app, this would call an API
-      const mockUser = {
+      const mockUser: User = {
         id: "user-" + Math.floor(Math.random() * 1000),
         email: email,
         name: userData.firstName,
-        role: "user"
+        role: "user",
+        user_metadata: {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          organization: userData.organization,
+        },
+        app_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
       };
       
       setUser(mockUser);
@@ -92,8 +120,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAdmin = user?.role === "admin";
 
+  // Add alias methods to match what's being used in components
+  const signIn = login;
+  const signUp = register;
+  const signOut = logout;
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAdmin, login, logout, register }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isLoading, 
+      isAdmin, 
+      login, 
+      logout, 
+      register,
+      signIn,
+      signUp, 
+      signOut 
+    }}>
       {children}
     </AuthContext.Provider>
   );
