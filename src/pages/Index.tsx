@@ -13,7 +13,8 @@ import ProcessFlowSection from "@/components/home/ProcessFlowSection";
 import InnovationGallery from "@/components/home/InnovationGallery";
 import Footer from "@/components/home/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { ScrollProgress } from "@/components/animations/ScrollProgress";
 
 const Index = () => {
   // Page transition animations
@@ -35,31 +36,36 @@ const Index = () => {
   }, []);
   
   return (
-    <motion.div 
-      className="min-h-screen flex flex-col bg-white"
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
-    >
-      <Navbar />
-      <main className="flex-grow pt-16">
-        <TooltipProvider>
-          {/* Reordered sections for better user engagement */}
-          <HeroSection />
-          <PlatformHighlights />
-          <InnovationGallery />
-          <ChallengesSection />
-          <AIDrivenSection />
-          <InnovationJourney />
-          <HealthcareAnimation />
-          <ProcessFlowSection />
-          <AboutSection />
-          <FeaturedSection />
-        </TooltipProvider>
-      </main>
-      <Footer />
-    </motion.div>
+    <AnimatePresence mode="wait">
+      <motion.div 
+        className="min-h-screen flex flex-col bg-white"
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={pageVariants}
+        key="home-page"
+      >
+        <Navbar />
+        <ScrollProgress />
+        
+        <main className="flex-grow pt-16">
+          <TooltipProvider>
+            {/* Reordered sections for better user engagement */}
+            <HeroSection />
+            <PlatformHighlights />
+            <InnovationGallery />
+            <ChallengesSection />
+            <AIDrivenSection />
+            <InnovationJourney />
+            <HealthcareAnimation />
+            <ProcessFlowSection />
+            <AboutSection />
+            <FeaturedSection />
+          </TooltipProvider>
+        </main>
+        <Footer />
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

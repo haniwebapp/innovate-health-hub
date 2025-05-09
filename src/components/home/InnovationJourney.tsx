@@ -1,170 +1,144 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { 
-  Lightbulb, 
-  Beaker, 
-  ShieldCheck, 
-  Rocket, 
-  BarChart3
-} from "lucide-react";
 import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
-import { Card } from "@/components/ui/card";
-import { InnovationPhase } from "@/components/home/journey/InnovationPhase";
-import { InnovationPathway } from "@/components/home/journey/InnovationPathway";
+import { InnovationPhase } from "./journey/InnovationPhase";
+import { InnovationPathway } from "./journey/InnovationPathway";
+import { Sparkles, FileUp, Award, Database, Check, Flag } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function InnovationJourney() {
-  const ref = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-  const { t, language } = useLanguage();
-
-  // Innovation phases data - could be moved to a separate file or CMS
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-100px" });
+  
+  // Innovation phases with progress data
   const phases = [
     {
       id: "ideation",
-      icon: <Lightbulb className="w-6 h-6 text-moh-gold" />,
-      name: t("home.journey.ideation.title") || "Ideation",
-      description: t("home.journey.ideation.description") || 
-        "Identifying healthcare challenges and developing innovative solutions",
+      name: "1. Idea Generation",
+      description: "Submit your innovative healthcare solutions to address current challenges.",
+      icon: <Sparkles className="w-5 h-5" />,
       completionPercent: 100,
       isActive: false,
       milestones: [
-        "Challenge identification",
-        "Idea generation",
-        "Concept validation",
-        "Proposal submission"
+        "Define problem",
+        "Research existing solutions",
+        "Develop concept",
+        "Validate with stakeholders"
       ]
     },
     {
-      id: "development",
-      icon: <Beaker className="w-6 h-6 text-moh-green" />,
-      name: t("home.journey.development.title") || "Development",
-      description: t("home.journey.development.description") || 
-        "Building prototypes and testing with stakeholders",
-      completionPercent: 65,
+      id: "submission",
+      name: "2. Submission",
+      description: "Complete your innovation submission with all required details and documentation.",
+      icon: <FileUp className="w-5 h-5" />,
+      completionPercent: 75,
       isActive: true,
       milestones: [
-        "Technical planning",
-        "Prototype development",
-        "User testing",
-        "Iteration cycles"
+        "Basic information",
+        "Technical details",
+        "Supporting documentation",
+        "Review & submit"
       ]
     },
     {
-      id: "validation",
-      icon: <ShieldCheck className="w-6 h-6 text-moh-darkGreen" />,
-      name: t("home.journey.validation.title") || "Validation",
-      description: t("home.journey.validation.description") || 
-        "Ensuring solutions meet clinical and regulatory standards",
-      completionPercent: 15,
+      id: "evaluation",
+      name: "3. Evaluation",
+      description: "Expert reviewers assess innovations based on impact, feasibility, and innovation.",
+      icon: <Award className="w-5 h-5" />,
+      completionPercent: 25,
       isActive: false,
       milestones: [
-        "Clinical trials",
-        "Regulatory review",
-        "Safety testing",
-        "Effectiveness assessment"
+        "Initial screening",
+        "Technical evaluation",
+        "Impact assessment",
+        "Financial viability"
+      ]
+    },
+    {
+      id: "matching",
+      name: "4. Opportunity Matching",
+      description: "Connect with investors, partners, and stakeholders to advance your innovation.",
+      icon: <Database className="w-5 h-5" />,
+      completionPercent: 0,
+      isActive: false,
+      milestones: [
+        "Investor matching",
+        "Partner connections",
+        "Regulatory guidance",
+        "Market access planning"
       ]
     },
     {
       id: "implementation",
-      icon: <Rocket className="w-6 h-6 text-moh-darkGold" />,
-      name: t("home.journey.implementation.title") || "Implementation",
-      description: t("home.journey.implementation.description") || 
-        "Scaling solutions across healthcare facilities",
+      name: "5. Implementation",
+      description: "Bring your innovation to market with support from our ecosystem partners.",
+      icon: <Flag className="w-5 h-5" />,
       completionPercent: 0,
       isActive: false,
       milestones: [
-        "Deployment planning",
-        "Staff training",
-        "System integration",
-        "Full-scale rollout"
+        "Pilot implementation",
+        "Evaluation & feedback",
+        "Scaling strategy",
+        "Market entry"
       ]
-    },
-    {
-      id: "impact",
-      icon: <BarChart3 className="w-6 h-6 text-moh-gold" />,
-      name: t("home.journey.impact.title") || "Impact Measurement",
-      description: t("home.journey.impact.description") || 
-        "Evaluating outcomes and optimizing solutions",
-      completionPercent: 0,
-      isActive: false,
-      milestones: [
-        "Data collection",
-        "Outcome analysis",
-        "Optimization",
-        "Continuous improvement"
-      ]
-    },
+    }
   ];
-
-  // Find the current active phase
-  const currentPhase = phases.find(phase => phase.isActive)?.name || phases[0].name;
-
+  
   return (
     <section 
-      ref={ref} 
-      className="py-16 md:py-24 relative bg-gradient-to-b from-moh-lightGreen/20 to-white"
+      ref={sectionRef} 
+      className="py-24 bg-white relative overflow-hidden"
     >
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <ScrollFadeIn className="text-center mb-12">
-          <span className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium mb-4">
-            {t("home.journey.tag") || "Innovation Journey"}
-          </span>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-moh-darkGreen mb-4">
-            {t("home.journey.title") || "Healthcare Innovation Roadmap"}
-          </h2>
-          <p className="max-w-3xl mx-auto text-gray-700">
-            {t("home.journey.description") || 
-              "Our structured approach to healthcare innovation ensures ideas are properly vetted, developed, and implemented across Saudi Arabia's healthcare system."}
-          </p>
-        </ScrollFadeIn>
-
-        {/* Current Phase Indicator */}
-        <motion.div 
-          className="flex flex-col md:flex-row items-center justify-center gap-3 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md border border-moh-lightGreen/50">
-            <div className="w-3 h-3 rounded-full bg-moh-green animate-pulse"></div>
-            <span className="font-medium text-moh-darkGreen">
-              {t("home.journey.currentPhase") || "Current Phase"}:
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section header */}
+        <ScrollFadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block px-4 py-1 rounded-full bg-moh-lightGreen text-moh-darkGreen text-sm font-medium mb-4">
+              How It Works
             </span>
-            <span className="font-bold text-moh-green">{currentPhase}</span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-moh-darkGreen">
+              Innovation Journey
+            </h2>
+            <p className="text-gray-600">
+              Our platform provides a structured pathway to bring your healthcare innovation from concept to implementation, with support at every stage.
+            </p>
           </div>
-        </motion.div>
-
-        {/* Innovation Timeline */}
-        <div 
-          ref={containerRef}
-          className="relative max-w-6xl mx-auto"
-        >
-          {/* Main Pathway */}
+        </ScrollFadeIn>
+        
+        {/* Journey pathway visualization */}
+        <div className="relative h-[40px] mb-8">
           <InnovationPathway inView={inView} />
-          
-          {/* Phase Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
-            {phases.map((phase, index) => (
-              <InnovationPhase
-                key={phase.id}
-                phase={phase}
-                index={index}
-                inView={inView}
-                total={phases.length}
-              />
-            ))}
-          </div>
         </div>
+        
+        {/* Innovation phases */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {phases.map((phase, index) => (
+            <InnovationPhase 
+              key={phase.id} 
+              phase={phase} 
+              index={index} 
+              inView={inView}
+              total={phases.length}
+            />
+          ))}
+        </div>
+        
+        {/* CTA section */}
+        <ScrollFadeIn delay={0.6} direction="up" className="mt-16 text-center">
+          <Button 
+            size="lg" 
+            className="bg-moh-green hover:bg-moh-darkGreen text-white px-8"
+          >
+            <span>Start Your Journey</span>
+            <Check className="ml-2 h-4 w-4" />
+          </Button>
+        </ScrollFadeIn>
       </div>
-
-      {/* Decorative elements */}
-      <div className="hidden md:block absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
-      <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-moh-green/5 blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-moh-gold/5 blur-3xl"></div>
+      
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] rounded-full bg-moh-lightGreen opacity-10 blur-3xl" />
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full bg-moh-lightGold opacity-10 blur-3xl" />
     </section>
   );
 }

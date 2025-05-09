@@ -5,9 +5,15 @@ import { HeroHeading } from "./hero/HeroHeading";
 import { HeroButtons } from "./hero/HeroButtons";
 import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
+import { HeroBackgroundEffect } from "./hero/HeroBackgroundEffect";
 import { ChevronDown } from "lucide-react";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 export default function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true });
+  
   const scrollToNextSection = () => {
     const nextSection = document.getElementById('platform-highlights');
     if (nextSection) {
@@ -15,19 +21,60 @@ export default function HeroSection() {
     }
   };
 
+  // Container animation variant
+  const containerVariant = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+        duration: 0.8,
+      }
+    }
+  };
+
+  // Child elements animation variant
+  const itemVariant = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    }
+  };
+
   return (
-    <section className="pt-28 pb-20 md:pt-32 md:pb-24 lg:pt-36 lg:pb-28 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden">
+    <motion.section
+      ref={sectionRef}
+      className="pt-28 pb-20 md:pt-32 md:pb-24 lg:pt-36 lg:pb-28 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariant}
+    >
+      <HeroBackgroundEffect />
+      
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-5xl mx-auto text-center">
-          <HeroLogo />
-          <HeroHeading />
+        <motion.div 
+          className="max-w-5xl mx-auto text-center"
+          variants={containerVariant}
+        >
+          <motion.div variants={itemVariant}>
+            <HeroLogo />
+          </motion.div>
+          
+          <motion.div variants={itemVariant}>
+            <HeroHeading />
+          </motion.div>
           
           <motion.p 
             className="text-lg md:text-xl text-gray-700 mb-10 max-w-2xl mx-auto leading-relaxed" 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.4 }}
+            variants={itemVariant}
           >
             A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia in alignment with Vision 2030.
           </motion.p>
@@ -36,24 +83,46 @@ export default function HeroSection() {
           
           <HeroStats />
           
-          {/* Add scroll indicator */}
+          {/* Scroll indicator with enhanced animation */}
           <motion.div 
             className="mt-16 cursor-pointer"
             onClick={scrollToNextSection}
-            initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: 1, y: [0, 8, 0] }}
-            transition={{ 
-              opacity: { delay: 2.5, duration: 0.5 },
-              y: { delay: 2.5, duration: 1.5, repeat: Infinity }
+            variants={itemVariant}
+            animate={{ 
+              y: [0, 8, 0], 
+              opacity: [0.7, 1, 0.7]
             }}
+            transition={{ 
+              y: { duration: 1.5, repeat: Infinity },
+              opacity: { duration: 1.5, repeat: Infinity }
+            }}
+            whileHover={{ scale: 1.1 }}
           >
-            <ChevronDown className="mx-auto text-moh-green/70 h-8 w-8" />
-            <span className="text-sm text-moh-green/70 font-medium">Explore More</span>
+            <div className="flex flex-col items-center">
+              <span className="text-sm text-moh-green/70 font-medium mb-1">Explore More</span>
+              <div className="relative">
+                <ChevronDown className="text-moh-green/70 h-8 w-8" />
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ 
+                    y: [0, 4, 0], 
+                    opacity: [0.3, 1, 0.3] 
+                  }}
+                  transition={{ 
+                    duration: 1.5, 
+                    repeat: Infinity, 
+                    delay: 0.5 
+                  }}
+                >
+                  <ChevronDown className="text-moh-green/40 h-8 w-8" />
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
       
       <HeroDecorations />
-    </section>
+    </motion.section>
   );
 }
