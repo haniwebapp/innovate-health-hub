@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Heart, Medicine, TestTube, Thermometer } from "lucide-react";
+import { Heart, Pill, Flask, Thermometer } from "lucide-react";
 
 export default function HealthcareAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,8 +58,8 @@ export default function HealthcareAnimation() {
   
   const iconColors = {
     heart: "#ea384c",
-    medicine: "#9b87f5",
-    testTube: "#33C3F0",
+    pill: "#9b87f5",
+    flask: "#33C3F0",
     thermometer: "#4AAF46"
   };
   
@@ -134,9 +134,14 @@ export default function HealthcareAnimation() {
                 d="M100,20 C130,50 130,150 100,180" 
                 stroke="#9b87f5"
                 strokeWidth="3"
-                variants={pathVariant}
-                initial="hidden"
-                animate={isVisible ? "visible" : "hidden"}
+                initial={{ pathLength: 0 }}
+                animate={isVisible ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ 
+                  duration: 3,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
               />
               
               {/* Animated path 2 */}
@@ -144,9 +149,14 @@ export default function HealthcareAnimation() {
                 d="M140,80 C110,50 110,150 60,80" 
                 stroke="#33C3F0"
                 strokeWidth="3"
-                variants={pathVariant}
-                initial="hidden"
-                animate={isVisible ? "visible" : "hidden"}
+                initial={{ pathLength: 0 }}
+                animate={isVisible ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ 
+                  duration: 3,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
               />
               
               {/* Central circle */}
@@ -165,8 +175,15 @@ export default function HealthcareAnimation() {
                 cy="100" 
                 r="15" 
                 fill="#6E59A5"
-                variants={pulseVariant}
-                animate={isVisible ? "pulse" : undefined}
+                animate={isVisible ? {
+                  scale: [1, 1.1, 1],
+                  opacity: [0.7, 1, 0.7],
+                } : {}}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
               />
             </svg>
           </motion.div>
@@ -174,44 +191,112 @@ export default function HealthcareAnimation() {
           {/* Floating Icons */}
           <motion.div 
             custom={0}
-            variants={floatVariant}
-            animate={isVisible ? "float" : undefined}
+            animate={isVisible ? {
+              y: [0, -15, 0],
+              transition: {
+                duration: 3,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }
+            } : {}}
             className="absolute top-10 left-1/4 transform -translate-x-1/2 bg-white p-3 md:p-4 rounded-full shadow-lg"
           >
-            <motion.div variants={pulseVariant} animate={isVisible ? "pulse" : undefined}>
+            <motion.div 
+              animate={isVisible ? {
+                scale: [1, 1.1, 1],
+                opacity: [0.7, 1, 0.7],
+              } : {}}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
               <Heart className="w-6 h-6 md:w-8 md:h-8" style={{ color: iconColors.heart }} />
             </motion.div>
           </motion.div>
           
           <motion.div 
             custom={1}
-            variants={floatVariant}
-            animate={isVisible ? "float" : undefined}
+            animate={isVisible ? {
+              y: [0, -15, 0],
+              transition: {
+                duration: 3.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }
+            } : {}}
             className="absolute top-1/4 right-1/4 transform translate-x-1/2 bg-white p-3 md:p-4 rounded-full shadow-lg"
           >
-            <motion.div variants={pulseVariant} animate={isVisible ? "pulse" : undefined}>
-              <Medicine className="w-6 h-6 md:w-8 md:h-8" style={{ color: iconColors.medicine }} />
+            <motion.div 
+              animate={isVisible ? {
+                scale: [1, 1.1, 1],
+                opacity: [0.7, 1, 0.7],
+              } : {}}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              <Pill className="w-6 h-6 md:w-8 md:h-8" style={{ color: iconColors.pill }} />
             </motion.div>
           </motion.div>
           
           <motion.div 
             custom={2}
-            variants={floatVariant}
-            animate={isVisible ? "float" : undefined}
+            animate={isVisible ? {
+              y: [0, -15, 0],
+              transition: {
+                duration: 4,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }
+            } : {}}
             className="absolute bottom-1/4 left-1/3 transform -translate-x-1/2 bg-white p-3 md:p-4 rounded-full shadow-lg"
           >
-            <motion.div variants={pulseVariant} animate={isVisible ? "pulse" : undefined}>
-              <TestTube className="w-6 h-6 md:w-8 md:h-8" style={{ color: iconColors.testTube }} />
+            <motion.div 
+              animate={isVisible ? {
+                scale: [1, 1.1, 1],
+                opacity: [0.7, 1, 0.7],
+              } : {}}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              <Flask className="w-6 h-6 md:w-8 md:h-8" style={{ color: iconColors.flask }} />
             </motion.div>
           </motion.div>
           
           <motion.div 
             custom={3}
-            variants={floatVariant}
-            animate={isVisible ? "float" : undefined}
+            animate={isVisible ? {
+              y: [0, -15, 0],
+              transition: {
+                duration: 4.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }
+            } : {}}
             className="absolute bottom-10 right-1/3 transform translate-x-1/2 bg-white p-3 md:p-4 rounded-full shadow-lg"
           >
-            <motion.div variants={pulseVariant} animate={isVisible ? "pulse" : undefined}>
+            <motion.div 
+              animate={isVisible ? {
+                scale: [1, 1.1, 1],
+                opacity: [0.7, 1, 0.7],
+              } : {}}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
               <Thermometer className="w-6 h-6 md:w-8 md:h-8" style={{ color: iconColors.thermometer }} />
             </motion.div>
           </motion.div>
