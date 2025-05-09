@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Users, Award } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "react-router-dom";
 
 export default function HeroSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -37,17 +38,23 @@ export default function HeroSection() {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-fade-in animation-delay-300">
-            <Button size="lg" className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md">
-              {t('home.hero.exploreButton')}
-              <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size="lg" className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md" asChild>
+              <Link to="/innovations">
+                {t('home.hero.exploreButton')}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm">
-              <Sparkles className="mr-2 h-4 w-4" />
-              {t('home.hero.joinButton')}
+            <Button size="lg" variant="outline" className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm" asChild>
+              <Link to="/challenges">
+                <Sparkles className="mr-2 h-4 w-4" />
+                {t('home.hero.joinButton')}
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm">
-              <Award className="mr-2 h-4 w-4" />
-              {t('home.hero.investmentButton')}
+            <Button size="lg" variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm" asChild>
+              <Link to="/investment">
+                <Award className="mr-2 h-4 w-4" />
+                {t('home.hero.investmentButton')}
+              </Link>
             </Button>
           </div>
           
