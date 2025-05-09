@@ -87,9 +87,7 @@ export default function HeroSection() {
                 <TextReveal text={t('home.hero.titleDark')} className="text-moh-darkGreen block mt-2" delay={1} staggerDelay={0.04} splitBy="words" />
               </div>
               
-              {language === 'en' && <div className="mx-4">
-                  <ArabicVerticalText text="تمكين الابتكار الصحي" />
-                </div>}
+              {language === 'en'}
             </div>
           </h1>
           
