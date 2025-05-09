@@ -139,7 +139,7 @@ export const deleteChallenge = async (id: string) => {
 export const fetchSubmissionsForChallenge = async (challengeId: string) => {
   // Use the RPC function we created
   const { data, error } = await supabase.rpc('get_challenge_submissions', {
-    challenge_id: challengeId
+    input_challenge_id: challengeId
   });
   
   if (error) throw error;

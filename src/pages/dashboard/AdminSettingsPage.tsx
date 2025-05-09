@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,8 @@ import GeneralSettingsTab from "@/components/admin/GeneralSettingsTab";
 import ChallengeSettingsTab from "@/components/admin/ChallengeSettingsTab";
 import NotificationSettingsTab from "@/components/admin/NotificationSettingsTab";
 import AdminSettingsAI from "@/components/ai/AdminSettingsAI";
-import { GeneralSettings, ChallengeSettings } from "@/types/admin";
+import { GeneralSettings } from "@/types/admin";
+import { ChallengeSettings } from "@/types/challenges";
 
 export default function AdminSettingsPage() {
   const { toast } = useToast();
@@ -27,7 +29,7 @@ export default function AdminSettingsPage() {
     requireApproval: true,
     allowPublicSubmissions: false,
     autoCloseExpiredChallenges: true,
-    submissionTimeLimit: 30 // Change this from string to number
+    submissionTimeLimit: 30
   });
 
   const handlePlatformSettingsChange = (setting: string) => {

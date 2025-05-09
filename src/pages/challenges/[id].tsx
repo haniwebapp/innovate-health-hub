@@ -142,12 +142,12 @@ export default function ChallengePage() {
       
       <main className="flex-grow py-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb Navigation - FIX HERE */}
+          {/* Breadcrumb Navigation */}
           <BreadcrumbNav 
+            currentPage={challenge.title}
             items={[
               { label: "Home", href: "/" },
-              { label: "Challenges", href: "/challenges" },
-              { label: challenge.title }
+              { label: "Challenges", href: "/challenges" }
             ]} 
           />
           
@@ -249,7 +249,7 @@ export default function ChallengePage() {
                 <TabsContent value="timeline">
                   <div className="space-y-6">
                     <h2 className="text-2xl font-bold text-moh-darkGreen">Challenge Timeline</h2>
-                    <ChallengeTimeline timeline={generateTimeline(challenge)} />
+                    <ChallengeTimeline challenge={challenge} />
                   </div>
                 </TabsContent>
               </Tabs>

@@ -1016,6 +1016,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_challenge_submissions: {
+        Args: { input_challenge_id: string }
+        Returns: {
+          id: string
+          title: string
+          summary: string
+          description: string
+          challenge_id: string
+          user_id: string
+          team_members: string
+          status: string
+          submitted_at: string
+          updated_at: string
+          score: number
+          feedback: string
+          user_first_name: string
+          user_last_name: string
+          user_organization: string
+        }[]
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
