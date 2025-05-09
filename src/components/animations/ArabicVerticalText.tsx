@@ -1,11 +1,14 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
+
 export function ArabicVerticalText({
   text,
   className = "",
@@ -31,6 +34,7 @@ export function ArabicVerticalText({
       }
     }
   };
+  
   const charVariants = {
     hidden: {
       y: 20,
@@ -62,10 +66,33 @@ export function ArabicVerticalText({
       }
     }
   };
-  return <motion.div className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} initial="hidden" animate="visible" variants={containerVariants}>
-      {characters.map((char, index) => {})}
+  
+  return (
+    <motion.div 
+      className={`inline-flex flex-col items-center justify-center mx-2 ${className} ${language === 'ar' ? 'rtl-content' : ''}`} 
+      initial="hidden" 
+      animate="visible" 
+      variants={containerVariants}
+    >
+      {characters.map((char, index) => (
+        <motion.span
+          key={index}
+          variants={charVariants}
+          className={`text-3xl md:text-4xl lg:text-5xl font-bold ${
+            language === 'ar' ? 'font-tajawal' : ''
+          }`}
+        >
+          {char}
+        </motion.span>
+      ))}
       
       {/* Special shimmer highlight effect */}
-      <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" initial="initial" animate="animate" variants={shimmerEffect} />
-    </motion.div>;
+      <motion.div 
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" 
+        initial="initial" 
+        animate="animate" 
+        variants={shimmerEffect} 
+      />
+    </motion.div>
+  );
 }
