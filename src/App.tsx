@@ -24,6 +24,8 @@ import SubmissionsPage from "./pages/dashboard/submissions";
 import SubmitChallengePage from "./pages/dashboard/submit/[challengeId]";
 import AdminAnalyticsPage from "./pages/dashboard/AdminAnalyticsPage";
 import CreateChallengePage from "./pages/dashboard/CreateChallengePage";
+import AdminUsersPage from "./pages/dashboard/AdminUsersPage";
+import AdminSettingsPage from "./pages/dashboard/AdminSettingsPage";
 
 // Components and Context
 import { AuthProvider } from "./contexts/AuthContext";
@@ -74,7 +76,10 @@ const App = () => (
                 <Route path="create-challenge" element={<CreateChallengePage />} />
                 <Route path="analytics" element={<AdminAnalyticsPage />} />
                 <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
-                {/* Add more dashboard routes as needed */}
+                
+                {/* New Admin Routes */}
+                <Route path="admin/users" element={<AdminUsersPage />} />
+                <Route path="admin/settings" element={<AdminSettingsPage />} />
               </Route>
               
               {/* Static Routes */}

@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
+import AdminLayout from "@/components/layouts/AdminLayout";
 
 // Sample data - in a real application, this would come from your API
 const challengeData = [
@@ -36,40 +37,43 @@ const userData = [
   { name: "Jun", users: 95 },
 ];
 
+const categoryData = [
+  { name: "Healthcare Innovation", value: 35 },
+  { name: "Patient Care", value: 25 },
+  { name: "Digital Health", value: 20 },
+  { name: "Medical Devices", value: 15 },
+  { name: "Public Health", value: 5 },
+];
+
+const COLORS = ['#9b87f5', '#10B981', '#8B5CF6', '#F97316', '#0EA5E9'];
+
 const AdminAnalyticsPage = () => {
-  const { isAdmin } = useAuth();
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("challenges");
+  const [chartData, setChartData] = useState({
+    challenges: challengeData,
+    submissions: submissionData,
+    users: userData,
+    categories: categoryData,
+  });
 
-  useEffect(() => {
-    if (!isAdmin) {
-      toast({
-        variant: "destructive",
-        title: "Access Denied",
-        description: "You don't have permission to view this page.",
-      });
+  // Custom tooltip for pie charts
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white border rounded-md p-2 shadow-sm">
+          <p className="font-medium">{`${payload[0].name}`}</p>
+          <p className="text-sm">{`Value: ${payload[0].value}`}</p>
+        </div>
+      );
     }
-  }, [isAdmin, toast]);
-
-  if (!isAdmin) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 p-6 bg-red-50 border border-red-200 rounded-md">
-        <AlertCircle className="h-12 w-12 text-red-500 mb-2" />
-        <h2 className="text-2xl font-bold text-red-700">Access Denied</h2>
-        <p className="text-red-600">You don't have permission to view this page.</p>
-      </div>
-    );
-  }
+    return null;
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h2>
-        <p className="text-muted-foreground">
-          View and analyze platform metrics and data.
-        </p>
-      </div>
-      
+    <AdminLayout 
+      title="Analytics Dashboard"
+      description="View and analyze platform metrics and data"
+    >
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
@@ -106,12 +110,168 @@ const AdminAnalyticsPage = () => {
         </Card>
       </div>
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 mt-6">
+        <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="challenges">Challenges</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
           <TabsTrigger value="users">User Growth</TabsTrigger>
         </TabsList>
+        
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Activity Distribution</CardTitle>
+                <CardDescription>
+                  Platform activity by category
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="px-2">
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData.categories}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Legend layout="vertical" verticalAlign="middle" align="right" />
+                      <RechartsTooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Platform Growth</CardTitle>
+                <CardDescription>
+                  Overall platform growth metrics
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="px-2">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart
+                    data={submissionData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <RechartsTooltip />
+                    <Line type="monotone" dataKey="submissions" stroke="#9b87f5" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Platform Summary</CardTitle>
+              <CardDescription>Key performance indicators</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-4">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">User Types</p>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">Healthcare</span>
+                      <span className="text-xs font-medium">42%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-1.5">
+                      <div className="bg-primary rounded-full h-1.5" style={{ width: '42%' }}></div>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">Research</span>
+                      <span className="text-xs font-medium">31%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-1.5">
+                      <div className="bg-primary rounded-full h-1.5" style={{ width: '31%' }}></div>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">Administration</span>
+                      <span className="text-xs font-medium">16%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-1.5">
+                      <div className="bg-primary rounded-full h-1.5" style={{ width: '16%' }}></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Challenge Status</p>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-green-500">14</Badge>
+                      <span className="text-xs">Active</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-amber-500">3</Badge>
+                      <span className="text-xs">Draft</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-blue-500">7</Badge>
+                      <span className="text-xs">Completed</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Submission Status</p>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-amber-500">28</Badge>
+                      <span className="text-xs">Pending</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-green-500">87</Badge>
+                      <span className="text-xs">Approved</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-red-500">27</Badge>
+                      <span className="text-xs">Rejected</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">User Activity</p>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-green-500">68</Badge>
+                      <span className="text-xs">Last 7 days</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-blue-500">82</Badge>
+                      <span className="text-xs">Last 30 days</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-slate-500">13</Badge>
+                      <span className="text-xs">Inactive (30+ days)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
         
         <TabsContent value="challenges" className="space-y-4">
           <Card>
@@ -123,11 +283,11 @@ const AdminAnalyticsPage = () => {
             </CardHeader>
             <CardContent className="px-2">
               <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={challengeData}>
+                <BarChart data={chartData.challenges}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip />
+                  <RechartsTooltip />
                   <Bar dataKey="count" fill="#9b87f5" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -200,11 +360,11 @@ const AdminAnalyticsPage = () => {
             </CardHeader>
             <CardContent className="px-2">
               <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={submissionData}>
+                <LineChart data={chartData.submissions}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip />
+                  <RechartsTooltip />
                   <Line type="monotone" dataKey="submissions" stroke="#8B5CF6" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
@@ -277,11 +437,11 @@ const AdminAnalyticsPage = () => {
             </CardHeader>
             <CardContent className="px-2">
               <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={userData}>
+                <LineChart data={chartData.users}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip />
+                  <RechartsTooltip />
                   <Line type="monotone" dataKey="users" stroke="#10B981" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
@@ -344,7 +504,7 @@ const AdminAnalyticsPage = () => {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </AdminLayout>
   );
 };
 
