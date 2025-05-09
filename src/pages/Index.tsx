@@ -12,17 +12,10 @@ import InnovationJourney from "@/components/home/InnovationJourney";
 import ProcessFlowSection from "@/components/home/ProcessFlowSection";
 import InnovationGallery from "@/components/home/InnovationGallery";
 import Footer from "@/components/home/Footer";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
-import { useRTLDirection } from "@/utils/rtlUtils";
 
 const Index = () => {
-  const { language } = useLanguage();
-  
-  // Apply RTL direction using the enhanced utility hook
-  useRTLDirection(language);
-  
   // Page transition animations
   const pageVariants = {
     initial: { opacity: 0 },
@@ -43,8 +36,7 @@ const Index = () => {
   
   return (
     <motion.div 
-      className={`min-h-screen flex flex-col bg-white ${language === 'ar' ? 'rtl-mode' : ''}`}
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      className="min-h-screen flex flex-col bg-white"
       initial="initial"
       animate="animate"
       exit="exit"

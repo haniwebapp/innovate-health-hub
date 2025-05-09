@@ -1,12 +1,10 @@
 
 import { useRef } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 
 export function HeroHeading() {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const { language } = useLanguage();
   
   // Using direct text instead of translations
   const taglineGradient = "Empowering Health Innovation";
@@ -15,11 +13,7 @@ export function HeroHeading() {
   return (
     <h1 ref={titleRef} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 tracking-tight">
       <div className="flex flex-row justify-center items-start py-0">
-        {language === 'ar' && (
-          <ArabicVerticalText text="2030" className="ml-4" delay={0.5} />
-        )}
-        
-        <div className={language === 'ar' ? 'ml-4' : 'mr-4'}>
+        <div className="mr-4">
           <TextReveal 
             text={taglineGradient} 
             className="text-gradient bg-gradient-to-r from-moh-green to-moh-gold bg-clip-text text-transparent block" 
@@ -36,9 +30,7 @@ export function HeroHeading() {
           />
         </div>
         
-        {language === 'en' && (
-          <ArabicVerticalText text="2030" className="mr-4" delay={0.5} />
-        )}
+        <ArabicVerticalText text="2030" className="mr-4" delay={0.5} />
       </div>
     </h1>
   );

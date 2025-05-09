@@ -7,15 +7,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "@/components/layouts/NavbarMainLinks";
 import NavbarUserMenu from "@/components/layouts/NavbarUserMenu";
-import LanguageSwitcher from "@/components/layouts/LanguageSwitcher";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
-  const { language } = useLanguage();
   const location = useLocation();
 
   // Handle scrolling effect with throttling for better performance
@@ -54,7 +51,7 @@ export default function Navbar() {
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex justify-between items-center ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+        <div className="flex justify-between items-center">
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
               <motion.img 
@@ -73,7 +70,6 @@ export default function Navbar() {
             <Button variant="ghost" size="icon" className="text-moh-darkGreen hover:bg-gray-50 hover:text-moh-green rounded-full">
               <Search className="h-5 w-5" />
             </Button>
-            <LanguageSwitcher />
             
             <NavbarUserMenu />
           </div>

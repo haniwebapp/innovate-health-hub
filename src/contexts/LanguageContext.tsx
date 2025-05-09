@@ -1,8 +1,8 @@
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-// Define available languages (keeping just for RTL support)
-export type Language = 'en' | 'ar';
+// Define available language (English only)
+export type Language = 'en';
 
 // Simple translations mapping
 const translations: Record<string, string> = {
@@ -130,14 +130,12 @@ const translations: Record<string, string> = {
 // Define context type
 type LanguageContextType = {
   language: Language;
-  setLanguage: (lang: Language) => void;
   t: (key: string) => string; 
 };
 
 // Create context with default values
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
-  setLanguage: () => {},
   t: (key: string) => key, 
 });
 
@@ -147,11 +145,7 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    // Check if language is stored in localStorage
-    const storedLanguage = localStorage.getItem('language');
-    return (storedLanguage === 'ar' ? 'ar' : 'en') as Language;
-  });
+  const [language] = useState<Language>('en'); // Always English
 
   // Translation function that returns translations based on the key
   const t = (key: string): string => {
@@ -163,13 +157,8 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     return key;
   };
 
-  // Save language to localStorage whenever it changes (for RTL support)
-  useEffect(() => {
-    localStorage.setItem('language', language);
-  }, [language]);
-
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, t }}>
       {children}
     </LanguageContext.Provider>
   );

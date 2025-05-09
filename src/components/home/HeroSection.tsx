@@ -1,5 +1,4 @@
 
-import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { HeroLogo } from "./hero/HeroLogo";
 import { HeroHeading } from "./hero/HeroHeading";
@@ -8,8 +7,6 @@ import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 
 export default function HeroSection() {
-  const { language } = useLanguage();
-  
   return (
     <section className="pt-24 pb-16 md:pt-28 md:pb-20 lg:pt-32 lg:pb-24 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
@@ -24,9 +21,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.4 }}
           >
-            {language === 'ar' ? 
-              'منصة متكاملة تربط بين المبتكرين والمستثمرين والمنظمين في مجال الصحة لتحويل تقديم الرعاية الصحية في جميع أنحاء المملكة العربية السعودية.' : 
-              'A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia in alignment with Vision 2030.'}
+            A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia in alignment with Vision 2030.
           </motion.p>
           
           <HeroButtons />
