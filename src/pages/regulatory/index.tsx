@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
@@ -232,7 +231,7 @@ export default function RegulatoryPage() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="container mx-auto px-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen mb-6">Regulatory Sandbox</h1>
           <p className="text-lg text-gray-700 mb-10">

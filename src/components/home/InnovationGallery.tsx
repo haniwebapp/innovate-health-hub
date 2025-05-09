@@ -7,11 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ParallaxCard } from "@/components/animations/ParallaxCard";
+import GeneratedLogo from "@/components/logos/GeneratedLogo";
 
 interface Innovation {
   id: string;
   title: string;
-  image: string;
+  image?: string;
   category: string;
   trl: number; // Technology Readiness Level
   featured: boolean;
@@ -22,7 +23,6 @@ interface Innovation {
 const innovationsMock: Innovation[] = [{
   id: "1",
   title: "AI-Powered Diabetes Monitoring",
-  image: "/lovable-uploads/490e4e1f-9428-448f-87b4-1ee68f24331c.png",
   category: "Digital Health",
   trl: 7,
   featured: true,
@@ -30,7 +30,6 @@ const innovationsMock: Innovation[] = [{
 }, {
   id: "2",
   title: "Remote Patient Monitoring System",
-  image: "/lovable-uploads/5993dbad-5475-4d1f-b16c-a18b49bdb942.png",
   category: "Telehealth",
   trl: 8,
   featured: true,
@@ -38,7 +37,6 @@ const innovationsMock: Innovation[] = [{
 }, {
   id: "3",
   title: "Smart Hospital Management Suite",
-  image: "/lovable-uploads/5a9acce6-713e-4091-9221-498fa246c6d3.png",
   category: "Healthcare IT",
   trl: 6,
   featured: false,
@@ -46,7 +44,6 @@ const innovationsMock: Innovation[] = [{
 }, {
   id: "4",
   title: "Portable Diagnostic Device",
-  image: "/lovable-uploads/7502fd8d-a2d2-4400-ad7a-4acb41cd43e1.png",
   category: "MedTech",
   trl: 5,
   featured: false,
@@ -54,7 +51,6 @@ const innovationsMock: Innovation[] = [{
 }, {
   id: "5",
   title: "Mental Health Tracking App",
-  image: "/lovable-uploads/8740809b-3739-46bc-927a-4787dc7ca177.png",
   category: "Digital Health",
   trl: 9,
   featured: true,
@@ -67,8 +63,7 @@ const trlLevels = ["All", "Early Stage (1-3)", "Mid Stage (4-6)", "Late Stage (7
 
 export default function InnovationGallery() {
   const {
-    t,
-    language
+    t
   } = useLanguage();
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeTRL, setActiveTRL] = useState("All");
@@ -138,6 +133,22 @@ export default function InnovationGallery() {
       scrollContainerRef.current?.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  
+  // Function to determine logo style based on category
+  const getLogoStyleForCategory = (category: string) => {
+    switch(category) {
+      case "Digital Health":
+        return { shape: "circle" as const, style: "gradient" as const, primaryColor: "#00814A", secondaryColor: "#0EA5E9" };
+      case "Telehealth":
+        return { shape: "hexagon" as const, style: "gradient" as const, primaryColor: "#F97316", secondaryColor: "#FB923C" };
+      case "MedTech":
+        return { shape: "square" as const, style: "pattern" as const, primaryColor: "#8B5CF6", secondaryColor: "#D946EF" };
+      case "Healthcare IT":
+        return { shape: "hexagon" as const, style: "solid" as const, primaryColor: "#0EA5E9", secondaryColor: "#38BDF8" };
+      default:
+        return { shape: "circle" as const, style: "gradient" as const, primaryColor: "#00814A", secondaryColor: "#C3A86B" };
+    }
+  };
   
   return (
     <section className="py-20 bg-white relative overflow-hidden">
@@ -259,11 +270,15 @@ export default function InnovationGallery() {
                   >
                     <Card className="overflow-hidden h-full border-none shadow-md">
                       <div className="relative h-48 overflow-hidden">
-                        <img 
-                          src={innovation.image} 
-                          alt={innovation.title}
-                          className="w-full h-full object-cover object-center" 
-                        />
+                        {/* Replace static image with GeneratedLogo */}
+                        <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                          <GeneratedLogo 
+                            name={innovation.title}
+                            size={200}
+                            {...getLogoStyleForCategory(innovation.category)}
+                            className="w-40 h-40 mx-auto"
+                          />
+                        </div>
                         {innovation.featured && (
                           <div className="absolute top-3 right-3 bg-moh-gold/90 text-white px-2 py-1 rounded-md text-sm font-medium flex items-center">
                             <Star className="h-3 w-3 mr-1 fill-white" />
