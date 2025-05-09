@@ -86,7 +86,7 @@ export default function HeroSection() {
               splitBy="chars"
             />
             <TextReveal 
-              text={t('home.hero.titleDark')}
+              text={"Innovation Drives Healthcare"}
               className="text-moh-darkGreen block mt-2"
               delay={1}
               staggerDelay={0.04}
