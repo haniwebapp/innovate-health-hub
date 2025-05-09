@@ -63,7 +63,11 @@ function App() {
                   
                   {/* Innovation Submission Flow */}
                   <Route path="/innovations/submit" element={<InnovationSubmitPage />}>
-                    <Route index element={<InnovationSubmitPreview />} />
+                    <Route index element={<div className="flex justify-center items-center p-8">
+                      <p className="text-gray-600">
+                        Select an option from the right to begin your innovation submission.
+                      </p>
+                    </div>} />
                     <Route path="contact" element={<ContactInformationPage />} />
                     {/* We'll add the rest of the submission flow routes later */}
                   </Route>
