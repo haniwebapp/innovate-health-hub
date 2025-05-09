@@ -2,18 +2,9 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, Clock, AlertCircle, CheckSquare, Clipboard, FileText } from "lucide-react";
+import { CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface RegulatoryFramework {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  description: string;
-  completedSteps: number;
-  totalSteps: number;
-  steps: string[];
-}
+import { RegulatoryFramework } from "./RegulatoryFrameworkCard";
 
 interface RegulatoryFrameworksProps {
   frameworks: RegulatoryFramework[];
@@ -37,7 +28,11 @@ export function RegulatoryFrameworks({ frameworks, selectedFramework, onFramewor
         >
           <div className="flex items-start gap-3">
             <div className="p-2 bg-moh-green/10 rounded-md text-moh-green">
-              {framework.icon}
+              {/* Render icon from string name */}
+              {framework.icon === 'CheckSquare' && <CheckCircle size={24} />}
+              {framework.icon === 'Clipboard' && <CheckCircle size={24} />}
+              {framework.icon === 'FileText' && <CheckCircle size={24} />}
+              {!['CheckSquare', 'Clipboard', 'FileText'].includes(framework.icon) && <CheckCircle size={24} />}
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-lg">{framework.title}</h3>

@@ -163,12 +163,12 @@ export default function RegulatoryPage() {
     }
   };
   
-  // Sample regulatory frameworks
+  // Sample regulatory frameworks - updated to use string icon names
   const regulatoryFrameworks = [
     {
       id: "mds",
       title: "Medical Device Standards",
-      icon: <CheckSquare className="h-5 w-5" />,
+      icon: "CheckSquare", // Changed from JSX to string
       description: "Applicable to hardware and equipment innovations in healthcare.",
       completedSteps: 2,
       totalSteps: 5,
@@ -183,7 +183,7 @@ export default function RegulatoryPage() {
     {
       id: "dht", 
       title: "Digital Health Technologies",
-      icon: <Clipboard className="h-5 w-5" />,
+      icon: "Clipboard", // Changed from JSX to string
       description: "For mobile apps, AI platforms, and other software-based innovations.",
       completedSteps: 3,
       totalSteps: 6,
@@ -199,7 +199,7 @@ export default function RegulatoryPage() {
     {
       id: "ipr", 
       title: "Intellectual Property Recognition",
-      icon: <FileText className="h-5 w-5" />,
+      icon: "FileText", // Changed from JSX to string
       description: "Protect your innovation through patents, trademarks and industrial designs.",
       completedSteps: 1,
       totalSteps: 4,

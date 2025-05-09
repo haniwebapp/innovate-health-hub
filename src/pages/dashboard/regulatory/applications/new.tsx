@@ -123,6 +123,7 @@ export default function NewRegulatoryApplicationPage() {
       description: string;
       innovation_type: string;
       framework_id: string;
+      user_id: string;
     }) => {
       const { data, error } = await supabase
         .from('regulatory_applications')
@@ -149,7 +150,7 @@ export default function NewRegulatoryApplicationPage() {
     }
   });
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !description || !selectedFramework) {
       toast({
@@ -162,11 +163,25 @@ export default function NewRegulatoryApplicationPage() {
     
     setIsSubmitting(true);
     
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast({
+        title: "Authentication error",
+        description: "You must be logged in to submit an application",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    
     submitApplication.mutate({
       name,
       description,
       innovation_type: innovationType,
-      framework_id: selectedFramework
+      framework_id: selectedFramework,
+      user_id: user.id
     });
   };
   

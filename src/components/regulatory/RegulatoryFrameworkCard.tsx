@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, AlertCircle, Code, Flask } from "lucide-react";
+import { CheckCircle, AlertCircle, Code, Beaker } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
@@ -34,8 +34,8 @@ export function RegulatoryFrameworkCard({
         return <CheckCircle size={24} />;
       case 'Code':
         return <Code size={24} />;
-      case 'Flask':
-        return <Flask size={24} />;
+      case 'Beaker':
+        return <Beaker size={24} />;
       default:
         return <CheckCircle size={24} />;
     }
