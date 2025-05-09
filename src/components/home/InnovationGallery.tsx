@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -94,7 +94,7 @@ export default function InnovationGallery() {
     return categoryMatch && trlMatch && featuredMatch;
   });
   
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -256,7 +256,7 @@ export default function InnovationGallery() {
         </div>
       </div>
       
-      <style jsx>{`
+      <style>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
         }

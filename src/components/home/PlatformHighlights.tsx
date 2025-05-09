@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Brain, FileText, TrendingUp, BookOpen, Flask } from "lucide-react";
+import { Brain, FileText, TrendingUp, BookOpen, Beaker } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getRTLClasses } from "@/utils/rtlUtils";
 
@@ -57,7 +57,7 @@ export default function PlatformHighlights() {
       description: t('home.features.knowledge.description') || "Access curated resources, research, and insights to help accelerate your healthcare innovation journey.",
     },
     {
-      icon: <Flask className="h-6 w-6" />,
+      icon: <Beaker className="h-6 w-6" />,
       title: t('home.features.challenges.title') || "Challenge Submissions",
       description: t('home.features.challenges.description') || "Participate in healthcare innovation challenges posed by the Ministry of Health and other stakeholders.",
     }
