@@ -10,6 +10,7 @@ import InnovationsList from "@/components/innovations/listing/InnovationsList";
 import InnovationCallToAction from "@/components/innovations/cta/InnovationCallToAction";
 import { mockInnovations } from "@/components/innovations/data/mockInnovations";
 import { Innovation } from "@/types/innovations";
+import { motion } from "framer-motion";
 
 export default function InnovationsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -152,20 +153,30 @@ export default function InnovationsPage() {
         />
 
         {/* Popular tags */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div 
+          className="container mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-lg shadow-sm my-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
           <TagFilterSection
             allTags={allTags}
             tagFilter={tagFilter}
             setTagFilter={setTagFilter}
           />
-        </div>
+        </motion.div>
 
         {/* Innovations list */}
         <section className="py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             {filteredInnovations.length === 0 ? (
-              <div className="text-center py-16">
-                <h3 className="text-xl font-medium text-gray-900 mb-2">No innovations found</h3>
+              <motion.div 
+                className="text-center py-16 bg-moh-lightGreen/10 rounded-xl border border-moh-green/10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h3 className="text-xl font-medium text-moh-darkGreen mb-2">No innovations found</h3>
                 <p className="text-gray-600">Try adjusting your filters or search term</p>
                 <Button 
                   variant="outline" 
@@ -174,7 +185,7 @@ export default function InnovationsPage() {
                 >
                   Clear All Filters
                 </Button>
-              </div>
+              </motion.div>
             ) : (
               <InnovationsList
                 innovations={filteredInnovations}

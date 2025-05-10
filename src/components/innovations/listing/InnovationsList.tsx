@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import InnovationCard from "@/components/innovations/InnovationCard";
 import { Button } from "@/components/ui/button";
 import { Innovation } from "@/types/innovations";
+import { ChevronRight } from "lucide-react";
 
 interface InnovationsListProps {
   innovations: Innovation[];
@@ -42,7 +43,7 @@ export default function InnovationsList({
   if (innovations.length === 0) {
     return (
       <div className="text-center py-16">
-        <h3 className="text-xl font-medium text-gray-900 mb-2">No innovations found</h3>
+        <h3 className="text-xl font-medium text-moh-darkGreen mb-2">No innovations found</h3>
         <p className="text-gray-600">Try adjusting your filters or search term</p>
       </div>
     );
@@ -79,11 +80,21 @@ export default function InnovationsList({
       )}
       
       {innovations.length > 0 && (
-        <div className="mt-12 flex justify-center">
-          <Button variant="outline" className="border-moh-green text-moh-green hover:bg-moh-lightGreen">
+        <motion.div 
+          className="mt-12 flex justify-center"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <Button 
+            variant="outline" 
+            className="border-2 border-moh-green text-moh-green hover:bg-moh-lightGreen/30 group flex items-center gap-2 px-6 py-2"
+          >
             Load More Innovations
+            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Button>
-        </div>
+        </motion.div>
       )}
     </>
   );

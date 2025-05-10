@@ -64,15 +64,15 @@ export default function FilterSection({
   resetFilters,
 }: FilterSectionProps) {
   return (
-    <section className="py-8 bg-gray-50 border-y border-gray-200">
+    <section className="py-8 bg-gradient-to-r from-moh-lightGreen/30 to-moh-lightGold/20 border-y border-gray-200">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="flex-1 w-full md:max-w-md">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-moh-darkGreen" size={20} />
               <Input 
                 placeholder="Search innovations..." 
-                className="pl-10"
+                className="pl-10 border-moh-green/30 focus:border-moh-green focus:ring-moh-green"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -85,7 +85,7 @@ export default function FilterSection({
                 <TooltipTrigger asChild>
                   <div>
                     <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                      <SelectTrigger className="w-[160px] bg-white">
+                      <SelectTrigger className="w-[160px] bg-white border-moh-green/30 focus:border-moh-green focus:ring-moh-green">
                         <SelectValue placeholder="Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -98,7 +98,7 @@ export default function FilterSection({
                     </Select>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-moh-darkGreen text-white">
                   <p>Filter by innovation category</p>
                 </TooltipContent>
               </Tooltip>
@@ -109,7 +109,7 @@ export default function FilterSection({
                 <TooltipTrigger asChild>
                   <div>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-[160px] bg-white">
+                      <SelectTrigger className="w-[160px] bg-white border-moh-green/30 focus:border-moh-green focus:ring-moh-green">
                         <SelectValue placeholder="Status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -122,7 +122,7 @@ export default function FilterSection({
                     </Select>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-moh-darkGreen text-white">
                   <p>Filter by implementation status</p>
                 </TooltipContent>
               </Tooltip>
@@ -133,7 +133,7 @@ export default function FilterSection({
                 <TooltipTrigger asChild>
                   <div>
                     <Select value={regulatoryFilter} onValueChange={setRegulatoryFilter}>
-                      <SelectTrigger className="w-[160px] bg-white">
+                      <SelectTrigger className="w-[160px] bg-white border-moh-green/30 focus:border-moh-green focus:ring-moh-green">
                         <SelectValue placeholder="Regulatory" />
                       </SelectTrigger>
                       <SelectContent>
@@ -144,7 +144,7 @@ export default function FilterSection({
                     </Select>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-moh-darkGreen text-white">
                   <p>Filter by regulatory compliance</p>
                 </TooltipContent>
               </Tooltip>
@@ -155,7 +155,7 @@ export default function FilterSection({
                 <TooltipTrigger asChild>
                   <div>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-[160px] bg-white">
+                      <SelectTrigger className="w-[160px] bg-white border-moh-green/30 focus:border-moh-green focus:ring-moh-green">
                         <SelectValue placeholder="Sort by" />
                       </SelectTrigger>
                       <SelectContent>
@@ -166,16 +166,16 @@ export default function FilterSection({
                     </Select>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-moh-darkGreen text-white">
                   <p>Sort innovations by different criteria</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
             
-            <div className="flex rounded-md overflow-hidden border border-gray-200">
+            <div className="flex rounded-md overflow-hidden border border-moh-green">
               <Button
                 variant={viewMode === "grid" ? "default" : "outline"}
-                className={`rounded-none ${viewMode === "grid" ? "bg-moh-green hover:bg-moh-darkGreen" : ""}`}
+                className={`rounded-none ${viewMode === "grid" ? "bg-moh-green hover:bg-moh-darkGreen" : "border-moh-green"}`}
                 onClick={() => setViewMode("grid")}
                 size="icon"
               >
@@ -188,7 +188,7 @@ export default function FilterSection({
               </Button>
               <Button
                 variant={viewMode === "list" ? "default" : "outline"}
-                className={`rounded-none ${viewMode === "list" ? "bg-moh-green hover:bg-moh-darkGreen" : ""}`}
+                className={`rounded-none ${viewMode === "list" ? "bg-moh-green hover:bg-moh-darkGreen" : "border-moh-green"}`}
                 onClick={() => setViewMode("list")}
                 size="icon"
               >
@@ -204,17 +204,17 @@ export default function FilterSection({
         
         {/* Active filters display */}
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-moh-darkGreen">
             Showing {filteredCount} innovation{filteredCount !== 1 ? 's' : ''}
           </p>
           
           <div className="flex flex-wrap gap-2">
             {searchTerm && (
-              <Badge variant="outline" className="bg-white flex gap-1 items-center">
-                <Search size={12} />
+              <Badge variant="outline" className="bg-white border-moh-green/30 flex gap-1 items-center">
+                <Search size={12} className="text-moh-green" />
                 {searchTerm}
                 <button 
-                  className="ml-1 hover:bg-gray-100 rounded-full p-1" 
+                  className="ml-1 hover:bg-moh-lightGreen rounded-full p-1" 
                   onClick={() => setSearchTerm("")}
                 >
                   <X size={12} />
@@ -223,11 +223,11 @@ export default function FilterSection({
             )}
             
             {categoryFilter !== "all" && (
-              <Badge variant="outline" className="bg-white flex gap-1 items-center">
-                <Filter size={12} />
+              <Badge variant="outline" className="bg-white border-moh-green/30 flex gap-1 items-center">
+                <Filter size={12} className="text-moh-green" />
                 {categoryFilter}
                 <button 
-                  className="ml-1 hover:bg-gray-100 rounded-full p-1" 
+                  className="ml-1 hover:bg-moh-lightGreen rounded-full p-1" 
                   onClick={() => setCategoryFilter("all")}
                 >
                   <X size={12} />
@@ -236,11 +236,11 @@ export default function FilterSection({
             )}
             
             {statusFilter !== "all" && (
-              <Badge variant="outline" className="bg-white flex gap-1 items-center">
-                <Clock size={12} />
+              <Badge variant="outline" className="bg-white border-moh-green/30 flex gap-1 items-center">
+                <Clock size={12} className="text-moh-green" />
                 {statusFilter}
                 <button 
-                  className="ml-1 hover:bg-gray-100 rounded-full p-1" 
+                  className="ml-1 hover:bg-moh-lightGreen rounded-full p-1" 
                   onClick={() => setStatusFilter("all")}
                 >
                   <X size={12} />
@@ -249,11 +249,11 @@ export default function FilterSection({
             )}
             
             {regulatoryFilter !== "all" && (
-              <Badge variant="outline" className="bg-white flex gap-1 items-center">
-                <Scale size={12} />
+              <Badge variant="outline" className="bg-white border-moh-green/30 flex gap-1 items-center">
+                <Scale size={12} className="text-moh-green" />
                 {regulatoryFilter === "compliant" ? "Compliant" : "Pending Approval"}
                 <button 
-                  className="ml-1 hover:bg-gray-100 rounded-full p-1" 
+                  className="ml-1 hover:bg-moh-lightGreen rounded-full p-1" 
                   onClick={() => setRegulatoryFilter("all")}
                 >
                   <X size={12} />
@@ -262,11 +262,11 @@ export default function FilterSection({
             )}
             
             {tagFilter && (
-              <Badge variant="outline" className="bg-white flex gap-1 items-center">
-                <Tags size={12} />
+              <Badge variant="outline" className="bg-white border-moh-green/30 flex gap-1 items-center">
+                <Tags size={12} className="text-moh-green" />
                 {tagFilter}
                 <button 
-                  className="ml-1 hover:bg-gray-100 rounded-full p-1" 
+                  className="ml-1 hover:bg-moh-lightGreen rounded-full p-1" 
                   onClick={() => setTagFilter(null)}
                 >
                   <X size={12} />
@@ -275,11 +275,11 @@ export default function FilterSection({
             )}
             
             {showAIMatches && (
-              <Badge variant="outline" className="bg-white flex gap-1 items-center">
-                <Lightbulb size={12} className="text-yellow-500" />
+              <Badge variant="outline" className="bg-white border-moh-gold flex gap-1 items-center">
+                <Lightbulb size={12} className="text-moh-gold" />
                 AI Matches
                 <button 
-                  className="ml-1 hover:bg-gray-100 rounded-full p-1" 
+                  className="ml-1 hover:bg-moh-lightGold/30 rounded-full p-1" 
                   onClick={() => setShowAIMatches(false)}
                 >
                   <X size={12} />

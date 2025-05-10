@@ -23,28 +23,28 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
   });
   
   // Get appropriate category color, or default to a generic one
-  const categoryClass = categoryColors[innovation.category] || "bg-gray-100 text-gray-800 border-gray-300";
+  const categoryClass = categoryColors[innovation.category] || "bg-moh-lightGreen text-moh-darkGreen border-moh-green/30";
 
   if (view === "grid") {
     return (
       <motion.div 
         whileHover={{ y: -5 }}
         transition={{ type: "spring", stiffness: 300 }}
-        className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white h-full flex flex-col"
+        className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white h-full flex flex-col group"
       >
         <div className="relative h-48">
           <img
             src={innovation.imageUrl}
             alt={innovation.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute top-4 right-4">
-            <span className={`px-2 py-1 rounded-md text-xs font-medium ${statusColors[innovation.status]}`}>
+            <span className={`px-2 py-1 rounded-md text-xs font-medium ${statusColors[innovation.status] || "bg-moh-lightGreen text-moh-darkGreen"}`}>
               {innovation.status}
             </span>
           </div>
           {innovation.aiMatchScore && (
-            <div className="absolute bottom-4 left-4 bg-gradient-to-r from-moh-green/80 to-moh-darkGreen/80 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center">
+            <div className="absolute bottom-4 left-4 bg-gradient-to-r from-moh-gold/80 to-moh-darkGold/80 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center">
               <Lightbulb size={12} className="mr-1" />
               AI Match: {innovation.aiMatchScore}%
             </div>
@@ -55,7 +55,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
             <Badge variant="outline" className={categoryClass}>
               {innovation.category}
             </Badge>
-            <div className="flex items-center text-yellow-500">
+            <div className="flex items-center text-moh-gold">
               <Star size={16} className="fill-current" />
               <span className="ml-1 text-sm font-medium">{innovation.rating.toFixed(1)}</span>
             </div>
@@ -65,12 +65,12 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
           
           <div className="flex flex-wrap gap-2 mb-4">
             {innovation.tags.slice(0, 2).map(tag => (
-              <Badge key={tag} variant="secondary" className="bg-gray-100 text-gray-700">
+              <Badge key={tag} variant="secondary" className="bg-moh-lightGreen/50 text-moh-darkGreen border border-moh-green/10">
                 {tag}
               </Badge>
             ))}
             {innovation.tags.length > 2 && (
-              <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+              <Badge variant="secondary" className="bg-moh-lightGreen/50 text-moh-darkGreen border border-moh-green/10">
                 +{innovation.tags.length - 2}
               </Badge>
             )}
@@ -78,18 +78,18 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
           
           <div className="flex items-center justify-between mt-auto">
             <div className="flex items-center text-gray-500 text-xs">
-              <Clock size={14} />
+              <Clock size={14} className="text-moh-green/60" />
               <span className="ml-1">{formattedDate}</span>
             </div>
             <Button 
               variant="outline" 
               size="sm" 
-              className="text-moh-green border-moh-green hover:bg-moh-lightGreen group"
+              className="text-moh-green border-moh-green hover:bg-moh-lightGreen/30 group/btn"
               asChild
             >
               <Link to={`/innovations/${innovation.id}`}>
                 View Details
-                <ArrowUpRight size={14} className="ml-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <ArrowUpRight size={14} className="ml-1 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
               </Link>
             </Button>
           </div>
@@ -102,22 +102,22 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
     <motion.div 
       initial={false}
       animate={{ height: expanded ? "auto" : "auto" }}
-      className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col"
+      className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col group"
     >
       <div className="md:flex">
         <div className="relative md:w-64 h-48 md:h-auto">
           <img
             src={innovation.imageUrl}
             alt={innovation.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute top-4 right-4">
-            <span className={`px-2 py-1 rounded-md text-xs font-medium ${statusColors[innovation.status]}`}>
+            <span className={`px-2 py-1 rounded-md text-xs font-medium ${statusColors[innovation.status] || "bg-moh-lightGreen text-moh-darkGreen"}`}>
               {innovation.status}
             </span>
           </div>
           {innovation.aiMatchScore && (
-            <div className="absolute bottom-4 left-4 bg-gradient-to-r from-moh-green/80 to-moh-darkGreen/80 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center">
+            <div className="absolute bottom-4 left-4 bg-gradient-to-r from-moh-gold/80 to-moh-darkGold/80 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center">
               <Lightbulb size={12} className="mr-1" />
               AI Match: {innovation.aiMatchScore}%
             </div>
@@ -128,7 +128,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
             <Badge variant="outline" className={categoryClass}>
               {innovation.category}
             </Badge>
-            <div className="flex items-center text-yellow-500">
+            <div className="flex items-center text-moh-gold">
               <Star size={16} className="fill-current" />
               <span className="ml-1 text-sm font-medium">{innovation.rating.toFixed(1)}</span>
             </div>
@@ -139,7 +139,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
           </p>
           <div className="flex flex-wrap gap-2 mb-4">
             {innovation.tags.map(tag => (
-              <Badge key={tag} variant="secondary" className="bg-gray-100 text-gray-700">
+              <Badge key={tag} variant="secondary" className="bg-moh-lightGreen/50 text-moh-darkGreen border border-moh-green/10">
                 {tag}
               </Badge>
             ))}
@@ -182,11 +182,11 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
               )}
               
               {innovation.regulatoryStatus && (
-                <div className="col-span-2 mt-2 border-t pt-2">
+                <div className="col-span-2 mt-2 border-t border-moh-green/10 pt-2">
                   <div className="flex items-center text-gray-700 font-medium mb-2">
                     <Scale size={16} className="mr-2 text-moh-green" />
                     <span>Regulatory Status: </span>
-                    <Badge className={innovation.regulatoryStatus.compliant ? "bg-green-100 text-green-800 ml-2" : "bg-amber-100 text-amber-800 ml-2"}>
+                    <Badge className={innovation.regulatoryStatus.compliant ? "bg-moh-lightGreen text-moh-darkGreen ml-2" : "bg-amber-100 text-amber-800 ml-2"}>
                       {innovation.regulatoryStatus.compliant ? "Compliant" : "In Progress"}
                     </Badge>
                   </div>
@@ -194,7 +194,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
                   {innovation.regulatoryStatus.certifications.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {innovation.regulatoryStatus.certifications.map((cert, index) => (
-                        <Badge key={index} variant="outline" className="bg-white text-moh-darkGreen">
+                        <Badge key={index} variant="outline" className="bg-white text-moh-darkGreen border-moh-green/30">
                           {cert}
                         </Badge>
                       ))}
@@ -207,7 +207,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
           
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center text-gray-500 text-sm">
-              <Clock size={16} />
+              <Clock size={16} className="text-moh-green/60" />
               <span className="ml-1">{formattedDate}</span>
             </div>
             <div className="flex gap-2">
@@ -215,7 +215,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
                 variant="outline" 
                 size="sm"
                 onClick={() => setExpanded(!expanded)}
-                className="border-gray-300"
+                className="border-moh-green/30 text-moh-darkGreen hover:bg-moh-lightGreen/20"
               >
                 {expanded ? (
                   <>
@@ -231,7 +231,7 @@ export default function InnovationCard({ innovation, view }: InnovationCardProps
               </Button>
               
               <Button 
-                className="bg-moh-green hover:bg-moh-darkGreen text-white"
+                className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white"
                 asChild
               >
                 <Link to={`/innovations/${innovation.id}`}>

@@ -1,5 +1,7 @@
 
+import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { Tags } from "lucide-react";
 
 interface TagFilterSectionProps {
   allTags: string[];
@@ -7,26 +9,68 @@ interface TagFilterSectionProps {
   setTagFilter: (tag: string | null) => void;
 }
 
-export default function TagFilterSection({ 
-  allTags, 
-  tagFilter, 
-  setTagFilter 
+export default function TagFilterSection({
+  allTags,
+  tagFilter,
+  setTagFilter
 }: TagFilterSectionProps) {
+  // Take only the first 15 tags to avoid overcrowding
+  const popularTags = allTags.slice(0, 15);
+  
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const childVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { type: "spring", stiffness: 300 }
+    }
+  };
+
   return (
-    <div className="mt-4 border-t pt-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm font-medium text-gray-700">Popular tags:</span>
-        {allTags.slice(0, 6).map(tag => (
-          <Badge 
-            key={tag}
-            variant="outline" 
-            className={`cursor-pointer hover:bg-gray-100 ${tag === tagFilter ? 'bg-moh-lightGreen text-moh-darkGreen' : 'bg-white'}`}
-            onClick={() => setTagFilter(tag === tagFilter ? null : tag)}
-          >
-            {tag}
-          </Badge>
-        ))}
+    <div className="py-4">
+      <div className="flex items-center gap-2 mb-3">
+        <Tags size={16} className="text-moh-darkGreen" />
+        <h3 className="text-moh-darkGreen font-medium">Popular Tags</h3>
       </div>
+      
+      <motion.div 
+        className="flex flex-wrap gap-2"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={childVariants}>
+          <Badge 
+            variant={tagFilter === null ? "default" : "outline"}
+            className={`cursor-pointer ${tagFilter === null ? 'bg-moh-green hover:bg-moh-darkGreen' : 'hover:bg-moh-lightGreen/50 border-moh-green/30'}`}
+            onClick={() => setTagFilter(null)}
+          >
+            All Tags
+          </Badge>
+        </motion.div>
+        
+        {popularTags.map((tag) => (
+          <motion.div key={tag} variants={childVariants}>
+            <Badge 
+              variant={tagFilter === tag ? "default" : "outline"}
+              className={`cursor-pointer ${tagFilter === tag ? 'bg-moh-green hover:bg-moh-darkGreen' : 'hover:bg-moh-lightGreen/50 border-moh-green/30'}`}
+              onClick={() => setTagFilter(tag)}
+            >
+              {tag}
+            </Badge>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 }
