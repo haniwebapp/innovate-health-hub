@@ -69,41 +69,53 @@ export default function SubmissionLayout({
   return (
     <div className="max-w-5xl mx-auto">
       {/* Progress indicator */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
+      <div className="mb-10">
+        <div className="flex justify-between items-center relative">
+          {/* Connecting line */}
+          <div className="absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 bg-gray-200 z-0" />
+          
           {steps.map((step, index) => {
             const isCompleted = formProgress[step.key as keyof typeof formProgress];
             const isCurrent = activeStep === index;
             
             return (
               <React.Fragment key={step.key}>
-                <div 
-                  className={`flex flex-col items-center ${isCurrent ? 'scale-110 transition-transform' : ''}`}
+                <motion.div 
+                  className={`flex flex-col items-center relative z-10 ${isCurrent ? 'scale-110 transition-transform' : ''}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.4 }}
                 >
                   <motion.div
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: isCurrent ? 1.2 : 1 }}
-                    className={`rounded-full h-12 w-12 flex items-center justify-center ${
+                    initial={{ scale: 0.8, opacity: 0.5 }}
+                    animate={{ 
+                      scale: isCurrent ? 1.2 : 1,
+                      opacity: 1
+                    }}
+                    className={`rounded-full h-12 w-12 flex items-center justify-center transition-all duration-300 ${
                       isCompleted 
-                        ? 'bg-moh-green text-white' 
+                        ? 'bg-gradient-to-br from-moh-green to-moh-darkGreen text-white shadow-md' 
                         : isCurrent 
-                        ? 'bg-moh-lightGreen text-moh-darkGreen border-2 border-moh-green' 
-                        : 'bg-gray-100 text-gray-400'
+                          ? 'bg-gradient-to-br from-moh-lightGreen to-moh-green/70 text-white border-2 border-moh-green shadow-md' 
+                          : 'bg-gray-100 text-gray-400 border border-gray-200'
                     }`}
                   >
                     {isCompleted ? (
                       <CheckCircle size={24} />
                     ) : (
-                      <Circle size={24} className={`${isCurrent ? 'fill-moh-lightGreen stroke-moh-darkGreen' : ''}`} />
+                      <Circle size={24} className={`${isCurrent ? 'fill-moh-lightGreen/50 stroke-white' : ''}`} />
                     )}
                   </motion.div>
-                  <span className={`mt-2 text-sm font-medium ${isCurrent ? 'text-moh-darkGreen' : 'text-gray-500'}`}>
+                  <motion.span 
+                    className={`mt-2 text-sm font-medium ${isCurrent ? 'text-moh-darkGreen' : isCompleted ? 'text-moh-green' : 'text-gray-500'}`}
+                    animate={{ 
+                      scale: isCurrent ? 1.1 : 1,
+                      fontWeight: isCurrent ? 600 : 400
+                    }}
+                  >
                     {step.name}
-                  </span>
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={`flex-1 h-0.5 ${index < activeStep ? 'bg-moh-green' : 'bg-gray-200'}`} />
-                )}
+                  </motion.span>
+                </motion.div>
               </React.Fragment>
             );
           })}
@@ -111,12 +123,15 @@ export default function SubmissionLayout({
       </div>
 
       {/* Main content */}
-      <div className="bg-white rounded-lg border shadow-sm p-6 mb-8">
+      <div className="bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300 p-8 mb-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-moh-green via-moh-lightGreen to-moh-lightGold/50" />
+        
         <motion.div
           key={activeStep}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.4 }}
           className="min-h-[400px]"
         >
           {children}
@@ -131,9 +146,9 @@ export default function SubmissionLayout({
               variant="outline" 
               onClick={handlePrevious}
               disabled={activeStep === 0}
-              className="flex items-center"
+              className="flex items-center border-moh-green/30 text-moh-darkGreen hover:bg-moh-lightGreen/20 hover:border-moh-green transition-all duration-300"
             >
-              <ArrowLeft size={16} className="mr-2" />
+              <ArrowLeft size={16} className="mr-2 transition-transform group-hover:translate-x-[-2px]" />
               Previous Step
             </Button>
           ) : (
@@ -143,10 +158,10 @@ export default function SubmissionLayout({
           {showNext && (
             <Button 
               onClick={handleNext} 
-              className="bg-moh-green hover:bg-moh-darkGreen text-white flex items-center"
+              className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white flex items-center group transition-all duration-300 shadow-sm hover:shadow"
             >
               {nextButtonText}
-              <ArrowRight size={16} className="ml-2" />
+              <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-[2px]" />
             </Button>
           )}
         </div>

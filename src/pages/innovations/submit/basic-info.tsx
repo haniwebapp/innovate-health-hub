@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -19,7 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, PlusCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 // Form schema
 const formSchema = z.object({
@@ -112,97 +114,141 @@ export default function BasicInfoPage() {
     return form.formState.isValid;
   };
 
+  // Animation variants
+  const formItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
     <SubmissionLayout onNext={handleNext} nextButtonText="Continue to Details">
-      <div>
-        <h2 className="text-2xl font-bold text-moh-darkGreen mb-2">Basic Information</h2>
-        <p className="text-gray-600 mb-6">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-2xl font-bold text-moh-darkGreen mb-2 bg-gradient-to-r from-moh-darkGreen to-moh-green bg-clip-text text-transparent">
+          Basic Information
+        </h2>
+        <p className="text-gray-600 mb-8">
           Provide essential information about your healthcare innovation.
         </p>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Innovation Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter the title of your innovation" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    A clear and concise title for your healthcare innovation.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <motion.div 
+              variants={formItemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.1 }}
+            >
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-moh-darkGreen">Innovation Title</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Enter the title of your innovation" 
+                        {...field}
+                        className="border-moh-green/20 focus-visible:ring-moh-green/30 focus-visible:border-moh-green/50 transition-all" 
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      A clear and concise title for your healthcare innovation.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
             
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Short Description</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Briefly describe your innovation (300 characters max)" 
-                      {...field}
-                      rows={4}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Write a short summary that clearly explains what your innovation does.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <motion.div 
+              variants={formItemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.2 }}
+            >
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-moh-darkGreen">Short Description</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Briefly describe your innovation (300 characters max)" 
+                        {...field}
+                        rows={4}
+                        className="border-moh-green/20 focus-visible:ring-moh-green/30 focus-visible:border-moh-green/50 transition-all" 
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Write a short summary that clearly explains what your innovation does.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
             
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <select
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                      {...field}
-                    >
-                      <option value="" disabled>Select a category</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </FormControl>
-                  <FormDescription>
-                    Select the category that best describes your innovation.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <motion.div 
+              variants={formItemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.3 }}
+            >
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-moh-darkGreen">Category</FormLabel>
+                    <FormControl>
+                      <select
+                        className="flex h-10 w-full rounded-md border border-moh-green/20 bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moh-green/30 focus-visible:border-moh-green/50 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm transition-all"
+                        {...field}
+                      >
+                        <option value="" disabled>Select a category</option>
+                        {categories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormDescription>
+                      Select the category that best describes your innovation.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
             
-            <div className="space-y-2">
-              <FormLabel>Tags</FormLabel>
+            <motion.div 
+              className="space-y-2"
+              variants={formItemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.4 }}
+            >
+              <FormLabel className="text-moh-darkGreen">Tags</FormLabel>
               <div className="flex gap-2">
                 <Input
                   placeholder="Add tags (e.g., preventive, chronic, pediatric)"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1"
+                  className="border-moh-green/20 focus-visible:ring-moh-green/30 focus-visible:border-moh-green/50 transition-all flex-1"
                 />
                 <Button 
                   type="button" 
                   onClick={handleAddTag} 
-                  className="bg-moh-green hover:bg-moh-darkGreen"
+                  className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white flex items-center gap-1"
                 >
-                  Add
+                  <PlusCircle size={16} /> Add
                 </Button>
               </div>
               <FormDescription>
@@ -211,23 +257,38 @@ export default function BasicInfoPage() {
               
               <div className="flex flex-wrap gap-2 mt-3">
                 {tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="py-1 px-3 flex items-center gap-1">
-                    {tag}
-                    <X 
-                      size={14} 
-                      className="cursor-pointer hover:text-red-500" 
-                      onClick={() => removeTag(tag)}
-                    />
-                  </Badge>
+                  <motion.div
+                    key={tag}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Badge 
+                      variant="secondary" 
+                      className="py-1.5 px-3 flex items-center gap-1 bg-moh-lightGreen/20 hover:bg-moh-lightGreen/30 text-moh-darkGreen border border-moh-green/10"
+                    >
+                      {tag}
+                      <X 
+                        size={14} 
+                        className="cursor-pointer hover:text-red-500 ml-1" 
+                        onClick={() => removeTag(tag)}
+                      />
+                    </Badge>
+                  </motion.div>
                 ))}
+                
+                {tags.length === 0 && (
+                  <p className="text-sm text-gray-400 italic">No tags added yet</p>
+                )}
               </div>
-            </div>
+            </motion.div>
             
             {/* Hidden submit button for form validation */}
             <button type="submit" className="hidden"></button>
           </form>
         </Form>
-      </div>
+      </motion.div>
     </SubmissionLayout>
   );
 }
