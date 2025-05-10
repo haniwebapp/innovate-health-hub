@@ -12,8 +12,8 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
       title="Main" 
       isCollapsed={isCollapsed} 
       items={[
-        { to: "/dashboard", icon: <LayoutDashboard size={20} className="text-moh-green" />, text: "Dashboard" },
-        { to: "/dashboard/profile", icon: <User size={20} className="text-moh-green" />, text: "Profile" }
+        { to: "/dashboard", icon: <LayoutDashboard size={18} className="text-moh-green" />, text: "Dashboard" },
+        { to: "/dashboard/profile", icon: <User size={18} className="text-moh-green" />, text: "Profile" }
       ]}
     />
   );

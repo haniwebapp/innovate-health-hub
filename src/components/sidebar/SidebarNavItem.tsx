@@ -23,17 +23,20 @@ export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavIt
         <NavLink
           to={to}
           className={({ isActive }) => cn(
-            "flex items-center flex-col rounded-md px-2 py-3 text-xs transition-all duration-200",
-            "overflow-hidden",
+            "flex items-center px-4 py-2.5 text-sm transition-colors rounded-md",
+            "relative overflow-hidden w-full",
             isActive
-              ? "bg-moh-green/10 text-moh-green font-medium shadow-sm"
-              : "text-slate-600 hover:bg-moh-green/5 hover:text-moh-green",
-            isCollapsed && "justify-center p-2",
+              ? "bg-moh-green/20 text-white font-medium"
+              : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
+            isCollapsed && "justify-center px-2",
             className
           )}
           end={to === "/dashboard"}
         >
-          <div className="flex min-w-[24px] items-center justify-center mb-1">
+          <div className={cn(
+            "flex items-center justify-center",
+            isCollapsed ? "w-full" : "mr-3"
+          )}>
             {icon}
           </div>
           
@@ -41,7 +44,7 @@ export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavIt
             <>
               <span className="truncate">{text}</span>
               {badge && (
-                <span className="ml-auto mt-1 text-[9px] bg-moh-gold/20 text-moh-darkGold px-1.5 py-0.5 rounded-sm font-medium">
+                <span className="ml-auto flex items-center justify-center min-w-[22px] h-5 bg-moh-gold/20 text-moh-gold px-1.5 text-xs rounded-full font-medium">
                   {badge}
                 </span>
               )}
@@ -49,9 +52,9 @@ export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavIt
           )}
         </NavLink>
       </TooltipTrigger>
-      <TooltipContent side="right" className="font-medium bg-white">
+      <TooltipContent side="right" className="font-medium bg-slate-800 text-white border-slate-700">
         {text}
-        {badge && <span className="ml-2 text-[10px] bg-moh-gold/20 text-moh-darkGold px-1.5 py-0.5 rounded-md">{badge}</span>}
+        {badge && <span className="ml-2 text-[10px] bg-moh-gold/20 text-moh-gold px-1.5 py-0.5 rounded-md">{badge}</span>}
       </TooltipContent>
     </Tooltip>
   );

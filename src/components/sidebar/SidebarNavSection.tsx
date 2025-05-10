@@ -10,13 +10,13 @@ type NavSectionProps = {
 
 export function NavSection({ title, isCollapsed, items }: NavSectionProps) {
   return (
-    <div className="py-1.5">
+    <div className="py-2">
       {!isCollapsed && (
-        <h3 className="px-2 mb-1 text-[10px] uppercase text-moh-gold/80 font-semibold tracking-wider">
+        <h3 className="px-4 mb-2 text-xs uppercase text-moh-gold/90 font-semibold tracking-wider">
           {title}
         </h3>
       )}
-      <nav className="grid grid-cols-3 gap-1">
+      <nav className="flex flex-col space-y-1">
         {items.map(item => (
           <NavItem
             key={item.text}

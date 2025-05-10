@@ -14,25 +14,25 @@ export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
       items={[
         { 
           to: "/dashboard/admin/users", 
-          icon: <Users size={20} className="text-moh-gold" />, 
+          icon: <Users size={18} className="text-moh-gold" />, 
           text: "Users",
           badge: "Admin"
         },
         { 
           to: "/dashboard/admin/analytics", 
-          icon: <BarChart3 size={20} className="text-moh-gold" />, 
+          icon: <BarChart3 size={18} className="text-moh-gold" />, 
           text: "Analytics",
           badge: "Admin"
         },
         { 
           to: "/dashboard/admin/settings", 
-          icon: <Settings size={20} className="text-moh-gold" />, 
+          icon: <Settings size={18} className="text-moh-gold" />, 
           text: "Settings",
           badge: "Admin"
         },
         { 
           to: "/dashboard/admin/integrations", 
-          icon: <Plug size={20} className="text-moh-gold" />, 
+          icon: <Plug size={18} className="text-moh-gold" />, 
           text: "Integrations",
           badge: "Admin"
         }

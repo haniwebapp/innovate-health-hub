@@ -29,16 +29,16 @@ export default function DashboardSidebar({
         transition={{ duration: 0.3 }}
         className={cn(
           "h-screen fixed left-0 top-0 z-40 flex flex-col transition-all duration-300",
-          "bg-gradient-to-b from-white to-slate-100 backdrop-blur-lg",
-          "border-r border-slate-200 shadow-lg",
-          isCollapsed ? "w-[70px]" : "w-64"
+          "bg-slate-900 backdrop-blur-lg",
+          "border-r border-slate-800/50",
+          isCollapsed ? "w-[68px]" : "w-64"
         )}
       >
         {/* Header with Logo and collapse button */}
         <SidebarHeader isCollapsed={isCollapsed} onToggleCollapse={onToggleCollapse} />
         
         {/* Navigation Menu - with improved scrolling */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent py-1 px-2">
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700/50 scrollbar-track-transparent py-2 px-2 space-y-1">
           {/* Main Navigation */}
           <SidebarMainNav isCollapsed={isCollapsed} />
           

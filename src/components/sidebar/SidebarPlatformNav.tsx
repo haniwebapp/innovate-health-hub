@@ -12,11 +12,11 @@ export function SidebarPlatformNav({ isCollapsed }: SidebarPlatformNavProps) {
       title="Platform" 
       isCollapsed={isCollapsed} 
       items={[
-        { to: "/dashboard/investment", icon: <DollarSign size={20} className="text-moh-green" />, text: "Investment" },
-        { to: "/dashboard/regulatory", icon: <BookOpen size={20} className="text-moh-green" />, text: "Regulatory" },
-        { to: "/dashboard/knowledge", icon: <BookOpen size={20} className="text-moh-green" />, text: "Knowledge" },
-        { to: "/dashboard/collaboration", icon: <MessageSquare size={20} className="text-moh-green" />, text: "Collaborate" },
-        { to: "/dashboard/activity", icon: <Clock size={20} className="text-moh-green" />, text: "Activity" }
+        { to: "/dashboard/investment", icon: <DollarSign size={18} className="text-moh-green" />, text: "Investment" },
+        { to: "/dashboard/regulatory", icon: <BookOpen size={18} className="text-moh-green" />, text: "Regulatory" },
+        { to: "/dashboard/knowledge", icon: <BookOpen size={18} className="text-moh-green" />, text: "Knowledge" },
+        { to: "/dashboard/collaboration", icon: <MessageSquare size={18} className="text-moh-green" />, text: "Collaborate", badge: "2" },
+        { to: "/dashboard/activity", icon: <Clock size={18} className="text-moh-green" />, text: "Activity" }
       ]}
     />
   );
