@@ -1,8 +1,6 @@
 
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-import Lottie from "lottie-react";
-import healthInnovationAnim from "@/assets/animations/health-innovation-anim.json";
 
 export function HeroLogo() {
   const { t } = useLanguage();
@@ -66,7 +64,7 @@ export function HeroLogo() {
         />
       </motion.div>
 
-      {/* MOH Logo - Main Circle with Palm Tree and Symbol */}
+      {/* MOH Logo - Main Circle with Palm Tree and Infinity Symbol */}
       <motion.div 
         className="w-24 h-24 bg-moh-green rounded-full flex items-center justify-center relative z-10"
         animate={{ 
@@ -93,45 +91,24 @@ export function HeroLogo() {
           }}
         />
         
-        {/* MOH Logo Symbol */}
-        <svg 
-          viewBox="0 0 100 100" 
-          className="w-16 h-16 fill-white"
+        {/* Use the uploaded logo image */}
+        <motion.div
+          className="w-16 h-16 relative flex items-center justify-center"
+          animate={{
+            scale: [1, 1.05, 1],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
         >
-          {/* Palm Tree */}
-          <motion.path 
-            d="M50,20 C50,20 45,25 45,30 C45,35 50,38 50,45 C50,38 55,35 55,30 C55,25 50,20 50,20 Z" 
-            animate={{ y: [0, -1, 0], scale: [1, 1.02, 1] }}
-            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+          <img 
+            src="/lovable-uploads/fc6609f7-b2c9-4eb5-8a3a-6baa876025c7.png" 
+            alt="MOH Logo" 
+            className="w-full h-full object-contain"
           />
-          
-          {/* Infinity/Medical Symbol */}
-          <motion.path 
-            d="M35,55 C35,50 40,48 45,48 C50,48 55,50 55,55 C55,60 50,62 45,62 C40,62 35,60 35,55 Z M65,55 C65,50 60,48 55,48 C50,48 45,50 45,55 C45,60 50,62 55,62 C60,62 65,60 65,55 Z"
-            fillRule="evenodd"
-            strokeWidth="2"
-            stroke="white"
-            fill="none"
-            animate={{ 
-              strokeDashoffset: [0, -30],
-              strokeDasharray: 100
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          />
-          
-          {/* "2030" Text */}
-          <motion.text 
-            x="50" 
-            y="75" 
-            textAnchor="middle" 
-            className="text-xs font-bold"
-            fill="white"
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            2030
-          </motion.text>
-        </svg>
+        </motion.div>
       </motion.div>
       
       {/* Enhanced sparkle effects */}
