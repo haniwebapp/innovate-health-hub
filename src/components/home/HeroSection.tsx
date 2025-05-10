@@ -50,7 +50,7 @@ export default function HeroSection() {
   return (
     <motion.section
       ref={sectionRef}
-      className="pt-28 pb-20 md:pt-32 md:pb-24 lg:pt-36 lg:pb-28 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden"
+      className="pt-0 pb-20 md:pb-24 lg:pb-28 bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGold relative overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={containerVariant}
@@ -60,7 +60,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
-          className="max-w-5xl mx-auto text-center"
+          className="max-w-5xl mx-auto text-center pt-28 md:pt-32 lg:pt-36"
           variants={containerVariant}
         >
           <motion.div variants={itemVariant}>

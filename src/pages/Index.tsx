@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import Navbar from "@/components/layouts/Navbar";
 import HeroSection from "@/components/home/HeroSection";
@@ -14,6 +15,7 @@ import Footer from "@/components/home/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
+
 const Index = () => {
   // Page transition animations
   const pageVariants = {
@@ -36,12 +38,21 @@ const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  return <AnimatePresence mode="wait">
-      <motion.div className="min-h-screen flex flex-col bg-white" initial="initial" animate="animate" exit="exit" variants={pageVariants} key="home-page">
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div 
+        className="min-h-screen flex flex-col bg-white" 
+        initial="initial" 
+        animate="animate" 
+        exit="exit" 
+        variants={pageVariants} 
+        key="home-page"
+      >
         <Navbar />
         <ScrollProgress />
         
-        <main className="flex-grow pt-16 my-0 rounded-none py-0">
+        <main className="flex-grow pt-0 my-0 rounded-none py-0">
           <TooltipProvider>
             {/* Enhanced home page section order for better user engagement */}
             <HeroSection />
@@ -58,6 +69,8 @@ const Index = () => {
         </main>
         <Footer />
       </motion.div>
-    </AnimatePresence>;
+    </AnimatePresence>
+  );
 };
+
 export default Index;
