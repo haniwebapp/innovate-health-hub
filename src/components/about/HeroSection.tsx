@@ -24,10 +24,10 @@ export default function HeroSection() {
   };
   
   return (
-    <section className="pt-28 pb-16 bg-gradient-to-br from-moh-lightGreen to-white relative overflow-hidden">
+    <section className="pt-0 pb-16 bg-gradient-to-br from-moh-lightGreen to-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
-          className="max-w-3xl ml-auto"
+          className="max-w-3xl ml-auto pt-28"
           initial="hidden"
           animate="visible"
           variants={fadeInUpVariants}

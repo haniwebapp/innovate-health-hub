@@ -36,11 +36,13 @@ const AboutPage = () => {
     >
       <Navbar />
       
-      <HeroSection />
-      <VisionMissionSection />
-      <FocusAreasSection />
-      <PartnersSection />
-      <JoinCommunitySection />
+      <main className="flex-grow pt-0 my-0 rounded-none py-0">
+        <HeroSection />
+        <VisionMissionSection />
+        <FocusAreasSection />
+        <PartnersSection />
+        <JoinCommunitySection />
+      </main>
       
       <Footer />
     </motion.div>
