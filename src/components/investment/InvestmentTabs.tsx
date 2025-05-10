@@ -12,10 +12,19 @@ interface InvestmentTabsProps {
 }
 
 export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps) {
+  // Define the fadeIn animation variant properly
   const fadeIn = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4 }
+    initial: { 
+      opacity: 0, 
+      y: 10 
+    },
+    animate: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.4 
+      } 
+    }
   };
   
   return (

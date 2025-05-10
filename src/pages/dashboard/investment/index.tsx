@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -68,21 +67,21 @@ const aiMarketTrends = [
     category: "Digital Health",
     title: "Telehealth Expansion",
     description: "Telehealth solutions continue to see strong investment growth with 45% YoY increase in funding.",
-    trend: "increasing",
+    trend: "increasing" as const,
     data: [20, 25, 35, 42, 55, 62]
   },
   {
     category: "Medical Devices",
     title: "Remote Monitoring Devices",
     description: "IoT-enabled monitoring devices are attracting significant investor attention, particularly those with AI integration.",
-    trend: "increasing",
+    trend: "increasing" as const,
     data: [15, 22, 28, 35, 42, 48]
   },
   {
     category: "AI in Healthcare",
     title: "Diagnostic AI Solutions",
     description: "AI-powered diagnostic tools are the fastest growing segment with 52% funding increase in the past year.",
-    trend: "rapidly-increasing",
+    trend: "rapidly-increasing" as const,
     data: [10, 18, 25, 40, 60, 85]
   },
 ];
@@ -214,7 +213,11 @@ export default function DashboardInvestmentPage() {
   // Animation variants
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6 } 
+    }
   };
   
   return (
