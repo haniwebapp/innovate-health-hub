@@ -5,6 +5,7 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NotificationBadgeProps {
   onClick?: () => void;
@@ -15,9 +16,15 @@ export function NotificationBadge({ onClick, className }: NotificationBadgeProps
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const loadNotifications = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         setIsLoading(true);
         const notifications = await fetchUserNotifications();
@@ -41,7 +48,11 @@ export function NotificationBadge({ onClick, className }: NotificationBadgeProps
     }, 60000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [user]);
+
+  if (!user) {
+    return null;
+  }
 
   if (error) {
     return (
