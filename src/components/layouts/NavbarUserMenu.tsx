@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Settings, FileText, Bell, HelpCircle } from "lucide-react";
 
 export default function NavbarUserMenu() {
   const { user, signOut } = useAuth();
@@ -34,13 +35,27 @@ export default function NavbarUserMenu() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" asChild>
-          <Link to="/auth/login">Sign In</Link>
-        </Button>
-        <Button asChild>
-          <Link to="/auth/register">Register</Link>
-        </Button>
+      <div className="flex items-center gap-3">
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-moh-green/20 text-moh-darkGreen hover:bg-moh-lightGreen/50 hover:text-moh-green rounded-full"
+            asChild
+          >
+            <Link to="/auth/login">Sign In</Link>
+          </Button>
+        </motion.div>
+        
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button 
+            size="sm" 
+            className="bg-moh-green hover:bg-moh-darkGreen rounded-full"
+            asChild
+          >
+            <Link to="/auth/register">Register</Link>
+          </Button>
+        </motion.div>
       </div>
     );
   }
@@ -48,35 +63,80 @@ export default function NavbarUserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10 border border-gray-200">
+        <Button 
+          variant="ghost" 
+          className="relative h-10 w-10 rounded-full p-0 overflow-hidden border-2 border-transparent hover:border-moh-green/30 transition-all"
+        >
+          <Avatar className="h-full w-full">
             <AvatarImage src={user.avatar_url || undefined} alt={`${user.first_name || user.email}`} />
-            <AvatarFallback className="bg-moh-lightGreen text-moh-darkGreen">
+            <AvatarFallback className="bg-gradient-to-br from-moh-lightGreen to-moh-green text-white">
               {getInitials()}
             </AvatarFallback>
           </Avatar>
+          <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-white"></span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <div className="flex items-center justify-start gap-2 p-2">
-          <div className="flex flex-col space-y-0.5">
-            <p className="text-sm font-medium">
-              {user.first_name} {user.last_name}
+      
+      <DropdownMenuContent align="end" className="w-72 p-2">
+        <div className="flex items-center p-3 bg-moh-lightGreen/20 rounded-lg mb-2">
+          <Avatar className="h-10 w-10 border border-moh-green/20">
+            <AvatarImage src={user.avatar_url || undefined} alt={`${user.first_name || user.email}`} />
+            <AvatarFallback className="bg-gradient-to-br from-moh-lightGreen to-moh-green text-white">
+              {getInitials()}
+            </AvatarFallback>
+          </Avatar>
+          
+          <div className="ml-3">
+            <p className="font-medium text-moh-darkGreen">
+              {user.first_name ? `${user.first_name} ${user.last_name}` : 'Welcome back!'}
             </p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+            <p className="text-xs text-gray-500">{user.email}</p>
           </div>
         </div>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/dashboard" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
+        
+        <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
+          <Link to="/dashboard" className="cursor-pointer flex items-center gap-2">
+            <Settings className="h-4 w-4 text-moh-green" />
             <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        
+        <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
+          <Link to="/dashboard/profile" className="cursor-pointer flex items-center gap-2">
+            <User className="h-4 w-4 text-moh-green" />
+            <span>My Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
+          <Link to="/dashboard/submissions" className="cursor-pointer flex items-center gap-2">
+            <FileText className="h-4 w-4 text-moh-green" />
+            <span>My Submissions</span>
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
+          <Link to="/dashboard/notifications" className="cursor-pointer flex items-center gap-2">
+            <Bell className="h-4 w-4 text-moh-green" />
+            <span>Notifications</span>
+            <div className="ml-auto bg-moh-gold text-white text-xs rounded-full px-2 py-0.5">3</div>
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuSeparator className="my-2" />
+        
+        <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
+          <Link to="/help" className="cursor-pointer flex items-center gap-2">
+            <HelpCircle className="h-4 w-4 text-moh-green" />
+            <span>Help & Support</span>
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuSeparator className="my-2" />
+        
         <DropdownMenuItem 
           onClick={signOut}
-          className="text-red-600 focus:text-red-600 cursor-pointer"
+          className="py-2 text-red-500 hover:text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>

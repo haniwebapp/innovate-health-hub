@@ -197,27 +197,27 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
 
   const MotionLink = motion(Link);
   
-  // Animation variants for staggered menu items
+  // Enhanced animation variants for staggered menu items
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: { 
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: 0.07,
+        delayChildren: 0.1
       }
     }
   };
   
   const itemVariants = {
-    hidden: { y: -20, opacity: 0 },
+    hidden: { y: -12, opacity: 0 },
     visible: { 
       y: 0, 
       opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 300,
-        damping: 24
+        stiffness: 400,
+        damping: 25
       }
     }
   };
@@ -232,63 +232,56 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
 
   return (
     <NavigationMenu className="hidden md:flex">
-      <div className="flex">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <NavigationMenuList className="flex justify-center space-x-10">
-            {mainLinks.map((link) => (
-              <NavigationMenuItem key={link.path}
-                onMouseEnter={() => link.megaMenu && handleMouseEnter(link.path)}
-                onMouseLeave={handleMouseLeave}
-                className="relative"
-              >
-                <motion.div variants={itemVariants}>
-                  <div className="flex items-center">
-                    <MotionLink
-                      to={link.path}
-                      className={cn(
-                        "text-[15px] transition-colors px-3 py-2 rounded-md relative overflow-hidden flex items-center",
-                        isRouteActive(link.path) 
-                          ? 'text-moh-green font-medium' 
-                          : 'text-moh-darkGreen hover:text-moh-green hover:bg-gray-50'
-                      )}
-                      whileHover={{ 
-                        scale: 1.05,
-                        transition: { duration: 0.2 }
-                      }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {/* Active link indicator */}
-                      {isRouteActive(link.path) && (
-                        <motion.span 
-                          className="absolute bottom-0 left-0 w-full h-0.5 bg-moh-green"
-                          layoutId="activeNavIndicator"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.3 }}
-                        />
-                      )}
-                      
-                      {link.label}
-                      {link.megaMenu && (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex"
+      >
+        <NavigationMenuList className="flex justify-center space-x-2 lg:space-x-8">
+          {mainLinks.map((link) => (
+            <NavigationMenuItem key={link.path}
+              onMouseEnter={() => link.megaMenu && handleMouseEnter(link.path)}
+              onMouseLeave={handleMouseLeave}
+              className="relative"
+            >
+              <motion.div variants={itemVariants}>
+                <div className="flex items-center">
+                  <MotionLink
+                    to={link.path}
+                    className={cn(
+                      "text-[15px] transition-all px-3 py-2 rounded-full relative overflow-hidden flex items-center",
+                      isRouteActive(link.path) 
+                        ? 'text-white font-medium bg-gradient-to-r from-moh-green to-moh-darkGreen shadow-sm' 
+                        : 'text-moh-darkGreen hover:bg-moh-lightGreen/50 hover:text-moh-green'
+                    )}
+                    whileHover={{ 
+                      scale: 1.05,
+                      transition: { duration: 0.2 }
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span>{link.label}</span>
+                    {link.megaMenu && (
+                      <motion.div 
+                        animate={isRouteActive(link.path) ? { rotate: 180 } : { rotate: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
                         <ChevronDown className="h-3 w-3 ml-1" />
-                      )}
-                    </MotionLink>
-                  </div>
+                      </motion.div>
+                    )}
+                  </MotionLink>
+                </div>
 
-                  {/* Mega Menu Dropdown */}
-                  {link.megaMenu && openMegaMenu === link.path && (
-                    <MegaMenuDropdown categories={link.categories} />
-                  )}
-                </motion.div>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </motion.div>
-      </div>
+                {/* Mega Menu Dropdown */}
+                {link.megaMenu && openMegaMenu === link.path && (
+                  <MegaMenuDropdown categories={link.categories} />
+                )}
+              </motion.div>
+            </NavigationMenuItem>
+          ))}
+        </NavigationMenuList>
+      </motion.div>
     </NavigationMenu>
   );
 }

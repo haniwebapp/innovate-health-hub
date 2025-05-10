@@ -1,7 +1,8 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp, ChevronRight } from "lucide-react";
+import { LogOut, User, Settings, FileUp, ChevronRight, Home, Award, LineChart, ScrollText, BookOpen, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,16 +25,18 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   
-  // Reordered navigation links to match desktop navigation
+  // Navigation links with icons
   const navigationLinks = [
     { 
       path: "/", 
       label: "Home",
+      icon: Home,
       submenu: []
     },
     { 
       path: "/innovations", 
       label: "Innovations",
+      icon: FileUp,
       submenu: [
         { label: "Browse Innovations", path: "/innovations/latest" },
         { label: "Innovation Types", path: "/innovations/types" },
@@ -44,6 +47,7 @@ export function NavbarMobileMenu({
     { 
       path: "/challenges", 
       label: "Challenges",
+      icon: Award,
       submenu: [
         { label: "Open Challenges", path: "/challenges/open" },
         { label: "Challenge Areas", path: "/challenges/areas" },
@@ -54,6 +58,7 @@ export function NavbarMobileMenu({
     { 
       path: "/investment", 
       label: "Investment",
+      icon: LineChart,
       submenu: [
         { label: "Funding Programs", path: "/investment/programs" },
         { label: "For Investors", path: "/investment/for-investors" },
@@ -64,6 +69,7 @@ export function NavbarMobileMenu({
     { 
       path: "/regulatory", 
       label: "Regulatory",
+      icon: ScrollText,
       submenu: [
         { label: "Guidelines", path: "/regulatory/guidelines" },
         { label: "Approval Pathways", path: "/regulatory/pathways" },
@@ -74,6 +80,7 @@ export function NavbarMobileMenu({
     { 
       path: "/knowledge-hub", 
       label: "Knowledge Hub",
+      icon: BookOpen,
       submenu: [
         { label: "Articles", path: "/knowledge-hub/articles" },
         { label: "Events", path: "/knowledge-hub/events" },
@@ -84,27 +91,60 @@ export function NavbarMobileMenu({
     { 
       path: "/about", 
       label: "About",
+      icon: AlertCircle,
       submenu: []
     },
   ];
   
-  // Animation variants
+  // Enhanced animation variants
   const menuVariants = {
-    hidden: { opacity: 0, height: 0 },
+    hidden: { 
+      opacity: 0, 
+      height: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
     visible: {
       opacity: 1,
-      height: "auto",
+      height: "100vh",
       transition: {
         duration: 0.3,
-      },
+        ease: "easeOut",
+        when: "beforeChildren",
+        staggerChildren: 0.05
+      }
     },
     exit: {
       opacity: 0,
       height: 0,
       transition: {
-        duration: 0.3,
-      },
+        duration: 0.2,
+        ease: "easeInOut",
+        when: "afterChildren",
+        staggerChildren: 0.05,
+        staggerDirection: -1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24
+      }
     },
+    exit: { 
+      opacity: 0, 
+      x: -20,
+      transition: { duration: 0.2 }
+    }
   };
   
   const handleLinkClick = (path: string) => {
@@ -117,123 +157,162 @@ export function NavbarMobileMenu({
       animate="visible"
       exit="exit"
       variants={menuVariants}
-      className="md:hidden shadow-lg"
+      className="md:hidden fixed inset-0 bg-white/90 backdrop-blur-md z-40 overflow-hidden"
       dir="ltr"
     >
-      <div className="bg-white border-t border-gray-200 overflow-hidden">
-        <div className="max-h-[80vh] overflow-y-auto">
-          <nav className="flex flex-col p-4">
+      <motion.div 
+        className="h-full flex flex-col pt-24 pb-8"
+        variants={itemVariants}
+      >
+        <div className="flex-1 overflow-y-auto px-4 pb-6">
+          <nav className="flex flex-col">
+            <motion.div className="mb-4" variants={itemVariants}>
+              <div className="py-2 px-4 bg-moh-lightGreen/50 rounded-xl mb-6">
+                <Button 
+                  className="w-full bg-moh-green hover:bg-moh-darkGreen mb-2" 
+                  onClick={() => handleLinkClick("/innovations/submit")}
+                  asChild
+                >
+                  <Link to="/innovations/submit" className="flex items-center justify-center gap-2">
+                    <FileUp className="h-4 w-4" />
+                    Submit an Innovation
+                  </Link>
+                </Button>
+              </div>
+            </motion.div>
+          
             <Accordion type="single" collapsible className="w-full">
-              {navigationLinks.map((link) => (
-                <AccordionItem key={link.path} value={link.path} className="border-none">
-                  {link.submenu.length > 0 ? (
-                    <AccordionTrigger 
-                      className={`p-2 text-lg font-normal ${
-                        isRouteActive(link.path)
-                        ? "text-moh-green font-medium"
-                        : "text-moh-darkGreen"
-                      }`}
-                    >
-                      {link.label}
-                    </AccordionTrigger>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      className={`w-full justify-start text-left p-2 text-lg font-normal ${
-                        isRouteActive(link.path)
-                        ? "text-moh-green font-medium"
-                        : "text-moh-darkGreen"
-                      }`}
-                      onClick={() => handleLinkClick(link.path)}
-                      asChild
-                    >
-                      <Link to={link.path}>{link.label}</Link>
-                    </Button>
-                  )}
-                  
-                  {link.submenu.length > 0 && (
-                    <AccordionContent>
-                      <div className="pl-4 py-2 space-y-2">
-                        {link.submenu.map((subItem) => (
-                          <Button
-                            key={subItem.path}
-                            variant="ghost"
-                            className="w-full justify-start text-left"
-                            onClick={() => handleLinkClick(subItem.path)}
-                            asChild
-                          >
-                            <Link to={subItem.path} className="flex items-center">
-                              <span>{subItem.label}</span>
-                              <ChevronRight className="h-4 w-4 ml-auto" />
-                            </Link>
-                          </Button>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  )}
-                </AccordionItem>
+              {navigationLinks.map((link, index) => (
+                <motion.div key={link.path} variants={itemVariants} custom={index}>
+                  <AccordionItem value={link.path} className="border-b border-gray-100">
+                    {link.submenu.length > 0 ? (
+                      <AccordionTrigger 
+                        className={`py-3 text-lg font-medium flex items-center gap-3 ${
+                          isRouteActive(link.path)
+                          ? "text-moh-green"
+                          : "text-moh-darkGreen"
+                        }`}
+                      >
+                        <link.icon className="h-5 w-5" />
+                        {link.label}
+                      </AccordionTrigger>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        className={`w-full justify-start text-left py-3 text-lg font-medium flex items-center gap-3 ${
+                          isRouteActive(link.path)
+                          ? "text-moh-green"
+                          : "text-moh-darkGreen"
+                        }`}
+                        onClick={() => handleLinkClick(link.path)}
+                        asChild
+                      >
+                        <Link to={link.path}>
+                          <link.icon className="h-5 w-5" />
+                          {link.label}
+                        </Link>
+                      </Button>
+                    )}
+                    
+                    {link.submenu.length > 0 && (
+                      <AccordionContent>
+                        <div className="pl-9 py-2 space-y-1">
+                          {link.submenu.map((subItem, subIndex) => (
+                            <motion.div
+                              key={subItem.path}
+                              variants={itemVariants}
+                              custom={index + subIndex * 0.1}
+                            >
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start text-left rounded-lg"
+                                onClick={() => handleLinkClick(subItem.path)}
+                                asChild
+                              >
+                                <Link to={subItem.path} className="flex items-center py-2">
+                                  <span className="text-gray-700">{subItem.label}</span>
+                                  <ChevronRight className="h-4 w-4 ml-auto text-gray-400" />
+                                </Link>
+                              </Button>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    )}
+                  </AccordionItem>
+                </motion.div>
               ))}
             </Accordion>
-            
-            <Separator className="my-4" />
-            
-            {user ? (
-              <>
-                <div className="flex items-center justify-between p-2 mb-3">
+          </nav>
+        </div>
+        
+        <div className="px-4 mt-auto">
+          <Separator className="mb-4 opacity-50" />
+          
+          {user ? (
+            <motion.div variants={itemVariants}>
+              <div className="bg-moh-lightGreen/30 rounded-xl p-4 mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-moh-green/10 flex items-center justify-center text-moh-green">
-                      <User className="h-4 w-4" />
+                    <div className="w-10 h-10 rounded-full bg-moh-green/20 flex items-center justify-center text-moh-green">
+                      <User className="h-5 w-5" />
                     </div>
-                    <span className="ml-2">{user.email}</span>
+                    <div className="ml-3">
+                      <p className="font-medium text-moh-darkGreen">{user.email}</p>
+                      <p className="text-sm text-gray-500">Logged in</p>
+                    </div>
                   </div>
                 </div>
                 
-                <Button
-                  variant="ghost"
-                  className="justify-start text-left mb-1"
-                  onClick={() => handleLinkClick("/dashboard")}
-                  asChild
-                >
-                  <Link to="/dashboard" className="flex items-center">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Dashboard
-                  </Link>
-                </Button>
-                
-                <Button
-                  variant="ghost"
-                  className="justify-start text-left mb-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={() => {
-                    handleLinkClick("/");
-                    signOut();
-                  }}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button 
-                  className="bg-moh-green hover:bg-moh-darkGreen w-full mb-2" 
-                  onClick={() => handleLinkClick("/auth/login")}
-                  asChild
-                >
-                  <Link to="/auth/login">Login</Link>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  onClick={() => handleLinkClick("/auth/register")}
-                  asChild
-                >
-                  <Link to="/auth/register">Register</Link>
-                </Button>
-              </>
-            )}
-          </nav>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    className="justify-center border-moh-green/20 hover:bg-moh-lightGreen/50 text-moh-darkGreen"
+                    onClick={() => handleLinkClick("/dashboard")}
+                    asChild
+                  >
+                    <Link to="/dashboard" className="flex items-center gap-1">
+                      <Settings className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    className="justify-center border-red-200 hover:bg-red-50 text-red-600"
+                    onClick={() => {
+                      handleLinkClick("/");
+                      signOut();
+                    }}
+                  >
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Logout
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3">
+              <Button 
+                variant="outline" 
+                className="w-full border-moh-green/20" 
+                onClick={() => handleLinkClick("/auth/register")}
+                asChild
+              >
+                <Link to="/auth/register">Register</Link>
+              </Button>
+              
+              <Button 
+                className="bg-moh-green hover:bg-moh-darkGreen w-full" 
+                onClick={() => handleLinkClick("/auth/login")}
+                asChild
+              >
+                <Link to="/auth/login">Login</Link>
+              </Button>
+            </motion.div>
+          )}
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
