@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ApiIcon, Globe, Settings2, Webhook } from "lucide-react";
+import { Globe, Settings2, Webhook, Server } from "lucide-react";
 
 export function IntegrationSettingsTab() {
   const { toast } = useToast();
@@ -85,7 +85,7 @@ export function IntegrationSettingsTab() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-2 mb-6">
             <TabsTrigger value="api" className="flex items-center gap-2">
-              <ApiIcon className="h-4 w-4" />
+              <Server className="h-4 w-4" />
               API Settings
             </TabsTrigger>
             <TabsTrigger value="webhook" className="flex items-center gap-2">
@@ -255,3 +255,4 @@ export function IntegrationSettingsTab() {
     </Card>
   );
 }
+
