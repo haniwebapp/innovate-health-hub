@@ -26,7 +26,7 @@ export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavIt
             "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200",
             "overflow-hidden whitespace-nowrap",
             isActive
-              ? "bg-gradient-to-r from-purple-700 to-purple-900 text-white font-medium shadow-sm"
+              ? "bg-gradient-to-r from-slate-800 to-slate-900 text-white font-medium shadow-sm"
               : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
             isCollapsed && "justify-center p-2",
             className
@@ -41,7 +41,7 @@ export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavIt
             <>
               <span className="truncate">{text}</span>
               {badge && (
-                <span className="ml-auto text-[10px] bg-purple-800/70 text-purple-200 px-1.5 py-0.5 rounded-sm font-medium">
+                <span className="ml-auto text-[10px] bg-blue-900/70 text-blue-200 px-1.5 py-0.5 rounded-sm font-medium">
                   {badge}
                 </span>
               )}
@@ -51,7 +51,7 @@ export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavIt
       </TooltipTrigger>
       <TooltipContent side="right" className="font-medium">
         {text}
-        {badge && <span className="ml-2 text-[10px] bg-purple-900/50 text-purple-200 px-1.5 py-0.5 rounded-md">{badge}</span>}
+        {badge && <span className="ml-2 text-[10px] bg-blue-900/50 text-blue-200 px-1.5 py-0.5 rounded-md">{badge}</span>}
       </TooltipContent>
     </Tooltip>
   );

@@ -28,8 +28,8 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
             shape="hexagon" 
             style="gradient" 
             size={isCollapsed ? 36 : 40} 
-            primaryColor="#9b87f5" 
-            secondaryColor="#D6BCFA"
+            primaryColor="#3b82f6" 
+            secondaryColor="#93c5fd"
             className={cn(
               "transition-all duration-300",
               isCollapsed ? "" : "mr-2"
@@ -45,7 +45,7 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
             transition={{ delay: 0.3 }}
           >
             <span className="text-lg leading-none">MOH</span>
-            <span className="block text-xs text-purple-300 font-light">Innovation Platform</span>
+            <span className="block text-xs text-blue-300 font-light">Innovation Platform</span>
           </motion.div>
         )}
       </div>

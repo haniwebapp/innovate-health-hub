@@ -20,10 +20,10 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mb-2 px-2 py-1.5 bg-purple-900/30 rounded-md flex items-center"
+          className="mb-2 px-2 py-1.5 bg-blue-900/30 rounded-md flex items-center"
         >
-          <Shield size={14} className="text-purple-300 mr-2" />
-          <span className="text-xs font-medium text-purple-300">Admin Access</span>
+          <Shield size={14} className="text-blue-300 mr-2" />
+          <span className="text-xs font-medium text-blue-300">Admin Access</span>
         </motion.div>
       )}
       
