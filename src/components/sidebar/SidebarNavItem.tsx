@@ -27,12 +27,27 @@ export function SidebarNavItem({
   
   const baseItemClasses = cn(
     "flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200",
-    "hover:bg-slate-100 hover:text-moh-green",
-    "focus:bg-slate-100 focus:text-moh-green focus:outline-none",
+    "group relative overflow-hidden",
     isActive 
-      ? "bg-slate-100 text-moh-green font-medium" 
+      ? "text-moh-green font-medium" 
       : "text-slate-600 hover:text-moh-green"
   );
+  
+  // Animated background for active state
+  const BackgroundHighlight = () => {
+    if (!isActive) return null;
+    
+    return (
+      <motion.div
+        layoutId={`sidebar-highlight-${to.replace('/', '-')}`}
+        className="absolute inset-0 bg-moh-lightGreen/40 rounded-lg -z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      />
+    );
+  };
   
   const item = (
     <Link
@@ -40,9 +55,11 @@ export function SidebarNavItem({
       onClick={onClick}
       className={baseItemClasses}
     >
+      <BackgroundHighlight />
+      
       <span className={cn(
-        "flex items-center justify-center rounded-md",
-        isActive ? "text-moh-green" : "text-slate-500"
+        "flex items-center justify-center rounded-md transition-transform duration-300 group-hover:scale-110",
+        isActive ? "text-moh-green" : "text-slate-500 group-hover:text-moh-green"
       )}>
         {icon}
       </span>
@@ -57,6 +74,16 @@ export function SidebarNavItem({
         >
           {text}
         </motion.span>
+      )}
+      
+      {isActive && !isCollapsed && (
+        <motion.div 
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/4 bg-moh-green rounded-r-full"
+          layoutId={`sidebar-indicator-${to.replace('/', '-')}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        />
       )}
     </Link>
   );

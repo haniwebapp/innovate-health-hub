@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,10 +13,9 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { User, Mail, Building, CheckCircle, Upload } from "lucide-react";
+import { User, Mail, Building, CheckCircle, Upload, AlertTriangle, RefreshCw } from "lucide-react";
 import { ProfileData } from "@/types/admin";
-
-// Remove the duplicate ProfileData interface since we're importing it
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
@@ -29,10 +29,13 @@ type FormValues = z.infer<typeof formSchema>;
 export default function UserProfileForm() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,56 +47,56 @@ export default function UserProfileForm() {
     },
   });
 
-  useEffect(() => {
-    async function loadUserProfile() {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-          
-        if (error) throw error;
+  const loadUserProfile = useCallback(async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    setLoadError(null);
+    
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
         
-        if (data) {
-          form.reset({
-            firstName: data.first_name || "",
-            lastName: data.last_name || "",
-            userType: data.user_type || "individual",
-            organization: data.organization || "",
-          });
-          
-          // Check if avatar_url exists in the data and handle it
-          if (data.avatar_url) {
-            try {
-              const { data: avatarData } = await supabase.storage
-                .from('avatars')
-                .getPublicUrl(data.avatar_url);
-              
-              if (avatarData) {
-                setAvatarUrl(avatarData.publicUrl);
-              }
-            } catch (avatarError) {
-              console.error("Error retrieving avatar:", avatarError);
+      if (error) throw error;
+      
+      if (data) {
+        form.reset({
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          userType: data.user_type || "individual",
+          organization: data.organization || "",
+        });
+        
+        // Check if avatar_url exists in the data and handle it
+        if (data.avatar_url) {
+          try {
+            const { data: avatarData } = await supabase.storage
+              .from('avatars')
+              .getPublicUrl(data.avatar_url);
+            
+            if (avatarData) {
+              setAvatarUrl(avatarData.publicUrl);
             }
+          } catch (avatarError) {
+            console.error("Error retrieving avatar:", avatarError);
           }
         }
-      } catch (error) {
-        console.error("Error loading user profile:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load user profile.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
       }
+      setLoadError(null);
+    } catch (error: any) {
+      console.error("Error loading user profile:", error);
+      setLoadError(error.message || t('profile.loadError'));
+    } finally {
+      setIsLoading(false);
     }
-    
+  }, [user, form, toast, t]);
+  
+  useEffect(() => {
     loadUserProfile();
-  }, [user, form, toast]);
+  }, [loadUserProfile, retryCount]);
 
   async function onSubmit(values: FormValues) {
     if (!user) return;
@@ -114,8 +117,8 @@ export default function UserProfileForm() {
       if (error) throw error;
       
       toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
+        title: t('notification.success'),
+        description: t('profile.updated'),
         className: "bg-moh-lightGreen border-moh-green/20 text-moh-darkGreen",
       });
       
@@ -126,7 +129,7 @@ export default function UserProfileForm() {
     } catch (error: any) {
       console.error("Update error:", error);
       toast({
-        title: "Error",
+        title: t('notification.error'),
         description: "Failed to update profile: " + error.message,
         variant: "destructive",
       });
@@ -170,7 +173,7 @@ export default function UserProfileForm() {
       setAvatarUrl(data.publicUrl);
       
       toast({
-        title: "Avatar updated",
+        title: t('notification.success'),
         description: "Your profile picture has been updated.",
         className: "bg-moh-lightGreen border-moh-green/20 text-moh-darkGreen",
       });
@@ -178,7 +181,7 @@ export default function UserProfileForm() {
     } catch (error: any) {
       console.error("Avatar upload error:", error);
       toast({
-        title: "Error",
+        title: t('notification.error'),
         description: "Failed to upload avatar: " + error.message,
         variant: "destructive",
       });
@@ -201,6 +204,10 @@ export default function UserProfileForm() {
     
     return "U";
   };
+  
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+  };
 
   if (isLoading) {
     return (
@@ -209,12 +216,42 @@ export default function UserProfileForm() {
       </div>
     );
   }
+  
+  if (loadError) {
+    return (
+      <Card className="border-moh-green/10 shadow-md overflow-hidden bg-white/80 backdrop-blur-sm">
+        <CardContent className="pt-6 pb-6 flex flex-col items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="text-center"
+          >
+            <div className="flex justify-center mb-4">
+              <div className="p-3 bg-red-100 rounded-full">
+                <AlertTriangle className="h-8 w-8 text-red-500" />
+              </div>
+            </div>
+            <h3 className="text-lg font-medium mb-2 text-red-700">{t('profile.loadError')}</h3>
+            <p className="text-sm text-muted-foreground mb-6">{loadError}</p>
+            <Button 
+              onClick={handleRetry}
+              className="bg-moh-green hover:bg-moh-darkGreen"
+            >
+              <RefreshCw className="mr-2 h-4 w-4" />
+              {t('profile.retryLoading')}
+            </Button>
+          </motion.div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-moh-green/10 shadow-md overflow-hidden bg-white/80 backdrop-blur-sm">
       <CardHeader className="bg-gradient-to-r from-moh-lightGreen/30 to-white">
-        <CardTitle className="text-2xl font-playfair text-moh-darkGreen">Profile Information</CardTitle>
-        <CardDescription>Update your account profile details here.</CardDescription>
+        <CardTitle className="text-2xl font-playfair text-moh-darkGreen">{t('profile.profileInfo')}</CardTitle>
+        <CardDescription>{t('profile.profileInfoDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
         <motion.div
@@ -270,7 +307,7 @@ export default function UserProfileForm() {
               <div className="mb-3">
                 <h3 className="text-lg font-medium text-moh-darkGreen">{user?.email}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Member since {user?.created_at ? new Date(user.created_at).toLocaleDateString() : "N/A"}
+                  {t('profile.memberSince')} {user?.created_at ? new Date(user.created_at).toLocaleDateString() : "N/A"}
                 </p>
               </div>
             </div>

@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define supported languages
@@ -152,6 +153,28 @@ const translations: Translations = {
     // Footer
     'footer.emailPlaceholder': 'your@email.com',
     'footer.mohLogo': 'Ministry of Health Logo',
+    
+    // Profile page - Added missing translations
+    'profile.title': 'Profile',
+    'profile.description': 'Update your account profile details here.',
+    'profile.accountSettings': 'Account Settings',
+    'profile.preferences': 'Manage your account preferences',
+    'profile.emailNotifications': 'Email Notifications',
+    'profile.password': 'Password',
+    'profile.passwordDesc': 'Change your password to keep your account secure.',
+    'profile.passwordChange': 'Change Password',
+    'profile.marketingEmails': 'Marketing emails',
+    'profile.marketingEmailsDesc': 'Receive emails about new features and products',
+    'profile.securityAlerts': 'Security alerts',
+    'profile.securityAlertsDesc': 'Receive emails about your account security',
+    'profile.serviceUpdates': 'Service updates',
+    'profile.serviceUpdatesDesc': 'Receive emails about platform updates',
+    'profile.syncSettings': 'These settings will be synced across all your devices.',
+    'profile.retryLoading': 'Try Again',
+    'profile.loadError': 'Failed to load user profile. Please try again.',
+    'profile.profileInfo': 'Profile Information',
+    'profile.profileInfoDesc': 'Update your account profile details here.',
+    'profile.memberSince': 'Member since',
   },
   
   ar: {
@@ -274,6 +297,28 @@ const translations: Translations = {
     'validation.email': 'الرجاء إدخال عنوان بريد إلكتروني صالح.',
     'validation.password_min': 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.',
     'validation.password_match': 'كلمات المرور غير متطابقة.',
+    
+    // Profile page - Added missing translations
+    'profile.title': 'الملف الشخصي',
+    'profile.description': 'تحديث تفاصيل ملفك الشخصي هنا',
+    'profile.accountSettings': 'إعدادات الحساب',
+    'profile.preferences': 'إدارة تفضيلات حسابك',
+    'profile.emailNotifications': 'إشعارات البريد الإلكتروني',
+    'profile.password': 'كلمة المرور',
+    'profile.passwordDesc': 'تغيير كلمة المرور الخاصة بك للحفاظ على أمان حسابك.',
+    'profile.passwordChange': 'تغيير كلمة المرور',
+    'profile.marketingEmails': 'رسائل التسويق',
+    'profile.marketingEmailsDesc': 'استلام رسائل البريد الإلكتروني حول الميزات والمنتجات الجديدة',
+    'profile.securityAlerts': 'تنبيهات الأمان',
+    'profile.securityAlertsDesc': 'استلام رسائل البريد الإلكتروني حول أمان حسابك',
+    'profile.serviceUpdates': 'تحديثات الخدمة',
+    'profile.serviceUpdatesDesc': 'استلام رسائل البريد الإلكتروني حول تحديثات المنصة',
+    'profile.syncSettings': 'سيتم مزامنة هذه الإعدادات عبر جميع أجهزتك.',
+    'profile.retryLoading': 'حاول مرة أخرى',
+    'profile.loadError': 'فشل في تحميل الملف الشخصي للمستخدم. يرجى المحاولة مرة أخرى.',
+    'profile.profileInfo': 'معلومات الملف الشخصي',
+    'profile.profileInfoDesc': 'تحديث تفاصيل ملفك الشخصي هنا',
+    'profile.memberSince': 'عضو منذ',
   },
 };
 
@@ -331,3 +376,4 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     </LanguageContext.Provider>
   );
 };
+

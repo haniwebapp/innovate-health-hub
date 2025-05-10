@@ -61,8 +61,8 @@ export default function ProfilePage() {
                 <div className="space-y-3 ml-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium">Marketing emails</p>
-                      <p className="text-xs text-muted-foreground">Receive emails about new features and products</p>
+                      <p className="text-sm font-medium">{t('profile.marketingEmails')}</p>
+                      <p className="text-xs text-muted-foreground">{t('profile.marketingEmailsDesc')}</p>
                     </div>
                     <Switch 
                       checked={notifications.marketing} 
@@ -72,8 +72,8 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium">Security alerts</p>
-                      <p className="text-xs text-muted-foreground">Receive emails about your account security</p>
+                      <p className="text-sm font-medium">{t('profile.securityAlerts')}</p>
+                      <p className="text-xs text-muted-foreground">{t('profile.securityAlertsDesc')}</p>
                     </div>
                     <Switch 
                       checked={notifications.security} 
@@ -83,8 +83,8 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium">Service updates</p>
-                      <p className="text-xs text-muted-foreground">Receive emails about platform updates</p>
+                      <p className="text-sm font-medium">{t('profile.serviceUpdates')}</p>
+                      <p className="text-xs text-muted-foreground">{t('profile.serviceUpdatesDesc')}</p>
                     </div>
                     <Switch 
                       checked={notifications.serviceUpdates} 
@@ -112,7 +112,7 @@ export default function ProfilePage() {
               
               <div className="pt-4 pb-2">
                 <p className="text-xs text-muted-foreground">
-                  These settings will be synced across all your devices.
+                  {t('profile.syncSettings')}
                 </p>
               </div>
             </CardContent>

@@ -4,17 +4,19 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Settings } from "lucide-react";
 import IntegrationList from "@/components/admin/IntegrationList";
 import IntegrationForm from "@/components/admin/IntegrationForm";
 import IntegrationAIAssistant from "@/components/ai/IntegrationAIAssistant";
 import { INTEGRATION_CATEGORIES } from "@/utils/integrationConstants";
+import { IntegrationSettingsTab } from "@/components/admin/IntegrationSettingsTab";
 
 export default function AdminIntegrationsPage() {
   const { toast } = useToast();
   const [activeCategory, setActiveCategory] = useState("api");
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleSaveIntegration = () => {
     toast({
@@ -32,12 +34,33 @@ export default function AdminIntegrationsPage() {
         <div className="flex gap-2">
           <Button 
             variant="outline" 
-            onClick={() => setShowAIAssistant(!showAIAssistant)}
+            onClick={() => {
+              setShowAIAssistant(false);
+              setShowSettings(!showSettings);
+              setIsAddingNew(false);
+            }}
+          >
+            <Settings className="mr-2 h-4 w-4" />
+            {showSettings ? "Hide Settings" : "Settings"}
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setShowAIAssistant(!showAIAssistant);
+              setShowSettings(false);
+              setIsAddingNew(false);
+            }}
           >
             {showAIAssistant ? "Hide AI Assistant" : "Show AI Assistant"}
           </Button>
-          {!isAddingNew && (
-            <Button onClick={() => setIsAddingNew(true)}>
+          {!isAddingNew && !showSettings && (
+            <Button 
+              onClick={() => {
+                setIsAddingNew(true);
+                setShowAIAssistant(false);
+                setShowSettings(false);
+              }}
+            >
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Integration
             </Button>
@@ -46,8 +69,10 @@ export default function AdminIntegrationsPage() {
       }
     >
       {showAIAssistant && <IntegrationAIAssistant />}
-
-      {isAddingNew ? (
+      
+      {showSettings ? (
+        <IntegrationSettingsTab />
+      ) : isAddingNew ? (
         <IntegrationForm 
           onSave={handleSaveIntegration} 
           onCancel={() => setIsAddingNew(false)}

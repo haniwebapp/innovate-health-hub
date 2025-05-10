@@ -8,7 +8,14 @@ import {
   NavigationMenuList,
   NavigationMenuItem,
 } from "@/components/ui/navigation-menu";
-import { useState } from "react";
+import {
+  Lightbulb,
+  Award,
+  DollarSign,
+  ShieldCheck,
+  BookOpen,
+  HelpCircle
+} from "lucide-react";
 
 interface NavbarMainLinksProps {
   isRouteActive: (path: string) => boolean;
@@ -17,14 +24,14 @@ interface NavbarMainLinksProps {
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
   
-  // Main links without megaMenu and categories
+  // Main links with icons
   const mainLinks = [
-    { path: "/innovations", label: "Innovations" },
-    { path: "/challenges", label: "Challenges" },
-    { path: "/investment", label: "Investment" },
-    { path: "/regulatory", label: "Regulatory" },
-    { path: "/knowledge-hub", label: "Knowledge Hub" },
-    { path: "/about", label: "About" },
+    { path: "/innovations", label: "Innovations", icon: Lightbulb },
+    { path: "/challenges", label: "Challenges", icon: Award },
+    { path: "/investment", label: "Investment", icon: DollarSign },
+    { path: "/regulatory", label: "Regulatory", icon: ShieldCheck },
+    { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
+    { path: "/about", label: "About", icon: HelpCircle },
   ];
 
   const MotionLink = motion(Link);
@@ -62,7 +69,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
         animate="visible"
         className="flex"
       >
-        <NavigationMenuList className="flex justify-center space-x-2 lg:space-x-8">
+        <NavigationMenuList className="flex justify-center space-x-2 lg:space-x-6">
           {mainLinks.map((link) => (
             <NavigationMenuItem key={link.path}>
               <motion.div variants={itemVariants}>
@@ -70,7 +77,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                   <MotionLink
                     to={link.path}
                     className={cn(
-                      "text-[15px] transition-all px-3 py-2 rounded-full relative overflow-hidden flex items-center",
+                      "text-[15px] transition-all px-3 py-2 rounded-full relative overflow-hidden flex items-center gap-2",
                       isRouteActive(link.path) 
                         ? 'text-white font-medium bg-gradient-to-r from-moh-green to-moh-darkGreen shadow-sm' 
                         : 'text-moh-darkGreen hover:bg-moh-lightGreen/50 hover:text-moh-green'
@@ -81,7 +88,18 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
                     }}
                     whileTap={{ scale: 0.95 }}
                   >
+                    <link.icon className="h-4 w-4" />
                     <span>{link.label}</span>
+                    
+                    {isRouteActive(link.path) && (
+                      <motion.div
+                        layoutId="navIndicator"
+                        className="absolute inset-0 z-[-1]"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    )}
                   </MotionLink>
                 </div>
               </motion.div>
