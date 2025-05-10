@@ -1,8 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp, ChevronRight, Home, Award, LineChart, ScrollText, BookOpen, AlertCircle } from "lucide-react";
+import { LogOut, User, Settings, FileUp, ChevronRight, Award, LineChart, ScrollText, BookOpen, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,14 +24,8 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   
-  // Navigation links with icons
+  // Navigation links with icons (removed Home)
   const navigationLinks = [
-    { 
-      path: "/", 
-      label: "Home",
-      icon: Home,
-      submenu: []
-    },
     { 
       path: "/innovations", 
       label: "Innovations",

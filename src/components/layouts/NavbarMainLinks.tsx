@@ -19,13 +19,8 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
   const [openMegaMenu, setOpenMegaMenu] = useState<string | null>(null);
   
-  // Reordered main links based on user journey priority
+  // Removed Home link
   const mainLinks = [
-    { 
-      path: "/", 
-      label: "Home",
-      megaMenu: false
-    },
     { 
       path: "/innovations", 
       label: "Innovations",
