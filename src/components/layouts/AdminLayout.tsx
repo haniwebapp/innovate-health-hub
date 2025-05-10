@@ -1,7 +1,6 @@
 
 import { ReactNode } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
