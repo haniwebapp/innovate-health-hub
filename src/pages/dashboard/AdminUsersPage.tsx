@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,18 +38,9 @@ export default function AdminUsersPage() {
 
       // Map profiles to UserProfile format
       const mappedUsers: UserProfile[] = profiles.map(profile => {
-        // Generate an email from the profile data or use a placeholder
-        // Use TypeScript type assertion to tell TypeScript this is safe
-        const emailFromAuth = (profile as any).email; // Try to get email if it exists
-        
-        // Generate email if not present in the profile data
-        const generatedEmail = profile.user_type === 'admin' 
-          ? `${profile.first_name || 'admin'}.${profile.last_name || 'user'}@moh.gov.sa` 
-          : `${profile.first_name || 'user'}.${profile.last_name || profile.id.substring(0, 5)}@example.com`;
-        
         return {
           id: profile.id,
-          email: emailFromAuth || generatedEmail, // Use auth email if it exists, otherwise use generated email
+          email: profile.email || "",
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",
@@ -107,7 +97,7 @@ export default function AdminUsersPage() {
           <Button onClick={fetchUsers} disabled={isLoading}>
             {isLoading ? "Loading..." : "Refresh Users"}
           </Button>
-          <Button onClick={handleAddUser}>
+          <Button onClick={() => navigate("/admin/users/add")}>
             <UserPlus className="h-4 w-4 mr-2" />
             Add User
           </Button>

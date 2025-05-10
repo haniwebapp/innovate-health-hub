@@ -145,6 +145,116 @@ export type Database = {
           },
         ]
       }
+      challenge_submissions: {
+        Row: {
+          challenge_id: string
+          description: string
+          feedback: string | null
+          id: string
+          score: number | null
+          status: string
+          submitted_at: string
+          summary: string
+          team_members: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          description: string
+          feedback?: string | null
+          id?: string
+          score?: number | null
+          status?: string
+          submitted_at?: string
+          summary: string
+          team_members?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          description?: string
+          feedback?: string | null
+          id?: string
+          score?: number | null
+          status?: string
+          submitted_at?: string
+          summary?: string
+          team_members?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          eligibility: string | null
+          end_date: string
+          id: string
+          image_url: string | null
+          long_description: string | null
+          organizer: string
+          prize: string | null
+          requirements: Json | null
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          eligibility?: string | null
+          end_date: string
+          id?: string
+          image_url?: string | null
+          long_description?: string | null
+          organizer?: string
+          prize?: string | null
+          requirements?: Json | null
+          start_date?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          eligibility?: string | null
+          end_date?: string
+          id?: string
+          image_url?: string | null
+          long_description?: string | null
+          organizer?: string
+          prize?: string | null
+          requirements?: Json | null
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       compliance_requirements: {
         Row: {
           created_at: string
@@ -714,6 +824,65 @@ export type Database = {
           },
         ]
       }
+      submissions: {
+        Row: {
+          category: string
+          challenge_id: string
+          challenge_title: string
+          created_at: string | null
+          description: string | null
+          feedback: string | null
+          id: string
+          score: number | null
+          status: string
+          submitted_at: string | null
+          team_members: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          challenge_id: string
+          challenge_title: string
+          created_at?: string | null
+          description?: string | null
+          feedback?: string | null
+          id?: string
+          score?: number | null
+          status: string
+          submitted_at?: string | null
+          team_members?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          challenge_id?: string
+          challenge_title?: string
+          created_at?: string | null
+          description?: string | null
+          feedback?: string | null
+          id?: string
+          score?: number | null
+          status?: string
+          submitted_at?: string | null
+          team_members?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_learning_progress: {
         Row: {
           completed_at: string | null
@@ -906,6 +1075,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_challenge_submissions: {
+        Args: { input_challenge_id: string }
+        Returns: {
+          id: string
+          title: string
+          summary: string
+          description: string
+          challenge_id: string
+          user_id: string
+          team_members: string
+          status: string
+          submitted_at: string
+          updated_at: string
+          score: number
+          feedback: string
+          user_first_name: string
+          user_last_name: string
+          user_organization: string
+        }[]
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
