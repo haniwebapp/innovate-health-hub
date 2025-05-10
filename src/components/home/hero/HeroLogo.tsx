@@ -1,49 +1,22 @@
 
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
 
 export function HeroLogo() {
   const { t } = useLanguage();
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-  const controls = useAnimation();
-  
-  // Track mouse position for 3D effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      
-      const container = containerRef.current;
-      const rect = container.getBoundingClientRect();
-      
-      // Calculate mouse position relative to the center of the container
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      
-      setMousePosition({ x, y });
-    };
-    
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
   
   useEffect(() => {
     // Mark the logo as loaded after a short delay to trigger animations
     const timer = setTimeout(() => setHasLoaded(true), 500);
     return () => clearTimeout(timer);
   }, []);
-  
-  // Calculate 3D rotation based on mouse position
-  const rotateX = mousePosition.y * 15; // 15 degrees max rotation
-  const rotateY = mousePosition.x * -15; // 15 degrees max rotation
-  
+
   return (
     <motion.div 
-      ref={containerRef}
-      className="w-32 h-32 mx-auto mb-8 bg-white/80 rounded-full shadow-xl flex items-center justify-center overflow-hidden relative perspective-1000" 
+      className="w-32 h-32 mx-auto mb-8 bg-white/80 rounded-full shadow-xl flex items-center justify-center overflow-hidden relative" 
       initial={{ y: -100, opacity: 0, scale: 0.5 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
       transition={{ 
@@ -62,13 +35,9 @@ export function HeroLogo() {
         transition={{ duration: 3, repeat: Infinity }}
       />
       
-      {/* Enhanced 3D orbital rings */}
+      {/* Enhanced orbital rings with improved animations */}
       <motion.div 
         className="absolute w-full h-full rounded-full border-2 border-moh-green/30"
-        style={{ 
-          transformStyle: "preserve-3d", 
-          transform: `rotateX(${rotateX * 0.5}deg) rotateY(${rotateY * 0.5}deg)`
-        }}
         animate={{ rotate: 360 }}
         transition={{ 
           duration: 10, 
@@ -87,10 +56,7 @@ export function HeroLogo() {
       
       <motion.div 
         className="absolute w-full h-full rounded-full border border-moh-gold/40"
-        style={{ 
-          transformStyle: "preserve-3d", 
-          transform: `rotateX(${rotateX * 0.7}deg) rotateY(${rotateY * 0.7}deg) rotateZ(45deg)`
-        }}
+        style={{ transform: "rotate(45deg)" }}
         animate={{ rotate: "-315deg" }}
         transition={{ 
           duration: 15, 
@@ -107,13 +73,10 @@ export function HeroLogo() {
         />
       </motion.div>
       
-      {/* Additional diagonal orbit with enhanced 3D effect */}
+      {/* Additional diagonal orbit */}
       <motion.div 
         className="absolute w-full h-full rounded-full border border-moh-green/20"
-        style={{ 
-          transformStyle: "preserve-3d", 
-          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(120deg)`
-        }}
+        style={{ transform: "rotate(120deg)" }}
         animate={{ rotate: "480deg" }}
         transition={{ 
           duration: 20, 
@@ -130,13 +93,9 @@ export function HeroLogo() {
         />
       </motion.div>
 
-      {/* MOH Logo - Main Circle with Palm Tree and Infinity Symbol - Now with 3D perspective */}
+      {/* MOH Logo - Main Circle with Palm Tree and Infinity Symbol */}
       <motion.div 
         className="w-24 h-24 bg-moh-green rounded-full flex items-center justify-center relative z-10"
-        style={{ 
-          transformStyle: "preserve-3d", 
-          transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-        }}
         animate={{ 
           scale: [1, 1.05, 1],
         }}
@@ -161,12 +120,9 @@ export function HeroLogo() {
           }}
         />
         
-        {/* 3D animated logo container with hover effect */}
+        {/* Animated logo container */}
         <motion.div
           className="w-16 h-16 relative flex items-center justify-center"
-          style={{ 
-            transformStyle: "preserve-3d",
-          }}
           animate={{
             scale: [1, 1.05, 1],
             rotateY: [0, 10, 0, -10, 0],
@@ -184,47 +140,17 @@ export function HeroLogo() {
             }
           }}
         >
-          {/* Enhanced 3D logo with parallax layers */}
-          <div className="w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
-            {/* Back glow layer */}
-            <motion.div
-              className="absolute inset-0 bg-white/10 rounded-full"
-              style={{
-                transform: `translateZ(-4px)`,
-                transformStyle: "preserve-3d"
-              }}
-              animate={{
-                boxShadow: [
-                  "0 0 10px 2px rgba(255,255,255,0.3)",
-                  "0 0 20px 5px rgba(255,255,255,0.5)",
-                  "0 0 10px 2px rgba(255,255,255,0.3)"
-                ]
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-            
-            {/* Logo base */}
-            <motion.img 
+          {/* Logo base with shimmer effect */}
+          <div className="w-full h-full relative">
+            <img 
               src="/lovable-uploads/fc6609f7-b2c9-4eb5-8a3a-6baa876025c7.png" 
               alt="MOH Logo" 
-              className="w-full h-full object-contain relative"
-              style={{ transformStyle: "preserve-3d", transform: `translateZ(0)` }}
+              className="w-full h-full object-contain"
             />
             
-            {/* Foreground highlight layer */}
-            <motion.div
-              className="absolute inset-0 rounded-full"
-              style={{
-                transform: `translateZ(4px)`,
-                transformStyle: "preserve-3d",
-                background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%)"
-              }}
-            />
-            
-            {/* Animated shimmer overlay with 3D offset */}
+            {/* Animated shimmer overlay */}
             <motion.div 
               className="absolute inset-0"
-              style={{ transform: `translateZ(2px)` }}
               animate={{
                 background: [
                   "linear-gradient(45deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.3) 30%, rgba(255,255,255,0.5) 40%, rgba(255,255,255,0) 50%)",
@@ -239,10 +165,9 @@ export function HeroLogo() {
               }}
             />
             
-            {/* Palm tree highlight animation with 3D effect */}
+            {/* Palm tree highlight animation */}
             <motion.div 
               className="absolute top-0 left-0 w-full h-full"
-              style={{ transform: `translateZ(3px)` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: hasLoaded ? [0, 0.7, 0] : 0 }}
               transition={{
@@ -256,10 +181,9 @@ export function HeroLogo() {
               </div>
             </motion.div>
             
-            {/* Infinity symbol glow animation with enhanced 3D effect */}
+            {/* Infinity symbol glow animation */}
             <motion.div 
               className="absolute inset-0 flex items-center justify-center"
-              style={{ transform: `translateZ(5px)` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: hasLoaded ? [0, 0.7, 0] : 0 }}
               transition={{
@@ -275,15 +199,11 @@ export function HeroLogo() {
         </motion.div>
       </motion.div>
       
-      {/* Enhanced sparkle effects with 3D positioning */}
+      {/* Enhanced sparkle effects */}
       {[...Array(12)].map((_, i) => (
         <motion.div 
           key={i}
           className="absolute w-1.5 h-1.5 bg-white rounded-full"
-          style={{ 
-            transformStyle: "preserve-3d",
-            transform: `translateZ(${(Math.random() * 10) - 5}px)`
-          }}
           initial={{ 
             x: (Math.random() - 0.5) * 60, 
             y: (Math.random() - 0.5) * 60,
@@ -302,10 +222,9 @@ export function HeroLogo() {
         />
       ))}
       
-      {/* Sparkles icon animations with 3D positioning */}
+      {/* Sparkles icon animations */}
       <motion.div
         className="absolute -top-3 -right-1"
-        style={{ transformStyle: "preserve-3d", transform: `translateZ(8px)` }}
         animate={{
           y: [-2, 2, -2],
           rotate: [0, 10, 0, -10, 0],
@@ -319,7 +238,6 @@ export function HeroLogo() {
       
       <motion.div
         className="absolute -bottom-2 -left-1"
-        style={{ transformStyle: "preserve-3d", transform: `translateZ(8px)` }}
         animate={{
           y: [2, -2, 2],
           rotate: [0, -10, 0, 10, 0],
@@ -331,16 +249,12 @@ export function HeroLogo() {
         <Sparkles className="text-moh-green/60 w-3 h-3" />
       </motion.div>
       
-      {/* Pulse rings with 3D layering */}
+      {/* Pulse rings */}
       <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={`pulse-${i}`}
             className="absolute rounded-full border border-moh-green/10"
-            style={{ 
-              transformStyle: "preserve-3d",
-              transform: `translateZ(${-5 + (i * 2)}px)`
-            }}
             initial={{ 
               width: 50, 
               height: 50, 
