@@ -24,7 +24,7 @@ export function SidebarNavSection({ title, isCollapsed, items }: SidebarNavSecti
       {!isCollapsed && (
         <h3 className={cn(
           "mb-2 px-4 text-xs font-semibold tracking-wider",
-          "text-moh-gold/90 uppercase"
+          "text-moh-gold uppercase"
         )}>
           {title}
         </h3>

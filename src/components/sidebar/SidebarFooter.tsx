@@ -30,14 +30,14 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
   };
   
   return (
-    <div className="sticky bottom-0 z-20 mt-auto flex flex-col gap-2 bg-slate-900/80 backdrop-blur-sm p-3 pt-4 border-t border-slate-800/50">
+    <div className="sticky bottom-0 z-20 mt-auto flex flex-col gap-2 bg-white/95 backdrop-blur-sm p-3 pt-4 border-t border-slate-200">
       {!isCollapsed ? (
         <>
           {/* User Profile Section */}
           <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9 border border-slate-700/50">
+            <Avatar className="h-9 w-9 border border-slate-200">
               <AvatarImage src={user?.avatar_url || undefined} alt={user?.first_name || user?.email || 'User'} />
-              <AvatarFallback className="bg-slate-800 text-moh-gold">
+              <AvatarFallback className="bg-slate-100 text-moh-green">
                 {getInitials()}
               </AvatarFallback>
             </Avatar>
@@ -49,10 +49,10 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
               transition={{ duration: 0.2 }}
               className="flex flex-col overflow-hidden"
             >
-              <span className="truncate text-sm font-medium text-slate-200">
+              <span className="truncate text-sm font-medium text-slate-800">
                 {user?.first_name ? `${user.first_name} ${user.last_name || ''}` : user?.email?.split('@')[0]}
               </span>
-              <span className="truncate text-xs text-slate-400">
+              <span className="truncate text-xs text-slate-500">
                 {user?.email}
               </span>
             </motion.div>
@@ -63,7 +63,7 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
             <Button 
               variant="outline" 
               size="sm" 
-              className="flex-1 border-slate-800 bg-slate-800/50 text-slate-300 hover:bg-slate-700 hover:text-white"
+              className="flex-1 border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-moh-green"
               asChild
             >
               <Link to="/dashboard/settings">
@@ -75,7 +75,7 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
             <Button 
               variant="outline" 
               size="sm" 
-              className="flex-1 border-slate-800 bg-slate-800/50 text-slate-300 hover:bg-red-900/20 hover:text-red-400 hover:border-red-900/50"
+              className="flex-1 border-slate-200 bg-slate-50 text-slate-600 hover:bg-red-50 hover:text-red-500 hover:border-red-100"
               onClick={signOut}
             >
               <LogOut className="mr-2 h-4 w-4" />
@@ -87,9 +87,9 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
         <div className="flex flex-col items-center gap-3">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Avatar className="h-9 w-9 border border-slate-700/50 cursor-pointer">
+              <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer">
                 <AvatarImage src={user?.avatar_url || undefined} alt={user?.first_name || user?.email || 'User'} />
-                <AvatarFallback className="bg-slate-800 text-moh-gold">
+                <AvatarFallback className="bg-slate-100 text-moh-green">
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
@@ -105,7 +105,7 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-8 w-8 rounded-full bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700"
+                  className="h-8 w-8 rounded-full bg-slate-100/50 text-slate-600 hover:text-moh-green hover:bg-slate-100"
                   asChild
                 >
                   <Link to="/dashboard/settings">
@@ -123,7 +123,7 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-8 w-8 rounded-full bg-slate-800/50 text-slate-400 hover:text-red-400 hover:bg-red-900/20"
+                  className="h-8 w-8 rounded-full bg-slate-100/50 text-slate-600 hover:text-red-500 hover:bg-red-50"
                   onClick={signOut}
                 >
                   <LogOut className="h-4 w-4" />

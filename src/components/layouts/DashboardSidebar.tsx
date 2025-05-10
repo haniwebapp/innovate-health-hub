@@ -29,8 +29,8 @@ export default function DashboardSidebar({
         transition={{ duration: 0.3 }}
         className={cn(
           "h-screen fixed left-0 top-0 z-40 flex flex-col transition-all duration-300",
-          "bg-slate-900 backdrop-blur-lg",
-          "border-r border-slate-800/50",
+          "bg-white",
+          "border-r border-slate-200/80",
           isCollapsed ? "w-[68px]" : "w-64"
         )}
       >
@@ -38,7 +38,7 @@ export default function DashboardSidebar({
         <SidebarHeader isCollapsed={isCollapsed} onToggleCollapse={onToggleCollapse} />
         
         {/* Navigation Menu - with improved scrolling */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700/50 scrollbar-track-transparent py-2 px-2 space-y-1">
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent py-2 px-2 space-y-1">
           {/* Main Navigation */}
           <SidebarMainNav isCollapsed={isCollapsed} />
           

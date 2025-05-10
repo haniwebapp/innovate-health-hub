@@ -32,11 +32,11 @@ export function SidebarNavItem({
   
   const baseItemClasses = cn(
     "flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200",
-    "hover:bg-slate-800/80 hover:text-white",
-    "focus:bg-slate-800/80 focus:text-white focus:outline-none",
+    "hover:bg-slate-100 hover:text-moh-green",
+    "focus:bg-slate-100 focus:text-moh-green focus:outline-none",
     isActive 
-      ? "bg-slate-800 text-white" 
-      : "text-slate-300 hover:text-white"
+      ? "bg-slate-100 text-moh-green font-medium" 
+      : "text-slate-600 hover:text-moh-green"
   );
   
   const item = (
@@ -47,7 +47,7 @@ export function SidebarNavItem({
     >
       <span className={cn(
         "flex items-center justify-center rounded-md",
-        isActive ? "text-moh-gold" : "text-moh-green"
+        isActive ? "text-moh-green" : "text-slate-500"
       )}>
         {icon}
       </span>
@@ -67,7 +67,7 @@ export function SidebarNavItem({
       {!isCollapsed && badge && (
         <Badge variant={badgeVariant} className={cn(
           badgeVariant === "default" ? "bg-moh-green text-white" : "",
-          badgeVariant === "secondary" ? "bg-slate-700 text-moh-gold" : "",
+          badgeVariant === "secondary" ? "bg-slate-100 text-moh-gold" : "",
           "ml-auto"
         )}>
           {badge}
@@ -88,7 +88,7 @@ export function SidebarNavItem({
                 className={cn(
                   "absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center text-xs p-0.5",
                   badgeVariant === "default" ? "bg-moh-green text-white" : "",
-                  badgeVariant === "secondary" ? "bg-slate-700 text-moh-gold" : ""
+                  badgeVariant === "secondary" ? "bg-slate-100 text-moh-gold" : ""
                 )}
               >
                 {typeof badge === 'number' && badge > 99 ? '99+' : badge}

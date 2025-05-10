@@ -13,7 +13,7 @@ interface SidebarHeaderProps {
 
 export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderProps) {
   return (
-    <div className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-sm px-2">
+    <div className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-2">
       <div className="flex items-center gap-2 px-2">
         {!isCollapsed ? (
           <Link to="/" className="flex items-center gap-2">
@@ -27,7 +27,7 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
               transition={{ duration: 0.2 }}
               className="flex flex-col"
             >
-              <span className="text-white font-bold leading-tight">MOH</span>
+              <span className="text-slate-800 font-bold leading-tight">MOH</span>
               <span className="text-moh-gold text-xs leading-tight">AI Platform</span>
             </motion.div>
           </Link>
@@ -45,7 +45,7 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-white hover:bg-slate-800/80 rounded-full"
+            className="h-8 w-8 text-slate-600 hover:text-moh-green hover:bg-slate-100/80 rounded-full"
             onClick={onToggleCollapse}
           >
             {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
@@ -117,7 +116,7 @@ export default function DashboardLayout() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden mr-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              className="md:hidden mr-2 text-slate-600 hover:text-moh-green hover:bg-slate-100"
               onClick={handleToggleCollapse}
             >
               {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -126,11 +125,11 @@ export default function DashboardLayout() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/dashboard" className="text-purple-600 font-medium">Dashboard</BreadcrumbLink>
+                  <BreadcrumbLink href="/dashboard" className="text-moh-green font-medium">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="font-semibold">{getPageTitle(pathname)}</BreadcrumbPage>
+                  <BreadcrumbPage className="font-semibold text-slate-800">{getPageTitle(pathname)}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -140,7 +139,7 @@ export default function DashboardLayout() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              className="relative text-slate-600 hover:text-moh-green hover:bg-slate-100"
               onClick={handleNotificationClick}
             >
               <Bell size={18} />
@@ -150,18 +149,18 @@ export default function DashboardLayout() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 hidden md:flex"
+              className="text-slate-600 hover:text-moh-green hover:bg-slate-100 hidden md:flex"
             >
               <Search size={18} />
             </Button>
             
             <div className="hidden md:flex items-center gap-2">
               {isAdmin && (
-                <span className="bg-purple-100 text-purple-800 text-xs rounded-full px-2 py-0.5 font-medium flex items-center">
+                <span className="bg-moh-lightGreen text-moh-green text-xs rounded-full px-2 py-0.5 font-medium flex items-center">
                   <Shield size={12} className="mr-1" /> Admin
                 </span>
               )}
-              <span className="text-sm font-medium mr-1 hidden lg:block">
+              <span className="text-sm font-medium mr-1 hidden lg:block text-slate-700">
                 {user?.email?.split('@')[0]}
               </span>
               {user?.avatar_url ? (
@@ -175,8 +174,8 @@ export default function DashboardLayout() {
                   <GeneratedLogo 
                     name={getInitials()} 
                     size={32} 
-                    primaryColor="#9b87f5" 
-                    secondaryColor="#D6BCFA"
+                    primaryColor="#00814A" 
+                    secondaryColor="#C3A86B"
                     shape="circle" 
                   />
                 </div>
