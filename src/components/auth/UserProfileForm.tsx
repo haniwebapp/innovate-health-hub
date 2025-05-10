@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { User, Mail, Building, CheckCircle, Upload } from "lucide-react";
+import { ProfileData } from "@/types/admin";
 
 // Extended profile type including avatar_url
 interface ProfileData {
