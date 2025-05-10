@@ -1,4 +1,3 @@
-
 export type UserProfile = {
   id: string;
   email: string;
@@ -23,3 +22,26 @@ export type ChallengeSettings = {
   autoCloseExpiredChallenges: boolean;
   submissionTimeLimit: string;
 };
+
+// Add these interfaces if needed
+export interface ProfileData {
+  first_name?: string;
+  last_name?: string;
+  user_type?: string;
+  organization?: string;
+  avatar_url?: string;
+  email?: string;
+  updated_at?: string;
+}
+
+export interface ProfileWithEmail {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  user_type?: string;
+  organization?: string;
+  last_sign_in?: string;
+  status: string;
+  avatar_url?: string;
+}
