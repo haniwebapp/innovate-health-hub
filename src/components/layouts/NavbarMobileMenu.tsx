@@ -22,7 +22,7 @@ export function NavbarMobileMenu({
   setMobileMenuOpen,
 }: NavbarMobileMenuProps) {
   const { language } = useLanguage();
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   
   // Reordered navigation links to match desktop navigation
   const navigationLinks = [
@@ -205,7 +205,7 @@ export function NavbarMobileMenu({
                   className="justify-start text-left mb-1 text-red-600 hover:text-red-700 hover:bg-red-50"
                   onClick={() => {
                     handleLinkClick("/");
-                    logout();
+                    signOut();
                   }}
                 >
                   <LogOut className="h-4 w-4 mr-2" />

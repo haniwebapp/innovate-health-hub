@@ -8,9 +8,11 @@ interface AuthContextType {
   session: Session | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isLoading: boolean;  // Added isLoading property
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, userData?: any) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  logout: () => Promise<void>;  // Added logout as an alias for signOut
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,9 +20,11 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   isAuthenticated: false,
   isAdmin: false,
+  isLoading: true,  // Added default value for isLoading
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null }),
   signOut: async () => {},
+  logout: async () => {},  // Added default value for logout
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -116,14 +120,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await supabase.auth.signOut();
   };
 
+  // Added logout as an alias for signOut for consistency
+  const logout = async () => {
+    await signOut();
+  };
+
   const value = {
     user,
     session,
     isAuthenticated: !!user,
     isAdmin,
+    isLoading,
     signIn,
     signUp,
     signOut,
+    logout,
   };
 
   return (

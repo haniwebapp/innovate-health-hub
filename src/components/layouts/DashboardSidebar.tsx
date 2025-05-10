@@ -23,7 +23,7 @@ export default function DashboardSidebar({
   isCollapsed, 
   onToggleCollapse 
 }: DashboardSidebarProps) {
-  const { logout, isAdmin } = useAuth();
+  const { signOut, isAdmin } = useAuth();
   
   return (
     <div
@@ -211,7 +211,7 @@ export default function DashboardSidebar({
                 "w-full justify-start",
                 isCollapsed && "h-9 w-9"
               )}
-              onClick={logout}
+              onClick={signOut}
             >
               <LogOut size={18} className={cn(isCollapsed ? "" : "mr-2")} />
               {!isCollapsed && <span>Logout</span>}
