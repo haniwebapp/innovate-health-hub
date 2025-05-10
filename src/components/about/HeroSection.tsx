@@ -1,7 +1,6 @@
 
 import { motion } from "framer-motion";
 import { Users, Award, Globe } from "lucide-react";
-import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 
 export default function HeroSection() {
   const fadeInUpVariants = {
@@ -34,9 +33,6 @@ export default function HeroSection() {
         >
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-moh-darkGreen">
             Saudi Healthcare Innovation Platform
-            <div className="inline-block ml-4">
-              <ArabicVerticalText text="SHIP" />
-            </div>
           </h1>
           <motion.p 
             className="text-lg text-gray-700 mb-8 leading-relaxed"
