@@ -1,5 +1,5 @@
 
-import { NavSection } from "./SidebarNavSection";
+import { SidebarNavSection } from "./SidebarNavSection";
 import { LayoutDashboard, User } from "lucide-react";
 
 interface SidebarMainNavProps {
@@ -8,12 +8,20 @@ interface SidebarMainNavProps {
 
 export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
   return (
-    <NavSection 
-      title="Main" 
+    <SidebarNavSection 
+      title="MAIN" 
       isCollapsed={isCollapsed} 
       items={[
-        { to: "/dashboard", icon: <LayoutDashboard size={18} className="text-moh-green" />, text: "Dashboard" },
-        { to: "/dashboard/profile", icon: <User size={18} className="text-moh-green" />, text: "Profile" }
+        { 
+          to: "/dashboard", 
+          icon: <LayoutDashboard size={18} className="text-moh-green" />, 
+          text: "Dashboard" 
+        },
+        { 
+          to: "/dashboard/profile", 
+          icon: <User size={18} className="text-moh-green" />, 
+          text: "Profile" 
+        }
       ]}
     />
   );

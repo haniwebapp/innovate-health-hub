@@ -1,6 +1,6 @@
 
-import { NavSection } from "./SidebarNavSection";
-import { FileCheck, LightbulbIcon, PlusCircle } from "lucide-react";
+import { SidebarNavSection } from "./SidebarNavSection";
+import { FileText, Lightbulb, PlusCircle } from "lucide-react";
 
 interface SidebarInnovationNavProps {
   isCollapsed: boolean;
@@ -8,21 +8,23 @@ interface SidebarInnovationNavProps {
 
 export function SidebarInnovationNav({ isCollapsed }: SidebarInnovationNavProps) {
   return (
-    <NavSection 
+    <SidebarNavSection 
       title="Innovation" 
       isCollapsed={isCollapsed} 
       items={[
         { 
-          to: "/dashboard/submissions", 
-          icon: <FileCheck size={18} className="text-moh-green" />, 
+          to: "/dashboard/challenges", 
+          icon: <FileText size={18} className="text-moh-green" />, 
           text: "Challenges",
-          badge: "3" 
+          badge: 3,
+          badgeVariant: "secondary"
         },
         { 
           to: "/dashboard/innovations", 
-          icon: <LightbulbIcon size={18} className="text-moh-green" />, 
-          text: "Innovations", 
-          badge: "New"
+          icon: <Lightbulb size={18} className="text-moh-green" />, 
+          text: "Innovations",
+          badge: "New",
+          badgeVariant: "secondary" 
         },
         { 
           to: "/dashboard/create-challenge", 

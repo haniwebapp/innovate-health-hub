@@ -1,34 +1,51 @@
 
+import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { NavItem, NavItemProps } from "./SidebarNavItem";
+import { SidebarNavItem } from "./SidebarNavItem";
 
-type NavSectionProps = {
+interface NavItem {
+  to: string;
+  icon: ReactNode;
+  text: string;
+  badge?: string | number;
+  badgeVariant?: "default" | "outline" | "secondary" | "destructive";
+  onClick?: () => void;
+}
+
+interface SidebarNavSectionProps {
   title: string;
   isCollapsed: boolean;
-  items: Array<Omit<NavItemProps, "isCollapsed">>;
-};
+  items: NavItem[];
+}
 
-export function NavSection({ title, isCollapsed, items }: NavSectionProps) {
+export function SidebarNavSection({ title, isCollapsed, items }: SidebarNavSectionProps) {
   return (
     <div className="py-2">
       {!isCollapsed && (
-        <h3 className="px-4 mb-2 text-xs uppercase text-moh-gold/90 font-semibold tracking-wider">
+        <h3 className={cn(
+          "mb-2 px-4 text-xs font-semibold tracking-wider",
+          "text-moh-gold/90 uppercase"
+        )}>
           {title}
         </h3>
       )}
-      <nav className="flex flex-col space-y-1">
-        {items.map(item => (
-          <NavItem
-            key={item.text}
+      <div className={cn(
+        "space-y-1",
+        isCollapsed ? "px-2" : "px-3"
+      )}>
+        {items.map((item) => (
+          <SidebarNavItem
+            key={item.to}
             to={item.to}
             icon={item.icon}
             text={item.text}
             isCollapsed={isCollapsed}
             badge={item.badge}
-            className={item.className}
+            badgeVariant={item.badgeVariant}
+            onClick={item.onClick}
           />
         ))}
-      </nav>
+      </div>
     </div>
   );
 }

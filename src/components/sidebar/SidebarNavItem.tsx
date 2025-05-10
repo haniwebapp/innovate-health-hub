@@ -1,61 +1,107 @@
 
-import { NavLink } from "react-router-dom";
+import { ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipTrigger 
-} from "@/components/ui/tooltip";
+import { motion } from "framer-motion";
 
-export type NavItemProps = {
+interface SidebarNavItemProps {
   to: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   text: string;
   isCollapsed: boolean;
-  badge?: string;
-  className?: string;
-};
+  badge?: string | number;
+  badgeVariant?: "default" | "outline" | "secondary" | "destructive";
+  onClick?: () => void;
+}
 
-export function NavItem({ to, icon, text, isCollapsed, badge, className }: NavItemProps) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <NavLink
-          to={to}
-          className={({ isActive }) => cn(
-            "flex items-center px-4 py-2.5 text-sm transition-colors rounded-md",
-            "relative overflow-hidden w-full",
-            isActive
-              ? "bg-moh-green/20 text-white font-medium"
-              : "text-slate-300 hover:bg-slate-700/50 hover:text-white",
-            isCollapsed && "justify-center px-2",
-            className
-          )}
-          end={to === "/dashboard"}
-        >
-          <div className={cn(
-            "flex items-center justify-center",
-            isCollapsed ? "w-full" : "mr-3"
-          )}>
-            {icon}
-          </div>
-          
-          {!isCollapsed && (
-            <>
-              <span className="truncate">{text}</span>
-              {badge && (
-                <span className="ml-auto flex items-center justify-center min-w-[22px] h-5 bg-moh-gold/20 text-moh-gold px-1.5 text-xs rounded-full font-medium">
-                  {badge}
-                </span>
-              )}
-            </>
-          )}
-        </NavLink>
-      </TooltipTrigger>
-      <TooltipContent side="right" className="font-medium bg-slate-800 text-white border-slate-700">
-        {text}
-        {badge && <span className="ml-2 text-[10px] bg-moh-gold/20 text-moh-gold px-1.5 py-0.5 rounded-md">{badge}</span>}
-      </TooltipContent>
-    </Tooltip>
+export function SidebarNavItem({
+  to,
+  icon,
+  text,
+  isCollapsed,
+  badge,
+  badgeVariant = "secondary",
+  onClick
+}: SidebarNavItemProps) {
+  const { pathname } = useLocation();
+  
+  // Check if the current path matches this nav item
+  const isActive = pathname === to || pathname.startsWith(`${to}/`);
+  
+  const baseItemClasses = cn(
+    "flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200",
+    "hover:bg-slate-800/80 hover:text-white",
+    "focus:bg-slate-800/80 focus:text-white focus:outline-none",
+    isActive 
+      ? "bg-slate-800 text-white" 
+      : "text-slate-300 hover:text-white"
   );
+  
+  const item = (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={baseItemClasses}
+    >
+      <span className={cn(
+        "flex items-center justify-center rounded-md",
+        isActive ? "text-moh-gold" : "text-moh-green"
+      )}>
+        {icon}
+      </span>
+      
+      {!isCollapsed && (
+        <motion.span
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: "auto" }}
+          exit={{ opacity: 0, width: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex-1 truncate"
+        >
+          {text}
+        </motion.span>
+      )}
+      
+      {!isCollapsed && badge && (
+        <Badge variant={badgeVariant} className={cn(
+          badgeVariant === "default" ? "bg-moh-green text-white" : "",
+          badgeVariant === "secondary" ? "bg-slate-700 text-moh-gold" : "",
+          "ml-auto"
+        )}>
+          {badge}
+        </Badge>
+      )}
+    </Link>
+  );
+  
+  if (isCollapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="relative">
+            {item}
+            {badge && (
+              <Badge 
+                variant={badgeVariant}
+                className={cn(
+                  "absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center text-xs p-0.5",
+                  badgeVariant === "default" ? "bg-moh-green text-white" : "",
+                  badgeVariant === "secondary" ? "bg-slate-700 text-moh-gold" : ""
+                )}
+              >
+                {typeof badge === 'number' && badge > 99 ? '99+' : badge}
+              </Badge>
+            )}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="right">
+          <p>{text}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+  
+  return item;
 }
