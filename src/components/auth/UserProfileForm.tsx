@@ -15,6 +15,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 import { User, Mail, Building, CheckCircle, Upload } from "lucide-react";
 
+// Extended profile type including avatar_url
+interface ProfileData {
+  first_name?: string;
+  last_name?: string;
+  user_type?: string;
+  organization?: string;
+  avatar_url?: string; // Add avatar_url to the profile type
+  email?: string; // Add email for consistency
+}
+
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
   lastName: z.string().min(2, { message: "Last name must be at least 2 characters" }),
@@ -102,7 +112,7 @@ export default function UserProfileForm() {
           user_type: values.userType,
           organization: values.organization,
           updated_at: new Date().toISOString(),
-        })
+        } as ProfileData)
         .eq('id', user.id);
         
       if (error) throw error;
@@ -156,7 +166,7 @@ export default function UserProfileForm() {
       // Update user profile with avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: filePath })
+        .update({ avatar_url: filePath } as ProfileData)
         .eq('id', user?.id);
       
       if (updateError) throw updateError;

@@ -16,6 +16,18 @@ import { UserProfile } from "@/types/admin";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
+// Create an interface that extends the profile data with email
+interface ProfileWithEmail {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  user_type?: string;
+  organization?: string;
+  last_sign_in?: string;
+  status: string;
+}
+
 export default function AdminUsersPage() {
   const { toast } = useToast();
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -32,17 +44,20 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
+      // Get profiles with user emails by joining with auth.users table
+      // Note: Since we can't directly join with auth.users, we'll use a workaround
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select('*');
 
       if (error) throw error;
 
-      // Map profiles to UserProfile format
-      const mappedUsers: UserProfile[] = profiles.map(profile => {
+      // For now, we'll use the email from profiles directly
+      // In a production environment, you might need to add the email to profiles table
+      const mappedUsers: UserProfile[] = profiles.map((profile: ProfileWithEmail) => {
         return {
           id: profile.id,
-          email: profile.email || "",
+          email: profile.email || "", // Use email from profile, or empty string as fallback
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",
