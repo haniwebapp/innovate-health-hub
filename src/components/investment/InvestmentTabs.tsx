@@ -26,22 +26,22 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
   return (
     <Tabs defaultValue={activeTab} id="investment-opportunities" className="mb-12" onValueChange={setActiveTab}>
       <div className="flex justify-center mb-8">
-        <TabsList className="grid w-full max-w-2xl grid-cols-3 bg-purple-100">
+        <TabsList className="grid w-full max-w-2xl grid-cols-3 bg-moh-lightGreen">
           <TabsTrigger 
             value="startups"
-            className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+            className="data-[state=active]:bg-moh-green data-[state=active]:text-white"
           >
             For Startups
           </TabsTrigger>
           <TabsTrigger 
             value="investors"
-            className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+            className="data-[state=active]:bg-moh-green data-[state=active]:text-white"
           >
             For Investors
           </TabsTrigger>
           <TabsTrigger 
             value="resources"
-            className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+            className="data-[state=active]:bg-moh-green data-[state=active]:text-white"
           >
             Resources
           </TabsTrigger>
@@ -62,10 +62,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           }}
         >
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-green hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-purple-100 p-3 rounded-lg mr-4">
-                  <LineChart className="h-6 w-6 text-purple-600" />
+                <div className="bg-moh-lightGreen p-3 rounded-lg mr-4">
+                  <LineChart className="h-6 w-6 text-moh-green" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Funding Opportunities</h3>
@@ -73,7 +73,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-purple-600 hover:bg-purple-700 w-full"
+                className="bg-moh-green hover:bg-moh-darkGreen w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -85,10 +85,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           </motion.div>
           
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-green hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-purple-100 p-3 rounded-lg mr-4">
-                  <Users className="h-6 w-6 text-purple-600" />
+                <div className="bg-moh-lightGreen p-3 rounded-lg mr-4">
+                  <Users className="h-6 w-6 text-moh-green" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Investor Matching</h3>
@@ -96,7 +96,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-purple-600 hover:bg-purple-700 w-full"
+                className="bg-moh-green hover:bg-moh-darkGreen w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -108,10 +108,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           </motion.div>
           
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-green hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-purple-100 p-3 rounded-lg mr-4">
-                  <FileText className="h-6 w-6 text-purple-600" />
+                <div className="bg-moh-lightGreen p-3 rounded-lg mr-4">
+                  <FileText className="h-6 w-6 text-moh-green" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Pitch Resources</h3>
@@ -119,7 +119,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-purple-600 hover:bg-purple-700 w-full"
+                className="bg-moh-green hover:bg-moh-darkGreen w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -131,10 +131,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           </motion.div>
           
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-green hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-purple-100 p-3 rounded-lg mr-4">
-                  <Target className="h-6 w-6 text-purple-600" />
+                <div className="bg-moh-lightGreen p-3 rounded-lg mr-4">
+                  <Target className="h-6 w-6 text-moh-green" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Growth Guidance</h3>
@@ -142,7 +142,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-purple-600 hover:bg-purple-700 w-full"
+                className="bg-moh-green hover:bg-moh-darkGreen w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -169,10 +169,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           }}
         >
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-indigo-500 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-gold hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-indigo-100 p-3 rounded-lg mr-4">
-                  <BarChart3 className="h-6 w-6 text-indigo-500" />
+                <div className="bg-moh-lightGold p-3 rounded-lg mr-4">
+                  <BarChart3 className="h-6 w-6 text-moh-gold" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Deal Flow</h3>
@@ -180,7 +180,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-indigo-500 hover:bg-indigo-600 w-full"
+                className="bg-moh-gold hover:bg-moh-darkGold w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -192,10 +192,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           </motion.div>
           
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-indigo-500 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-gold hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-indigo-100 p-3 rounded-lg mr-4">
-                  <FileText className="h-6 w-6 text-indigo-500" />
+                <div className="bg-moh-lightGold p-3 rounded-lg mr-4">
+                  <FileText className="h-6 w-6 text-moh-gold" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Due Diligence Support</h3>
@@ -203,7 +203,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-indigo-500 hover:bg-indigo-600 w-full"
+                className="bg-moh-gold hover:bg-moh-darkGold w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -215,10 +215,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           </motion.div>
           
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-indigo-500 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-gold hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-indigo-100 p-3 rounded-lg mr-4">
-                  <LineChart className="h-6 w-6 text-indigo-500" />
+                <div className="bg-moh-lightGold p-3 rounded-lg mr-4">
+                  <LineChart className="h-6 w-6 text-moh-gold" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Market Intelligence</h3>
@@ -226,7 +226,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-indigo-500 hover:bg-indigo-600 w-full"
+                className="bg-moh-gold hover:bg-moh-darkGold w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -238,10 +238,10 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           </motion.div>
           
           <motion.div variants={fadeIn}>
-            <Card className="p-6 border-l-4 border-l-indigo-500 hover:shadow-lg transition-shadow">
+            <Card className="p-6 border-l-4 border-l-moh-gold hover:shadow-lg transition-shadow">
               <div className="flex items-start mb-4">
-                <div className="bg-indigo-100 p-3 rounded-lg mr-4">
-                  <Users className="h-6 w-6 text-indigo-500" />
+                <div className="bg-moh-lightGold p-3 rounded-lg mr-4">
+                  <Users className="h-6 w-6 text-moh-gold" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Co-Investment Network</h3>
@@ -249,7 +249,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 </div>
               </div>
               <Button 
-                className="bg-indigo-500 hover:bg-indigo-600 w-full"
+                className="bg-moh-gold hover:bg-moh-darkGold w-full"
                 asChild
               >
                 <Link to="/dashboard/investment" className="flex items-center justify-center">
@@ -278,29 +278,29 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           <motion.div variants={fadeIn}>
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <h3 className="text-xl font-semibold flex items-center mb-3">
-                <Lightbulb className="h-5 w-5 mr-2 text-amber-500" />
+                <Lightbulb className="h-5 w-5 mr-2 text-moh-gold" />
                 Investment Guides
               </h3>
               <p className="mb-4 text-gray-600">Comprehensive guides for healthcare innovation investment strategies.</p>
               <div className="grid gap-2 md:grid-cols-2 mb-6">
-                <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                <div className="p-3 bg-moh-lightGreen rounded-lg border border-moh-lightGreen">
                   <h4 className="font-medium">Early-stage Investment Guide</h4>
                   <p className="text-sm text-gray-500">For seed to Series A investments</p>
                 </div>
-                <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                <div className="p-3 bg-moh-lightGreen rounded-lg border border-moh-lightGreen">
                   <h4 className="font-medium">Digital Health Investment Framework</h4>
                   <p className="text-sm text-gray-500">Evaluating digital health solutions</p>
                 </div>
-                <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                <div className="p-3 bg-moh-lightGreen rounded-lg border border-moh-lightGreen">
                   <h4 className="font-medium">Medical Device Investment Strategy</h4>
                   <p className="text-sm text-gray-500">For innovative medical devices</p>
                 </div>
-                <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                <div className="p-3 bg-moh-lightGreen rounded-lg border border-moh-lightGreen">
                   <h4 className="font-medium">Biotech Investment Risk Assessment</h4>
                   <p className="text-sm text-gray-500">Managing biotech investment risks</p>
                 </div>
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700 w-full">
+              <Button className="bg-moh-green hover:bg-moh-darkGreen w-full">
                 Access Guides
               </Button>
             </Card>
@@ -309,7 +309,7 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
           <motion.div variants={fadeIn}>
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <h3 className="text-xl font-semibold flex items-center mb-3">
-                <Users className="h-5 w-5 mr-2 text-blue-500" />
+                <Users className="h-5 w-5 mr-2 text-moh-gold" />
                 Funding Events
               </h3>
               <p className="mb-4 text-gray-600">Upcoming pitch events, investor meetings and funding workshops.</p>
@@ -324,19 +324,19 @@ export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps)
                 <div className="border-b pb-3">
                   <div className="flex justify-between">
                     <p className="font-medium">Digital Health Investor Showcase</p>
-                    <span className="text-sm bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Virtual</span>
+                    <span className="text-sm bg-moh-lightGreen text-moh-green px-2 py-0.5 rounded">Virtual</span>
                   </div>
                   <p className="text-sm text-gray-500">July 23, 2025 • Online</p>
                 </div>
                 <div className="border-b pb-3">
                   <div className="flex justify-between">
                     <p className="font-medium">Medical Innovation Funding Workshop</p>
-                    <span className="text-sm bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Registration Open</span>
+                    <span className="text-sm bg-moh-lightGold text-moh-gold px-2 py-0.5 rounded">Registration Open</span>
                   </div>
                   <p className="text-sm text-gray-500">August 10, 2025 • Jeddah</p>
                 </div>
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700 w-full">
+              <Button className="bg-moh-green hover:bg-moh-darkGreen w-full">
                 View All Events
               </Button>
             </Card>

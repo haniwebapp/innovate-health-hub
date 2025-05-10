@@ -25,12 +25,12 @@ export function InvestmentCTA() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 text-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('/pattern.svg')] opacity-5"></div>
-        <div className="absolute top-20 right-20 w-72 h-72 rounded-full bg-purple-500/20 blur-3xl"></div>
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div className="absolute top-20 right-20 w-72 h-72 rounded-full bg-moh-gold/20 blur-3xl"></div>
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-moh-lightGold/20 blur-3xl"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
@@ -42,10 +42,10 @@ export function InvestmentCTA() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            Ready to Transform Healthcare Through <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-indigo-300">Investment?</span>
+            Ready to Transform Healthcare Through <span className="text-transparent bg-clip-text bg-gradient-to-r from-moh-lightGold to-moh-gold">Investment?</span>
           </motion.h2>
           <motion.p 
-            className="text-lg text-purple-200 max-w-2xl mx-auto"
+            className="text-lg text-moh-lightGreen max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -66,11 +66,11 @@ export function InvestmentCTA() {
             className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center"
             variants={itemVariants}
           >
-            <div className="bg-purple-600/50 h-14 w-14 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <div className="bg-moh-gold/50 h-14 w-14 rounded-lg flex items-center justify-center mx-auto mb-4">
               <Search className="h-7 w-7" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Find Opportunities</h3>
-            <p className="text-purple-200">
+            <p className="text-moh-lightGreen">
               Discover curated funding opportunities and investors aligned with your healthcare innovation.
             </p>
           </motion.div>
@@ -79,11 +79,11 @@ export function InvestmentCTA() {
             className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center"
             variants={itemVariants}
           >
-            <div className="bg-purple-600/50 h-14 w-14 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <div className="bg-moh-gold/50 h-14 w-14 rounded-lg flex items-center justify-center mx-auto mb-4">
               <Users className="h-7 w-7" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Connect & Collaborate</h3>
-            <p className="text-purple-200">
+            <p className="text-moh-lightGreen">
               Build meaningful relationships with investors, startups, and healthcare stakeholders.
             </p>
           </motion.div>
@@ -92,11 +92,11 @@ export function InvestmentCTA() {
             className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center"
             variants={itemVariants}
           >
-            <div className="bg-purple-600/50 h-14 w-14 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <div className="bg-moh-gold/50 h-14 w-14 rounded-lg flex items-center justify-center mx-auto mb-4">
               <HeartPulse className="h-7 w-7" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Transform Healthcare</h3>
-            <p className="text-purple-200">
+            <p className="text-moh-lightGreen">
               Drive meaningful change in healthcare delivery and patient outcomes across Saudi Arabia.
             </p>
           </motion.div>
@@ -111,7 +111,7 @@ export function InvestmentCTA() {
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
-              className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white border-none"
+              className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white border-none"
               size="lg"
               asChild
             >
@@ -133,8 +133,8 @@ export function InvestmentCTA() {
           </div>
           
           <div className="mt-8 flex items-center justify-center">
-            <Lightbulb className="h-5 w-5 text-purple-300 mr-2" />
-            <p className="text-purple-300 text-sm">
+            <Lightbulb className="h-5 w-5 text-moh-lightGold mr-2" />
+            <p className="text-moh-lightGold text-sm">
               Investment hub is aligned with Saudi Arabia's Vision 2030 healthcare transformation goals
             </p>
           </div>

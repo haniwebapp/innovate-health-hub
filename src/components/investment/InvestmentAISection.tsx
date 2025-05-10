@@ -6,10 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { AIInsightsCard } from '@/components/investment/AIInsightsCard';
-import { AIMatchScoreCard } from '@/components/investment/AIMatchScoreCard';
 import { Loader2, Zap, Brain, BarChart3, TrendingUp } from "lucide-react";
-import { analyzeMarketTrends } from '@/utils/aiUtils';
 import { useToast } from "@/components/ui/use-toast";
 
 // Sample data - in a real app, this would come from an API or database
@@ -81,12 +78,12 @@ export function InvestmentAISection() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 text-white">
+    <section className="py-16 bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <Badge className="bg-purple-700 text-white mb-3">AI-POWERED</Badge>
+          <Badge className="bg-moh-gold text-white mb-3">AI-POWERED</Badge>
           <h2 className="text-3xl font-bold mb-3">Smart Investment Intelligence</h2>
-          <p className="max-w-2xl mx-auto text-purple-200">
+          <p className="max-w-2xl mx-auto text-moh-lightGreen">
             Leverage AI-powered analysis to find the best matches for your healthcare innovation or investment strategy.
           </p>
         </div>
@@ -95,18 +92,18 @@ export function InvestmentAISection() {
           <div className="lg:col-span-4">
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 space-y-6 h-full">
               <div className="flex items-center space-x-4">
-                <div className="bg-purple-700/50 p-3 rounded-lg">
+                <div className="bg-moh-gold/50 p-3 rounded-lg">
                   <Brain className="h-6 w-6" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-xl">AI Investment Assistant</h3>
-                  <p className="text-purple-200 text-sm">Intelligent analysis and matching</p>
+                  <p className="text-moh-lightGreen text-sm">Intelligent analysis and matching</p>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-purple-100">
+                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
                     Investment Sector
                   </label>
                   <Select value={selectedSector} onValueChange={setSelectedSector}>
@@ -125,7 +122,7 @@ export function InvestmentAISection() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-purple-100">
+                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
                     Investment Stage
                   </label>
                   <Select defaultValue="early">
@@ -143,7 +140,7 @@ export function InvestmentAISection() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-purple-100">
+                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
                     Geographic Focus
                   </label>
                   <Select defaultValue="saudi">
@@ -160,7 +157,7 @@ export function InvestmentAISection() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-purple-100">
+                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
                     Investment Size
                   </label>
                   <Select defaultValue="1m-5m">
@@ -180,7 +177,7 @@ export function InvestmentAISection() {
               
               <Button 
                 onClick={handleAnalysis} 
-                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                className="w-full bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold"
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
@@ -203,19 +200,19 @@ export function InvestmentAISection() {
               <TabsList className="bg-white/10 p-1">
                 <TabsTrigger 
                   value="matching" 
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white"
                 >
                   Investment Matches
                 </TabsTrigger>
                 <TabsTrigger 
                   value="insights" 
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white"
                 >
                   AI Insights
                 </TabsTrigger>
                 <TabsTrigger 
                   value="trends" 
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white"
                 >
                   Market Trends
                 </TabsTrigger>
@@ -236,17 +233,17 @@ export function InvestmentAISection() {
                   <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-semibold text-lg">{match.name}</h3>
-                      <Badge className={`${match.score > 85 ? 'bg-green-600' : match.score > 75 ? 'bg-amber-500' : 'bg-white/30'}`}>
+                      <Badge className={`${match.score > 85 ? 'bg-green-600' : match.score > 75 ? 'bg-moh-gold' : 'bg-white/30'}`}>
                         {match.score}% Match
                       </Badge>
                     </div>
-                    <p className="text-purple-200 mb-3">{match.reason}</p>
+                    <p className="text-moh-lightGreen mb-3">{match.reason}</p>
                     
                     {match.additionalInfo && (
                       <div className="grid grid-cols-3 gap-2 mb-4">
                         {match.additionalInfo.map((info, i) => (
                           <div key={i} className="bg-white/5 p-2 rounded text-center">
-                            <p className="text-xs text-purple-200">{info.label}</p>
+                            <p className="text-xs text-moh-lightGreen">{info.label}</p>
                             <p className="font-medium">{info.value}</p>
                           </div>
                         ))}
@@ -255,11 +252,11 @@ export function InvestmentAISection() {
                     
                     <div className="w-full bg-white/5 rounded-full h-2 mb-1">
                       <div 
-                        className="bg-gradient-to-r from-purple-400 to-indigo-400 h-2 rounded-full" 
+                        className="bg-gradient-to-r from-moh-green to-moh-gold h-2 rounded-full" 
                         style={{ width: `${match.score}%` }}
                       ></div>
                     </div>
-                    <div className="flex justify-between text-xs text-purple-200">
+                    <div className="flex justify-between text-xs text-moh-lightGreen">
                       <span>Low match</span>
                       <span>High match</span>
                     </div>
@@ -270,7 +267,7 @@ export function InvestmentAISection() {
               <TabsContent value="insights">
                 <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6 space-y-6">
                   <div className="flex items-center space-x-3">
-                    <Zap className="h-5 w-5 text-yellow-300" />
+                    <Zap className="h-5 w-5 text-moh-lightGold" />
                     <h3 className="text-xl font-medium">AI Investment Insights</h3>
                   </div>
                   
@@ -278,7 +275,7 @@ export function InvestmentAISection() {
                     {aiInsights.map((insight, index) => (
                       <div key={index} className="bg-white/5 p-4 rounded-lg">
                         <div className="flex">
-                          <span className="flex h-6 w-6 mr-3 rounded-full bg-purple-600/50 items-center justify-center text-sm">
+                          <span className="flex h-6 w-6 mr-3 rounded-full bg-moh-gold/50 items-center justify-center text-sm">
                             {index + 1}
                           </span>
                           <p>{insight}</p>
@@ -287,12 +284,12 @@ export function InvestmentAISection() {
                     ))}
                   </div>
                   
-                  <div className="bg-gradient-to-r from-purple-600/20 to-indigo-600/20 p-4 rounded-lg">
+                  <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
                     <h4 className="font-medium mb-2 flex items-center">
-                      <BarChart3 className="h-4 w-4 mr-2 text-indigo-300" />
+                      <BarChart3 className="h-4 w-4 mr-2 text-moh-gold" />
                       Recommendation
                     </h4>
-                    <p className="text-purple-100">
+                    <p className="text-moh-lightGreen">
                       Based on current trends, focus on solutions that integrate with existing healthcare systems and address specific regional needs for the highest investment potential.
                     </p>
                   </div>
@@ -302,33 +299,33 @@ export function InvestmentAISection() {
               <TabsContent value="trends">
                 <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
                   <div className="flex items-center space-x-3 mb-6">
-                    <TrendingUp className="h-5 w-5 text-blue-300" />
+                    <TrendingUp className="h-5 w-5 text-moh-lightGold" />
                     <h3 className="text-xl font-medium">Healthcare Investment Trends</h3>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="bg-white/5 p-4 rounded-lg">
-                      <h4 className="font-medium text-purple-100 mb-1">Digital Health</h4>
+                      <h4 className="font-medium text-moh-lightGreen mb-1">Digital Health</h4>
                       <div className="flex items-end space-x-1 h-32 mt-4 mb-2">
-                        <div className="bg-purple-500/70 w-1/5 h-[20%] rounded-t"></div>
-                        <div className="bg-purple-500/70 w-1/5 h-[30%] rounded-t"></div>
-                        <div className="bg-purple-500/70 w-1/5 h-[45%] rounded-t"></div>
-                        <div className="bg-purple-500/70 w-1/5 h-[60%] rounded-t"></div>
-                        <div className="bg-purple-500/70 w-1/5 h-[80%] rounded-t"></div>
+                        <div className="bg-moh-green/70 w-1/5 h-[20%] rounded-t"></div>
+                        <div className="bg-moh-green/70 w-1/5 h-[30%] rounded-t"></div>
+                        <div className="bg-moh-green/70 w-1/5 h-[45%] rounded-t"></div>
+                        <div className="bg-moh-green/70 w-1/5 h-[60%] rounded-t"></div>
+                        <div className="bg-moh-green/70 w-1/5 h-[80%] rounded-t"></div>
                       </div>
-                      <p className="text-sm text-purple-200">+45% YoY Growth</p>
+                      <p className="text-sm text-moh-lightGreen">+45% YoY Growth</p>
                     </div>
                     
                     <div className="bg-white/5 p-4 rounded-lg">
-                      <h4 className="font-medium text-purple-100 mb-1">Medical Devices</h4>
+                      <h4 className="font-medium text-moh-lightGreen mb-1">Medical Devices</h4>
                       <div className="flex items-end space-x-1 h-32 mt-4 mb-2">
-                        <div className="bg-indigo-500/70 w-1/5 h-[40%] rounded-t"></div>
-                        <div className="bg-indigo-500/70 w-1/5 h-[38%] rounded-t"></div>
-                        <div className="bg-indigo-500/70 w-1/5 h-[45%] rounded-t"></div>
-                        <div className="bg-indigo-500/70 w-1/5 h-[50%] rounded-t"></div>
-                        <div className="bg-indigo-500/70 w-1/5 h-[58%] rounded-t"></div>
+                        <div className="bg-moh-gold/70 w-1/5 h-[40%] rounded-t"></div>
+                        <div className="bg-moh-gold/70 w-1/5 h-[38%] rounded-t"></div>
+                        <div className="bg-moh-gold/70 w-1/5 h-[45%] rounded-t"></div>
+                        <div className="bg-moh-gold/70 w-1/5 h-[50%] rounded-t"></div>
+                        <div className="bg-moh-gold/70 w-1/5 h-[58%] rounded-t"></div>
                       </div>
-                      <p className="text-sm text-purple-200">+22% YoY Growth</p>
+                      <p className="text-sm text-moh-lightGreen">+22% YoY Growth</p>
                     </div>
                   </div>
                   
@@ -336,16 +333,16 @@ export function InvestmentAISection() {
                     {marketTrendInsights.map((insight, index) => (
                       <div key={index} className="bg-white/5 p-3 rounded-lg">
                         <p className="text-sm flex">
-                          <TrendingUp className="h-4 w-4 mr-2 text-blue-300 flex-shrink-0 mt-0.5" />
+                          <TrendingUp className="h-4 w-4 mr-2 text-moh-gold flex-shrink-0 mt-0.5" />
                           <span>{insight}</span>
                         </p>
                       </div>
                     ))}
                   </div>
                   
-                  <div className="bg-gradient-to-r from-blue-600/20 to-indigo-600/20 p-4 rounded-lg">
+                  <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
                     <h4 className="font-medium mb-2">Market Outlook</h4>
-                    <p className="text-purple-100">
+                    <p className="text-moh-lightGreen">
                       The Saudi healthcare investment market is projected to grow by 32% over the next two years, with digital health solutions and AI-driven diagnostics leading the expansion.
                     </p>
                   </div>

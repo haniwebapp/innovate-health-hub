@@ -68,7 +68,7 @@ export function InvestmentMetrics() {
   };
   
   return (
-    <section className="bg-purple-50 py-16">
+    <section className="bg-moh-lightGreen py-16">
       <div className="container mx-auto px-4">
         <motion.div 
           className="text-center mb-10" 
@@ -77,8 +77,8 @@ export function InvestmentMetrics() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl font-bold text-purple-900 mb-3">Investment Ecosystem Metrics</h2>
-          <p className="text-purple-700 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-moh-darkGreen mb-3">Investment Ecosystem Metrics</h2>
+          <p className="text-moh-green max-w-2xl mx-auto">
             Our growing network connects healthcare innovators with strategic investors to accelerate healthcare transformation across Saudi Arabia.
           </p>
         </motion.div>
@@ -92,17 +92,17 @@ export function InvestmentMetrics() {
         >
           <motion.div 
             variants={itemVariants}
-            className="bg-white rounded-xl shadow-md p-6 border border-purple-100 relative overflow-hidden group"
+            className="bg-white rounded-xl shadow-md p-6 border border-moh-lightGreen relative overflow-hidden group"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-purple-600"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-moh-green to-moh-darkGreen"></div>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-gray-600 text-sm mb-1">Active Investors</p>
-                <h3 className="text-3xl font-bold text-purple-900">{counts.investors}+</h3>
+                <h3 className="text-3xl font-bold text-moh-darkGreen">{counts.investors}+</h3>
                 <p className="text-sm text-gray-500 mt-2">Healthcare focused investors</p>
               </div>
-              <div className="bg-purple-100 p-3 rounded-lg group-hover:bg-purple-200 transition-colors">
-                <Users className="h-6 w-6 text-purple-600" />
+              <div className="bg-moh-lightGreen p-3 rounded-lg group-hover:bg-moh-lightGreen/80 transition-colors">
+                <Users className="h-6 w-6 text-moh-green" />
               </div>
             </div>
             <div className="mt-4 flex items-center text-green-600 text-sm">
@@ -113,17 +113,17 @@ export function InvestmentMetrics() {
           
           <motion.div 
             variants={itemVariants}
-            className="bg-white rounded-xl shadow-md p-6 border border-purple-100 relative overflow-hidden group"
+            className="bg-white rounded-xl shadow-md p-6 border border-moh-lightGreen relative overflow-hidden group"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-indigo-600"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-moh-gold to-moh-darkGold"></div>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-gray-600 text-sm mb-1">Healthcare Startups</p>
-                <h3 className="text-3xl font-bold text-purple-900">{counts.startups}+</h3>
+                <h3 className="text-3xl font-bold text-moh-darkGreen">{counts.startups}+</h3>
                 <p className="text-sm text-gray-500 mt-2">Innovative solutions</p>
               </div>
-              <div className="bg-indigo-100 p-3 rounded-lg group-hover:bg-indigo-200 transition-colors">
-                <Award className="h-6 w-6 text-indigo-600" />
+              <div className="bg-moh-lightGold p-3 rounded-lg group-hover:bg-moh-lightGold/80 transition-colors">
+                <Award className="h-6 w-6 text-moh-gold" />
               </div>
             </div>
             <div className="mt-4 flex items-center text-green-600 text-sm">
@@ -134,17 +134,17 @@ export function InvestmentMetrics() {
           
           <motion.div 
             variants={itemVariants}
-            className="bg-white rounded-xl shadow-md p-6 border border-purple-100 relative overflow-hidden group"
+            className="bg-white rounded-xl shadow-md p-6 border border-moh-lightGreen relative overflow-hidden group"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-moh-green to-moh-gold"></div>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-gray-600 text-sm mb-1">Total Funding</p>
-                <h3 className="text-3xl font-bold text-purple-900">${counts.funding}M+</h3>
+                <h3 className="text-3xl font-bold text-moh-darkGreen">${counts.funding}M+</h3>
                 <p className="text-sm text-gray-500 mt-2">Investment deployed</p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-200 transition-colors">
-                <DollarSign className="h-6 w-6 text-blue-600" />
+              <div className="bg-moh-lightGreen p-3 rounded-lg group-hover:bg-moh-lightGreen/80 transition-colors">
+                <DollarSign className="h-6 w-6 text-moh-darkGreen" />
               </div>
             </div>
             <div className="mt-4 flex items-center text-green-600 text-sm">
@@ -155,17 +155,17 @@ export function InvestmentMetrics() {
           
           <motion.div 
             variants={itemVariants}
-            className="bg-white rounded-xl shadow-md p-6 border border-purple-100 relative overflow-hidden group"
+            className="bg-white rounded-xl shadow-md p-6 border border-moh-lightGreen relative overflow-hidden group"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-400 to-violet-600"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-moh-darkGreen to-moh-green"></div>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-gray-600 text-sm mb-1">Success Rate</p>
-                <h3 className="text-3xl font-bold text-purple-900">{counts.success}%</h3>
+                <h3 className="text-3xl font-bold text-moh-darkGreen">{counts.success}%</h3>
                 <p className="text-sm text-gray-500 mt-2">Successful matches</p>
               </div>
-              <div className="bg-violet-100 p-3 rounded-lg group-hover:bg-violet-200 transition-colors">
-                <LineChart className="h-6 w-6 text-violet-600" />
+              <div className="bg-moh-lightGreen p-3 rounded-lg group-hover:bg-moh-lightGreen/80 transition-colors">
+                <LineChart className="h-6 w-6 text-moh-green" />
               </div>
             </div>
             <div className="mt-4 flex items-center text-green-600 text-sm">
