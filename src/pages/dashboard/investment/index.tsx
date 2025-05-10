@@ -61,27 +61,39 @@ const aiMatchScores = [
   }
 ];
 
+// Define the trend type
+type TrendType = "increasing" | "rapidly-increasing" | "steady" | "decreasing" | "rapidly-decreasing";
+
+// Define the AIMarketTrend interface
+interface AIMarketTrend {
+  category: string;
+  title: string;
+  description: string;
+  trend: TrendType;
+  data: number[];
+}
+
 // Sample market trends data
-const aiMarketTrends = [
+const aiMarketTrends: AIMarketTrend[] = [
   {
     category: "Digital Health",
     title: "Telehealth Expansion",
     description: "Telehealth solutions continue to see strong investment growth with 45% YoY increase in funding.",
-    trend: "increasing" as const,
+    trend: "increasing",
     data: [20, 25, 35, 42, 55, 62]
   },
   {
     category: "Medical Devices",
     title: "Remote Monitoring Devices",
     description: "IoT-enabled monitoring devices are attracting significant investor attention, particularly those with AI integration.",
-    trend: "increasing" as const,
+    trend: "increasing",
     data: [15, 22, 28, 35, 42, 48]
   },
   {
     category: "AI in Healthcare",
     title: "Diagnostic AI Solutions",
     description: "AI-powered diagnostic tools are the fastest growing segment with 52% funding increase in the past year.",
-    trend: "rapidly-increasing" as const,
+    trend: "rapidly-increasing",
     data: [10, 18, 25, 40, 60, 85]
   },
 ];

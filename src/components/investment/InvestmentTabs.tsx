@@ -1,8 +1,7 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ChevronRight, Lightbulb, LineChart, BarChart3, Users, FileText, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -13,17 +12,14 @@ interface InvestmentTabsProps {
 
 export function InvestmentTabs({ activeTab, setActiveTab }: InvestmentTabsProps) {
   // Define the fadeIn animation variant properly
-  const fadeIn = {
+  const fadeIn: Variants = {
     initial: { 
       opacity: 0, 
       y: 10 
     },
     animate: { 
       opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.4 
-      } 
+      y: 0
     }
   };
   

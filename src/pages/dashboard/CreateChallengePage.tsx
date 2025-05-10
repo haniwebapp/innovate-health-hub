@@ -15,9 +15,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { AccessDenied } from "@/components/common/AccessDenied";
 
 // Form schema validation
 const formSchema = z.object({
@@ -35,10 +36,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const CreateChallengePage = () => {
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Initialize form
   const form = useForm<FormValues>({
@@ -66,17 +68,30 @@ const CreateChallengePage = () => {
       return;
     }
 
-    // Here you would typically submit to your API
-    console.log("Form values:", values);
-    console.log("Files:", files);
+    setIsLoading(true);
 
-    toast({
-      title: "Challenge Created",
-      description: "Your challenge has been created successfully.",
-    });
+    try {
+      // Here you would typically submit to your API
+      console.log("Form values:", values);
+      console.log("Files:", files);
 
-    // In a real app you would navigate to the new challenge
-    setTimeout(() => navigate("/challenges"), 1000);
+      toast({
+        title: "Challenge Created",
+        description: "Your challenge has been created successfully.",
+      });
+
+      // In a real app you would navigate to the new challenge
+      setTimeout(() => navigate("/challenges"), 1000);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create challenge. Please try again.",
+      });
+      console.error("Error creating challenge:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,11 +107,13 @@ const CreateChallengePage = () => {
 
   if (!isAdmin) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 p-6 bg-red-50 border border-red-200 rounded-md">
-        <AlertCircle className="h-12 w-12 text-red-500 mb-2" />
-        <h2 className="text-2xl font-bold text-red-700">Access Denied</h2>
-        <p className="text-red-600">You don't have permission to view this page.</p>
-      </div>
+      <AccessDenied
+        title="Admin Access Required"
+        description="You need administrator privileges to create challenges."
+        requiredRole="Admin"
+        backLink="/dashboard"
+        backText="Back to Dashboard"
+      />
     );
   }
 

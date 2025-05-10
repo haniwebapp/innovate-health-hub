@@ -8,65 +8,65 @@ import { Link } from "react-router-dom";
 export default function PartnersSection() {
   const { t } = useLanguage();
   
-  // Strategic partners data with more reliable image sources
+  // Strategic partners data with local image references
   const partners = [
     { 
       name: "Ministry of Health", 
-      image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/ministry-of-health.jpg",
       category: "Government",
       description: "Leading healthcare policy and regulation across Saudi Arabia."
     },
     { 
       name: "King Salman Medical City",
-      image: "https://images.unsplash.com/photo-1504439468489-c8920d796a29?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/king-salman-medical-city.jpg",
       category: "Healthcare Provider",
       description: "State-of-the-art medical facilities providing advanced healthcare services."
     },
     { 
       name: "Saudi Digital Health Authority",
-      image: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/saudi-digital-health.jpg",
       category: "Government",
       description: "Driving digital transformation initiatives in healthcare."
     },
     { 
       name: "King Abdulaziz University Hospital",
-      image: "https://images.unsplash.com/photo-1571772996211-2f02c9727629?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/king-abdulaziz-university.jpg",
       category: "Academic Medical Center",
       description: "Combining advanced research with excellent patient care."
     },
     { 
       name: "Saudi Health Council",
-      image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/saudi-health-council.jpg",
       category: "Government",
       description: "Coordinating healthcare services and development across the Kingdom."
     },
     { 
       name: "KAUST",
-      image: "https://images.unsplash.com/photo-1581093458791-9d09c65a26cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/kaust.jpg",
       category: "Research Institution",
       description: "Leading research and innovation in healthcare and biotechnology."
     },
     { 
       name: "KACST",
-      image: "https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/kacst.jpg",
       category: "Research Institution",
       description: "Advancing scientific research and technological innovation."
     },
     { 
       name: "Ministry of Investment", 
-      image: "https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/ministry-of-investment.jpg",
       category: "Government",
       description: "Facilitating investments in healthcare and life sciences sectors."
     },
     { 
       name: "NUPCO",
-      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/nupco.jpg",
       category: "Healthcare Supply",
       description: "Ensuring reliable supply chain for healthcare products and medicines."
     },
     { 
       name: "Saudi Commission for Health Specialties", 
-      image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/partners/schc.jpg",
       category: "Accreditation Body",
       description: "Setting standards for healthcare professionals and education."
     },
@@ -143,6 +143,10 @@ export default function PartnersSection() {
                       alt={`${partner.name}`} 
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                       loading={i < 4 ? "eager" : "lazy"}
+                      onError={(e) => {
+                        // Fallback image if the main image fails to load
+                        (e.target as HTMLImageElement).src = "/assets/partners/placeholder.jpg";
+                      }}
                     />
                     <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm text-xs font-medium text-moh-darkGreen px-2 py-1 rounded-full">
                       {partner.category}

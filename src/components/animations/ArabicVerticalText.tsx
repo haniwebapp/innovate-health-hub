@@ -1,10 +1,13 @@
+
 import { motion } from "framer-motion";
 import React from "react";
+
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
+
 export function ArabicVerticalText({
   text,
   className = "",
@@ -22,6 +25,7 @@ export function ArabicVerticalText({
       }
     }
   };
+  
   const itemVariants = {
     hidden: {
       y: 20,
@@ -37,5 +41,24 @@ export function ArabicVerticalText({
       }
     }
   };
-  return;
+  
+  // Split the text into characters and render each one vertically
+  return (
+    <motion.div 
+      className={`flex flex-col items-center ${className}`}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {text.split('').map((char, index) => (
+        <motion.div 
+          key={index} 
+          variants={itemVariants}
+          className="my-1 text-center"
+        >
+          {char}
+        </motion.div>
+      ))}
+    </motion.div>
+  );
 }
