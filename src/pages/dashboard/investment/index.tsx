@@ -357,7 +357,7 @@ export default function DashboardInvestmentPage() {
                   <span className="font-medium">24</span>
                 </div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm">High Quality (>80%)</span>
+                  <span className="text-sm">High Quality ({'>'}80%)</span>
                   <span className="font-medium">9</span>
                 </div>
                 <div className="flex items-center justify-between mb-1">
