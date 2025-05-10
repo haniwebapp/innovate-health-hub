@@ -11,8 +11,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   ChevronLeft, ChevronRight, LayoutDashboard, Users, Settings, BarChart3, 
   MessageSquare, FilePlus, Box, FileText, LogOut, PlusCircle, Plug,
-  LightbulbIcon, BookOpen, DollarSign, FileCheck, Clock, Folder
+  LightbulbIcon, BookOpen, DollarSign, FileCheck, Clock, Folder, Shield
 } from "lucide-react";
+import GeneratedLogo from "@/components/logos/GeneratedLogo";
+import { motion } from "framer-motion";
 
 interface DashboardSidebarProps {
   isCollapsed: boolean;
@@ -23,37 +25,72 @@ export default function DashboardSidebar({
   isCollapsed, 
   onToggleCollapse 
 }: DashboardSidebarProps) {
-  const { signOut, isAdmin } = useAuth();
+  const { signOut, isAdmin, user } = useAuth();
   
   return (
-    <div
+    <motion.div
+      initial={{ x: -10, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
       className={cn(
-        "h-screen border-r bg-background fixed left-0 top-0 z-40 flex flex-col transition-all duration-300",
+        "h-screen border-r bg-gradient-to-b from-white to-moh-lightGreen/20 fixed left-0 top-0 z-40 flex flex-col transition-all duration-300 shadow-md",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo and collapse button */}
       <div className={cn(
-        "flex h-14 items-center border-b px-4",
+        "flex h-16 items-center border-b border-moh-green/10 px-4",
         isCollapsed ? "justify-center" : "justify-between"
       )}>
-        {!isCollapsed && (
-          <div className="font-semibold text-moh-green text-lg">MoH Platform</div>
+        {!isCollapsed ? (
+          <div className="flex items-center gap-2">
+            <div className="relative overflow-hidden size-8">
+              <GeneratedLogo 
+                name="MOH" 
+                shape="hexagon" 
+                style="gradient" 
+                size={32} 
+                primaryColor="#00814A" 
+                secondaryColor="#C3A86B"
+              />
+            </div>
+            <div className="font-semibold text-moh-darkGreen text-lg leading-none">
+              MOH
+              <span className="block text-xs text-moh-gold font-light">Innovation Platform</span>
+            </div>
+          </div>
+        ) : (
+          <div className="relative overflow-hidden size-8">
+            <GeneratedLogo 
+              name="MOH" 
+              shape="hexagon" 
+              style="gradient" 
+              size={32} 
+              primaryColor="#00814A" 
+              secondaryColor="#C3A86B"
+            />
+          </div>
         )}
         <Button 
           variant="ghost" 
           size="icon"
           onClick={onToggleCollapse}
-          className="ml-auto"
+          className="text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen"
         >
           {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </Button>
       </div>
       
-      {/* Navigation links */}
-      <div className="flex-1 overflow-auto py-4">
+      {/* Navigation links - using scroll area for long menus */}
+      <div className="flex-1 overflow-auto py-4 scrollbar-thin">
         <nav className="grid gap-1 px-2">
-          {/* Regular user links */}
+          {/* Main section */}
+          <div className={cn(
+            "mb-2 px-4 text-xs uppercase text-muted-foreground",
+            isCollapsed && "sr-only"
+          )}>
+            Main
+          </div>
           <NavItem 
             to="/dashboard" 
             icon={<LayoutDashboard size={18} />} 
@@ -66,6 +103,18 @@ export default function DashboardSidebar({
             text="Profile" 
             isCollapsed={isCollapsed} 
           />
+          
+          {/* Challenge & Innovation section */}
+          <div className={cn(
+            "my-2 border-t border-moh-green/10",
+            isCollapsed ? "mx-2" : "mx-4"
+          )}></div>
+          <div className={cn(
+            "mb-2 px-4 text-xs uppercase text-muted-foreground",
+            isCollapsed && "sr-only"
+          )}>
+            Innovation
+          </div>
           <NavItem 
             to="/dashboard/submissions" 
             icon={<FileCheck size={18} />} 
@@ -78,17 +127,23 @@ export default function DashboardSidebar({
             text="My Innovations" 
             isCollapsed={isCollapsed}
           />
+          <NavItem 
+            to="/dashboard/create-challenge" 
+            icon={<PlusCircle size={18} />} 
+            text="Create Challenge" 
+            isCollapsed={isCollapsed}
+          />
           
-          {/* Phase 2 features */}
+          {/* Platform Features */}
           <div className={cn(
-            "my-2 border-t",
+            "my-2 border-t border-moh-green/10",
             isCollapsed ? "mx-2" : "mx-4"
           )}></div>
           <div className={cn(
             "mb-2 px-4 text-xs uppercase text-muted-foreground",
             isCollapsed && "sr-only"
           )}>
-            Extra Features
+            Platform
           </div>
           <NavItem 
             to="/dashboard/investment" 
@@ -125,7 +180,7 @@ export default function DashboardSidebar({
           {isAdmin && (
             <>
               <div className={cn(
-                "my-2 border-t",
+                "my-2 border-t border-moh-green/10",
                 isCollapsed ? "mx-2" : "mx-4"
               )}></div>
               <div className={cn(
@@ -139,56 +194,50 @@ export default function DashboardSidebar({
                 icon={<Users size={18} />} 
                 text="Users" 
                 isCollapsed={isCollapsed}
-                badge="Admin"
+                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
               />
               <NavItem 
                 to="/dashboard/admin/analytics" 
                 icon={<BarChart3 size={18} />} 
                 text="Analytics" 
                 isCollapsed={isCollapsed}
-                badge="Admin"
+                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
               />
               <NavItem 
                 to="/dashboard/admin/settings" 
                 icon={<Settings size={18} />} 
                 text="Settings" 
                 isCollapsed={isCollapsed}
-                badge="Admin"
+                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
               />
               <NavItem 
                 to="/dashboard/admin/integrations" 
                 icon={<Plug size={18} />} 
                 text="Integrations" 
                 isCollapsed={isCollapsed}
-                badge="Admin"
+                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
               />
             </>
           )}
-          
-          <div className={cn(
-            "my-2 border-t",
-            isCollapsed ? "mx-2" : "mx-4"
-          )}></div>
-          
-          {/* Quick actions */}
-          <NavItem 
-            to="/dashboard/create-challenge" 
-            icon={<PlusCircle size={18} />} 
-            text="Create Challenge" 
-            isCollapsed={isCollapsed}
-          />
         </nav>
       </div>
       
       {/* Settings and Logout buttons */}
-      <div className="border-t p-4">
+      <div className="border-t border-moh-green/10 p-4 bg-gradient-to-b from-transparent to-moh-lightGreen/30">
+        {isAdmin && !isCollapsed && (
+          <div className="mb-4 px-2 py-2 bg-moh-gold/10 rounded-md flex items-center">
+            <Shield size={14} className="text-moh-darkGold mr-2" />
+            <span className="text-xs font-medium text-moh-darkGold">Admin Access</span>
+          </div>
+        )}
+        
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <Button 
               variant="ghost" 
               size={isCollapsed ? "icon" : "default"}
               className={cn(
-                "w-full justify-start mb-2",
+                "w-full justify-start mb-2 text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen",
                 isCollapsed && "h-9 w-9"
               )}
               asChild
@@ -208,7 +257,7 @@ export default function DashboardSidebar({
               variant="ghost" 
               size={isCollapsed ? "icon" : "default"}
               className={cn(
-                "w-full justify-start",
+                "w-full justify-start text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen",
                 isCollapsed && "h-9 w-9"
               )}
               onClick={signOut}
@@ -220,7 +269,7 @@ export default function DashboardSidebar({
           <TooltipContent side="right">Logout</TooltipContent>
         </Tooltip>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -229,7 +278,7 @@ interface NavItemProps {
   icon: React.ReactNode;
   text: string;
   isCollapsed: boolean;
-  badge?: string;
+  badge?: React.ReactNode;
 }
 
 function NavItem({ to, icon, text, isCollapsed, badge }: NavItemProps) {
@@ -239,18 +288,23 @@ function NavItem({ to, icon, text, isCollapsed, badge }: NavItemProps) {
         <NavLink
           to={to}
           className={({ isActive }) => cn(
-            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-all duration-200",
             isActive
-              ? "bg-moh-green text-white"
-              : "text-muted-foreground hover:bg-muted",
+              ? "bg-gradient-to-r from-moh-green to-moh-darkGreen text-white font-medium shadow-sm"
+              : "text-muted-foreground hover:bg-moh-lightGreen hover:text-moh-darkGreen",
             isCollapsed && "justify-center px-0"
           )}
           end={to === "/dashboard"}
         >
-          {icon}
+          <div className={cn(
+            "flex items-center justify-center",
+            isActive ? "text-white" : "text-moh-darkGreen/70"
+          )}>
+            {icon}
+          </div>
           {!isCollapsed && <span>{text}</span>}
           {!isCollapsed && badge && (
-            <span className="ml-auto text-xs bg-secondary text-secondary-foreground rounded px-1">
+            <span className="ml-auto">
               {badge}
             </span>
           )}

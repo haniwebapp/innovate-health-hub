@@ -96,9 +96,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           if (!currentUser) return null;
           return {
             ...currentUser,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            avatar_url: data.avatar_url
+            first_name: data?.first_name,
+            last_name: data?.last_name,
+            avatar_url: data?.avatar_url
           };
         });
       }

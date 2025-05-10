@@ -62,6 +62,8 @@ export default function DashboardLayout() {
   useEffect(() => {
     if (isSmallScreen) {
       setIsCollapsed(true);
+    } else {
+      setIsCollapsed(false);
     }
   }, [isSmallScreen]);
   

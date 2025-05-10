@@ -45,4 +45,7 @@ export interface ProfileWithEmail {
   last_sign_in?: string;
   status: string;
   avatar_url?: string;
+  created_at: string;
+  updated_at: string;
+  roles: string[];
 }
