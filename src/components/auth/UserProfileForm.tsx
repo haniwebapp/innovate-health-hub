@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -65,7 +66,7 @@ export default function UserProfileForm() {
             organization: data.organization || "",
           });
           
-          // Safely check if avatar_url exists in the data
+          // Check if avatar_url exists in the data and handle it
           if (data.avatar_url) {
             try {
               const { data: avatarData } = await supabase.storage

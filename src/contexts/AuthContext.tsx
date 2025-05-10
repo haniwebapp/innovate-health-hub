@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkIfUserIsAdmin = async (userId: string) => {
     try {
+      // Using a direct query instead of the potentially recursive function
       const { data, error } = await supabase
         .from('profiles')
         .select('user_type')
