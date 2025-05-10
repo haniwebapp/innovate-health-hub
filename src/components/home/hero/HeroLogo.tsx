@@ -1,13 +1,15 @@
 
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Lottie from "lottie-react";
+import healthInnovationAnim from "@/assets/animations/health-innovation-anim.json";
 
 export function HeroLogo() {
   const { t } = useLanguage();
   
   return (
     <motion.div 
-      className="w-28 h-28 mx-auto mb-8 bg-white rounded-full shadow-xl flex items-center justify-center overflow-hidden relative" 
+      className="w-32 h-32 mx-auto mb-8 bg-white rounded-full shadow-xl flex items-center justify-center overflow-hidden relative" 
       initial={{ y: -100, opacity: 0, scale: 0.5 }}
       animate={{ y: 0, opacity: 1, scale: 1 }}
       transition={{ 
@@ -17,9 +19,9 @@ export function HeroLogo() {
         delay: 0.2 
       }}
     >
-      {/* Orbital rings */}
+      {/* Orbital rings with enhanced animations */}
       <motion.div 
-        className="absolute w-full h-full rounded-full border-2 border-moh-green/20"
+        className="absolute w-full h-full rounded-full border-2 border-moh-green/30"
         animate={{ rotate: 360 }}
         transition={{ 
           duration: 10, 
@@ -30,14 +32,14 @@ export function HeroLogo() {
         <motion.div 
           className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-moh-gold rounded-full"
           animate={{ 
-            boxShadow: ["0 0 5px 2px rgba(195, 168, 107, 0.4)", "0 0 8px 4px rgba(195, 168, 107, 0.6)", "0 0 5px 2px rgba(195, 168, 107, 0.4)"] 
+            boxShadow: ["0 0 5px 2px rgba(195, 168, 107, 0.4)", "0 0 12px 6px rgba(195, 168, 107, 0.7)", "0 0 5px 2px rgba(195, 168, 107, 0.4)"] 
           }}
           transition={{ duration: 2, repeat: Infinity }}
         />
       </motion.div>
       
       <motion.div 
-        className="absolute w-full h-full rounded-full border border-moh-gold/30"
+        className="absolute w-full h-full rounded-full border border-moh-gold/40"
         style={{ transform: "rotate(45deg)" }}
         animate={{ rotate: "-315deg" }}
         transition={{ 
@@ -49,14 +51,15 @@ export function HeroLogo() {
         <motion.div 
           className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-moh-green rounded-full"
           animate={{ 
-            boxShadow: ["0 0 5px 2px rgba(0, 129, 74, 0.4)", "0 0 8px 4px rgba(0, 129, 74, 0.6)", "0 0 5px 2px rgba(0, 129, 74, 0.4)"] 
+            boxShadow: ["0 0 5px 2px rgba(0, 129, 74, 0.4)", "0 0 12px 6px rgba(0, 129, 74, 0.7)", "0 0 5px 2px rgba(0, 129, 74, 0.4)"] 
           }}
           transition={{ duration: 2, repeat: Infinity }}
         />
       </motion.div>
 
+      {/* Central logo container with enhanced animation */}
       <motion.div 
-        className="w-20 h-20 bg-gradient-to-r from-moh-green to-moh-darkGreen rounded-full flex items-center justify-center relative"
+        className="w-24 h-24 bg-gradient-to-r from-moh-green to-moh-darkGreen rounded-full flex items-center justify-center relative"
         animate={{ 
           scale: [1, 1.05, 1],
           rotate: [0, 5, -5, 0]
@@ -68,12 +71,12 @@ export function HeroLogo() {
           ease: "easeInOut" 
         }}
       >
-        {/* Pulsing glow effect */}
+        {/* Enhanced pulsing glow effect */}
         <motion.div 
           className="absolute inset-0 bg-moh-green rounded-full blur-md"
           animate={{ 
-            opacity: [0.3, 0.6, 0.3], 
-            scale: [0.8, 1.1, 0.8] 
+            opacity: [0.3, 0.7, 0.3], 
+            scale: [0.8, 1.2, 0.8] 
           }}
           transition={{ 
             duration: 4, 
@@ -82,30 +85,24 @@ export function HeroLogo() {
           }}
         />
         
-        <motion.img 
-          alt={t('home.hero.logoAlt') || "MOH Innovation Logo"} 
-          className="w-16 h-16 object-contain relative z-10" 
-          src="/lovable-uploads/bba68330-974d-4c62-a240-517e2bbdf8f9.png"
-          animate={{
-            rotateY: [0, 360],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear",
-            delay: 5,
-          }}
-        />
+        {/* Use Lottie animation instead of static image */}
+        <div className="w-20 h-20 relative z-10">
+          <Lottie 
+            animationData={healthInnovationAnim}
+            loop={true}
+            autoplay={true}
+          />
+        </div>
       </motion.div>
       
-      {/* Sparkle effects */}
-      {[...Array(5)].map((_, i) => (
+      {/* Enhanced sparkle effects */}
+      {[...Array(8)].map((_, i) => (
         <motion.div 
           key={i}
           className="absolute w-2 h-2 bg-white rounded-full"
           initial={{ 
-            x: Math.random() * 60 - 30, 
-            y: Math.random() * 60 - 30,
+            x: Math.random() * 80 - 40, 
+            y: Math.random() * 80 - 40,
             opacity: 0 
           }}
           animate={{ 
@@ -115,11 +112,28 @@ export function HeroLogo() {
           transition={{ 
             duration: 2, 
             repeat: Infinity,
-            delay: i * 1.5, 
-            repeatDelay: Math.random() * 3 + 2
+            delay: i * 0.8, 
+            repeatDelay: Math.random() * 3
           }}
         />
       ))}
+      
+      {/* DNA helix animation in the background */}
+      <motion.div 
+        className="absolute inset-0 opacity-20 z-0"
+        animate={{
+          backgroundPosition: ["0% 0%", "100% 100%"]
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+        style={{
+          backgroundImage: "url('/dna-pattern.svg')",
+          backgroundSize: "200%"
+        }}
+      />
     </motion.div>
   );
 }

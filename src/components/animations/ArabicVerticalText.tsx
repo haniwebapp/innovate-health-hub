@@ -1,6 +1,6 @@
 
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
 interface ArabicVerticalTextProps {
   text: string;
@@ -8,85 +8,51 @@ interface ArabicVerticalTextProps {
   delay?: number;
 }
 
-export function ArabicVerticalText({
-  text,
-  className = "",
-  delay = 0
+export function ArabicVerticalText({ 
+  text, 
+  className = "", 
+  delay = 0 
 }: ArabicVerticalTextProps) {
-  // Split text into characters
-  const characters = text.split("");
-
-  // Animation variants for characters
   const containerVariants = {
-    hidden: {
-      opacity: 0
-    },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: delay + 0.3
-      }
-    }
-  };
-  
-  const charVariants = {
-    hidden: {
-      y: 20,
-      opacity: 0
+        staggerChildren: 0.1,
+        delayChildren: delay,
+      },
     },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         type: "spring",
         stiffness: 260,
-        damping: 20
-      }
-    }
+        damping: 20,
+      },
+    },
   };
 
-  // Shimmer effect for highlighting
-  const shimmerEffect = {
-    initial: {
-      backgroundPosition: "-200px 0"
-    },
-    animate: {
-      backgroundPosition: "200px 0",
-      transition: {
-        repeat: Infinity,
-        repeatType: "mirror" as const,
-        duration: 2,
-        ease: "linear"
-      }
-    }
-  };
-  
   return (
     <motion.div 
-      className={`inline-flex flex-col items-center justify-center mx-2 relative ${className}`} 
-      initial="hidden" 
-      animate="visible" 
+      className={`flex flex-col ${className}`}
       variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      {/* For vertical text display, we render each character as its own element */}
-      {characters.map((char, index) => (
-        <motion.span
-          key={index}
-          variants={charVariants}
-          className="my-0.5 text-3xl font-bold"
+      {text.split("").map((char, index) => (
+        <motion.span 
+          key={index} 
+          className="mb-1 font-arabic"
+          variants={itemVariants}
         >
           {char}
         </motion.span>
       ))}
-      
-      {/* Special shimmer highlight effect */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 pointer-events-none" 
-        initial="initial" 
-        animate="animate" 
-        variants={shimmerEffect} 
-      />
     </motion.div>
   );
 }

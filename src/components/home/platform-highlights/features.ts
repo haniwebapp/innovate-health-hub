@@ -1,60 +1,65 @@
 
+import { Brain, FlaskConical, TrendingUp, BookOpen, Award, Users, HeartPulse, Globe } from "lucide-react";
 import React from "react";
-import { 
-  Sparkles, 
-  Users, 
-  FileText, 
-  BarChart3, 
-  Calendar 
-} from "lucide-react";
 
-export const features = [
+export interface Feature {
+  iconName: string;
+  title: string;
+  description: string;
+  ctaLink: string;
+  color?: string;
+}
+
+export const features: Feature[] = [
   {
-    iconName: "Sparkles",
-    title: "Innovation Hub",
-    description: "Discover and submit cutting-edge healthcare solutions addressing Saudi Arabia's unique challenges.",
-    ctaLink: "/innovations"
+    iconName: "Brain",
+    title: "AI-Powered Matching",
+    description: "Advanced algorithms connect innovations with the right investors and opportunities.",
+    ctaLink: "/innovations",
+    color: "green"
   },
   {
-    iconName: "Users",
-    title: "Collaboration Network",
-    description: "Connect with healthcare professionals, investors, and fellow innovators across the Kingdom.",
-    ctaLink: "/network"
+    iconName: "FlaskConical",
+    title: "Regulatory Sandbox",
+    description: "Test your healthcare innovations in a safe and compliant environment.",
+    ctaLink: "/regulatory",
+    color: "gold"
   },
   {
-    iconName: "FileText",
-    title: "Regulatory Guidance",
-    description: "Navigate the healthcare regulatory landscape with expert guidance and resources.",
-    ctaLink: "/regulatory"
+    iconName: "TrendingUp",
+    title: "Investment Marketplace",
+    description: "Connect with investors looking to fund the next healthcare breakthrough.",
+    ctaLink: "/investment",
+    color: "darkGreen"
   },
   {
-    iconName: "BarChart3",
-    title: "Investment Platform",
-    description: "Access funding opportunities and connect with investors looking for healthcare innovations.",
-    ctaLink: "/investment"
+    iconName: "BookOpen",
+    title: "Knowledge Hub",
+    description: "Access curated resources and expertise to accelerate your innovation journey.",
+    ctaLink: "/knowledge-hub",
+    color: "darkGold"
   },
   {
-    iconName: "Calendar",
-    title: "Innovation Challenges",
-    description: "Participate in challenges addressing critical healthcare needs with prizes and implementation support.",
-    ctaLink: "/challenges"
+    iconName: "Award",
+    title: "Challenge Platform",
+    description: "Participate in healthcare challenges and drive meaningful innovation.",
+    ctaLink: "/challenges",
+    color: "green"
   }
 ];
 
-// Helper function to get icon component based on name
-export const getIconByName = (name: string, className: string = "h-5 w-5") => {
-  switch (name) {
-    case "Sparkles":
-      return React.createElement(Sparkles, { className });
-    case "Users":
-      return React.createElement(Users, { className });
-    case "FileText":
-      return React.createElement(FileText, { className });
-    case "BarChart3":
-      return React.createElement(BarChart3, { className });
-    case "Calendar":
-      return React.createElement(Calendar, { className });
-    default:
-      return React.createElement(Sparkles, { className });
-  }
-};
+// Function to get the appropriate icon component
+export function getIconByName(name: string) {
+  const icons: { [key: string]: React.ElementType } = {
+    Brain,
+    FlaskConical,
+    TrendingUp,
+    BookOpen,
+    Award,
+    Users,
+    HeartPulse,
+    Globe
+  };
+  
+  return icons[name] || Award;
+}

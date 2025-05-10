@@ -1,170 +1,84 @@
 
-import { useState, useRef, MouseEvent } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import React, { useState } from "react";
 
 interface ParallaxCardProps {
   children: React.ReactNode;
   className?: string;
-  tiltFactor?: number;
-  perspective?: number;
-  scale?: number;
-  priority?: 'low' | 'medium' | 'high'; // Data-driven priority
-  dataValue?: number; // Any numerical value to influence animation
-  interactive?: boolean; // Whether card should show interactive effects
+  depth?: number;
+  onHover?: () => void;
 }
 
-export function ParallaxCard({
-  children,
-  className = "",
-  tiltFactor = 15,
-  perspective = 1000,
-  scale = 1.05,
-  priority = 'medium',
-  dataValue,
-  interactive = true
+export function ParallaxCard({ 
+  children, 
+  className = "", 
+  depth = 20,
+  onHover
 }: ParallaxCardProps) {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
   
-  // Adjust tilt factor based on priority
-  const adjustedTiltFactor = {
-    'low': tiltFactor * 0.7,
-    'medium': tiltFactor,
-    'high': tiltFactor * 1.3
-  }[priority];
+  const mouseX = useSpring(x, { stiffness: 400, damping: 25 });
+  const mouseY = useSpring(y, { stiffness: 400, damping: 25 });
   
-  // Adjust scale based on priority and data value
-  const getHoverScale = () => {
-    // Base scale from props
-    let baseScale = scale;
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], [depth, -depth]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-depth, depth]);
+  
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return;
     
-    // Adjust for priority
-    if (priority === 'high') baseScale *= 1.02;
-    if (priority === 'low') baseScale *= 0.98;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
     
-    // Adjust for data value if present (normalized to 0-1 range)
-    if (dataValue !== undefined) {
-      const normalizedValue = Math.min(1, Math.max(0, dataValue / 100));
-      baseScale *= (1 + (normalizedValue * 0.03));
-    }
+    // Calculate relative position of mouse in element (0-1)
+    const xPct = (e.clientX - rect.left) / width - 0.5;
+    const yPct = (e.clientY - rect.top) / height - 0.5;
     
-    return baseScale;
+    x.set(xPct);
+    y.set(yPct);
+    
+    if (onHover) onHover();
   };
-  
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !interactive) return;
-    
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    // Calculate cursor position relative to card center
-    const mouseX = e.clientX - centerX;
-    const mouseY = e.clientY - centerY;
-    
-    // Calculate tilt angles (divide by width/height for normalization)
-    const tiltX = (mouseY / (rect.height / 2)) * adjustedTiltFactor;
-    const tiltY = -(mouseX / (rect.width / 2)) * adjustedTiltFactor;
-    
-    setTilt({ x: tiltX, y: tiltY });
-  };
-  
-  const handleMouseEnter = () => interactive && setIsHovering(true);
   
   const handleMouseLeave = () => {
-    if (interactive) {
-      setIsHovering(false);
-      setTilt({ x: 0, y: 0 });
-    }
+    x.set(0);
+    y.set(0);
   };
   
-  // Create separate animation objects for interactive and non-interactive states
-  // to avoid type conflicts
-  const nonInteractiveAnimation = !interactive ? {
-    y: [0, -5, 0],
-    rotateX: tilt.x,
-    rotateY: tilt.y,
-    scale: 1,
-    transition: { 
-      duration: 3, 
-      repeat: Infinity, 
-      repeatType: "reverse" as const,
-      ease: "easeInOut" 
-    }
-  } : undefined;
-  
-  const interactiveAnimation = interactive ? {
-    rotateX: tilt.x,
-    rotateY: tilt.y,
-    scale: isHovering ? getHoverScale() : 1
-  } : undefined;
+  // Check for screen resize to disable effect on mobile
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   
   return (
     <motion.div
-      ref={cardRef}
-      className={`relative overflow-hidden ${className}`}
+      className={`relative ${className}`}
       onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onHoverStart={() => onHover && onHover()}
       style={{
-        perspective: `${perspective}px`,
-        transformStyle: "preserve-3d"
+        transformStyle: "preserve-3d",
+        rotateX: !isMobile ? rotateX : 0,
+        rotateY: !isMobile ? rotateY : 0
       }}
-      animate={nonInteractiveAnimation || interactiveAnimation}
-      transition={interactive ? {
+      whileHover={{ 
+        z: 20, 
+        scale: !isMobile ? 1.05 : 1.02 
+      }}
+      transition={{
         type: "spring",
-        stiffness: 400,
-        damping: 15,
-        mass: 0.5
-      } : undefined}
+        stiffness: 300,
+        damping: 15
+      }}
     >
       {children}
-      
-      {/* Add data-driven hover effect overlay based on priority */}
-      {interactive && (
-        <motion.div
-          className={`absolute inset-0 pointer-events-none ${
-            priority === 'high' 
-              ? 'bg-gradient-to-tr from-moh-green/5 to-moh-gold/10' 
-              : priority === 'low'
-              ? 'bg-gradient-to-tr from-gray-100/5 to-gray-300/5'
-              : 'bg-gradient-to-tr from-moh-lightGreen/5 to-moh-lightGold/5'
-          }`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovering ? 1 : 0 }}
-          transition={{ duration: 0.2 }}
-        />
-      )}
-      
-      {/* Add subtle particle effect for high priority cards on hover */}
-      {interactive && priority === 'high' && (
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovering ? 1 : 0 }}
-        >
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 rounded-full bg-moh-gold/40"
-              initial={{ x: '50%', y: '50%', opacity: 0 }}
-              animate={isHovering ? {
-                x: `${50 + (Math.random() * 40 - 20)}%`,
-                y: `${50 + (Math.random() * 40 - 20)}%`,
-                opacity: [0, 0.8, 0],
-                scale: [0, 1, 0],
-                transition: {
-                  duration: 1 + Math.random(),
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  delay: i * 0.2
-                }
-              } : {}}
-            />
-          ))}
-        </motion.div>
-      )}
     </motion.div>
   );
 }

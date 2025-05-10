@@ -14,6 +14,7 @@ interface FeatureCardProps {
   ctaLink: string;
   onHover: () => void;
   isActive: boolean;
+  color?: string;
 }
 
 export function FeatureCard({
@@ -23,159 +24,101 @@ export function FeatureCard({
   delay,
   ctaLink,
   onHover,
-  isActive
+  isActive,
+  color = "green"
 }: FeatureCardProps) {
+  // Get icon component from name
+  const IconComponent = getIconByName(iconName);
+
+  // Determine color classes based on the color prop
+  const getColorClasses = () => {
+    const colorMap: {[key: string]: {bg: string, text: string, border: string, hover: string}} = {
+      green: {
+        bg: "bg-moh-lightGreen/50",
+        text: "text-moh-green",
+        border: "border-moh-green/20",
+        hover: "hover:bg-moh-lightGreen/80"
+      },
+      gold: {
+        bg: "bg-moh-lightGold/50",
+        text: "text-moh-darkGold",
+        border: "border-moh-gold/20",
+        hover: "hover:bg-moh-lightGold/80"
+      },
+      darkGreen: {
+        bg: "bg-moh-lightGreen/60",
+        text: "text-moh-darkGreen",
+        border: "border-moh-darkGreen/20",
+        hover: "hover:bg-moh-lightGreen/90"
+      },
+      darkGold: {
+        bg: "bg-moh-lightGold/60",
+        text: "text-moh-darkGold",
+        border: "border-moh-darkGold/20",
+        hover: "hover:bg-moh-lightGold/90"
+      }
+    };
+    
+    return colorMap[color] || colorMap.green;
+  };
+  
+  const colorClasses = getColorClasses();
+  
   // Item animation variant
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.6, delay: delay * 0.2 }
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+        delay: 0.1 * delay
+      }
     }
   };
 
   return (
     <motion.div
+      className="xl:col-span-1"
       variants={itemVariants}
       onHoverStart={onHover}
-      className="h-full"
     >
-      <ParallaxCard
-        className="h-full"
-        interactive={true}
-        tiltFactor={10}
-        perspective={1200}
-        scale={1.03}
-        priority={isActive ? 'high' : 'medium'}
+      <ParallaxCard 
+        onHover={onHover}
+        depth={15}
+        className={`h-full bg-white/60 backdrop-blur-sm rounded-xl border ${colorClasses.border} shadow-sm overflow-hidden transition-all duration-300 ${isActive ? 'ring-2 ring-moh-green/20 shadow-lg' : ''}`}
       >
-        <div className={`flex flex-col items-center bg-white rounded-xl p-6 shadow-md border ${
-          isActive ? 'border-moh-green border-2' : 'border-gray-100'
-        } hover:border-moh-lightGreen transition-all duration-300 h-full relative overflow-hidden`}>
-          {/* Subtle background highlight on active */}
-          {isActive && (
-            <motion.div 
-              className="absolute inset-0 bg-gradient-to-br from-moh-lightGreen/10 via-transparent to-moh-lightGold/5 pointer-events-none"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            />
-          )}
-          
-          <div className="mb-4 p-3 rounded-full bg-gradient-to-r from-moh-lightGreen to-moh-lightGold/30 group-hover:from-moh-green group-hover:to-moh-lightGold/50 transition-all duration-300 relative">
-            <motion.div 
-              className="text-moh-green"
-              animate={isActive ? {
-                rotate: [0, 10, -10, 0],
-              } : {}}
-              transition={{
-                duration: 1.5,
-                repeat: isActive ? Infinity : 0,
-                repeatDelay: 3
-              }}
-            >
-              {getIconByName(iconName, "h-6 w-6")}
-            </motion.div>
-            
-            {/* Pulsing effect when active */}
-            {isActive && (
-              <motion.div 
-                className="absolute inset-0 rounded-full bg-moh-green/20"
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0.7, 0, 0.7]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
-              />
-            )}
+        <div className="p-5 flex flex-col h-full">
+          {/* Icon container with dynamic background */}
+          <div className={`w-12 h-12 rounded-lg ${colorClasses.bg} ${colorClasses.hover} flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110`}>
+            <IconComponent className={`w-6 h-6 ${colorClasses.text}`} />
           </div>
           
-          <motion.h3 
-            className="text-xl font-bold mb-3 text-center text-moh-darkGreen group-hover:text-moh-green transition-colors duration-300"
-            animate={isActive ? { scale: [1, 1.05, 1] } : {}}
-            transition={{ duration: 2, repeat: isActive ? Infinity : 0, repeatType: "reverse" }}
-          >
+          <h3 className={`text-lg font-semibold mb-2 ${colorClasses.text}`}>
             {title}
-          </motion.h3>
+          </h3>
           
-          <p className="text-gray-600 text-center mb-5">
-            {description}
-          </p>
+          <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
           
-          <div className="mt-auto pt-4 w-full">
-            {/* Animated underline */}
-            <motion.div 
-              className="mb-4 pt-4 border-t border-dashed border-moh-lightGreen/40 mx-auto"
-              initial={{ width: 0 }}
-              whileInView={{ width: "33%" }}
-              transition={{ duration: 1, delay: delay * 0.2 + 0.5 }}
-              viewport={{ once: true }}
-            />
-            
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="w-full border-moh-lightGreen text-moh-green hover:bg-moh-lightGreen hover:text-white transition-all group"
+          <div className="mt-auto">
+            <Button
               asChild
+              variant="ghost"
+              className={`${colorClasses.text} hover:bg-transparent hover:opacity-80 p-0 h-auto font-medium text-sm group`}
             >
               <a href={ctaLink}>
-                <span>Learn More</span>
-                <motion.div
-                  animate={isActive ? { x: [0, 5, 0] } : {}}
-                  transition={{ 
-                    duration: 1,
-                    repeat: isActive ? Infinity : 0,
-                    repeatType: "reverse",
-                    repeatDelay: 1
-                  }}
-                >
-                  <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </motion.div>
+                Learn More
+                <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </Button>
           </div>
           
-          {/* Floating particles for visual interest when active */}
-          {isActive && (
-            <>
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 rounded-full bg-moh-gold/60"
-                  initial={{ 
-                    x: '50%', 
-                    y: '50%', 
-                    opacity: 0 
-                  }}
-                  animate={{ 
-                    x: `${50 + (Math.random() * 40 - 20)}%`,
-                    y: `${50 + (Math.random() * 40 - 20)}%`,
-                    opacity: [0, 0.8, 0],
-                    scale: [0, 1, 0],
-                  }}
-                  transition={{
-                    duration: 1 + Math.random(),
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    delay: i * 0.2
-                  }}
-                />
-              ))}
-            </>
-          )}
-          
-          {/* Animated corner accent */}
-          <motion.div 
-            className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-r-[40px] border-t-transparent border-r-moh-lightGreen/0 group-hover:border-r-moh-green/20 transition-colors duration-300"
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: delay * 0.2 + 0.8, duration: 0.4 }}
-          />
+          {/* Decorative elements */}
+          <div className="absolute -right-3 -top-3 w-16 h-16 opacity-10">
+            <IconComponent className={`w-full h-full ${colorClasses.text}`} />
+          </div>
         </div>
       </ParallaxCard>
     </motion.div>

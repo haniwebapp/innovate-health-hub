@@ -1,46 +1,46 @@
 
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 interface ScrollFadeInProps {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
-  direction?: "up" | "down" | "left" | "right";
-  distance?: number;
-  duration?: number;
+  threshold?: number;
+  className?: string;
 }
 
-export function ScrollFadeIn({
-  children,
-  className = "",
-  delay = 0,
-  direction = "up",
-  distance = 50,
-  duration = 0.5
+export function ScrollFadeIn({ 
+  children, 
+  delay = 0, 
+  threshold = 0.2,
+  className = ""
 }: ScrollFadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, amount: threshold });
   
-  // Define initial position based on direction
-  const initialPosition = {
-    up: { y: distance, opacity: 0 },
-    down: { y: -distance, opacity: 0 },
-    left: { x: distance, opacity: 0 },
-    right: { x: -distance, opacity: 0 }
+  const variants = {
+    hidden: { 
+      opacity: 0,
+      y: 20 
+    },
+    visible: { 
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        delay: delay
+      }
+    }
   };
-  
+
   return (
     <motion.div
       ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={variants}
       className={className}
-      initial={initialPosition[direction]}
-      animate={inView ? { y: 0, x: 0, opacity: 1 } : {}}
-      transition={{
-        duration: duration,
-        delay: delay,
-        ease: [0.215, 0.61, 0.355, 1] // easeOutCubic
-      }}
     >
       {children}
     </motion.div>

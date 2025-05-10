@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Sparkles, FileUp } from "lucide-react";
+import { ArrowRight, Award, Sparkles, FileUp, Coins } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -28,7 +28,7 @@ export function HeroButtons() {
   
   return (
     <motion.div 
-      className="flex flex-col sm:flex-row justify-center gap-4" 
+      className="flex flex-col sm:flex-row justify-center flex-wrap gap-4" 
       variants={containerVariants} 
       initial="hidden" 
       animate="visible"
@@ -36,17 +36,17 @@ export function HeroButtons() {
       <motion.div variants={itemVariants}>
         <Button 
           size="lg" 
-          className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group w-full sm:w-auto" 
+          className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full sm:w-auto" 
           asChild
         >
-          <Link to="/innovations/submit">
-            <FileUp className="mr-2 h-4 w-4" />
-            Submit Innovation
+          <Link to="/innovations">
+            <Sparkles className="mr-2 h-5 w-5" />
+            <span>Explore Innovations</span>
             <motion.div 
               animate={{ x: [0, 5, 0] }}
               transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
             >
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-5 w-5" />
             </motion.div>
           </Link>
         </Button>
@@ -64,9 +64,9 @@ export function HeroButtons() {
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
             >
-              <Sparkles className="mr-2 h-4 w-4" />
+              <Award className="mr-2 h-5 w-5" />
             </motion.div>
-            Join a Challenge
+            <span>Join a Challenge</span>
           </Link>
         </Button>
       </motion.div>
@@ -78,9 +78,23 @@ export function HeroButtons() {
           className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm w-full sm:w-auto" 
           asChild
         >
-          <Link to="/innovations">
-            <Award className="mr-2 h-4 w-4" />
-            Explore Innovations
+          <Link to="/innovations/submit">
+            <FileUp className="mr-2 h-5 w-5" />
+            <span>Submit Innovation</span>
+          </Link>
+        </Button>
+      </motion.div>
+      
+      <motion.div variants={itemVariants}>
+        <Button 
+          size="lg" 
+          variant="outline" 
+          className="border-moh-darkGold text-moh-darkGold hover:bg-moh-lightGold/50 shadow-sm w-full sm:w-auto" 
+          asChild
+        >
+          <Link to="/investment">
+            <Coins className="mr-2 h-5 w-5" />
+            <span>Access Investment</span>
           </Link>
         </Button>
       </motion.div>

@@ -50,7 +50,7 @@ const Index = () => {
         
         <main className="flex-grow pt-16">
           <TooltipProvider>
-            {/* Reordered sections for better user engagement */}
+            {/* Enhanced home page section order for better user engagement */}
             <HeroSection />
             <PlatformHighlights />
             <InnovationGallery />

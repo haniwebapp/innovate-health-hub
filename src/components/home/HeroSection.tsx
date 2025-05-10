@@ -1,5 +1,5 @@
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { HeroLogo } from "./hero/HeroLogo";
 import { HeroHeading } from "./hero/HeroHeading";
 import { HeroButtons } from "./hero/HeroButtons";
@@ -7,7 +7,6 @@ import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 import { HeroBackgroundEffect } from "./hero/HeroBackgroundEffect";
 import { ChevronDown } from "lucide-react";
-import { useInView } from "framer-motion";
 import { useRef } from "react";
 
 export default function HeroSection() {
@@ -76,14 +75,28 @@ export default function HeroSection() {
             className="text-lg md:text-xl text-gray-700 mb-10 max-w-2xl mx-auto leading-relaxed" 
             variants={itemVariant}
           >
-            A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia in alignment with Vision 2030.
+            A one-stop-shop platform connecting health innovators, investors, and regulators to transform healthcare delivery across Saudi Arabia in alignment with <span className="font-semibold text-moh-darkGreen">Vision 2030</span>.
           </motion.p>
           
           <HeroButtons />
           
           <HeroStats />
           
-          {/* Scroll indicator with enhanced animation */}
+          {/* Vision 2030 alignment note */}
+          <motion.div
+            className="mt-12 mb-8 max-w-2xl mx-auto bg-white/30 backdrop-blur-sm rounded-xl p-4 border border-white/20"
+            variants={itemVariant}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1, duration: 0.6 }}
+          >
+            <p className="text-sm text-gray-700">
+              <span className="font-semibold text-moh-darkGreen">Ministry of Health Innovation Platform</span> is aligned with Saudi Vision 2030's healthcare transformation goals, empowering digital health initiatives and fostering innovation across the healthcare ecosystem.
+            </p>
+          </motion.div>
+          
+          {/* Enhanced scroll indicator with animation */}
           <motion.div 
             className="mt-16 cursor-pointer"
             onClick={scrollToNextSection}
@@ -99,9 +112,9 @@ export default function HeroSection() {
             whileHover={{ scale: 1.1 }}
           >
             <div className="flex flex-col items-center">
-              <span className="text-sm text-moh-green/70 font-medium mb-1">Explore More</span>
+              <span className="text-sm text-moh-green/80 font-medium mb-1">Discover Platform Features</span>
               <div className="relative">
-                <ChevronDown className="text-moh-green/70 h-8 w-8" />
+                <ChevronDown className="text-moh-green/80 h-8 w-8" />
                 <motion.div
                   className="absolute inset-0"
                   animate={{ 
