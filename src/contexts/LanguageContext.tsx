@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define supported languages
@@ -51,6 +52,11 @@ const translations: Translations = {
     'home.hero.subtitle': 'Join the Ministry of Health platform to collaborate, innovate, and transform the future of healthcare',
     'home.hero.cta.explore': 'Explore Challenges',
     'home.hero.cta.signup': 'Sign Up',
+    
+    // Innovations section
+    'home.innovations.tag': 'Innovation Showcase',
+    'home.innovations.title': 'Healthcare Solutions Gallery', 
+    'home.innovations.subtitle': 'Discover innovative solutions transforming Saudi healthcare',
     
     // About page
     'about.title': 'About Us',
@@ -203,6 +209,11 @@ const translations: Translations = {
     'home.hero.subtitle': 'انضم إلى منصة وزارة الصحة للتعاون والابتكار وتحويل مستقبل الرعاية الصحية',
     'home.hero.cta.explore': 'استكشاف التحديات',
     'home.hero.cta.signup': 'إنشاء حساب',
+    
+    // Innovations section
+    'home.innovations.tag': 'معرض الابتكارات',
+    'home.innovations.title': 'معرض حلول الرعاية الصحية',
+    'home.innovations.subtitle': 'اكتشف الحلول المبتكرة التي تحول الرعاية الصحية السعودية',
     
     // About page
     'about.title': 'عن المنصة',
