@@ -17,9 +17,6 @@ const getPageTitle = (pathname: string): string => {
     'submissions': 'My Submissions',
     'analytics': 'Analytics',
     'create-challenge': 'Create Challenge',
-    'users': 'User Management',
-    'settings': 'Settings',
-    'integrations': 'Integrations',
   };
   
   // Handle special cases like submit/123
@@ -28,31 +25,6 @@ const getPageTitle = (pathname: string): string => {
   }
   
   return titles[path] || 'Dashboard';
-};
-
-// Helper to get breadcrumb items from pathname
-const getBreadcrumbItems = (pathname: string) => {
-  const paths = pathname.split('/').filter(Boolean);
-  const items = [];
-  
-  if (paths[0] === 'dashboard') {
-    if (paths.length > 1) {
-      items.push({
-        label: 'Dashboard',
-        href: '/dashboard'
-      });
-      
-      // Handle admin section
-      if (paths[1] === 'admin' && paths.length > 2) {
-        items.push({
-          label: 'Admin',
-          href: null
-        });
-      }
-    }
-  }
-  
-  return items;
 };
 
 export default function DashboardLayout() {
@@ -87,10 +59,6 @@ export default function DashboardLayout() {
     setIsCollapsed(!isCollapsed);
   };
   
-  // Get breadcrumb items and current page title
-  const breadcrumbItems = getBreadcrumbItems(pathname);
-  const pageTitle = getPageTitle(pathname);
-  
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <DashboardSidebar isCollapsed={isCollapsed} onToggleCollapse={handleToggleCollapse} />
@@ -118,19 +86,9 @@ export default function DashboardLayout() {
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
-                {breadcrumbItems.map((item, index) => (
-                  <BreadcrumbItem key={index}>
-                    <BreadcrumbSeparator />
-                    {item.href ? (
-                      <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
-                    ) : (
-                      <span className="text-muted-foreground">{item.label}</span>
-                    )}
-                  </BreadcrumbItem>
-                ))}
+                <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbPage>{pageTitle}</BreadcrumbPage>
+                  <BreadcrumbPage>{getPageTitle(pathname)}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>

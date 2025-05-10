@@ -1,107 +1,171 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Users, Trophy, Clock, ChevronRight } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Challenge } from "@/types/challenges";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
-import ChallengeHeader from "@/components/challenges/ChallengeHeader";
-import ChallengeRequirements from "@/components/challenges/ChallengeRequirements";
-import ChallengeTimeline from "@/components/challenges/ChallengeTimeline";
-import { format, parseISO, isPast } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-export default function ChallengePage() {
+// Component imports
+import ChallengeHeader from "@/components/challenges/ChallengeHeader";
+import ChallengeSidebar from "@/components/challenges/ChallengeSidebar";
+import ChallengeTimeline from "@/components/challenges/ChallengeTimeline";
+import ChallengeRequirements from "@/components/challenges/ChallengeRequirements";
+
+// Mock data for now
+const mockChallenges: Challenge[] = [
+  {
+    id: "1",
+    title: "Remote Patient Monitoring Solutions",
+    description: "Design innovative solutions for monitoring patients with chronic conditions in remote areas of the Kingdom.",
+    long_description: `
+      <h3>Challenge Background</h3>
+      <p>Saudi Arabia's geography presents unique challenges in healthcare delivery, with many communities living in remote areas far from major medical centers. Patients with chronic conditions in these areas often face difficulties accessing regular care and monitoring, leading to complications and preventable hospitalizations.</p>
+      
+      <h3>Challenge Objective</h3>
+      <p>This challenge seeks innovative remote patient monitoring solutions that can bridge the geographical gap between healthcare providers and patients in remote areas of the Kingdom. The goal is to develop technologies that enable effective monitoring of chronic conditions, early intervention, and improved patient outcomes regardless of location.</p>
+      
+      <h3>What We're Looking For</h3>
+      <ul>
+        <li>Solutions that can function reliably in areas with limited connectivity</li>
+        <li>User-friendly interfaces suitable for various demographics including elderly patients</li>
+        <li>Integration capabilities with existing healthcare systems</li>
+        <li>Secure handling of sensitive patient data</li>
+        <li>Cost-effective implementation strategies</li>
+        <li>Scalable approaches that can be deployed across diverse regions</li>
+      </ul>
+    `,
+    deadline: "June 30, 2025",
+    submission_deadline: "2025-06-30T23:59:59+03:00",
+    category: "Digital Health",
+    participants: 47,
+    prize: "SAR 500,000",
+    image_url: "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    organizer: "Ministry of Health - Innovation Department",
+    status: "Open",
+    eligibility: "Healthcare professionals, technology innovators, startups, and established companies in the healthcare and technology sectors.",
+    requirements: [
+      "Solution must be applicable within Saudi healthcare system",
+      "Technology must be tested for basic feasibility",
+      "Proposal must include implementation plan",
+      "Solutions must adhere to data privacy regulations"
+    ],
+    timeline: [
+      { date: "March 15, 2025", event: "Challenge Launch" },
+      { date: "April 30, 2025", event: "Q&A Webinar" },
+      { date: "June 30, 2025", event: "Submission Deadline" },
+      { date: "July 30, 2025", event: "Finalists Announced" },
+      { date: "September 15, 2025", event: "Final Presentations" },
+      { date: "September 30, 2025", event: "Winners Announced" }
+    ]
+  },
+  {
+    id: "2",
+    title: "AI for Early Disease Detection",
+    description: "Develop AI algorithms to detect early signs of diseases using existing health data from MOH facilities.",
+    long_description: `
+      <h3>Challenge Background</h3>
+      <p>Early disease detection is crucial for improving patient outcomes and reducing healthcare costs. The Ministry of Health has accumulated vast amounts of patient data that could potentially reveal patterns indicative of disease onset before clinical symptoms appear.</p>
+      
+      <h3>Challenge Objective</h3>
+      <p>This challenge invites innovative AI solutions that can analyze existing health data to identify early markers of disease. The goal is to develop algorithms that can flag patients at risk of developing specific conditions, enabling preventive interventions and timely treatment.</p>
+      
+      <h3>What We're Looking For</h3>
+      <ul>
+        <li>Machine learning models with high sensitivity and specificity for disease prediction</li>
+        <li>Solutions that maintain patient privacy and data security</li>
+        <li>Approaches that can handle diverse data types including structured and unstructured data</li>
+        <li>Models that can be integrated with existing electronic health record systems</li>
+        <li>Explainable AI features that provide insight into prediction factors</li>
+        <li>Scalable solutions that can be deployed across the Saudi healthcare system</li>
+      </ul>
+    `,
+    deadline: "July 15, 2025",
+    submission_deadline: "2025-07-15T23:59:59+03:00",
+    category: "AI & Machine Learning",
+    participants: 32,
+    prize: "SAR 750,000",
+    image_url: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    organizer: "Ministry of Health - Digital Transformation Office",
+    status: "Open",
+    eligibility: "Data scientists, AI researchers, healthcare innovators, startups, and established companies with expertise in machine learning and healthcare analytics.",
+    requirements: [
+      "Must use anonymized healthcare data",
+      "Solution must demonstrate significant improvement over existing methods",
+      "Algorithms must be explainable and transparent in their decision-making",
+      "Submissions must include validation metrics and methodology",
+      "Data privacy and security measures must be explicitly addressed"
+    ],
+    timeline: [
+      { date: "April 1, 2025", event: "Challenge Launch" },
+      { date: "May 15, 2025", event: "Dataset Access Provided" },
+      { date: "June 1, 2025", event: "Technical Q&A Webinar" },
+      { date: "July 15, 2025", event: "Submission Deadline" },
+      { date: "August 15, 2025", event: "Finalists Announced" },
+      { date: "September 30, 2025", event: "Final Presentations" },
+      { date: "October 15, 2025", event: "Winners Announced" }
+    ]
+  },
+  // ... other challenges
+];
+
+const ChallengeDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("overview");
+  const { t } = useLanguage();
   
-  // Fetch challenge details from Supabase
+  // Fetch challenge details from API with proper typing
   const { data: challenge, isLoading, error } = useQuery({
     queryKey: ['challenge', id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('challenges')
-        .select('*')
-        .eq('id', id)
-        .single();
+      // In a real app, this would be fetching from Supabase
+      // const { data, error } = await supabase
+      //   .from('challenges')
+      //   .select('*')
+      //   .eq('id', id)
+      //   .single();
+      // if (error) throw error;
+      // return data;
       
-      if (error) throw error;
-      
-      // Parse requirements from JSON
-      if (data && data.requirements) {
-        try {
-          if (typeof data.requirements === 'string') {
-            data.requirements = JSON.parse(data.requirements);
-          }
-        } catch (e) {
-          console.error('Error parsing requirements:', e);
-          data.requirements = [];
-        }
-      }
-      
-      return data as Challenge;
-    },
-    enabled: !!id
+      // Using mock data for now
+      return new Promise<Challenge | undefined>((resolve) => {
+        setTimeout(() => {
+          const foundChallenge = mockChallenges.find(c => c.id === id);
+          resolve(foundChallenge);
+        }, 1000);
+      });
+    }
   });
-
-  const formatDate = (dateString: string) => {
-    try {
-      return format(parseISO(dateString), 'MMMM d, yyyy');
-    } catch (e) {
-      return 'Date unavailable';
-    }
-  };
-  
-  const isDeadlinePassed = () => {
-    if (!challenge?.end_date) return false;
-    try {
-      return isPast(parseISO(challenge.end_date));
-    } catch (e) {
-      return false;
-    }
-  };
-
-  // Determine if the challenge can be submitted to
-  const canApply = challenge && 
-                  challenge.status === 'active' && 
-                  !isDeadlinePassed();
-
-  // Generate timeline from start and end dates
-  const generateTimeline = (challenge: Challenge) => {
-    if (!challenge) return [];
-    
-    return [
-      { date: formatDate(challenge.start_date), event: "Challenge Launch" },
-      { date: formatDate(challenge.end_date), event: "Submission Deadline" }
-    ];
-  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white" dir="ltr">
         <Navbar />
         <main className="flex-grow pt-24">
-          <div className="container mx-auto px-4 py-16">
-            <Skeleton className="w-full h-64 mb-8 rounded-lg" />
-            <div className="space-y-4">
-              <Skeleton className="w-3/4 h-12" />
-              <Skeleton className="w-1/2 h-6" />
-              <div className="grid md:grid-cols-2 gap-8 mt-8">
-                <div className="space-y-4">
-                  <Skeleton className="w-full h-32" />
-                  <Skeleton className="w-full h-64" />
-                </div>
-                <div className="space-y-4">
-                  <Skeleton className="w-full h-32" />
-                  <Skeleton className="w-full h-64" />
-                </div>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="h-64 w-full bg-gray-200 animate-pulse rounded-lg mb-8"></div>
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1">
+                <Skeleton className="h-10 w-3/4 mb-4" />
+                <Skeleton className="h-6 w-1/4 mb-6" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-3/4 mb-8" />
+                <Skeleton className="h-8 w-48 mb-8" />
+                <Skeleton className="h-6 w-1/3 mb-4" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-2/3 mb-2" />
+              </div>
+              <div className="md:w-80">
+                <Skeleton className="h-64 w-full rounded-lg" />
               </div>
             </div>
           </div>
@@ -113,19 +177,14 @@ export default function ChallengePage() {
 
   if (error || !challenge) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white" dir="ltr">
         <Navbar />
         <main className="flex-grow pt-24">
-          <div className="container mx-auto px-4 py-16 text-center">
-            <h1 className="text-3xl font-bold mb-4">Challenge Not Found</h1>
-            <p className="text-gray-600 mb-8">
-              The challenge you're looking for doesn't exist or has been removed.
-            </p>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('challenge.notFound')}</h1>
+            <p className="text-gray-600 mb-8">{t('challenge.notFoundDesc')}</p>
             <Button asChild>
-              <Link to="/challenges">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Challenges
-              </Link>
+              <Link to="/challenges">{t('challenge.backToChallenges')}</Link>
             </Button>
           </div>
         </main>
@@ -135,185 +194,54 @@ export default function ChallengePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white" dir="ltr">
       <Navbar />
-      
-      <ChallengeHeader challenge={challenge} />
-      
-      <main className="flex-grow py-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="flex-grow pt-24">
+        {/* Hero Banner */}
+        <ChallengeHeader challenge={challenge} />
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Breadcrumb Navigation */}
           <BreadcrumbNav 
+            items={[{label: t('nav.challenges'), href: '/challenges'}]} 
             currentPage={challenge.title}
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Challenges", href: "/challenges" }
-            ]} 
           />
           
-          <div className="flex flex-col md:flex-row gap-8 mt-6">
-            {/* Main content */}
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main Content */}
             <div className="flex-1">
-              <Tabs defaultValue="overview" className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="mb-6">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="details">Details & Requirements</TabsTrigger>
-                  <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                  <TabsTrigger value="overview">{t('challenge.overview')}</TabsTrigger>
+                  <TabsTrigger value="requirements">{t('challenge.requirements')}</TabsTrigger>
+                  <TabsTrigger value="timeline">{t('challenge.timeline')}</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="overview" className="space-y-6">
-                  <div className="prose max-w-none">
-                    <h2 className="text-2xl font-bold text-moh-darkGreen">Challenge Overview</h2>
-                    <p>{challenge.description}</p>
-                    
-                    {challenge.long_description && (
-                      <div className="mt-6">
-                        <p>{challenge.long_description}</p>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium flex items-center">
-                          <Calendar className="h-4 w-4 mr-2 text-moh-green" />
-                          Timeline
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <dl className="space-y-1">
-                          <div>
-                            <dt className="text-xs text-gray-500">Start Date</dt>
-                            <dd className="font-medium">{formatDate(challenge.start_date)}</dd>
-                          </div>
-                          <div>
-                            <dt className="text-xs text-gray-500">Deadline</dt>
-                            <dd className="font-medium">{formatDate(challenge.end_date)}</dd>
-                          </div>
-                        </dl>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium flex items-center">
-                          <Trophy className="h-4 w-4 mr-2 text-moh-green" />
-                          Reward
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="font-medium">
-                          {challenge.prize || "Recognition and implementation opportunity"}
-                        </p>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium flex items-center">
-                          <Users className="h-4 w-4 mr-2 text-moh-green" />
-                          Organizer
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="font-medium">{challenge.organizer}</p>
-                      </CardContent>
-                    </Card>
-                  </div>
+                  <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: challenge.long_description }} />
                 </TabsContent>
                 
-                <TabsContent value="details">
-                  <div className="space-y-6">
-                    <div className="prose max-w-none">
-                      <h2 className="text-2xl font-bold text-moh-darkGreen">Challenge Details</h2>
-                      <p>{challenge.description}</p>
-                      
-                      {challenge.long_description && (
-                        <div className="mt-4">
-                          <p>{challenge.long_description}</p>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="mt-8">
-                      <h3 className="text-xl font-semibold text-moh-darkGreen mb-4">Application Requirements</h3>
-                      <ChallengeRequirements 
-                        eligibility={challenge.eligibility || "Healthcare professionals and innovators"} 
-                        requirements={challenge.requirements as string[] || []}
-                      />
-                    </div>
-                  </div>
+                <TabsContent value="requirements" className="space-y-6">
+                  <ChallengeRequirements 
+                    eligibility={challenge.eligibility} 
+                    requirements={challenge.requirements} 
+                  />
                 </TabsContent>
                 
-                <TabsContent value="timeline">
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-bold text-moh-darkGreen">Challenge Timeline</h2>
-                    <ChallengeTimeline challenge={challenge} />
-                  </div>
+                <TabsContent value="timeline" className="space-y-6">
+                  <ChallengeTimeline timeline={challenge.timeline} />
                 </TabsContent>
               </Tabs>
             </div>
             
             {/* Sidebar */}
-            <div className="w-full md:w-80 space-y-6">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="mb-6">
-                    <h3 className="font-medium mb-1">Status</h3>
-                    <Badge className="bg-moh-green">{challenge.status}</Badge>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <h3 className="font-medium mb-1">Deadline</h3>
-                    <div className="flex items-center text-sm">
-                      <Clock className="h-4 w-4 mr-2 text-moh-darkGreen" />
-                      {formatDate(challenge.end_date)}
-                    </div>
-                  </div>
-                  
-                  {canApply ? (
-                    <Button 
-                      asChild 
-                      className="w-full bg-moh-gold hover:bg-moh-darkGold text-white"
-                    >
-                      <Link to={user ? `/dashboard/submit/${challenge.id}` : "/auth"}>
-                        Apply Now
-                        <ChevronRight className="h-4 w-4 ml-2" />
-                      </Link>
-                    </Button>
-                  ) : (
-                    <div className="bg-gray-100 text-gray-700 py-3 px-4 rounded-md text-center text-sm">
-                      {isDeadlinePassed() ? 
-                        "This challenge is no longer accepting submissions" : 
-                        "This challenge is not currently accepting submissions"
-                      }
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Share This Challenge</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      Copy Link
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
-                      Share
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <ChallengeSidebar challenge={challenge} />
           </div>
         </div>
       </main>
-      
       <Footer />
     </div>
   );
-}
+};
+
+export default ChallengeDetail;

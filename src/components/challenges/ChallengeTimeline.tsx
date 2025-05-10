@@ -1,48 +1,30 @@
 
-import React from 'react';
-import { Challenge } from '@/types/challenges';
+import { Challenge } from "@/types/challenges";
+import { Calendar } from "lucide-react";
 
 interface ChallengeTimelineProps {
-  challenge: Challenge;
+  timeline: Challenge['timeline'];
 }
 
-const ChallengeTimeline: React.FC<ChallengeTimelineProps> = ({ challenge }) => {
-  // Generate timeline from challenge data
-  const generateTimeline = (challenge: Challenge) => {
-    const timeline = [
-      {
-        date: new Date(challenge.start_date).toLocaleDateString(),
-        event: "Challenge Launch"
-      },
-      {
-        date: new Date(challenge.end_date).toLocaleDateString(),
-        event: "Submission Deadline"
-      }
-    ];
-    
-    // If the challenge has a custom timeline, use it
-    if (challenge.timeline && Array.isArray(challenge.timeline)) {
-      return challenge.timeline;
-    }
-    
-    return timeline;
-  };
-
-  const timeline = generateTimeline(challenge);
-
+export default function ChallengeTimeline({ timeline }: ChallengeTimelineProps) {
   return (
-    <div className="space-y-4">
-      {timeline.map((item, index) => (
-        <div key={index} className="flex items-start">
-          <div className="flex-shrink-0 h-4 w-4 mt-1 rounded-full bg-moh-green"></div>
-          <div className="ml-4">
-            <p className="font-medium">{item.event}</p>
-            <p className="text-sm text-muted-foreground">{item.date}</p>
+    <div className="relative pl-8 border-l border-gray-200 space-y-8">
+      {timeline.map((event, index) => (
+        <div key={index} className="relative">
+          <div className="absolute -left-11 mt-1.5 h-6 w-6 rounded-full border-4 border-white bg-moh-green flex items-center justify-center">
+            <Calendar className="h-3 w-3 text-white" />
           </div>
+          <time className="mb-1 text-sm font-normal leading-none text-gray-500">
+            {event.date}
+          </time>
+          <h3 className="text-lg font-semibold text-gray-900">
+            {event.event}
+          </h3>
+          {index === timeline.length - 1 ? (
+            <p className="text-sm text-gray-600">Final winners will be announced and prizes awarded.</p>
+          ) : null}
         </div>
       ))}
     </div>
   );
-};
-
-export default ChallengeTimeline;
+}

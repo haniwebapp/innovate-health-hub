@@ -8,8 +8,7 @@ import GeneralSettingsTab from "@/components/admin/GeneralSettingsTab";
 import ChallengeSettingsTab from "@/components/admin/ChallengeSettingsTab";
 import NotificationSettingsTab from "@/components/admin/NotificationSettingsTab";
 import AdminSettingsAI from "@/components/ai/AdminSettingsAI";
-import { GeneralSettings } from "@/types/admin";
-import { ChallengeSettings } from "@/types/challenges";
+import { GeneralSettings, ChallengeSettings } from "@/types/admin";
 
 export default function AdminSettingsPage() {
   const { toast } = useToast();
@@ -24,12 +23,12 @@ export default function AdminSettingsPage() {
     maintenanceMode: false,
   });
   
-  // Challenge settings state - make sure submissionTimeLimit is a number
-  const [settings, setSettings] = useState<ChallengeSettings>({
+  // Challenge settings state
+  const [challengeSettings, setChallengeSettings] = useState<ChallengeSettings>({
     requireApproval: true,
     allowPublicSubmissions: false,
     autoCloseExpiredChallenges: true,
-    submissionTimeLimit: 30
+    submissionTimeLimit: "30", // days
   });
 
   const handlePlatformSettingsChange = (setting: string) => {
@@ -40,17 +39,17 @@ export default function AdminSettingsPage() {
   };
 
   const handleChallengeSettingsChange = (setting: string) => {
-    setSettings({
-      ...settings,
-      [setting]: !settings[setting as keyof typeof settings]
+    setChallengeSettings({
+      ...challengeSettings,
+      [setting]: !challengeSettings[setting as keyof typeof challengeSettings]
     });
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings(prev => ({
-      ...prev,
-      submissionTimeLimit: parseInt(e.target.value) || 0
-    }));
+    setChallengeSettings({
+      ...challengeSettings,
+      submissionTimeLimit: e.target.value,
+    });
   };
 
   const handleSaveSettings = () => {
@@ -86,7 +85,7 @@ export default function AdminSettingsPage() {
       {showAIRecommendations && (
         <AdminSettingsAI 
           generalSettings={platformSettings}
-          challengeSettings={settings}
+          challengeSettings={challengeSettings}
         />
       )}
 
@@ -108,7 +107,7 @@ export default function AdminSettingsPage() {
         
         <TabsContent value="challenges">
           <ChallengeSettingsTab 
-            settings={settings}
+            settings={challengeSettings}
             onSettingsChange={handleChallengeSettingsChange}
             onTimeChange={handleTimeChange}
             onSave={handleSaveSettings}

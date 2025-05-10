@@ -17,4 +17,9 @@ export type GeneralSettings = {
   maintenanceMode: boolean;
 };
 
-// Remove the duplicate ChallengeSettings type from admin.ts since we're using the one from challenges.ts
+export type ChallengeSettings = {
+  requireApproval: boolean;
+  allowPublicSubmissions: boolean;
+  autoCloseExpiredChallenges: boolean;
+  submissionTimeLimit: string;
+};
