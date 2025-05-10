@@ -7,8 +7,6 @@ interface NavItem {
   to: string;
   icon: ReactNode;
   text: string;
-  badge?: string | number;
-  badgeVariant?: "default" | "outline" | "secondary" | "destructive";
   onClick?: () => void;
 }
 
@@ -40,8 +38,6 @@ export function SidebarNavSection({ title, isCollapsed, items }: SidebarNavSecti
             icon={item.icon}
             text={item.text}
             isCollapsed={isCollapsed}
-            badge={item.badge}
-            badgeVariant={item.badgeVariant}
             onClick={item.onClick}
           />
         ))}

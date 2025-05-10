@@ -2,7 +2,6 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -11,8 +10,6 @@ interface SidebarNavItemProps {
   icon: ReactNode;
   text: string;
   isCollapsed: boolean;
-  badge?: string | number;
-  badgeVariant?: "default" | "outline" | "secondary" | "destructive";
   onClick?: () => void;
 }
 
@@ -21,8 +18,6 @@ export function SidebarNavItem({
   icon,
   text,
   isCollapsed,
-  badge,
-  badgeVariant = "secondary",
   onClick
 }: SidebarNavItemProps) {
   const { pathname } = useLocation();
@@ -63,16 +58,6 @@ export function SidebarNavItem({
           {text}
         </motion.span>
       )}
-      
-      {!isCollapsed && badge && (
-        <Badge variant={badgeVariant} className={cn(
-          badgeVariant === "default" ? "bg-moh-green text-white" : "",
-          badgeVariant === "secondary" ? "bg-slate-100 text-moh-gold" : "",
-          "ml-auto"
-        )}>
-          {badge}
-        </Badge>
-      )}
     </Link>
   );
   
@@ -82,18 +67,6 @@ export function SidebarNavItem({
         <TooltipTrigger asChild>
           <div className="relative">
             {item}
-            {badge && (
-              <Badge 
-                variant={badgeVariant}
-                className={cn(
-                  "absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center text-xs p-0.5",
-                  badgeVariant === "default" ? "bg-moh-green text-white" : "",
-                  badgeVariant === "secondary" ? "bg-slate-100 text-moh-gold" : ""
-                )}
-              >
-                {typeof badge === 'number' && badge > 99 ? '99+' : badge}
-              </Badge>
-            )}
           </div>
         </TooltipTrigger>
         <TooltipContent side="right">

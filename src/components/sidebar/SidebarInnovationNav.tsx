@@ -15,16 +15,12 @@ export function SidebarInnovationNav({ isCollapsed }: SidebarInnovationNavProps)
         { 
           to: "/dashboard/challenges", 
           icon: <FileText size={18} className="text-moh-green" />, 
-          text: "Challenges",
-          badge: 3,
-          badgeVariant: "secondary"
+          text: "Challenges"
         },
         { 
           to: "/dashboard/innovations", 
           icon: <Lightbulb size={18} className="text-moh-green" />, 
-          text: "Innovations",
-          badge: "New",
-          badgeVariant: "secondary" 
+          text: "Innovations"
         },
         { 
           to: "/dashboard/create-challenge", 
