@@ -1,16 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp, ChevronRight, Award, LineChart, ScrollText, BookOpen, AlertCircle } from "lucide-react";
+import { LogOut, User, Settings, FileUp, Award, LineChart, ScrollText, BookOpen, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from "@/components/ui/accordion";
 
 interface NavbarMobileMenuProps {
   isRouteActive: (path: string) => boolean;
@@ -24,69 +19,14 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   
-  // Navigation links with icons (removed Home)
+  // Simplified navigation links with icons but no submenus
   const navigationLinks = [
-    { 
-      path: "/innovations", 
-      label: "Innovations",
-      icon: FileUp,
-      submenu: [
-        { label: "Browse Innovations", path: "/innovations/latest" },
-        { label: "Innovation Types", path: "/innovations/types" },
-        { label: "Submit Innovation", path: "/innovations/submit" },
-        { label: "All Innovations", path: "/innovations" }
-      ]
-    },
-    { 
-      path: "/challenges", 
-      label: "Challenges",
-      icon: Award,
-      submenu: [
-        { label: "Open Challenges", path: "/challenges/open" },
-        { label: "Challenge Areas", path: "/challenges/areas" },
-        { label: "Guidelines", path: "/challenges/guidelines" },
-        { label: "All Challenges", path: "/challenges" }
-      ]
-    },
-    { 
-      path: "/investment", 
-      label: "Investment",
-      icon: LineChart,
-      submenu: [
-        { label: "Funding Programs", path: "/investment/programs" },
-        { label: "For Investors", path: "/investment/for-investors" },
-        { label: "Resources", path: "/investment/resources" },
-        { label: "All Investment", path: "/investment" }
-      ]
-    },
-    { 
-      path: "/regulatory", 
-      label: "Regulatory",
-      icon: ScrollText,
-      submenu: [
-        { label: "Guidelines", path: "/regulatory/guidelines" },
-        { label: "Approval Pathways", path: "/regulatory/pathways" },
-        { label: "Resources", path: "/regulatory/resources" },
-        { label: "All Regulatory", path: "/regulatory" }
-      ]
-    },
-    { 
-      path: "/knowledge-hub", 
-      label: "Knowledge Hub",
-      icon: BookOpen,
-      submenu: [
-        { label: "Articles", path: "/knowledge-hub/articles" },
-        { label: "Events", path: "/knowledge-hub/events" },
-        { label: "Tools", path: "/knowledge-hub/tools" },
-        { label: "All Resources", path: "/knowledge-hub" }
-      ]
-    },
-    { 
-      path: "/about", 
-      label: "About",
-      icon: AlertCircle,
-      submenu: []
-    },
+    { path: "/innovations", label: "Innovations", icon: FileUp },
+    { path: "/challenges", label: "Challenges", icon: Award },
+    { path: "/investment", label: "Investment", icon: LineChart },
+    { path: "/regulatory", label: "Regulatory", icon: ScrollText },
+    { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
+    { path: "/about", label: "About", icon: AlertCircle },
   ];
   
   // Enhanced animation variants
@@ -174,68 +114,25 @@ export function NavbarMobileMenu({
               </div>
             </motion.div>
           
-            <Accordion type="single" collapsible className="w-full">
-              {navigationLinks.map((link, index) => (
-                <motion.div key={link.path} variants={itemVariants} custom={index}>
-                  <AccordionItem value={link.path} className="border-b border-gray-100">
-                    {link.submenu.length > 0 ? (
-                      <AccordionTrigger 
-                        className={`py-3 text-lg font-medium flex items-center gap-3 ${
-                          isRouteActive(link.path)
-                          ? "text-moh-green"
-                          : "text-moh-darkGreen"
-                        }`}
-                      >
-                        <link.icon className="h-5 w-5" />
-                        {link.label}
-                      </AccordionTrigger>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        className={`w-full justify-start text-left py-3 text-lg font-medium flex items-center gap-3 ${
-                          isRouteActive(link.path)
-                          ? "text-moh-green"
-                          : "text-moh-darkGreen"
-                        }`}
-                        onClick={() => handleLinkClick(link.path)}
-                        asChild
-                      >
-                        <Link to={link.path}>
-                          <link.icon className="h-5 w-5" />
-                          {link.label}
-                        </Link>
-                      </Button>
-                    )}
-                    
-                    {link.submenu.length > 0 && (
-                      <AccordionContent>
-                        <div className="pl-9 py-2 space-y-1">
-                          {link.submenu.map((subItem, subIndex) => (
-                            <motion.div
-                              key={subItem.path}
-                              variants={itemVariants}
-                              custom={index + subIndex * 0.1}
-                            >
-                              <Button
-                                variant="ghost"
-                                className="w-full justify-start text-left rounded-lg"
-                                onClick={() => handleLinkClick(subItem.path)}
-                                asChild
-                              >
-                                <Link to={subItem.path} className="flex items-center py-2">
-                                  <span className="text-gray-700">{subItem.label}</span>
-                                  <ChevronRight className="h-4 w-4 ml-auto text-gray-400" />
-                                </Link>
-                              </Button>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </AccordionContent>
-                    )}
-                  </AccordionItem>
-                </motion.div>
-              ))}
-            </Accordion>
+            {navigationLinks.map((link, index) => (
+              <motion.div key={link.path} variants={itemVariants} custom={index}>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start text-left py-3 text-lg font-medium flex items-center gap-3 ${
+                    isRouteActive(link.path)
+                      ? "text-moh-green"
+                      : "text-moh-darkGreen"
+                  }`}
+                  onClick={() => handleLinkClick(link.path)}
+                  asChild
+                >
+                  <Link to={link.path}>
+                    <link.icon className="h-5 w-5" />
+                    {link.label}
+                  </Link>
+                </Button>
+              </motion.div>
+            ))}
           </nav>
         </div>
         
