@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -73,14 +72,18 @@ export default function UserProfileForm() {
             organization: data.organization || "",
           });
           
-          // Get avatar URL if exists
+          // Safely access avatar_url if it exists
           if (data.avatar_url) {
-            const { data: avatarData } = await supabase.storage
-              .from('avatars')
-              .getPublicUrl(data.avatar_url);
-            
-            if (avatarData) {
-              setAvatarUrl(avatarData.publicUrl);
+            try {
+              const { data: avatarData } = await supabase.storage
+                .from('avatars')
+                .getPublicUrl(data.avatar_url);
+              
+              if (avatarData) {
+                setAvatarUrl(avatarData.publicUrl);
+              }
+            } catch (avatarError) {
+              console.error("Error retrieving avatar:", avatarError);
             }
           }
         }

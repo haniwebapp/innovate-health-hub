@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +11,7 @@ import AdminUsersTable from "@/components/admin/AdminUsersTable";
 import AdminUserStats from "@/components/admin/AdminUserStats";
 import UserInsightsCard from "@/components/ai/UserInsightsCard";
 import AdminAIAssistant from "@/components/ai/AdminAIAssistant";
-import { UserProfile } from "@/types/admin";
+import { UserProfile, ProfileWithEmail } from "@/types/admin";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -44,20 +43,30 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      // Get profiles with user emails by joining with auth.users table
-      // Note: Since we can't directly join with auth.users, we'll use a workaround
+      // Get profiles with user emails
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select('*');
 
       if (error) throw error;
 
-      // For now, we'll use the email from profiles directly
-      // In a production environment, you might need to add the email to profiles table
-      const mappedUsers: UserProfile[] = profiles.map((profile: ProfileWithEmail) => {
+      // Get auth users to retrieve emails
+      const { data: authUsers, error: authError } = await supabase
+        .from('auth.users')
+        .select('id, email');
+
+      if (authError) {
+        console.warn("Could not fetch user emails from auth.users. Using profile data only.");
+      }
+
+      // Map profiles to UserProfile format, adding email if available
+      const mappedUsers: UserProfile[] = profiles.map((profile: any) => {
+        // Try to find matching auth user to get email
+        const authUser = authUsers?.find(user => user.id === profile.id);
+        
         return {
           id: profile.id,
-          email: profile.email || "", // Use email from profile, or empty string as fallback
+          email: profile.email || (authUser?.email || ""), // Use profile email or auth email as fallback
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",
