@@ -9,12 +9,15 @@ import AdminSettingsPage from './pages/dashboard/AdminSettingsPage';
 import AdminIntegrationsPage from './pages/dashboard/AdminIntegrationsPage';
 import CreateChallengePage from './pages/dashboard/CreateChallengePage';
 import ChallengesPage from './pages/challenges/index';
-import ChallengePage from './pages/challenges/[id]';
+import ChallengePage from './pages/challenges/[id].tsx';
 import AdminChallengeManagementPage from './pages/admin/challenges/index';
-import ChallengeSubmissionsPage from './pages/admin/challenges/submissions/[id]';
-import SubmitChallengePage from './pages/dashboard/submit/[challengeId]';
+import ChallengeSubmissionsPage from './pages/admin/challenges/submissions/[id].tsx';
+import SubmitChallengePage from './pages/dashboard/submit/[challengeId].tsx';
 import SubmissionsPage from './pages/dashboard/submissions/index';
 import AboutPage from './pages/about/index';
+import NotFound from './pages/NotFound';
+import InnovationDetailPage from './pages/innovations/[id].tsx';
+import DashboardInnovationDetailsPage from './pages/dashboard/innovations/[id].tsx';
 
 // Create router with all routes and proper nesting
 const router = createBrowserRouter([
@@ -34,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/challenges/:id',
     element: <ChallengePage />
+  },
+  {
+    path: '/innovations/:id',
+    element: <InnovationDetailPage />
   },
   
   // Dashboard section with proper layout nesting
@@ -74,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: 'submissions',
         element: <SubmissionsPage />
+      },
+      {
+        path: 'innovations/:id',
+        element: <DashboardInnovationDetailsPage />
       }
     ]
   },
@@ -92,6 +103,12 @@ const router = createBrowserRouter([
   {
     path: '/home',
     element: <Navigate to="/" replace />
+  },
+  
+  // 404 route for all unmatched routes
+  {
+    path: '*',
+    element: <NotFound />
   }
 ]);
 
