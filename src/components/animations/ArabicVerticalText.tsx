@@ -1,10 +1,13 @@
+
 import { motion } from "framer-motion";
 import React from "react";
+
 interface ArabicVerticalTextProps {
   text: string;
   className?: string;
   delay?: number;
 }
+
 export function ArabicVerticalText({
   text,
   className = "",
@@ -22,6 +25,7 @@ export function ArabicVerticalText({
       }
     }
   };
+
   const itemVariants = {
     hidden: {
       y: 20,
@@ -37,7 +41,23 @@ export function ArabicVerticalText({
       }
     }
   };
-  return <motion.div className={`flex flex-col ${className}`} variants={containerVariants} initial="hidden" animate="visible">
-      {text.split("").map((char, index) => {})}
-    </motion.div>;
+
+  return (
+    <motion.div 
+      className={`flex flex-col ${className}`} 
+      variants={containerVariants} 
+      initial="hidden" 
+      animate="visible"
+    >
+      {text.split("").map((char, index) => (
+        <motion.span 
+          key={`${char}-${index}`} 
+          variants={itemVariants}
+          className="mb-1 text-xl md:text-2xl font-bold"
+        >
+          {char}
+        </motion.span>
+      ))}
+    </motion.div>
+  );
 }
