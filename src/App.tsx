@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -130,6 +129,7 @@ function App() {
                     <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="settings" element={<DashboardSettingsPage />} />
+                    <Route path="notifications" element={<NotificationsPage />} />
                     
                     {/* User Portal Routes - Phase 1 */}
                     <Route path="submissions" element={<SubmissionsList />} />

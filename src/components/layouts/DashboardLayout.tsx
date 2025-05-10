@@ -4,10 +4,11 @@ import DashboardSidebar from "./DashboardSidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, ChevronLeft, ChevronRight, Shield, Search, Menu } from "lucide-react";
+import { ChevronLeft, ChevronRight, Shield, Search, Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import GeneratedLogo from "@/components/logos/GeneratedLogo";
+import { NotificationBadge } from "@/components/notifications/NotificationBadge";
 
 // Helper to get page title from pathname
 const getPageTitle = (pathname: string): string => {
@@ -136,15 +137,7 @@ export default function DashboardLayout() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="relative text-slate-600 hover:text-moh-green hover:bg-slate-100"
-              onClick={handleNotificationClick}
-            >
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-            </Button>
+            <NotificationBadge className="text-slate-600 hover:text-moh-green hover:bg-slate-100" />
             
             <Button 
               variant="ghost" 

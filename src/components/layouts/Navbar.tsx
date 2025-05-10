@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Bell } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarMainLinks } from "@/components/layouts/NavbarMainLinks";
@@ -11,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dialog } from "@/components/ui/dialog";
 import { SearchDialog } from "@/components/layouts/SearchDialog";
 import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
+import { NotificationBadge } from "@/components/notifications/NotificationBadge";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,15 +93,7 @@ export default function Navbar() {
                 <span className="sr-only">Search</span>
               </Button>
               
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-moh-darkGreen hover:bg-moh-lightGreen/50 hover:text-moh-green rounded-full relative transition-colors"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="sr-only">Notifications</span>
-                <span className="absolute top-1 right-1 h-2 w-2 bg-moh-gold rounded-full"></span>
-              </Button>
+              <NotificationBadge />
               
               <div className="h-6 border-l border-gray-200 mx-1"></div>
               

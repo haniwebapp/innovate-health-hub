@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, Settings, FileText, Bell, HelpCircle } from "lucide-react";
+import { NotificationBadge } from "@/components/notifications/NotificationBadge";
 
 export default function NavbarUserMenu() {
   const { user, signOut } = useAuth();
@@ -31,6 +32,16 @@ export default function NavbarUserMenu() {
     }
     
     return "U";
+  };
+
+  const getDisplayName = () => {
+    if (!user) return "Welcome";
+    
+    if (user.first_name || user.last_name) {
+      return `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    }
+    
+    return user.email ? user.email.split('@')[0] : 'Welcome back!';
   };
 
   if (!user) {
@@ -68,7 +79,7 @@ export default function NavbarUserMenu() {
           className="relative h-10 w-10 rounded-full p-0 overflow-hidden border-2 border-transparent hover:border-moh-green/30 transition-all"
         >
           <Avatar className="h-full w-full">
-            <AvatarImage src={user.avatar_url || undefined} alt={`${user.first_name || user.email}`} />
+            <AvatarImage src={user.avatar_url || undefined} alt={getDisplayName()} />
             <AvatarFallback className="bg-gradient-to-br from-moh-lightGreen to-moh-green text-white">
               {getInitials()}
             </AvatarFallback>
@@ -80,7 +91,7 @@ export default function NavbarUserMenu() {
       <DropdownMenuContent align="end" className="w-72 p-2">
         <div className="flex items-center p-3 bg-moh-lightGreen/20 rounded-lg mb-2">
           <Avatar className="h-10 w-10 border border-moh-green/20">
-            <AvatarImage src={user.avatar_url || undefined} alt={`${user.first_name || user.email}`} />
+            <AvatarImage src={user.avatar_url || undefined} alt={getDisplayName()} />
             <AvatarFallback className="bg-gradient-to-br from-moh-lightGreen to-moh-green text-white">
               {getInitials()}
             </AvatarFallback>
@@ -88,7 +99,7 @@ export default function NavbarUserMenu() {
           
           <div className="ml-3">
             <p className="font-medium text-moh-darkGreen">
-              {user.first_name ? `${user.first_name} ${user.last_name}` : 'Welcome back!'}
+              {getDisplayName()}
             </p>
             <p className="text-xs text-gray-500">{user.email}</p>
           </div>
@@ -119,7 +130,7 @@ export default function NavbarUserMenu() {
           <Link to="/dashboard/notifications" className="cursor-pointer flex items-center gap-2">
             <Bell className="h-4 w-4 text-moh-green" />
             <span>Notifications</span>
-            <div className="ml-auto bg-moh-gold text-white text-xs rounded-full px-2 py-0.5">3</div>
+            <NotificationBadge className="ml-auto !p-0 !h-auto !w-auto !bg-transparent hover:!bg-transparent" />
           </Link>
         </DropdownMenuItem>
         
