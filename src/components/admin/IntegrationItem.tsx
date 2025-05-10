@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Settings, AlertCircle, ExternalLink, Key } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import IntegrationLogs from "./IntegrationLogs";
-import { Integration } from "@/utils/integrationConstants";
+import { Integration, logIntegrationEvent } from "@/utils/integrationUtils";
 
 interface IntegrationItemProps {
   integration: Integration;
@@ -17,19 +17,47 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
   const { toast } = useToast();
   const [showLogs, setShowLogs] = useState(false);
 
-  const handleTestConnection = () => {
+  const handleTestConnection = async () => {
     toast({
       title: "Testing Connection",
       description: `Testing connection to ${integration.name}...`,
     });
     
-    // Simulate an API call
-    setTimeout(() => {
+    try {
+      // Log the test event
+      await logIntegrationEvent(
+        integration.id,
+        'connection_test',
+        'pending',
+        { timestamp: new Date().toISOString() }
+      );
+      
+      // Simulate an API call
+      setTimeout(async () => {
+        // Update the test event status
+        await logIntegrationEvent(
+          integration.id,
+          'connection_test',
+          'success',
+          { 
+            timestamp: new Date().toISOString(),
+            message: 'Connection successful'
+          }
+        );
+        
+        toast({
+          title: "Connection Successful",
+          description: `Successfully connected to ${integration.name}.`,
+        });
+      }, 1500);
+    } catch (error) {
+      console.error("Error during connection test:", error);
       toast({
-        title: "Connection Successful",
-        description: `Successfully connected to ${integration.name}.`,
+        title: "Connection Failed",
+        description: `Failed to connect to ${integration.name}.`,
+        variant: "destructive",
       });
-    }, 1500);
+    }
   };
 
   return (
@@ -38,19 +66,19 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="font-medium">{integration.name}</span>
-            <Badge variant={integration.connected ? "default" : "outline"}>
-              {integration.connected ? "Connected" : "Disconnected"}
+            <Badge variant={integration.is_active ? "default" : "outline"}>
+              {integration.is_active ? "Connected" : "Disconnected"}
             </Badge>
           </div>
           <div className="text-sm text-muted-foreground flex items-center gap-1">
             <ExternalLink className="h-3.5 w-3.5" />
-            {integration.endpoint}
+            {integration.endpoint || 'No endpoint configured'}
           </div>
         </div>
         
         <div className="flex items-center gap-2">
           <Switch 
-            checked={integration.connected} 
+            checked={integration.is_active} 
             onCheckedChange={(checked) => onToggle(integration.id, checked)}
           />
           <Button 
@@ -91,7 +119,7 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
       </div>
       
       {showLogs && (
-        <IntegrationLogs integrationName={integration.name} />
+        <IntegrationLogs integrationId={integration.id} />
       )}
     </div>
   );
