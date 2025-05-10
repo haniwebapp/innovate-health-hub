@@ -3,16 +3,23 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 
+// Extend the User type to include the properties we need
+interface ExtendedUser extends User {
+  first_name?: string;
+  last_name?: string;
+  avatar_url?: string;
+}
+
 interface AuthContextType {
-  user: User | null;
+  user: ExtendedUser | null;
   session: Session | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
-  isLoading: boolean;  // Added isLoading property
+  isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, userData?: any) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
-  logout: () => Promise<void>;  // Added logout as an alias for signOut
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -20,11 +27,11 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   isAuthenticated: false,
   isAdmin: false,
-  isLoading: true,  // Added default value for isLoading
+  isLoading: true,
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null }),
   signOut: async () => {},
-  logout: async () => {},  // Added default value for logout
+  logout: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -34,7 +41,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ExtendedUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -43,10 +50,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // First set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      setUser(session?.user ? session.user as ExtendedUser : null);
       
       if (session?.user) {
         checkIfUserIsAdmin(session.user.id);
+        fetchUserProfile(session.user.id);
       } else {
         setIsAdmin(false);
       }
@@ -55,10 +63,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Then get the current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      setUser(session?.user ? session.user as ExtendedUser : null);
       
       if (session?.user) {
         checkIfUserIsAdmin(session.user.id);
+        fetchUserProfile(session.user.id);
       }
       setIsLoading(false);
     });
@@ -67,6 +76,36 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, avatar_url')
+        .eq('id', userId)
+        .single();
+        
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        return;
+      }
+      
+      if (data && user) {
+        // Update the user object with profile data
+        setUser(currentUser => {
+          if (!currentUser) return null;
+          return {
+            ...currentUser,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            avatar_url: data.avatar_url
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
   const checkIfUserIsAdmin = async (userId: string) => {
     try {

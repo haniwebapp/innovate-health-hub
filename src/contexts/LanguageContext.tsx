@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define available language (English only)
@@ -192,6 +191,8 @@ const translations: Record<string, string> = {
   'admin.organizations': 'Organizations',
 
   // Profile page translations
+  'profile.title': 'Your Profile',
+  'profile.description': 'Manage your personal information and preferences',
   'profile.profileInformation': 'Profile Information',
   'profile.updateDetails': 'Update your account profile details here',
   'profile.uploadPhoto': 'Upload Photo',
@@ -208,7 +209,13 @@ const translations: Record<string, string> = {
   'profile.updateError': 'Failed to update profile:',
   'profile.avatarSuccess': 'Your profile picture has been updated.',
   'profile.avatarError': 'Failed to upload avatar:',
-
+  'profile.accountSettings': 'Account Settings',
+  'profile.preferences': 'Manage your account preferences',
+  'profile.emailNotifications': 'Email Notifications',
+  'profile.password': 'Password',
+  'profile.passwordDesc': 'Change your password to keep your account secure',
+  'profile.passwordChange': 'Change Password',
+  
   // Investment page translations
   'investment.title': 'Investment Opportunities',
   'investment.subtitle': 'Explore funding options for your healthcare innovations',

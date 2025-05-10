@@ -78,8 +78,8 @@ export default function DashboardLayout() {
 
   // Get user initials for avatar
   const getInitials = () => {
-    const firstName = user?.user_metadata?.firstName || user?.first_name || user?.email?.split('@')[0] || '';
-    const lastName = user?.user_metadata?.lastName || user?.last_name || '';
+    const firstName = user?.first_name || user?.user_metadata?.firstName || user?.email?.split('@')[0] || '';
+    const lastName = user?.last_name || user?.user_metadata?.lastName || '';
     
     return (firstName.charAt(0) + (lastName ? lastName.charAt(0) : '')).toUpperCase();
   };

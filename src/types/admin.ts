@@ -1,5 +1,4 @@
 
-
 export type UserProfile = {
   id: string;
   email: string;
@@ -47,4 +46,3 @@ export interface ProfileWithEmail {
   status: string;
   avatar_url?: string;
 }
-
