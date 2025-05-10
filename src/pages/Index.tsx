@@ -41,7 +41,7 @@ const Index = () => {
         <Navbar />
         <ScrollProgress />
         
-        <main className="flex-grow pt-16 py-0">
+        <main className="flex-grow pt-16 my-0 rounded-none py-0">
           <TooltipProvider>
             {/* Enhanced home page section order for better user engagement */}
             <HeroSection />
