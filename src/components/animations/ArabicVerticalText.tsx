@@ -38,8 +38,6 @@ export function ArabicVerticalText({
     }
   };
   return <motion.div className={`flex flex-col ${className}`} variants={containerVariants} initial="hidden" animate="visible">
-      {text.split("").map((char, index) => <motion.span key={index} variants={itemVariants} className="mb-1 font-arabic text-moh-lightGold font-normal text-base">
-          {char}
-        </motion.span>)}
+      {text.split("").map((char, index) => {})}
     </motion.div>;
 }
