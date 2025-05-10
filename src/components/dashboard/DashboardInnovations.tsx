@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, PlusCircle } from "lucide-react";
+import { ArrowRight, PlusCircle, Eye, Calendar, Clock } from "lucide-react";
+import { motion } from "framer-motion";
 
 // Mock innovations data - in a real app, this would be fetched from an API
 const myInnovations = [
@@ -48,45 +49,106 @@ const getCategoryBadgeColor = (category: string) => {
 export default function DashboardInnovations() {
   const hasInnovations = myInnovations.length > 0;
   
+  // Animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const item = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+  
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-2">
+    <Card className="h-full border-moh-green/10 overflow-hidden relative">
+      {/* Subtle gradient background effect */}
+      <div className="absolute inset-0 bg-green-gold-gradient rounded-lg" />
+      
+      <CardHeader className="pb-2 relative z-10">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-medium">My Innovations</CardTitle>
-          <Badge variant="outline" className="text-xs">
+          <div>
+            <CardTitle className="text-lg font-medium text-moh-darkGreen">My Innovations</CardTitle>
+            <CardDescription>Your submitted innovations</CardDescription>
+          </div>
+          <Badge variant="outline" className="text-moh-green border-moh-green/30 bg-white/50">
             {myInnovations.length} total
           </Badge>
         </div>
-        <CardDescription>Your submitted innovations</CardDescription>
       </CardHeader>
-      <CardContent>
+      
+      <CardContent className="relative z-10">
         {hasInnovations ? (
-          <div className="space-y-4">
-            {myInnovations.map(innovation => (
-              <div key={innovation.id} className="border-b pb-3 last:border-0">
+          <motion.div 
+            className="space-y-4"
+            variants={container}
+            initial="hidden"
+            animate="show"
+          >
+            {myInnovations.map((innovation) => (
+              <motion.div 
+                key={innovation.id} 
+                variants={item}
+                className={`p-3 rounded-lg transition-colors ${
+                  innovation.status === 'Published' 
+                    ? 'bg-moh-glassGreen border border-moh-green/10' 
+                    : 'border border-muted hover:bg-moh-glassGreen'
+                } group`}
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
                 <div className="flex justify-between items-start mb-1">
                   <h3 className="font-medium">{innovation.title}</h3>
-                  <Badge variant={innovation.status === 'Published' ? 'default' : 'outline'}>
+                  <Badge 
+                    className={`${innovation.status === 'Published' 
+                      ? 'bg-moh-green/90 hover:bg-moh-green text-white' 
+                      : 'bg-muted-foreground/20'}`}
+                  >
                     {innovation.status}
                   </Badge>
                 </div>
-                <div className="flex justify-between">
-                  <Badge variant="outline" className={getCategoryBadgeColor(innovation.category)}>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                  <Badge variant="outline" className={`${getCategoryBadgeColor(innovation.category)} w-fit`}>
                     {innovation.category}
                   </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    {innovation.views} views • Updated {formatDate(innovation.lastUpdated)}
-                  </span>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center">
+                      <Eye className="w-3 h-3 mr-1 text-moh-green" />
+                      <span>{innovation.views} views</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="w-3 h-3 mr-1 text-moh-gold" />
+                      <span>Updated {formatDate(innovation.lastUpdated)}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <div className="mt-2 pt-2 border-t border-dashed border-moh-green/10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="ghost" size="sm" className="text-moh-green hover:bg-moh-green/10 -my-1 h-8">
+                    <ArrowRight className="h-3 w-3 mr-1" />
+                    View Details
+                  </Button>
+                </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="text-center py-6">
+            <div className="w-16 h-16 bg-moh-lightGreen rounded-full flex items-center justify-center mx-auto mb-4">
+              <PlusCircle className="h-8 w-8 text-moh-green" />
+            </div>
             <p className="text-sm text-muted-foreground mb-4">
               You haven't submitted any innovations yet.
             </p>
-            <Button size="sm" asChild>
+            <Button 
+              size="sm" 
+              asChild
+              className="bg-moh-green hover:bg-moh-darkGreen"
+            >
               <Link to="/innovations/submit">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Submit Innovation
@@ -95,15 +157,26 @@ export default function DashboardInnovations() {
           </div>
         )}
       </CardContent>
-      <CardFooter>
+      
+      <CardFooter className="relative z-10">
         <div className="flex w-full justify-between">
-          <Button variant="ghost" size="sm" asChild>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            asChild
+            className="text-moh-green hover:text-moh-darkGreen hover:bg-moh-lightGreen"
+          >
             <Link to="/dashboard/innovations" className="flex items-center">
               View all
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <Button variant="outline" size="sm" asChild>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            asChild
+            className="border-moh-green/30 text-moh-green hover:bg-moh-green hover:text-white"
+          >
             <Link to="/innovations/submit" className="flex items-center">
               <PlusCircle className="mr-2 h-4 w-4" />
               New Innovation

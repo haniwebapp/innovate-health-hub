@@ -63,21 +63,26 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// MOH brand colors
+				// MOH brand colors - enhanced with additional shades
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#F8F8F8', // Updated to a very light white shade
+					lightGreen: '#E8F5F0', // Lighter green for backgrounds
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',
 					gray: '#F5F7FA',
 					darkGray: '#4A5568',
+					// New glass effect colors
+					glassGreen: 'rgba(0, 129, 74, 0.08)',
+					glassGold: 'rgba(195, 168, 107, 0.1)',
 				}
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				arabic: ['Tajawal', 'sans-serif'],
+				// Adding Playfair Display for headings
+				playfair: ['Playfair Display', 'serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -116,6 +121,9 @@ export default {
 				'count-up': {
 					'0%': { content: '"0"' },
 					'100%': { content: 'attr(data-value)' }
+				},
+				'shimmer': {
+					'100%': { transform: 'translateX(100%)' }
 				}
 			},
 			animation: {
@@ -126,11 +134,14 @@ export default {
 				'pulse-soft': 'pulse-soft 3s infinite ease-in-out',
 				'float': 'float 4s infinite ease-in-out',
 				'scale-in': 'scale-in 0.3s ease-out forwards',
-				'count-up': 'count-up 2s forwards'
+				'count-up': 'count-up 2s forwards',
+				'shimmer': 'shimmer 2s infinite'
 			},
 			backgroundImage: {
 				'hero-pattern': 'linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 100%)',
 				'card-gradient': 'linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.9))',
+				'green-gold-gradient': 'linear-gradient(135deg, rgba(0, 129, 74, 0.05) 0%, rgba(195, 168, 107, 0.05) 100%)',
+				'shimmer-gradient': 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%)',
 			}
 		}
 	},

@@ -5,7 +5,10 @@ import DashboardSidebar from "./DashboardSidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, ChevronLeft, ChevronRight, Shield } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Shield, Search, Menu } from "lucide-react";
+import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/use-toast";
+import GeneratedLogo from "@/components/logos/GeneratedLogo";
 
 // Helper to get page title from pathname
 const getPageTitle = (pathname: string): string => {
@@ -17,6 +20,12 @@ const getPageTitle = (pathname: string): string => {
     'submissions': 'My Submissions',
     'analytics': 'Analytics',
     'create-challenge': 'Create Challenge',
+    'innovations': 'My Innovations',
+    'investment': 'Investment Hub',
+    'regulatory': 'Regulatory Sandbox',
+    'knowledge': 'Knowledge Hub',
+    'collaboration': 'Collaboration',
+    'activity': 'Activity History',
   };
   
   // Handle special cases like submit/123
@@ -31,6 +40,7 @@ export default function DashboardLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { pathname } = useLocation();
   const { user, isAdmin } = useAuth();
+  const { toast } = useToast();
   
   // Check if the screen is small (for responsive sidebar)
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -58,6 +68,27 @@ export default function DashboardLayout() {
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
+
+  const handleNotificationClick = () => {
+    toast({
+      title: "Notifications",
+      description: "You have 3 unread notifications",
+    });
+  };
+
+  // Get user initials for avatar
+  const getInitials = () => {
+    const firstName = user?.user_metadata?.firstName || user?.first_name || user?.email?.split('@')[0] || '';
+    const lastName = user?.user_metadata?.lastName || user?.last_name || '';
+    
+    return (firstName.charAt(0) + (lastName ? lastName.charAt(0) : '')).toUpperCase();
+  };
+  
+  // Animation variants
+  const slideIn = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } }
+  };
   
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -68,14 +99,19 @@ export default function DashboardLayout() {
           isCollapsed ? "ml-16" : "ml-64"
         }`}
       >
-        {/* Top header bar */}
-        <header className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6">
+        {/* Top header bar with glass effect */}
+        <motion.header 
+          initial="hidden"
+          animate="visible"
+          variants={slideIn}
+          className="h-16 border-b border-border/50 backdrop-blur-sm bg-white/80 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30"
+        >
           <div className="flex items-center">
             {/* Mobile sidebar toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden mr-2"
+              className="md:hidden mr-2 text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen"
               onClick={handleToggleCollapse}
             >
               {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -84,40 +120,67 @@ export default function DashboardLayout() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                  <BreadcrumbLink href="/dashboard" className="text-moh-green font-medium">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{getPageTitle(pathname)}</BreadcrumbPage>
+                  <BreadcrumbPage className="font-semibold">{getPageTitle(pathname)}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
           
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="relative">
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen"
+              onClick={handleNotificationClick}
+            >
               <Bell size={18} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
             </Button>
             
-            <div className="hidden md:flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen hidden md:flex"
+            >
+              <Search size={18} />
+            </Button>
+            
+            <div className="hidden md:flex items-center gap-2">
               {isAdmin && (
-                <span className="bg-moh-lightGreen text-moh-darkGreen text-xs rounded px-1.5 py-0.5 font-medium mr-2 flex items-center">
+                <span className="bg-moh-lightGreen text-moh-darkGreen text-xs rounded-full px-2 py-0.5 font-medium flex items-center">
                   <Shield size={12} className="mr-1" /> Admin
                 </span>
               )}
-              <span className="text-sm font-medium mr-2">
+              <span className="text-sm font-medium mr-1 hidden lg:block">
                 {user?.email?.split('@')[0]}
               </span>
-              <div className="h-8 w-8 rounded-full bg-moh-green text-white flex items-center justify-center text-sm font-medium">
-                {user?.email?.charAt(0).toUpperCase()}
-              </div>
+              {user?.avatar_url ? (
+                <img 
+                  src={user.avatar_url} 
+                  alt="User Avatar" 
+                  className="h-8 w-8 rounded-full border border-moh-green/20" 
+                />
+              ) : (
+                <div className="relative overflow-hidden">
+                  <GeneratedLogo 
+                    name={getInitials()} 
+                    size={32} 
+                    primaryColor="#00814A" 
+                    secondaryColor="#C3A86B"
+                    shape="circle" 
+                  />
+                </div>
+              )}
             </div>
           </div>
-        </header>
+        </motion.header>
         
         {/* Main content */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto bg-gradient-to-br from-white to-moh-lightGreen/5">
           <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <Outlet />
           </div>
