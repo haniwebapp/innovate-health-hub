@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,11 +39,11 @@ export default function AdminUsersPage() {
 
       if (error) throw error;
 
-      // Map profiles to UserProfile format, adding email if available
+      // Map profiles to UserProfile format
       const mappedUsers: UserProfile[] = profiles.map((profile: any) => {
         return {
           id: profile.id,
-          email: profile.email || "", // Use email from profile or empty string
+          email: profile.email || "", 
           firstName: profile.first_name || "",
           lastName: profile.last_name || "",
           userType: profile.user_type || "user",

@@ -24,13 +24,13 @@ export type ChallengeSettings = {
   submissionTimeLimit: string;
 };
 
-// Update the ProfileData interface to include avatar_url
+// Update to ensure avatar_url is included
 export interface ProfileData {
   first_name?: string;
   last_name?: string;
   user_type?: string;
   organization?: string;
-  avatar_url?: string;  // Added avatar_url field
+  avatar_url?: string;
   email?: string;
   updated_at?: string;
 }
@@ -44,5 +44,5 @@ export interface ProfileWithEmail {
   organization?: string;
   last_sign_in?: string;
   status: string;
-  avatar_url?: string;  // Added avatar_url field
+  avatar_url?: string;
 }

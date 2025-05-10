@@ -15,15 +15,7 @@ import { motion } from "framer-motion";
 import { User, Mail, Building, CheckCircle, Upload } from "lucide-react";
 import { ProfileData } from "@/types/admin";
 
-// Extended profile type including avatar_url
-interface ProfileData {
-  first_name?: string;
-  last_name?: string;
-  user_type?: string;
-  organization?: string;
-  avatar_url?: string; // Add avatar_url to the profile type
-  email?: string; // Add email for consistency
-}
+// Remove the duplicate ProfileData interface since we're importing it
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
@@ -73,7 +65,7 @@ export default function UserProfileForm() {
             organization: data.organization || "",
           });
           
-          // Safely access avatar_url if it exists
+          // Safely check if avatar_url exists in the data
           if (data.avatar_url) {
             try {
               const { data: avatarData } = await supabase.storage
