@@ -134,6 +134,22 @@ const translations: Record<string, string> = {
   'register.emailAlreadyInUse': 'This email is already registered',
   'register.weakPassword': 'Password should be at least 6 characters',
   'register.genericError': 'Failed to create account',
+  
+  // New registration translations
+  'register.personalInfo': 'Personal Info',
+  'register.security': 'Security',
+  'register.profile': 'Profile',
+  'register.next': 'Next',
+  'register.back': 'Back',
+  'register.passwordStrength': 'Password Strength',
+  'register.selectUserType': 'Select user type',
+  'register.individual': 'Individual',
+  'register.healthcareProfessional': 'Healthcare Professional',
+  'register.innovator': 'Innovator',
+  'register.investor': 'Investor',
+  'register.organization': 'Organization',
+  'register.organizationName': 'Organization Name',
+  'register.agreeTerms': 'I agree to the Terms of Service and Privacy Policy',
 
   // Verification page translations
   'verification.title': 'Email Verification',
@@ -308,4 +324,3 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
 // Custom hook to use the language context
 export const useLanguage = () => useContext(LanguageContext);
-
