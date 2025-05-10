@@ -1,16 +1,18 @@
+
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { 
   Tooltip, 
   TooltipContent, 
-  TooltipTrigger 
+  TooltipTrigger,
+  TooltipProvider
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   ChevronLeft, ChevronRight, LayoutDashboard, Users, Settings, BarChart3, 
-  MessageSquare, FilePlus, Box, FileText, LogOut, PlusCircle, Plug,
-  LightbulbIcon, BookOpen, DollarSign, FileCheck, Clock, Folder, Shield
+  MessageSquare, PlusCircle, Plug, LightbulbIcon, BookOpen, DollarSign, 
+  FileCheck, Clock, Shield, LogOut
 } from "lucide-react";
 import GeneratedLogo from "@/components/logos/GeneratedLogo";
 import { motion } from "framer-motion";
@@ -27,289 +29,264 @@ export default function DashboardSidebar({
   const { signOut, isAdmin, user } = useAuth();
   
   return (
-    <motion.div
-      initial={{ x: -10, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className={cn(
-        "h-screen border-r bg-gradient-to-b from-white to-moh-lightGreen/20 fixed left-0 top-0 z-40 flex flex-col transition-all duration-300 shadow-md",
-        isCollapsed ? "w-16" : "w-64"
-      )}
-    >
-      {/* Logo and collapse button */}
-      <div className={cn(
-        "flex h-16 items-center border-b border-moh-green/10 px-4",
-        isCollapsed ? "justify-center" : "justify-between"
-      )}>
-        {!isCollapsed ? (
-          <div className="flex items-center gap-2">
-            <div className="relative overflow-hidden size-8">
+    <TooltipProvider delayDuration={0}>
+      <motion.div
+        initial={{ x: -10, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className={cn(
+          "h-screen fixed left-0 top-0 z-40 flex flex-col transition-all duration-300",
+          "bg-gradient-to-b from-white to-slate-50 backdrop-blur-lg",
+          "border-r border-moh-green/10 shadow-lg shadow-moh-green/5",
+          isCollapsed ? "w-[70px]" : "w-64"
+        )}
+      >
+        {/* Logo and collapse button */}
+        <div className={cn(
+          "flex h-16 items-center px-3 py-4",
+          isCollapsed ? "justify-center" : "justify-between"
+        )}>
+          <div className="flex items-center gap-2 overflow-hidden">
+            <motion.div 
+              className="relative overflow-hidden"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring" }}
+            >
               <GeneratedLogo 
                 name="MOH" 
                 shape="hexagon" 
                 style="gradient" 
-                size={32} 
+                size={isCollapsed ? 36 : 40} 
                 primaryColor="#00814A" 
                 secondaryColor="#C3A86B"
+                className={cn(
+                  "transition-all duration-300",
+                  isCollapsed ? "" : "mr-2"
+                )}
               />
-            </div>
-            <div className="font-semibold text-moh-darkGreen text-lg leading-none">
-              MOH
-              <span className="block text-xs text-moh-gold font-light">Innovation Platform</span>
-            </div>
+            </motion.div>
+            
+            {!isCollapsed && (
+              <motion.div 
+                className="font-semibold text-moh-darkGreen flex flex-col"
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <span className="text-lg leading-none">MOH</span>
+                <span className="block text-xs text-moh-gold font-light">Innovation Platform</span>
+              </motion.div>
+            )}
           </div>
-        ) : (
-          <div className="relative overflow-hidden size-8">
-            <GeneratedLogo 
-              name="MOH" 
-              shape="hexagon" 
-              style="gradient" 
-              size={32} 
-              primaryColor="#00814A" 
-              secondaryColor="#C3A86B"
-            />
-          </div>
-        )}
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={onToggleCollapse}
-          className="text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen"
-        >
-          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-        </Button>
-      </div>
-      
-      {/* Navigation links - using scroll area for long menus */}
-      <div className="flex-1 overflow-auto py-4 scrollbar-thin">
-        <nav className="grid gap-1 px-2">
-          {/* Main section */}
-          <div className={cn(
-            "mb-2 px-4 text-xs uppercase text-muted-foreground",
-            isCollapsed && "sr-only"
-          )}>
-            Main
-          </div>
-          <NavItem 
-            to="/dashboard" 
-            icon={<LayoutDashboard size={18} />} 
-            text="Dashboard" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/profile" 
-            icon={<Users size={18} />} 
-            text="Profile" 
+          
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={onToggleCollapse}
+            className="text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen/50 rounded-full"
+          >
+            {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          </Button>
+        </div>
+        
+        {/* Navigation Menu - with improved scrolling */}
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-moh-green/20 scrollbar-track-transparent py-2 px-3">
+          {/* Main Navigation */}
+          <NavSection 
+            title="Main" 
             isCollapsed={isCollapsed} 
+            items={[
+              { to: "/dashboard", icon: <LayoutDashboard size={20} />, text: "Dashboard" },
+              { to: "/dashboard/profile", icon: <Users size={20} />, text: "Profile" }
+            ]}
           />
           
-          {/* Challenge & Innovation section */}
-          <div className={cn(
-            "my-2 border-t border-moh-green/10",
-            isCollapsed ? "mx-2" : "mx-4"
-          )}></div>
-          <div className={cn(
-            "mb-2 px-4 text-xs uppercase text-muted-foreground",
-            isCollapsed && "sr-only"
-          )}>
-            Innovation
-          </div>
-          <NavItem 
-            to="/dashboard/submissions" 
-            icon={<FileCheck size={18} />} 
-            text="My Challenges" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/innovations" 
-            icon={<LightbulbIcon size={18} />} 
-            text="My Innovations" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/create-challenge" 
-            icon={<PlusCircle size={18} />} 
-            text="Create Challenge" 
-            isCollapsed={isCollapsed}
+          {/* Innovation Navigation */}
+          <NavSection 
+            title="Innovation" 
+            isCollapsed={isCollapsed} 
+            items={[
+              { to: "/dashboard/submissions", icon: <FileCheck size={20} />, text: "My Challenges" },
+              { to: "/dashboard/innovations", icon: <LightbulbIcon size={20} />, text: "My Innovations" },
+              { to: "/dashboard/create-challenge", icon: <PlusCircle size={20} />, text: "Create Challenge" }
+            ]}
           />
           
-          {/* Platform Features */}
-          <div className={cn(
-            "my-2 border-t border-moh-green/10",
-            isCollapsed ? "mx-2" : "mx-4"
-          )}></div>
-          <div className={cn(
-            "mb-2 px-4 text-xs uppercase text-muted-foreground",
-            isCollapsed && "sr-only"
-          )}>
-            Platform
-          </div>
-          <NavItem 
-            to="/dashboard/investment" 
-            icon={<DollarSign size={18} />} 
-            text="Investment Hub" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/regulatory" 
-            icon={<FileText size={18} />} 
-            text="Regulatory Sandbox" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/knowledge" 
-            icon={<BookOpen size={18} />} 
-            text="Knowledge Hub" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/collaboration" 
-            icon={<MessageSquare size={18} />} 
-            text="Collaboration" 
-            isCollapsed={isCollapsed}
-          />
-          <NavItem 
-            to="/dashboard/activity" 
-            icon={<Clock size={18} />} 
-            text="Activity History" 
-            isCollapsed={isCollapsed}
+          {/* Platform Navigation */}
+          <NavSection 
+            title="Platform" 
+            isCollapsed={isCollapsed} 
+            items={[
+              { to: "/dashboard/investment", icon: <DollarSign size={20} />, text: "Investment Hub" },
+              { to: "/dashboard/regulatory", icon: <BookOpen size={20} />, text: "Regulatory Sandbox" },
+              { to: "/dashboard/knowledge", icon: <BookOpen size={20} />, text: "Knowledge Hub" },
+              { to: "/dashboard/collaboration", icon: <MessageSquare size={20} />, text: "Collaboration" },
+              { to: "/dashboard/activity", icon: <Clock size={20} />, text: "Activity History" }
+            ]}
           />
           
-          {/* Admin only links */}
+          {/* Admin Navigation */}
           {isAdmin && (
-            <>
-              <div className={cn(
-                "my-2 border-t border-moh-green/10",
-                isCollapsed ? "mx-2" : "mx-4"
-              )}></div>
-              <div className={cn(
-                "mb-2 px-4 text-xs uppercase text-muted-foreground",
-                isCollapsed && "sr-only"
-              )}>
-                Administration
-              </div>
-              <NavItem 
-                to="/dashboard/admin/users" 
-                icon={<Users size={18} />} 
-                text="Users" 
-                isCollapsed={isCollapsed}
-                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
-              />
-              <NavItem 
-                to="/dashboard/admin/analytics" 
-                icon={<BarChart3 size={18} />} 
-                text="Analytics" 
-                isCollapsed={isCollapsed}
-                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
-              />
-              <NavItem 
-                to="/dashboard/admin/settings" 
-                icon={<Settings size={18} />} 
-                text="Settings" 
-                isCollapsed={isCollapsed}
-                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
-              />
-              <NavItem 
-                to="/dashboard/admin/integrations" 
-                icon={<Plug size={18} />} 
-                text="Integrations" 
-                isCollapsed={isCollapsed}
-                badge={<span className="bg-moh-gold/20 text-moh-darkGold text-[10px] rounded-sm px-1">Admin</span>}
-              />
-            </>
+            <NavSection 
+              title="Administration" 
+              isCollapsed={isCollapsed} 
+              items={[
+                { 
+                  to: "/dashboard/admin/users", 
+                  icon: <Users size={20} />, 
+                  text: "Users",
+                  badge: "Admin"
+                },
+                { 
+                  to: "/dashboard/admin/analytics", 
+                  icon: <BarChart3 size={20} />, 
+                  text: "Analytics",
+                  badge: "Admin"
+                },
+                { 
+                  to: "/dashboard/admin/settings", 
+                  icon: <Settings size={20} />, 
+                  text: "Settings",
+                  badge: "Admin"
+                },
+                { 
+                  to: "/dashboard/admin/integrations", 
+                  icon: <Plug size={20} />, 
+                  text: "Integrations",
+                  badge: "Admin"
+                }
+              ]}
+            />
           )}
-        </nav>
-      </div>
-      
-      {/* Settings and Logout buttons */}
-      <div className="border-t border-moh-green/10 p-4 bg-gradient-to-b from-transparent to-moh-lightGreen/30">
-        {isAdmin && !isCollapsed && (
-          <div className="mb-4 px-2 py-2 bg-moh-gold/10 rounded-md flex items-center">
-            <Shield size={14} className="text-moh-darkGold mr-2" />
-            <span className="text-xs font-medium text-moh-darkGold">Admin Access</span>
-          </div>
-        )}
+        </div>
         
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size={isCollapsed ? "icon" : "default"}
-              className={cn(
-                "w-full justify-start mb-2 text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen",
-                isCollapsed && "h-9 w-9"
-              )}
-              asChild
+        {/* Footer with settings and logout */}
+        <div className="border-t border-moh-green/10 p-3 pt-4 space-y-2 bg-gradient-to-b from-transparent to-moh-lightGreen/30">
+          {isAdmin && !isCollapsed && (
+            <motion.div 
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mb-2 px-2 py-1.5 bg-moh-gold/10 rounded-md flex items-center"
             >
-              <NavLink to="/dashboard/settings">
-                <Settings size={18} className={cn(isCollapsed ? "" : "mr-2")} />
-                {!isCollapsed && <span>Settings</span>}
-              </NavLink>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right">Settings</TooltipContent>
-        </Tooltip>
-        
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size={isCollapsed ? "icon" : "default"}
-              className={cn(
-                "w-full justify-start text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen",
-                isCollapsed && "h-9 w-9"
-              )}
-              onClick={signOut}
-            >
-              <LogOut size={18} className={cn(isCollapsed ? "" : "mr-2")} />
-              {!isCollapsed && <span>Logout</span>}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right">Logout</TooltipContent>
-        </Tooltip>
-      </div>
-    </motion.div>
+              <Shield size={14} className="text-moh-darkGold mr-2" />
+              <span className="text-xs font-medium text-moh-darkGold">Admin Access</span>
+            </motion.div>
+          )}
+          
+          <NavItem
+            to="/dashboard/settings"
+            icon={<Settings size={20} />}
+            text="Settings"
+            isCollapsed={isCollapsed}
+            className={cn(
+              "w-full bg-white/50 hover:bg-white transition-colors",
+              "border border-moh-green/5 shadow-sm"
+            )}
+          />
+          
+          <Button 
+            variant="ghost" 
+            size={isCollapsed ? "icon" : "default"}
+            className={cn(
+              "w-full justify-start text-moh-darkGreen hover:text-red-600 hover:bg-red-50 transition-colors",
+              "bg-white/50 border border-moh-green/5 shadow-sm",
+              isCollapsed ? "h-10 w-10" : ""
+            )}
+            onClick={signOut}
+          >
+            <LogOut size={20} className={cn(isCollapsed ? "" : "mr-2")} />
+            {!isCollapsed && <span>Logout</span>}
+          </Button>
+        </div>
+      </motion.div>
+    </TooltipProvider>
   );
 }
 
-interface NavItemProps {
+// Helper Components
+type NavItemProps = {
   to: string;
   icon: React.ReactNode;
   text: string;
   isCollapsed: boolean;
-  badge?: React.ReactNode;
-}
+  badge?: string;
+  className?: string;
+};
 
-function NavItem({ to, icon, text, isCollapsed, badge }: NavItemProps) {
+function NavItem({ to, icon, text, isCollapsed, badge, className }: NavItemProps) {
   return (
-    <Tooltip delayDuration={0}>
+    <Tooltip>
       <TooltipTrigger asChild>
         <NavLink
           to={to}
           className={({ isActive }) => cn(
-            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-all duration-200",
+            "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200",
+            "overflow-hidden whitespace-nowrap",
             isActive
               ? "bg-gradient-to-r from-moh-green to-moh-darkGreen text-white font-medium shadow-sm"
-              : "text-muted-foreground hover:bg-moh-lightGreen hover:text-moh-darkGreen",
-            isCollapsed && "justify-center px-0"
+              : "text-slate-700 hover:bg-moh-lightGreen hover:text-moh-darkGreen",
+            isCollapsed && "justify-center p-2",
+            className
           )}
           end={to === "/dashboard"}
         >
-          <div className={cn(
-            "flex items-center justify-center",
-            ({isActive}) => isActive ? "text-white" : "text-moh-darkGreen/70"
-          )}>
+          <div className="flex min-w-[24px] items-center justify-center">
             {icon}
           </div>
-          {!isCollapsed && <span>{text}</span>}
-          {!isCollapsed && badge && (
-            <span className="ml-auto">
-              {badge}
-            </span>
+          
+          {!isCollapsed && (
+            <>
+              <span className="truncate">{text}</span>
+              {badge && (
+                <span className="ml-auto text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded-sm font-medium">
+                  {badge}
+                </span>
+              )}
+            </>
           )}
         </NavLink>
       </TooltipTrigger>
-      <TooltipContent side="right">{text}</TooltipContent>
+      <TooltipContent side="right" className="font-medium">
+        {text}
+        {badge && <span className="ml-2 text-[10px] bg-moh-gold/20 text-moh-darkGold px-1.5 py-0.5 rounded-md">{badge}</span>}
+      </TooltipContent>
     </Tooltip>
+  );
+}
+
+type NavSectionProps = {
+  title: string;
+  isCollapsed: boolean;
+  items: Array<{
+    to: string;
+    icon: React.ReactNode;
+    text: string;
+    badge?: string;
+  }>;
+};
+
+function NavSection({ title, isCollapsed, items }: NavSectionProps) {
+  return (
+    <div className="py-2">
+      {!isCollapsed && (
+        <h3 className="px-3 mb-2 text-xs uppercase text-moh-darkGreen/50 font-medium tracking-wider">
+          {title}
+        </h3>
+      )}
+      <nav className="space-y-1.5">
+        {items.map(item => (
+          <NavItem
+            key={item.text}
+            to={item.to}
+            icon={item.icon}
+            text={item.text}
+            isCollapsed={isCollapsed}
+            badge={item.badge}
+          />
+        ))}
+      </nav>
+    </div>
   );
 }
