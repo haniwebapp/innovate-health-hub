@@ -17,25 +17,19 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
       <div className="flex items-center gap-2 px-2">
         {!isCollapsed ? (
           <Link to="/" className="flex items-center gap-2">
-            <div className="rounded-full bg-gradient-to-br from-moh-green to-moh-darkGreen p-1 flex items-center justify-center h-8 w-8">
-              <span className="text-white text-xs font-bold">MOH</span>
-            </div>
-            <motion.div 
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: "auto" }}
-              exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col"
-            >
-              <span className="text-slate-800 font-bold leading-tight">MOH</span>
-              <span className="text-moh-gold text-xs leading-tight">AI Platform</span>
-            </motion.div>
+            <img 
+              src="/lovable-uploads/d5f3d02d-fd0b-43f5-ba20-ca6d566850df.png" 
+              alt="Ministry of Health Logo" 
+              className="h-10 object-contain" 
+            />
           </Link>
         ) : (
           <Link to="/" className="flex items-center justify-center">
-            <div className="rounded-full bg-gradient-to-br from-moh-green to-moh-darkGreen p-1 flex items-center justify-center h-8 w-8">
-              <span className="text-white text-xs font-bold">MOH</span>
-            </div>
+            <img 
+              src="/lovable-uploads/d5f3d02d-fd0b-43f5-ba20-ca6d566850df.png" 
+              alt="Ministry of Health Logo" 
+              className="h-8 object-contain" 
+            />
           </Link>
         )}
       </div>
