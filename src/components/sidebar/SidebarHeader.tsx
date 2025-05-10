@@ -13,7 +13,7 @@ interface SidebarHeaderProps {
 export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderProps) {
   return (
     <div className={cn(
-      "flex h-16 items-center px-3 py-4",
+      "flex h-16 items-center border-b border-slate-700/30 px-2 py-3",
       isCollapsed ? "justify-center" : "justify-between"
     )}>
       <div className="flex items-center gap-2 overflow-hidden">
@@ -28,8 +28,8 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
             shape="hexagon" 
             style="gradient" 
             size={isCollapsed ? 36 : 40} 
-            primaryColor="#3b82f6" 
-            secondaryColor="#93c5fd"
+            primaryColor="#00814A"  
+            secondaryColor="#C3A86B"
             className={cn(
               "transition-all duration-300",
               isCollapsed ? "" : "mr-2"
@@ -39,13 +39,13 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
         
         {!isCollapsed && (
           <motion.div 
-            className="font-semibold text-white flex flex-col"
+            className="font-semibold text-moh-green flex flex-col"
             initial={{ opacity: 0, x: -5 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
             <span className="text-lg leading-none">MOH</span>
-            <span className="block text-xs text-blue-300 font-light">Innovation Platform</span>
+            <span className="block text-xs text-moh-gold font-light">Innovation Platform</span>
           </motion.div>
         )}
       </div>
@@ -54,7 +54,7 @@ export function SidebarHeader({ isCollapsed, onToggleCollapse }: SidebarHeaderPr
         variant="ghost" 
         size="icon"
         onClick={onToggleCollapse}
-        className="text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-full"
+        className="text-slate-300 hover:text-moh-green hover:bg-slate-700/50 rounded-full"
       >
         {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
       </Button>

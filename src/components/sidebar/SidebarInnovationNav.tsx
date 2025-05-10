@@ -12,9 +12,9 @@ export function SidebarInnovationNav({ isCollapsed }: SidebarInnovationNavProps)
       title="Innovation" 
       isCollapsed={isCollapsed} 
       items={[
-        { to: "/dashboard/submissions", icon: <FileCheck size={20} />, text: "My Challenges" },
-        { to: "/dashboard/innovations", icon: <LightbulbIcon size={20} />, text: "My Innovations" },
-        { to: "/dashboard/create-challenge", icon: <PlusCircle size={20} />, text: "Create Challenge" }
+        { to: "/dashboard/submissions", icon: <FileCheck size={20} className="text-moh-green" />, text: "Challenges" },
+        { to: "/dashboard/innovations", icon: <LightbulbIcon size={20} className="text-moh-green" />, text: "Innovations" },
+        { to: "/dashboard/create-challenge", icon: <PlusCircle size={20} className="text-moh-green" />, text: "Create" }
       ]}
     />
   );
