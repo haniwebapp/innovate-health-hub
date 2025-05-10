@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define supported languages
@@ -45,6 +44,7 @@ const translations: Translations = {
     'nav.signup': 'Sign Up',
     'nav.logout': 'Logout',
     'nav.profile': 'Profile',
+    'nav.register': 'Register',
     
     // Home page
     'home.hero.title': 'Transforming Healthcare Through Innovation',
@@ -78,6 +78,47 @@ const translations: Translations = {
     'auth.already_have_account': 'Already have an account?',
     'auth.no_account': 'Don\'t have an account?',
     
+    // Login specific
+    'login.welcomeBack': 'Welcome Back',
+    'login.platformDescription': 'The Ministry of Health platform connects innovators, healthcare professionals, and stakeholders to drive healthcare transformation.',
+    'login.signIn': 'Sign In',
+    'login.accessAccount': 'Access your account to manage innovations and participate in challenges.',
+    'login.invalidCredentials': 'Invalid email or password. Please try again.',
+    'login.genericError': 'An error occurred during login. Please try again.',
+    'login.signingIn': 'Signing In...',
+    'login.forgotPassword': 'Forgot Password?',
+    'login.dontHaveAccount': 'Don\'t have an account yet?',
+    'login.termsAndPrivacy': 'By signing in, you agree to our Terms of Service and Privacy Policy.',
+    
+    // Register specific
+    'register.title': 'Create an Account',
+    'register.description': 'Join our platform to collaborate on healthcare innovations.',
+    'register.firstName': 'First Name',
+    'register.lastName': 'Last Name',
+    'register.email': 'Email Address',
+    'register.password': 'Password',
+    'register.confirmPassword': 'Confirm Password',
+    'register.userType': 'User Type',
+    'register.selectUserType': 'Select user type',
+    'register.individual': 'Individual',
+    'register.healthcareProfessional': 'Healthcare Professional',
+    'register.innovator': 'Innovator',
+    'register.investor': 'Investor',
+    'register.organization': 'Organization',
+    'register.organizationName': 'Organization Name',
+    'register.platformBenefits': 'Join the Ministry of Health innovation platform to collaborate with healthcare professionals, discover opportunities, and transform ideas into solutions.',
+    'register.joinPlatform': 'Join Our Innovation Platform',
+    'register.agreeTerms': 'I agree to the Terms of Service and Privacy Policy',
+    'register.next': 'Next',
+    'register.back': 'Back',
+    'register.createAccount': 'Create Account',
+    'register.creatingAccount': 'Creating Account...',
+    'register.alreadyHaveAccount': 'Already have an account?',
+    'register.personalInfo': 'Personal Info',
+    'register.security': 'Security',
+    'register.profile': 'Profile',
+    'register.passwordStrength': 'Password Strength',
+    
     // Dashboard
     'dashboard.welcome': 'Welcome to your Dashboard',
     'dashboard.recent_activity': 'Recent Activity',
@@ -107,6 +148,10 @@ const translations: Translations = {
     'validation.email': 'Please enter a valid email address.',
     'validation.password_min': 'Password must be at least 8 characters.',
     'validation.password_match': 'Passwords do not match.',
+
+    // Footer
+    'footer.emailPlaceholder': 'your@email.com',
+    'footer.mohLogo': 'Ministry of Health Logo',
   },
   
   ar: {
@@ -125,6 +170,7 @@ const translations: Translations = {
     'nav.signup': 'إنشاء حساب',
     'nav.logout': 'تسجيل الخروج',
     'nav.profile': 'الملف الشخصي',
+    'nav.register': 'تسجيل',
     
     // Home page
     'home.hero.title': 'تحويل الرعاية الصحية من خلال الابتكار',
@@ -157,6 +203,47 @@ const translations: Translations = {
     'auth.forgot_password': 'نسيت كلمة المرور؟',
     'auth.already_have_account': 'لديك حساب بالفعل؟',
     'auth.no_account': 'ليس لديك حساب؟',
+    
+    // Login specific
+    'login.welcomeBack': 'مرحبًا بعودتك',
+    'login.platformDescription': 'منصة وزارة الصحة تربط المبتكرين والمتخصصين في الرعاية الصحية وأصحاب المصلحة لدفع تحول الرعاية الصحية.',
+    'login.signIn': 'تسجيل الدخول',
+    'login.accessAccount': 'الوصول إلى حسابك لإدارة الابتكارات والمشاركة في التحديات.',
+    'login.invalidCredentials': 'بريد إلكتروني أو كلمة مرور غير صالحة. يرجى المحاولة مرة أخرى.',
+    'login.genericError': 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.',
+    'login.signingIn': 'جاري تسجيل الدخول...',
+    'login.forgotPassword': 'نسيت كلمة المرور؟',
+    'login.dontHaveAccount': 'ليس لديك حساب بعد؟',
+    'login.termsAndPrivacy': 'بتسجيل الدخول، فإنك توافق على شروط الخدمة وسياسة الخصوصية الخاصة بنا.',
+    
+    // Register specific
+    'register.title': 'إنشاء حساب',
+    'register.description': 'انضم إلى منصتنا للتعاون في ابتكارات الرعاية الصحية.',
+    'register.firstName': 'الاسم الأول',
+    'register.lastName': 'اسم العائلة',
+    'register.email': 'البريد الإلكتروني',
+    'register.password': 'كلمة المرور',
+    'register.confirmPassword': 'تأكيد كلمة المرور',
+    'register.userType': 'نوع المستخدم',
+    'register.selectUserType': 'اختر نوع المستخدم',
+    'register.individual': 'فرد',
+    'register.healthcareProfessional': 'متخصص رعاية صحية',
+    'register.innovator': 'مبتكر',
+    'register.investor': 'مستثمر',
+    'register.organization': 'منظمة',
+    'register.organizationName': 'اسم المنظمة',
+    'register.platformBenefits': 'انضم إلى منصة وزارة الصحة للابتكار للتعاون مع المتخصصين في الرعاية الصحية، واكتشاف الفرص، وتحويل الأفكار إلى حلول.',
+    'register.joinPlatform': 'انضم إلى منصة الابتكار لدينا',
+    'register.agreeTerms': 'أوافق على شروط الخدمة وسياسة الخصوصية',
+    'register.next': 'التالي',
+    'register.back': 'السابق',
+    'register.createAccount': 'إنشاء حساب',
+    'register.creatingAccount': 'جاري إنشاء الحساب...',
+    'register.alreadyHaveAccount': 'لديك حساب بالفعل؟',
+    'register.personalInfo': 'المعلومات الشخصية',
+    'register.security': 'الأمان',
+    'register.profile': 'الملف الشخصي',
+    'register.passwordStrength': 'قوة كلمة المرور',
     
     // Dashboard
     'dashboard.welcome': 'مرحبا بك في لوحة التحكم',

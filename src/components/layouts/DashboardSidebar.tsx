@@ -1,4 +1,3 @@
-
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -298,7 +297,7 @@ function NavItem({ to, icon, text, isCollapsed, badge }: NavItemProps) {
         >
           <div className={cn(
             "flex items-center justify-center",
-            isActive ? "text-white" : "text-moh-darkGreen/70"
+            ({isActive}) => isActive ? "text-white" : "text-moh-darkGreen/70"
           )}>
             {icon}
           </div>

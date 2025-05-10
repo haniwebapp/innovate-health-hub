@@ -1,6 +1,7 @@
 
-project_id = "ntgrokpnwizohtfkcfec"
+# This file is used to configure your Supabase project.
+# It was automatically generated based on your project settings.
+# Be careful when modifying manually, as it may break things.
 
-[functions.seed-regulatory-data]
-verify_jwt = false
-
+[migrations]
+use-migrations = true

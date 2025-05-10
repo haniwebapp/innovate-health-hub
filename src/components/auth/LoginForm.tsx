@@ -53,9 +53,9 @@ export default function LoginForm() {
     } catch (error: any) {
       console.error("Login error:", error);
       if (error.message === "Invalid login credentials") {
-        setErrorMessage(t('login.invalidCredentials'));
+        setErrorMessage(t('login.invalidCredentials') || "Invalid credentials");
       } else {
-        setErrorMessage(error.message || t('login.genericError'));
+        setErrorMessage(error.message || t('login.genericError') || "An error occurred");
       }
     } finally {
       setIsLoading(false);
@@ -96,12 +96,12 @@ export default function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-moh-darkGreen">{t('register.email')}</FormLabel>
+              <FormLabel className="text-moh-darkGreen">{t('auth.email') || "Email Address"}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input 
-                    placeholder={t('footer.emailPlaceholder')} 
+                    placeholder={t('footer.emailPlaceholder') || "your@email.com"} 
                     {...field} 
                     disabled={isLoading}
                     autoComplete="email"
@@ -119,7 +119,7 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-moh-darkGreen">{t('register.password')}</FormLabel>
+              <FormLabel className="text-moh-darkGreen">{t('auth.password') || "Password"}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <KeyIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -140,7 +140,7 @@ export default function LoginForm() {
         
         <div className="flex justify-end">
           <Link to="/auth/forgot-password" className="text-sm text-moh-green hover:underline hover:text-moh-darkGreen">
-            {t('login.forgotPassword')}
+            {t('auth.forgot_password') || "Forgot Password?"}
           </Link>
         </div>
         
@@ -152,17 +152,17 @@ export default function LoginForm() {
           {isLoading ? (
             <>
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-              {t('login.signingIn')}
+              {t('login.signingIn') || "Signing In..."}
             </>
           ) : (
-            t('login.signIn')
+            t('auth.login') || "Login"
           )}
         </Button>
         
         <div className="text-center text-sm">
-          {t('login.dontHaveAccount')}{" "}
+          {t('auth.no_account') || "Don't have an account?"}{" "}
           <Link to="/auth/register" className="text-moh-green hover:underline font-medium">
-            {t('nav.register')}
+            {t('auth.signup') || "Sign Up"}
           </Link>
         </div>
       </form>
