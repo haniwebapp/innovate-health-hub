@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,6 +14,7 @@ import AboutPage from './pages/about';
 import RegisterPage from './pages/auth/RegisterPage';
 import LoginPage from './pages/auth/LoginPage';
 import VerificationPage from './pages/auth/VerificationPage';
+import NotificationsPage from './pages/dashboard/notifications/index';
 
 import DashboardLayout from './components/layouts/DashboardLayout';
 import DashboardPage from './pages/dashboard/DashboardPage';
