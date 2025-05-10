@@ -1,6 +1,6 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
-import { LayoutDashboard, User } from "lucide-react";
+import { LayoutDashboard, User, Activity } from "lucide-react";
 
 interface SidebarMainNavProps {
   isCollapsed: boolean;
@@ -21,6 +21,11 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
           to: "/dashboard/profile", 
           icon: <User size={18} className="text-moh-green" />, 
           text: "Profile" 
+        },
+        { 
+          to: "/dashboard/activity", 
+          icon: <Activity size={18} className="text-moh-green" />, 
+          text: "Activity" 
         }
       ]}
     />

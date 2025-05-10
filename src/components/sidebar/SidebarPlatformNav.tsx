@@ -15,17 +15,17 @@ export function SidebarPlatformNav({ isCollapsed }: SidebarPlatformNavProps) {
         { 
           to: "/dashboard/investment", 
           icon: <DollarSign size={18} className="text-moh-green" />, 
-          text: "Investment" 
+          text: "Investment Hub" 
+        },
+        { 
+          to: "/dashboard/regulatory", 
+          icon: <ShieldCheck size={18} className="text-moh-green" />, 
+          text: "Regulatory Sandbox" 
         },
         { 
           to: "/dashboard/knowledge", 
           icon: <BookOpen size={18} className="text-moh-green" />, 
           text: "Knowledge Hub" 
-        },
-        { 
-          to: "/dashboard/regulatory", 
-          icon: <ShieldCheck size={18} className="text-moh-green" />, 
-          text: "Regulatory" 
         },
         { 
           to: "/dashboard/collaboration", 
