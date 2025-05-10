@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UserProfile } from "@/types/admin";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface AdminUsersTableProps {
   users: UserProfile[];
@@ -20,9 +21,9 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
 
   const getStatusBadge = (status: "active" | "inactive") => {
     if (status === 'active') {
-      return <Badge className="bg-green-500">Active</Badge>;
+      return <Badge className="bg-moh-green text-white">Active</Badge>;
     }
-    return <Badge variant="outline" className="text-muted-foreground">Inactive</Badge>;
+    return <Badge variant="outline" className="text-muted-foreground border-moh-green/20">Inactive</Badge>;
   };
 
   const isAdminUser = (email: string) => {
@@ -46,6 +47,7 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
       toast({
         title: "Status updated",
         description: `User has been ${newStatus === "active" ? "activated" : "deactivated"}.`,
+        className: "bg-moh-lightGreen border-moh-green/20 text-moh-darkGreen",
       });
     } catch (error: any) {
       console.error("Error updating user status:", error);
@@ -66,20 +68,26 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
   return (
     <Table>
       <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Organization</TableHead>
-          <TableHead>Last Activity</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+        <TableRow className="bg-moh-lightGreen/30 hover:bg-moh-lightGreen/40">
+          <TableHead className="text-moh-darkGreen font-medium">Name</TableHead>
+          <TableHead className="text-moh-darkGreen font-medium">Email</TableHead>
+          <TableHead className="text-moh-darkGreen font-medium">Type</TableHead>
+          <TableHead className="text-moh-darkGreen font-medium">Organization</TableHead>
+          <TableHead className="text-moh-darkGreen font-medium">Last Activity</TableHead>
+          <TableHead className="text-moh-darkGreen font-medium">Status</TableHead>
+          <TableHead className="text-right text-moh-darkGreen font-medium">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {users.length > 0 ? (
-          users.map((user) => (
-            <TableRow key={user.id}>
+          users.map((user, index) => (
+            <motion.tr
+              key={user.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="border-b border-moh-green/10 hover:bg-moh-lightGreen/10"
+            >
               <TableCell className="font-medium flex items-center gap-2">
                 {isAdminUser(user.email) ? (
                   <Shield className="h-4 w-4 text-moh-green" />
@@ -90,23 +98,31 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
                   `${user.firstName || ''} ${user.lastName || ''}`.trim() : 
                   `User ${user.id.substring(0, 5)}`}
               </TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.userType || "User"}</TableCell>
-              <TableCell>{user.organization || "-"}</TableCell>
-              <TableCell>{user.lastSignIn}</TableCell>
+              <TableCell className="text-moh-darkGreen/80">{user.email}</TableCell>
+              <TableCell>
+                <Badge variant="outline" className="bg-moh-lightGreen/50 text-moh-darkGreen border-moh-green/20">
+                  {user.userType || "User"}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-moh-darkGreen/80">{user.organization || "-"}</TableCell>
+              <TableCell className="text-moh-darkGreen/80">{user.lastSignIn}</TableCell>
               <TableCell>{getStatusBadge(user.status)}</TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
+                    <Button variant="ghost" size="sm" className="hover:bg-moh-lightGreen/40">
+                      <MoreHorizontal className="h-4 w-4 text-moh-darkGreen" />
                       <span className="sr-only">Open menu</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" className="bg-white border border-moh-green/10">
                     <DropdownMenuItem
                       onClick={() => toggleUserStatus(user.id, user.status)}
                       disabled={processingUsers[user.id]}
+                      className={user.status === "active" 
+                        ? "text-red-600 hover:text-red-700 hover:bg-red-50 focus:bg-red-50"
+                        : "text-green-600 hover:text-green-700 hover:bg-green-50 focus:bg-green-50"
+                      }
                     >
                       {user.status === "active" ? (
                         <>
@@ -123,7 +139,7 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
-            </TableRow>
+            </motion.tr>
           ))
         ) : (
           <TableRow>
@@ -133,9 +149,10 @@ export default function AdminUsersTable({ users, isLoading }: AdminUsersTablePro
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-moh-green"></div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center text-muted-foreground">
-                  <UserX className="h-10 w-10 mb-2" />
-                  No users found
+                <div className="flex flex-col items-center justify-center text-muted-foreground py-6">
+                  <UserX className="h-12 w-12 mb-2 text-moh-green/50" />
+                  <p className="text-moh-darkGreen/60 font-medium">No users found</p>
+                  <p className="text-moh-darkGreen/40 text-sm">Try adjusting your search criteria</p>
                 </div>
               )}
             </TableCell>

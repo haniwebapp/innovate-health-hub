@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +14,7 @@ import UserInsightsCard from "@/components/ai/UserInsightsCard";
 import AdminAIAssistant from "@/components/ai/AdminAIAssistant";
 import { UserProfile } from "@/types/admin";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function AdminUsersPage() {
   const { toast } = useToast();
@@ -65,7 +67,6 @@ export default function AdminUsersPage() {
   };
 
   const handleAddUser = () => {
-    // Navigate to user creation form or open a modal
     navigate("/admin/users/add");
   };
 
@@ -91,13 +92,22 @@ export default function AdminUsersPage() {
           <Button 
             variant="outline" 
             onClick={() => setShowAIAssistant(!showAIAssistant)}
+            className="border-moh-green/30 text-moh-green hover:bg-moh-lightGreen hover:text-moh-darkGreen"
           >
             {showAIAssistant ? "Hide AI Assistant" : "Show AI Assistant"}
           </Button>
-          <Button onClick={fetchUsers} disabled={isLoading}>
+          <Button 
+            onClick={fetchUsers} 
+            disabled={isLoading}
+            variant="outline"
+            className="border-moh-green/30 text-moh-green hover:bg-moh-lightGreen hover:text-moh-darkGreen"
+          >
             {isLoading ? "Loading..." : "Refresh Users"}
           </Button>
-          <Button onClick={() => navigate("/admin/users/add")}>
+          <Button 
+            onClick={() => navigate("/admin/users/add")}
+            className="bg-moh-green hover:bg-moh-darkGreen"
+          >
             <UserPlus className="h-4 w-4 mr-2" />
             Add User
           </Button>
@@ -105,40 +115,84 @@ export default function AdminUsersPage() {
       }
     >
       {showAIAssistant && (
-        <div className="mb-6">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="mb-6"
+        >
           <AdminAIAssistant />
-        </div>
+        </motion.div>
       )}
 
-      <div className="relative w-full max-w-sm mb-4">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full max-w-sm mb-4"
+      >
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input 
           placeholder="Search users..." 
-          className="pl-8" 
+          className="pl-8 border-moh-green/20 focus-visible:ring-moh-green/30" 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
+      </motion.div>
 
       <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="all">All Users</TabsTrigger>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="inactive">Inactive</TabsTrigger>
+        <TabsList className="mb-4 bg-moh-lightGreen/50 border-moh-green/10 p-1">
+          <TabsTrigger 
+            value="all" 
+            className="data-[state=active]:bg-white data-[state=active]:text-moh-darkGreen"
+          >
+            All Users
+          </TabsTrigger>
+          <TabsTrigger 
+            value="active"
+            className="data-[state=active]:bg-white data-[state=active]:text-moh-darkGreen"
+          >
+            Active
+          </TabsTrigger>
+          <TabsTrigger 
+            value="inactive"
+            className="data-[state=active]:bg-white data-[state=active]:text-moh-darkGreen"
+          >
+            Inactive
+          </TabsTrigger>
         </TabsList>
 
-        <Card>
-          <CardContent className="p-0">
-            <AdminUsersTable users={filteredUsers} isLoading={isLoading} />
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="border-moh-green/10 overflow-hidden shadow-md bg-white/80 backdrop-blur-sm">
+            <CardContent className="p-0">
+              <AdminUsersTable users={filteredUsers} isLoading={isLoading} />
+            </CardContent>
+          </Card>
+        </motion.div>
       </Tabs>
       
-      <div className="mt-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="mt-6"
+      >
         <AdminUserStats users={users} />
-      </div>
+      </motion.div>
 
-      <UserInsightsCard users={users} />
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="mt-6"
+      >
+        <UserInsightsCard users={users} />
+      </motion.div>
     </AdminLayout>
   );
 }

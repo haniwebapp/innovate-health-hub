@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Info } from "lucide-react";
+import { AlertTriangle, Info, Mail, KeyIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { motion } from "framer-motion";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -44,7 +45,10 @@ export default function LoginForm() {
     setErrorMessage(null);
     setSuccessMessage(null);
     try {
-      await signIn(values.email, values.password);
+      const result = await signIn(values.email, values.password);
+      if (result.error) {
+        throw result.error;
+      }
       navigate(from);
     } catch (error: any) {
       console.error("Login error:", error);
@@ -62,17 +66,29 @@ export default function LoginForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {errorMessage && (
-          <Alert variant="destructive" className="text-sm">
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Alert>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Alert variant="destructive" className="text-sm bg-red-50 border border-red-200">
+              <AlertTriangle className="h-4 w-4 mr-2" />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          </motion.div>
         )}
         
         {successMessage && (
-          <Alert className="text-sm bg-green-50 border-green-200 text-green-800">
-            <Info className="h-4 w-4 mr-2 text-green-600" />
-            <AlertDescription>{successMessage}</AlertDescription>
-          </Alert>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Alert className="text-sm bg-green-50 border border-green-200 text-green-800">
+              <Info className="h-4 w-4 mr-2 text-green-600" />
+              <AlertDescription>{successMessage}</AlertDescription>
+            </Alert>
+          </motion.div>
         )}
         
         <FormField
@@ -80,14 +96,18 @@ export default function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('register.email')}</FormLabel>
+              <FormLabel className="text-moh-darkGreen">{t('register.email')}</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder={t('footer.emailPlaceholder')} 
-                  {...field} 
-                  disabled={isLoading}
-                  autoComplete="email"
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    placeholder={t('footer.emailPlaceholder')} 
+                    {...field} 
+                    disabled={isLoading}
+                    autoComplete="email"
+                    className="pl-10 border-moh-green/20 focus-visible:ring-moh-green/30"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,22 +119,36 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('register.password')}</FormLabel>
+              <FormLabel className="text-moh-darkGreen">{t('register.password')}</FormLabel>
               <FormControl>
-                <Input 
-                  type="password" 
-                  placeholder="••••••••" 
-                  {...field} 
-                  disabled={isLoading}
-                  autoComplete="current-password"
-                />
+                <div className="relative">
+                  <KeyIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    type="password" 
+                    placeholder="••••••••" 
+                    {...field} 
+                    disabled={isLoading}
+                    autoComplete="current-password"
+                    className="pl-10 border-moh-green/20 focus-visible:ring-moh-green/30"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <div className="flex justify-end">
+          <Link to="/auth/forgot-password" className="text-sm text-moh-green hover:underline hover:text-moh-darkGreen">
+            {t('login.forgotPassword')}
+          </Link>
+        </div>
+        
+        <Button 
+          type="submit" 
+          className="w-full bg-moh-green hover:bg-moh-darkGreen transition-colors" 
+          disabled={isLoading}
+        >
           {isLoading ? (
             <>
               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>

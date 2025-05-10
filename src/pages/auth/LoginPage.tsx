@@ -16,52 +16,62 @@ export default function LoginPage() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4" dir="ltr">
-      <div className="w-full max-w-md">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center space-y-3 mb-6"
-        >
-          <img 
-            src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
-            alt="Ministry of Health Logo" 
-            className="h-16 mx-auto" 
-          />
-          <h1 className="text-2xl md:text-3xl font-bold text-moh-darkGreen">{t('login.title')}</h1>
-          <p className="text-moh-darkGreen/70 text-sm max-w-sm mx-auto">
-            {t('login.description')}
-          </p>
-        </motion.div>
+    <div className="min-h-screen bg-gradient-to-br from-white to-moh-lightGreen/20 flex flex-col md:flex-row items-center justify-center p-4" dir="ltr">
+      {/* Left side (MOH branding area) */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md mb-8 md:mb-0 md:mr-8 text-center md:text-left"
+      >
+        <img 
+          src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
+          alt={t('footer.mohLogo')} 
+          className="h-20 mx-auto md:mx-0 mb-6 hover:scale-105 transition-transform duration-300" 
+        />
+        <h1 className="text-3xl md:text-4xl font-bold font-playfair text-moh-darkGreen mb-4">
+          {t('login.welcomeBack')}
+        </h1>
+        <p className="text-moh-darkGreen/70 text-md max-w-sm mx-auto md:mx-0 leading-relaxed">
+          {t('login.platformDescription')}
+        </p>
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <div className="hidden md:block mt-12">
+          <div className="relative">
+            <div className="absolute -top-6 -left-6 w-12 h-12 rounded-full bg-moh-gold/20 animate-float animation-delay-200"></div>
+            <div className="absolute top-20 -right-4 w-16 h-16 rounded-full bg-moh-green/10 animate-float animation-delay-500"></div>
+          </div>
+        </div>
+      </motion.div>
+      
+      {/* Right side (Authentication form) */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+        className="w-full max-w-md"
+      >
+        <Card className="border-gray-100 shadow-lg bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-4 space-y-1">
+            <CardTitle className="text-moh-darkGreen text-2xl font-playfair">{t('login.signIn')}</CardTitle>
+            <CardDescription className="text-moh-darkGreen/70">
+              {t('login.accessAccount')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LoginForm />
+          </CardContent>
+        </Card>
+        
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-center text-sm text-moh-darkGreen/60 mt-4"
         >
-          <Card className="border-gray-100 shadow-lg bg-white/80 backdrop-blur-sm">
-            <CardHeader className="pb-4 space-y-1">
-              <CardTitle className="text-moh-darkGreen text-xl md:text-2xl">{t('login.signIn')}</CardTitle>
-              <CardDescription className="text-moh-darkGreen/70">
-                {t('login.accessAccount')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <LoginForm />
-            </CardContent>
-          </Card>
-          
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-center text-sm text-moh-darkGreen/60 mt-4"
-          >
-            {t('login.termsAndPrivacy')}
-          </motion.p>
-        </motion.div>
-      </div>
+          {t('login.termsAndPrivacy')}
+        </motion.p>
+      </motion.div>
     </div>
   );
 }
