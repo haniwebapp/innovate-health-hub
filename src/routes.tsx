@@ -18,6 +18,14 @@ import AboutPage from './pages/about/index';
 import NotFound from './pages/NotFound';
 import InnovationDetailPage from './pages/innovations/[id]';
 import DashboardInnovationDetailsPage from './pages/dashboard/innovations/[id]';
+import InnovationSubmitPage from './pages/innovations/submit';
+import BasicInfoPage from './pages/innovations/submit/basic-info';
+import DetailsPage from './pages/innovations/submit/details';
+import ContactInformationPage from './pages/innovations/submit/contact';
+import MediaPage from './pages/innovations/submit/media';
+import RegulatoryPage from './pages/innovations/submit/regulatory';
+import TechnicalPage from './pages/innovations/submit/technical';
+import ReviewPage from './pages/innovations/submit/review';
 
 // Create router with all routes and proper nesting
 const router = createBrowserRouter([
@@ -39,8 +47,48 @@ const router = createBrowserRouter([
     element: <ChallengePage />
   },
   {
+    path: '/innovations',
+    element: <InnovationDetailPage />
+  },
+  {
     path: '/innovations/:id',
     element: <InnovationDetailPage />
+  },
+  
+  // Innovation submit flow with nested routes
+  {
+    path: '/innovations/submit',
+    element: <InnovationSubmitPage />,
+    children: [
+      {
+        path: 'basic-info',
+        element: <BasicInfoPage />
+      },
+      {
+        path: 'details',
+        element: <DetailsPage />
+      },
+      {
+        path: 'media',
+        element: <MediaPage />
+      },
+      {
+        path: 'technical',
+        element: <TechnicalPage />
+      },
+      {
+        path: 'regulatory',
+        element: <RegulatoryPage />
+      },
+      {
+        path: 'contact',
+        element: <ContactInformationPage />
+      },
+      {
+        path: 'review',
+        element: <ReviewPage />
+      }
+    ]
   },
   
   // Dashboard section with proper layout nesting
