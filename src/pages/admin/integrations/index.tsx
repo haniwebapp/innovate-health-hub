@@ -49,7 +49,7 @@ export default function AdminIntegrationsPage2() {
           />
 
           {showLogs && selectedIntegration === 'Supabase' && (
-            <IntegrationLogs integrationName="Supabase" />
+            <IntegrationLogs integrationId="1234-5678-9012" />
           )}
 
           <Card>

@@ -12,14 +12,14 @@ export interface ActivityLog {
 }
 
 export async function fetchUserActivity(limit = 10) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { data, error } = await supabase
     .from('activity_logs')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(limit);
 
@@ -28,13 +28,13 @@ export async function fetchUserActivity(limit = 10) {
 }
 
 export async function logActivity(activityType: string, resourceType: string, resourceId: string, details: any) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
   // Create activity log entry
   const { error } = await supabase
     .from('activity_logs')
     .insert({
-      user_id: userId,
+      user_id: user?.id,
       activity_type: activityType,
       resource_type: resourceType,
       resource_id: resourceId,

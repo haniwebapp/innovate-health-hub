@@ -13,14 +13,14 @@ export interface Notification {
 }
 
 export async function fetchUserNotifications(limit = 10) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { data, error } = await supabase
     .from('notifications')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(limit);
 
@@ -44,29 +44,29 @@ export async function createNotification(userId: string, title: string, content:
 }
 
 export async function markNotificationAsRead(notificationId: string) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { error } = await supabase
     .from('notifications')
     .update({ read: true })
     .eq('id', notificationId)
-    .eq('user_id', userId);
+    .eq('user_id', user.id);
 
   if (error) throw error;
   return true;
 }
 
 export async function markAllNotificationsAsRead() {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { error } = await supabase
     .from('notifications')
     .update({ read: true })
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .eq('read', false);
 
   if (error) throw error;

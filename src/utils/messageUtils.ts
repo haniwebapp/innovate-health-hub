@@ -28,7 +28,7 @@ export async function fetchUserThreads() {
       *,
       thread_participants!inner (user_id)
     `)
-    .eq('thread_participants.user_id', supabase.auth.getUser().data?.user?.id)
+    .eq('thread_participants.user_id', (await supabase.auth.getUser()).data.user?.id)
     .order('updated_at', { ascending: false });
 
   if (error) throw error;
@@ -47,16 +47,16 @@ export async function fetchThreadMessages(threadId: string) {
 }
 
 export async function createThread(title: string, participants: string[]) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   // Create thread
   const { data: threadData, error: threadError } = await supabase
     .from('message_threads')
     .insert({
       title,
-      created_by: userId,
+      created_by: user.id,
       is_group: participants.length > 1
     })
     .select()
@@ -66,7 +66,7 @@ export async function createThread(title: string, participants: string[]) {
   
   // Add creator as participant
   const threadParticipants = [
-    { thread_id: threadData.id, user_id: userId },
+    { thread_id: threadData.id, user_id: user.id },
     ...participants.map(participantId => ({
       thread_id: threadData.id,
       user_id: participantId
@@ -83,13 +83,13 @@ export async function createThread(title: string, participants: string[]) {
 }
 
 export async function sendMessage(content: string, threadId: string | null, recipientId?: string | null) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const messageData = {
     content,
-    sender_id: userId,
+    sender_id: user.id,
     recipient_id: recipientId || null,
     thread_id: threadId
   };
@@ -105,15 +105,15 @@ export async function sendMessage(content: string, threadId: string | null, reci
 }
 
 export async function markMessagesAsRead(threadId: string) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { error } = await supabase
     .from('messages')
     .update({ read: true })
     .eq('thread_id', threadId)
-    .neq('sender_id', userId);
+    .neq('sender_id', user.id);
 
   if (error) throw error;
   
@@ -122,7 +122,7 @@ export async function markMessagesAsRead(threadId: string) {
     .from('thread_participants')
     .update({ last_read_at: new Date().toISOString() })
     .eq('thread_id', threadId)
-    .eq('user_id', userId);
+    .eq('user_id', user.id);
 
   if (updateError) throw updateError;
   

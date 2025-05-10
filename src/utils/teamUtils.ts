@@ -19,9 +19,9 @@ export interface TeamMember {
 }
 
 export async function fetchUserTeams() {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { data, error } = await supabase
     .from('teams')
@@ -29,7 +29,7 @@ export async function fetchUserTeams() {
       *,
       team_members!inner (user_id)
     `)
-    .eq('team_members.user_id', userId)
+    .eq('team_members.user_id', user.id)
     .order('created_at', { ascending: false });
 
   if (error) throw error;
@@ -55,9 +55,9 @@ export async function fetchTeamMembers(teamId: string) {
 }
 
 export async function createTeam(name: string, description?: string) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   // Create team
   const { data: teamData, error: teamError } = await supabase
@@ -65,7 +65,7 @@ export async function createTeam(name: string, description?: string) {
     .insert({
       name,
       description: description || null,
-      created_by: userId
+      created_by: user.id
     })
     .select()
     .single();
@@ -77,7 +77,7 @@ export async function createTeam(name: string, description?: string) {
     .from('team_members')
     .insert({
       team_id: teamData.id,
-      user_id: userId,
+      user_id: user.id,
       role: 'admin'
     });
 

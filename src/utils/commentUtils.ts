@@ -33,14 +33,14 @@ export async function fetchComments(resourceType: string, resourceId: string) {
 }
 
 export async function addComment(resourceType: string, resourceId: string, content: string, parentId?: string) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { data, error } = await supabase
     .from('comments')
     .insert({
-      user_id: userId,
+      user_id: user.id,
       resource_type: resourceType,
       resource_id: resourceId,
       content,
@@ -54,15 +54,15 @@ export async function addComment(resourceType: string, resourceId: string, conte
 }
 
 export async function updateComment(commentId: string, content: string) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { data, error } = await supabase
     .from('comments')
     .update({ content, updated_at: new Date().toISOString() })
     .eq('id', commentId)
-    .eq('user_id', userId)
+    .eq('user_id', user.id)
     .select()
     .single();
 
@@ -71,15 +71,15 @@ export async function updateComment(commentId: string, content: string) {
 }
 
 export async function deleteComment(commentId: string) {
-  const userId = supabase.auth.getUser().data?.user?.id;
+  const { data: { user } } = await supabase.auth.getUser();
   
-  if (!userId) throw new Error("User not authenticated");
+  if (!user) throw new Error("User not authenticated");
   
   const { error } = await supabase
     .from('comments')
     .delete()
     .eq('id', commentId)
-    .eq('user_id', userId);
+    .eq('user_id', user.id);
 
   if (error) throw error;
   return true;
