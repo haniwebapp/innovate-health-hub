@@ -1,6 +1,6 @@
 
-import { NavSection } from "./SidebarNavSection";
-import { Users, BarChart3, Settings, Plug } from "lucide-react";
+import { SidebarNavSection } from "./SidebarNavSection";
+import { BarChart3, Users, Settings, Plug } from "lucide-react";
 
 interface SidebarAdminNavProps {
   isCollapsed: boolean;
@@ -8,7 +8,7 @@ interface SidebarAdminNavProps {
 
 export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
   return (
-    <NavSection 
+    <SidebarNavSection 
       title="Administration" 
       isCollapsed={isCollapsed} 
       items={[
