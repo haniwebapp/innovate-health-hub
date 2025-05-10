@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 
 // Define supported languages
@@ -149,7 +148,11 @@ const translations: Translations = {
     'validation.email': 'Please enter a valid email address.',
     'validation.password_min': 'Password must be at least 8 characters.',
     'validation.password_match': 'Passwords do not match.',
-
+    
+    // Investment related
+    'investment.title': 'Investment Hub',
+    'investment.subtitle': 'Connect with investors and explore funding opportunities',
+    
     // Footer
     'footer.emailPlaceholder': 'your@email.com',
     'footer.mohLogo': 'Ministry of Health Logo',
@@ -298,6 +301,14 @@ const translations: Translations = {
     'validation.password_min': 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.',
     'validation.password_match': 'كلمات المرور غير متطابقة.',
     
+    // Investment related
+    'investment.title': 'مركز الاستثمار',
+    'investment.subtitle': 'تواصل مع المستثمرين واستكشف فرص التمويل',
+    
+    // Footer
+    'footer.emailPlaceholder': 'your@email.com',
+    'footer.mohLogo': 'Ministry of Health Logo',
+    
     // Profile page - Added missing translations
     'profile.title': 'الملف الشخصي',
     'profile.description': 'تحديث تفاصيل ملفك الشخصي هنا',
@@ -376,4 +387,3 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     </LanguageContext.Provider>
   );
 };
-

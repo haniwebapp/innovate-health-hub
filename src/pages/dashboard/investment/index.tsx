@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Mock investor matches data
 const investorMatches = [
@@ -97,6 +98,7 @@ const pitchEvents = [
 export default function DashboardInvestmentPage() {
   const [activeTab, setActiveTab] = useState("matches");
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleConnectionRequest = (investorId: string) => {
     toast({
@@ -122,16 +124,16 @@ export default function DashboardInvestmentPage() {
   return (
     <div className="space-y-6">
       <BreadcrumbNav 
-        currentPage="Investment Hub" 
+        currentPage={t('investment.title')} 
         items={[
-          { label: "Dashboard", href: "/dashboard" },
+          { label: t('nav.dashboard'), href: "/dashboard" },
         ]}
       />
       
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Investment Hub</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t('investment.title')}</h1>
         <p className="text-muted-foreground">
-          Connect with investors and funding opportunities
+          {t('investment.subtitle')}
         </p>
       </div>
       
