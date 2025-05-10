@@ -13,15 +13,15 @@ export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
       isCollapsed={isCollapsed} 
       items={[
         { 
-          to: "/dashboard/admin/users", 
-          icon: <Users size={18} className="text-moh-gold" />, 
-          text: "Users",
+          to: "/dashboard/admin", 
+          icon: <BarChart3 size={18} className="text-moh-gold" />, 
+          text: "Dashboard",
           badge: "Admin"
         },
         { 
-          to: "/dashboard/admin/analytics", 
-          icon: <BarChart3 size={18} className="text-moh-gold" />, 
-          text: "Analytics",
+          to: "/dashboard/admin/users", 
+          icon: <Users size={18} className="text-moh-gold" />, 
+          text: "Users",
           badge: "Admin"
         },
         { 

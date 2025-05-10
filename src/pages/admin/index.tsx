@@ -1,7 +1,7 @@
 
 import React from "react";
-import AdminDashboardPage from "../dashboard/AdminDashboardPage";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
 export default function AdminIndexPage() {
-  return <AdminDashboardPage />;
+  return <AdminDashboard />;
 }
