@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Bell, ChevronLeft, ChevronRight, Shield, Search, Menu } from "lucide-react";
 import { motion } from "framer-motion";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import GeneratedLogo from "@/components/logos/GeneratedLogo";
 
 // Helper to get page title from pathname
@@ -80,10 +80,14 @@ export default function DashboardLayout() {
 
   // Get user initials for avatar
   const getInitials = () => {
-    const firstName = user?.first_name || user?.user_metadata?.firstName || user?.email?.split('@')[0] || '';
-    const lastName = user?.last_name || user?.user_metadata?.lastName || '';
+    const firstName = user?.first_name || '';
+    const lastName = user?.last_name || '';
     
-    return (firstName.charAt(0) + (lastName ? lastName.charAt(0) : '')).toUpperCase();
+    if (firstName && lastName) {
+      return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+    }
+    
+    return user?.email ? user.email[0].toUpperCase() : 'U';
   };
   
   // Animation variants
@@ -93,12 +97,12 @@ export default function DashboardLayout() {
   };
   
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
       <DashboardSidebar isCollapsed={isCollapsed} onToggleCollapse={handleToggleCollapse} />
       
       <div
         className={`flex-1 transition-all duration-300 ease-in-out flex flex-col ${
-          isCollapsed ? "ml-16" : "ml-64"
+          isCollapsed ? "ml-[70px]" : "ml-64"
         }`}
       >
         {/* Top header bar with glass effect */}
@@ -106,14 +110,14 @@ export default function DashboardLayout() {
           initial="hidden"
           animate="visible"
           variants={slideIn}
-          className="h-16 border-b border-border/50 backdrop-blur-sm bg-white/80 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30"
+          className="h-16 border-b border-slate-200 backdrop-blur-sm bg-white/80 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30"
         >
           <div className="flex items-center">
             {/* Mobile sidebar toggle */}
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden mr-2 text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen"
+              className="md:hidden mr-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               onClick={handleToggleCollapse}
             >
               {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -122,7 +126,7 @@ export default function DashboardLayout() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/dashboard" className="text-moh-green font-medium">Dashboard</BreadcrumbLink>
+                  <BreadcrumbLink href="/dashboard" className="text-purple-600 font-medium">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
@@ -136,7 +140,7 @@ export default function DashboardLayout() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen"
+              className="relative text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               onClick={handleNotificationClick}
             >
               <Bell size={18} />
@@ -146,14 +150,14 @@ export default function DashboardLayout() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-moh-darkGreen hover:text-moh-green hover:bg-moh-lightGreen hidden md:flex"
+              className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 hidden md:flex"
             >
               <Search size={18} />
             </Button>
             
             <div className="hidden md:flex items-center gap-2">
               {isAdmin && (
-                <span className="bg-moh-lightGreen text-moh-darkGreen text-xs rounded-full px-2 py-0.5 font-medium flex items-center">
+                <span className="bg-purple-100 text-purple-800 text-xs rounded-full px-2 py-0.5 font-medium flex items-center">
                   <Shield size={12} className="mr-1" /> Admin
                 </span>
               )}
@@ -164,15 +168,15 @@ export default function DashboardLayout() {
                 <img 
                   src={user.avatar_url} 
                   alt="User Avatar" 
-                  className="h-8 w-8 rounded-full border border-moh-green/20" 
+                  className="h-8 w-8 rounded-full border border-slate-200" 
                 />
               ) : (
                 <div className="relative overflow-hidden">
                   <GeneratedLogo 
                     name={getInitials()} 
                     size={32} 
-                    primaryColor="#00814A" 
-                    secondaryColor="#C3A86B"
+                    primaryColor="#9b87f5" 
+                    secondaryColor="#D6BCFA"
                     shape="circle" 
                   />
                 </div>
@@ -182,7 +186,7 @@ export default function DashboardLayout() {
         </motion.header>
         
         {/* Main content */}
-        <div className="flex-1 overflow-auto bg-gradient-to-br from-white to-moh-lightGreen/5">
+        <div className="flex-1 overflow-auto bg-gradient-to-br from-white to-slate-100/50">
           <div className="container mx-auto p-4 md:p-6 lg:p-8">
             <Outlet />
           </div>
