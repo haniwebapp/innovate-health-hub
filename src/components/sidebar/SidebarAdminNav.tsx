@@ -1,6 +1,6 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
-import { BarChart3, Users, Settings, Plug, FileText, Lightbulb, DollarSign, ShieldCheck, BookOpen, Bell } from "lucide-react";
+import { BarChart3, Users, Settings, Plug, FileText, Lightbulb, DollarSign, ShieldCheck, BookOpen, Bell, Award } from "lucide-react";
 
 interface SidebarAdminNavProps {
   isCollapsed: boolean;
