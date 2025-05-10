@@ -7,17 +7,30 @@ interface AnimatedCounterProps {
   suffix?: string;
   duration?: number;
   delay?: number;
+  importance?: 'low' | 'medium' | 'high';
+  scaleDuration?: boolean;
 }
 
 export function AnimatedCounter({ 
   value, 
   suffix = "", 
   duration = 2, 
-  delay = 0 
+  delay = 0,
+  importance = 'medium',
+  scaleDuration = false
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0);
   const nodeRef = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
+
+  // Adjust duration based on importance and scaleDuration flag
+  const getAdjustedDuration = () => {
+    if (!scaleDuration) return duration;
+    
+    if (importance === 'high') return duration * 0.8; // Faster for high importance
+    if (importance === 'low') return duration * 1.2; // Slower for low importance
+    return duration; // Default for medium importance
+  };
 
   useEffect(() => {
     if (hasAnimated.current) return;
@@ -30,7 +43,7 @@ export function AnimatedCounter({
             
             setTimeout(() => {
               animate(0, value, {
-                duration,
+                duration: getAdjustedDuration(),
                 onUpdate: (latest) => {
                   setDisplayValue(latest);
                 },
@@ -52,7 +65,7 @@ export function AnimatedCounter({
         observer.unobserve(nodeRef.current);
       }
     };
-  }, [value, duration, delay]);
+  }, [value, duration, delay, scaleDuration, importance]);
 
   // Format the display value
   let formattedValue: string;

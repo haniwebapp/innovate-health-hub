@@ -7,23 +7,32 @@ interface ParallaxCardProps {
   className?: string;
   depth?: number;
   onHover?: () => void;
+  priority?: 'low' | 'medium' | 'high';
+  dataValue?: number;
 }
 
 export function ParallaxCard({ 
   children, 
   className = "", 
   depth = 20,
-  onHover
+  onHover,
+  priority = 'medium',
+  dataValue
 }: ParallaxCardProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
+  // Adjust depth based on priority
+  const adjustedDepth = priority === 'high' ? depth * 1.2 : 
+                        priority === 'low' ? depth * 0.8 : 
+                        depth;
+  
   const mouseX = useSpring(x, { stiffness: 400, damping: 25 });
   const mouseY = useSpring(y, { stiffness: 400, damping: 25 });
   
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], [depth, -depth]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-depth, depth]);
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], [adjustedDepth, -adjustedDepth]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-adjustedDepth, adjustedDepth]);
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isMobile) return;
@@ -69,7 +78,7 @@ export function ParallaxCard({
         rotateY: !isMobile ? rotateY : 0
       }}
       whileHover={{ 
-        z: 20, 
+        z: dataValue || 20, 
         scale: !isMobile ? 1.05 : 1.02 
       }}
       transition={{
