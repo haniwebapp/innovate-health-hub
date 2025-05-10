@@ -18,7 +18,7 @@ import AboutPage from './pages/about/index';
 import NotFound from './pages/NotFound';
 import InnovationDetailPage from './pages/innovations/[id]';
 import DashboardInnovationDetailsPage from './pages/dashboard/innovations/[id]';
-import InnovationSubmitPage from './pages/innovations/submit';
+import InnovationSubmitPage from './pages/innovations/submit/index';
 import BasicInfoPage from './pages/innovations/submit/basic-info';
 import DetailsPage from './pages/innovations/submit/details';
 import ContactInformationPage from './pages/innovations/submit/contact';
@@ -87,6 +87,10 @@ const router = createBrowserRouter([
       {
         path: 'review',
         element: <ReviewPage />
+      },
+      {
+        index: true,
+        element: <Navigate to="basic-info" replace />
       }
     ]
   },
@@ -97,7 +101,7 @@ const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
-        path: '',
+        index: true,
         element: <DashboardPage />
       },
       // Admin routes within dashboard
