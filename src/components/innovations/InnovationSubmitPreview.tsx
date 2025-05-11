@@ -21,6 +21,17 @@ import { Button } from "@/components/ui/button";
 import { Link } from 'react-router-dom';
 import { ChevronRight, FileText, Check, Image, AlertCircle, CheckCircle } from "lucide-react";
 
+// Define steps array that was missing
+const steps = [
+  { name: 'Basic Info', path: '/innovations/submit/basic-info', key: 'basicInfo' },
+  { name: 'Details', path: '/innovations/submit/details', key: 'details' },
+  { name: 'Media', path: '/innovations/submit/media', key: 'media' },
+  { name: 'Technical', path: '/innovations/submit/technical', key: 'technical' },
+  { name: 'Regulatory', path: '/innovations/submit/regulatory', key: 'regulatory' },
+  { name: 'Contact', path: '/innovations/submit/contact', key: 'contact' },
+  { name: 'Review', path: '/innovations/submit/review', key: 'review' }
+];
+
 export default function InnovationSubmitPreview() {
   const { formData, formProgress, activeStep, totalSteps } = useSubmissionForm();
   
