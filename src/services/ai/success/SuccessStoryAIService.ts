@@ -1,102 +1,132 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIService } from "../AIService";
 
-export interface StoryGenerationPrompt {
-  innovation: string;
-  impact: string;
-  organization: string;
-  keyOutcomes: string[];
-}
-
-export interface StoryGenerationResult {
-  title: string;
-  summary: string;
-  content: string;
-  impactMetrics: Record<string, any>;
-  suggestedTags: string[];
-}
-
-export interface StoryAnalysisResult {
-  readabilityScore: number;
-  sentimentScore: number;
-  engagementPotential: number;
-  improvementSuggestions: string[];
-  keyHighlights: string[];
-}
-
-/**
- * Service for handling success story-related AI operations
- */
 export class SuccessStoryAIService {
   /**
-   * Generate a draft success story based on provided information
+   * Generate a success story based on provided information
    */
-  static async generateStory(
-    prompt: StoryGenerationPrompt
-  ): Promise<StoryGenerationResult> {
-    try {
-      const { data, error } = await supabase.functions.invoke("story-generator", {
-        body: { prompt }
-      });
-
-      if (error) throw error;
-      return data as StoryGenerationResult;
-    } catch (error: any) {
-      console.error("Error generating success story:", error);
-      throw AIService.handleError(error, "generateStory", "success");
-    }
-  }
-
-  /**
-   * Analyze an existing story for quality and improvement suggestions
-   */
-  static async analyzeStory(
-    title: string,
-    content: string
-  ): Promise<StoryAnalysisResult> {
-    try {
-      const { data, error } = await supabase.functions.invoke("story-analyzer", {
-        body: { 
-          title,
-          content
-        }
-      });
-
-      if (error) throw error;
-      return data as StoryAnalysisResult;
-    } catch (error: any) {
-      console.error("Error analyzing success story:", error);
-      throw AIService.handleError(error, "analyzeStory", "success");
-    }
-  }
-
-  /**
-   * Suggest relevant success stories based on user interests
-   */
-  static async suggestRelatedStories(
-    currentStoryId: string,
-    limit: number = 3
+  static async generateSuccessStory(
+    organization: string,
+    category: string,
+    keyPoints: string[]
   ): Promise<{
-    id: string;
-    title: string;
-    summary: string;
-    relevanceScore: number;
-    category: string;
-  }[]> {
+    title: string,
+    summary: string,
+    content: string,
+    impactMetrics?: Record<string, any>,
+    suggestedTags?: string[]
+  }> {
     try {
-      const { data, error } = await supabase.functions.invoke("story-recommender", {
-        body: { 
-          currentStoryId,
-          limit
-        }
+      const { data, error } = await supabase.functions.invoke('success-story-generation', {
+        body: { organization, category, keyPoints }
       });
-
+      
       if (error) throw error;
-      return data;
-    } catch (error: any) {
-      console.error("Error suggesting related stories:", error);
-      throw AIService.handleError(error, "suggestRelatedStories", "success");
+      
+      return data || {
+        title: '',
+        summary: '',
+        content: '',
+        impactMetrics: {},
+        suggestedTags: []
+      };
+    } catch (error) {
+      console.error("Error generating success story:", error);
+      return {
+        title: '',
+        summary: '',
+        content: '',
+        impactMetrics: {},
+        suggestedTags: []
+      };
+    }
+  }
+  
+  /**
+   * Enhance an existing success story with AI
+   */
+  static async enhanceSuccessStory(
+    storyId: string,
+    enhancementOptions: { 
+      improveSummary?: boolean,
+      addImpactMetrics?: boolean,
+      expandContent?: boolean,
+      suggestTags?: boolean
+    }
+  ): Promise<{
+    enhancedSummary?: string,
+    enhancedContent?: string,
+    impactMetrics?: Record<string, any>,
+    suggestedTags?: string[]
+  }> {
+    try {
+      const { data, error } = await supabase.functions.invoke('success-story-enhancement', {
+        body: { storyId, enhancementOptions }
+      });
+      
+      if (error) throw error;
+      
+      return data || {};
+    } catch (error) {
+      console.error(`Error enhancing success story ${storyId}:`, error);
+      return {};
+    }
+  }
+  
+  /**
+   * Suggest similar success stories based on content similarity
+   */
+  static async suggestSimilarStories(
+    storyId: string,
+    limit: number = 3
+  ): Promise<{ id: string, title: string, similarity: number }[]> {
+    try {
+      const { data, error } = await supabase.functions.invoke('success-story-similarity', {
+        body: { storyId, limit }
+      });
+      
+      if (error) throw error;
+      
+      return data?.similarStories || [];
+    } catch (error) {
+      console.error(`Error finding similar success stories to ${storyId}:`, error);
+      return [];
+    }
+  }
+  
+  /**
+   * Extract key insights from a collection of success stories
+   */
+  static async extractInsightsFromStories(
+    categoryFilter?: string,
+    limit: number = 10
+  ): Promise<{
+    commonThemes: string[],
+    successFactors: string[],
+    challenges: string[],
+    impactSummary: string
+  }> {
+    try {
+      const { data, error } = await supabase.functions.invoke('success-story-insights', {
+        body: { categoryFilter, limit }
+      });
+      
+      if (error) throw error;
+      
+      return data || {
+        commonThemes: [],
+        successFactors: [],
+        challenges: [],
+        impactSummary: ''
+      };
+    } catch (error) {
+      console.error("Error extracting insights from success stories:", error);
+      return {
+        commonThemes: [],
+        successFactors: [],
+        challenges: [],
+        impactSummary: ''
+      };
     }
   }
 }

@@ -39,6 +39,72 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_analytics: {
+        Row: {
+          created_at: string
+          dimension: string | null
+          end_date: string
+          id: string
+          metric_name: string
+          metric_value: number
+          start_date: string
+          time_period: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dimension?: string | null
+          end_date: string
+          id?: string
+          metric_name: string
+          metric_value: number
+          start_date: string
+          time_period: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dimension?: string | null
+          end_date?: string
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          start_date?: string
+          time_period?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      admin_logs: {
+        Row: {
+          created_at: string
+          details: Json
+          id: string
+          log_type: string
+          severity: string
+          source: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details: Json
+          id?: string
+          log_type: string
+          severity: string
+          source: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          id?: string
+          log_type?: string
+          severity?: string
+          source?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_match_scores: {
         Row: {
           analyzed_at: string
@@ -330,6 +396,121 @@ export type Database = {
         }
         Relationships: []
       }
+      clinical_analyses: {
+        Row: {
+          analysis_type: string
+          confidence: number | null
+          created_at: string
+          created_by: string
+          id: string
+          record_id: string
+          results: Json
+        }
+        Insert: {
+          analysis_type: string
+          confidence?: number | null
+          created_at?: string
+          created_by: string
+          id?: string
+          record_id: string
+          results: Json
+        }
+        Update: {
+          analysis_type?: string
+          confidence?: number | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          record_id?: string
+          results?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_analyses_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinical_records: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          diagnosis: string[] | null
+          id: string
+          medical_codes: Json | null
+          record_type: string
+          related_innovation_id: string | null
+          symptoms: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          diagnosis?: string[] | null
+          id?: string
+          medical_codes?: Json | null
+          record_type: string
+          related_innovation_id?: string | null
+          symptoms?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          diagnosis?: string[] | null
+          id?: string
+          medical_codes?: Json | null
+          record_type?: string
+          related_innovation_id?: string | null
+          symptoms?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      clinical_tags: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          id: string
+          record_id: string
+          source: string
+          tag: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          record_id: string
+          source: string
+          tag: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          record_id?: string
+          source?: string
+          tag?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_tags_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           content: string
@@ -370,6 +551,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      compliance_records: {
+        Row: {
+          applicable_regulations: string[] | null
+          compliance_type: string
+          created_at: string
+          created_by: string
+          description: string
+          evidence_links: string[] | null
+          id: string
+          resource_id: string | null
+          resource_type: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          standard_name: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          applicable_regulations?: string[] | null
+          compliance_type: string
+          created_at?: string
+          created_by: string
+          description: string
+          evidence_links?: string[] | null
+          id?: string
+          resource_id?: string | null
+          resource_type?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          standard_name: string
+          status: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          applicable_regulations?: string[] | null
+          compliance_type?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          evidence_links?: string[] | null
+          id?: string
+          resource_id?: string | null
+          resource_type?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          standard_name?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       compliance_requirements: {
         Row: {
@@ -1896,6 +2131,45 @@ export type Database = {
           },
         ]
       }
+      user_activity_summary: {
+        Row: {
+          comment_count: number | null
+          created_at: string
+          event_participation_count: number | null
+          id: string
+          last_login_at: string | null
+          login_count: number | null
+          resource_view_count: number | null
+          submission_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment_count?: number | null
+          created_at?: string
+          event_participation_count?: number | null
+          id?: string
+          last_login_at?: string | null
+          login_count?: number | null
+          resource_view_count?: number | null
+          submission_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment_count?: number | null
+          created_at?: string
+          event_participation_count?: number | null
+          id?: string
+          last_login_at?: string | null
+          login_count?: number | null
+          resource_view_count?: number | null
+          submission_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_learning_progress: {
         Row: {
           completed_at: string | null
@@ -2147,6 +2421,17 @@ export type Database = {
         Args: { "": string } | { "": unknown }
         Returns: unknown
       }
+      detect_log_anomalies: {
+        Args: { hours_window?: number }
+        Returns: {
+          log_type: string
+          source: string
+          normal_count: number
+          current_count: number
+          percent_change: number
+          is_anomaly: boolean
+        }[]
+      }
       get_challenge_submissions: {
         Args: { input_challenge_id: string }
         Returns: {
@@ -2165,6 +2450,13 @@ export type Database = {
           user_first_name: string
           user_last_name: string
           user_organization: string
+        }[]
+      }
+      get_logs_by_source: {
+        Args: { start_date: string; end_date: string }
+        Returns: {
+          source: string
+          count: number
         }[]
       }
       halfvec_avg: {
@@ -2252,6 +2544,13 @@ export type Database = {
       sparsevec_typmod_in: {
         Args: { "": unknown[] }
         Returns: number
+      }
+      summarize_logs_by_severity: {
+        Args: { start_date: string; end_date: string }
+        Returns: {
+          severity: string
+          count: number
+        }[]
       }
       vector_avg: {
         Args: { "": number[] }

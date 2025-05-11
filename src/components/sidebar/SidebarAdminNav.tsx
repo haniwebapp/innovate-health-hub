@@ -11,7 +11,11 @@ import {
   Shield, 
   BookOpen, 
   Bell, 
-  Award 
+  Award,
+  Stethoscope,
+  ScrollText,
+  Database,
+  AlertCircle
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "react-router-dom";
@@ -75,6 +79,22 @@ export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
       to: "/dashboard/admin/notifications", 
       icon: <Bell size={18} className="text-moh-gold" />, 
       text: "Notifications"
+    },
+    // New admin routes
+    { 
+      to: "/dashboard/admin/clinical", 
+      icon: <Stethoscope size={18} className="text-moh-gold" />, 
+      text: "Clinical Data"
+    },
+    { 
+      to: "/dashboard/admin/logs", 
+      icon: <ScrollText size={18} className="text-moh-gold" />, 
+      text: "System Logs"
+    },
+    { 
+      to: "/dashboard/admin/analytics", 
+      icon: <Database size={18} className="text-moh-gold" />, 
+      text: "Analytics"
     },
     { 
       to: "/dashboard/admin/reports", 

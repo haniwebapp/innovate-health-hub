@@ -14,6 +14,9 @@ import AdminNotificationsPage from '@/pages/admin/notifications/index';
 import AdminIntegrationsPage2 from '@/pages/admin/integrations/index';
 import AdminSettingsPage2 from '@/pages/admin/SettingsPage';
 import AdminAnalyticsPage from '@/pages/dashboard/AdminAnalyticsPage';
+// New imports
+import AdminClinicalPage from '@/pages/admin/clinical/index';
+import AdminLogsPage from '@/pages/admin/logs/index';
 
 export const AdminRoutes = (
   <>
@@ -81,6 +84,17 @@ export const AdminRoutes = (
     <Route path="admin/notifications" element={
       <ProtectedRoute adminOnly={true}>
         <AdminNotificationsPage />
+      </ProtectedRoute>
+    } />
+    {/* New clinical and logs routes */}
+    <Route path="admin/clinical" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminClinicalPage />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/logs" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminLogsPage />
       </ProtectedRoute>
     } />
   </>
