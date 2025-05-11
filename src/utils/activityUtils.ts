@@ -1,4 +1,3 @@
-
 import { formatDistanceToNow } from "date-fns";
 import { supabase } from '@/integrations/supabase/client';
 
@@ -195,6 +194,28 @@ export async function fetchUserActivity(
 
     // Transform the data to match ActivityLog type
     const formattedData: ActivityLog[] = data.map(item => {
+      // Create a proper details object that follows the ActivityLog interface
+      let detailsObj: { data: Record<string, any> } | undefined = undefined;
+      
+      if (item.details) {
+        if (typeof item.details === 'object') {
+          // Handle object case (could be object or array)
+          if (Array.isArray(item.details)) {
+            // Handle array case
+            detailsObj = { data: {} };
+          } else {
+            // Handle object case
+            detailsObj = { 
+              data: 'data' in item.details ? 
+                (item.details.data as Record<string, any> || {}) : {}
+            };
+          }
+        } else {
+          // Handle primitive case (string, number, etc)
+          detailsObj = { data: {} };
+        }
+      }
+      
       return {
         id: item.id,
         user_id: item.user_id,
@@ -202,10 +223,7 @@ export async function fetchUserActivity(
         resource_type: item.resource_type,
         resource_id: item.resource_id,
         created_at: item.created_at,
-        details: item.details ? { 
-          data: typeof item.details === 'object' && item.details !== null ? 
-            (item.details.data || {}) : {}
-        } : undefined
+        details: detailsObj
       };
     });
     

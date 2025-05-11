@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface SandboxApplication {
@@ -280,7 +279,8 @@ export async function submitSandboxApplication(application: Partial<SandboxAppli
       description: application.description!, // We've verified this is not null above
       innovation_type: application.innovation_type!, // We've verified this is not null above
       organization_type: application.organization_type!, // We've verified this is not null above
-      innovator: application.innovator || session.session.user.id // Default to user ID if not provided
+      innovator: application.innovator || session.session.user.id, // Default to user ID if not provided
+      testing_duration: application.testing_duration || '3-months' // Default testing duration
     };
     
     const { data, error } = await supabase
