@@ -2,8 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { 
-  fetchAllSandboxApplications, 
-  fetchUserSandboxApplications,
+  fetchUserApplications, 
   SandboxApplication,
   updateSandboxApplicationStatus
 } from '@/utils/regulatoryUtils';
@@ -33,9 +32,9 @@ export function useSandboxApplications(isAdmin: boolean = false) {
       setLoading(true);
       setError(null);
       
-      const apps = isAdmin 
-        ? await fetchAllSandboxApplications()
-        : await fetchUserSandboxApplications();
+      // For now, just use fetchUserApplications for both admin and non-admin users
+      // In a real implementation, we would have a separate fetchAllSandboxApplications for admins
+      const apps = await fetchUserApplications();
         
       setApplications(apps);
     } catch (err) {

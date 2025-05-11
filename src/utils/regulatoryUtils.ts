@@ -16,6 +16,10 @@ export interface SandboxApplication {
   start_date?: string;
   end_date?: string;
   progress: number;
+  testing_duration?: string;
+  created_at: string;
+  updated_at: string;
+  innovator?: string;
 }
 
 export interface SandboxComplianceRequirement {
@@ -29,12 +33,22 @@ export interface SandboxComplianceRequirement {
   updated_at: string;
 }
 
+export interface SandboxFeedback {
+  id: string;
+  application_id: string;
+  message: string;
+  author: string;
+  author_role: string;
+  is_official: boolean;
+  created_at: string;
+}
+
 export interface RegulatoryFramework {
   id: string;
   title: string;
   description: string;
   icon: string;
-  total_steps: number;
+  totalSteps: number;
 }
 
 export async function fetchUserApplications(): Promise<SandboxApplication[]> {
@@ -48,6 +62,40 @@ export async function fetchUserApplications(): Promise<SandboxApplication[]> {
     return data || [];
   } catch (error: any) {
     console.error('Error fetching sandbox applications:', error);
+    throw new Error(error.message);
+  }
+}
+
+export async function fetchAllSandboxApplications(): Promise<SandboxApplication[]> {
+  try {
+    const { data, error } = await supabase
+      .from('sandbox_applications')
+      .select('*')
+      .order('submitted_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error: any) {
+    console.error('Error fetching all sandbox applications:', error);
+    throw new Error(error.message);
+  }
+}
+
+export async function fetchUserSandboxApplications(): Promise<SandboxApplication[]> {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session?.user?.id) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+      .from('sandbox_applications')
+      .select('*')
+      .eq('user_id', session.session.user.id)
+      .order('submitted_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error: any) {
+    console.error('Error fetching user sandbox applications:', error);
     throw new Error(error.message);
   }
 }
@@ -68,6 +116,10 @@ export async function fetchApplicationById(applicationId: string): Promise<Sandb
   }
 }
 
+export async function fetchSandboxApplicationById(applicationId: string): Promise<SandboxApplication | null> {
+  return fetchApplicationById(applicationId);
+}
+
 export async function fetchApplicationCompliance(applicationId: string): Promise<SandboxComplianceRequirement[]> {
   try {
     const { data, error } = await supabase
@@ -81,6 +133,53 @@ export async function fetchApplicationCompliance(applicationId: string): Promise
   } catch (error: any) {
     console.error('Error fetching compliance requirements:', error);
     return [];
+  }
+}
+
+export async function fetchSandboxComplianceRequirements(applicationId: string): Promise<SandboxComplianceRequirement[]> {
+  return fetchApplicationCompliance(applicationId);
+}
+
+export async function fetchSandboxFeedback(applicationId: string): Promise<SandboxFeedback[]> {
+  try {
+    const { data, error } = await supabase
+      .from('sandbox_feedback')
+      .select('*')
+      .eq('application_id', applicationId)
+      .order('created_at', { descending: true });
+
+    if (error) throw error;
+    return data || [];
+  } catch (error: any) {
+    console.error('Error fetching sandbox feedback:', error);
+    return [];
+  }
+}
+
+export async function addSandboxFeedback(
+  applicationId: string, 
+  message: string, 
+  author: string, 
+  authorRole: string, 
+  isOfficial: boolean = true
+): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('sandbox_feedback')
+      .insert([
+        { 
+          application_id: applicationId, 
+          message, 
+          author,
+          author_role: authorRole,
+          is_official: isOfficial
+        }
+      ]);
+      
+    if (error) throw error;
+  } catch (error: any) {
+    console.error('Error adding sandbox feedback:', error);
+    throw new Error(error.message);
   }
 }
 
@@ -108,6 +207,37 @@ export async function updateSandboxComplianceStatus(
   }
 }
 
+export async function updateComplianceStatus(
+  requirementId: string, 
+  completed: boolean
+): Promise<void> {
+  return updateSandboxComplianceStatus(requirementId, completed);
+}
+
+export async function updateSandboxApplicationStatus(
+  applicationId: string, 
+  status: string,
+  startDate?: string,
+  endDate?: string
+): Promise<void> {
+  try {
+    const updates: Record<string, any> = { status };
+    
+    if (startDate) updates.start_date = startDate;
+    if (endDate) updates.end_date = endDate;
+    
+    const { error } = await supabase
+      .from('sandbox_applications')
+      .update(updates)
+      .eq('id', applicationId);
+      
+    if (error) throw error;
+  } catch (error: any) {
+    console.error('Error updating application status:', error);
+    throw new Error(error.message);
+  }
+}
+
 export async function fetchRegulatoryFrameworks(): Promise<RegulatoryFramework[]> {
   try {
     const { data, error } = await supabase
@@ -116,7 +246,15 @@ export async function fetchRegulatoryFrameworks(): Promise<RegulatoryFramework[]
       .order('title', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+    
+    // Map the database structure to our interface
+    return data.map(framework => ({
+      id: framework.id,
+      title: framework.title,
+      description: framework.description,
+      icon: framework.icon || '',
+      totalSteps: framework.total_steps || 0
+    })) || [];
   } catch (error: any) {
     console.error('Error fetching regulatory frameworks:', error);
     return [];
@@ -125,9 +263,12 @@ export async function fetchRegulatoryFrameworks(): Promise<RegulatoryFramework[]
 
 export async function submitSandboxApplication(application: Partial<SandboxApplication>): Promise<string> {
   try {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session?.user?.id) throw new Error('User not authenticated');
+    
     const { data, error } = await supabase
       .from('sandbox_applications')
-      .insert([{ ...application, user_id: (await supabase.auth.getSession()).data.session?.user.id }])
+      .insert([{ ...application, user_id: session.session.user.id }])
       .select('id')
       .single();
 

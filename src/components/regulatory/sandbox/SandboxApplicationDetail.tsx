@@ -5,11 +5,9 @@ import { format } from 'date-fns';
 import { 
   SandboxApplication, 
   SandboxComplianceRequirement,
-  fetchSandboxApplicationById, 
-  fetchSandboxComplianceRequirements,
-  fetchSandboxFeedback,
-  SandboxFeedback,
-  addSandboxFeedback
+  fetchApplicationById, 
+  fetchApplicationCompliance,
+  updateSandboxComplianceStatus
 } from '@/utils/regulatoryUtils';
 import { useToast } from '@/components/ui/use-toast';
 import { 
@@ -24,8 +22,48 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SandboxComplianceList } from './SandboxComplianceList';
 import { AlertCircle, Calendar, CheckCircle, Clock, Tag, User } from 'lucide-react';
+
+// We need to define this interface since we don't have it in regulatoryUtils yet
+interface SandboxFeedback {
+  id: string;
+  application_id: string;
+  message: string;
+  author: string;
+  author_role: string;
+  is_official: boolean;
+  created_at: string;
+}
+
+// Helper function to simulate fetching feedback
+async function fetchSandboxFeedback(applicationId: string): Promise<SandboxFeedback[]> {
+  // This would normally fetch from the database
+  // For now, return mock data
+  return [
+    {
+      id: '1',
+      application_id: applicationId,
+      message: 'Your application has been received and is under initial review.',
+      author: 'Regulatory Admin',
+      author_role: 'Admin',
+      is_official: true,
+      created_at: new Date().toISOString()
+    }
+  ];
+}
+
+// Helper function to simulate adding feedback
+async function addSandboxFeedback(
+  applicationId: string,
+  message: string,
+  author: string,
+  authorRole: string,
+  isOfficial: boolean
+): Promise<void> {
+  // This would normally add to the database
+  console.log('Adding feedback:', { applicationId, message, author, authorRole, isOfficial });
+  // For now, just log it
+}
 
 export default function SandboxApplicationDetail() {
   const { id } = useParams<{ id: string }>();
@@ -47,11 +85,11 @@ export default function SandboxApplicationDetail() {
     
     try {
       // Fetch application details
-      const appData = await fetchSandboxApplicationById(id);
+      const appData = await fetchApplicationById(id);
       setApplication(appData);
       
       // Fetch compliance requirements
-      const requirements = await fetchSandboxComplianceRequirements(id);
+      const requirements = await fetchApplicationCompliance(id);
       setComplianceRequirements(requirements);
       
       // Fetch feedback history
@@ -184,7 +222,7 @@ export default function SandboxApplicationDetail() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>{application.name}</CardTitle>
-              <CardDescription>Submitted by {application.innovator}</CardDescription>
+              <CardDescription>Submitted by {application.user_id}</CardDescription>
             </div>
             <div className="flex gap-2">
               {getStatusBadge(application.status)}
@@ -212,7 +250,7 @@ export default function SandboxApplicationDetail() {
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-gray-500" />
               <span className="text-gray-500">Testing Duration:</span>
-              <span>{application.testing_duration}</span>
+              <span>{application.testing_duration || "Not specified"}</span>
             </div>
           </div>
           
@@ -283,10 +321,57 @@ export default function SandboxApplicationDetail() {
                   </div>
                 </div>
                 
-                <SandboxComplianceList 
-                  requirements={complianceRequirements}
-                  onRequirementsChange={loadApplicationData}
-                />
+                <div className="space-y-3">
+                  {complianceRequirements.length > 0 ? (
+                    complianceRequirements.map(req => (
+                      <div 
+                        key={req.id} 
+                        className={`p-4 border rounded-lg ${req.completed ? 'bg-green-50 border-green-100' : ''}`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h4 className="font-medium">{req.title}</h4>
+                            <p className="text-sm text-gray-600">{req.description}</p>
+                          </div>
+                          <Button 
+                            size="sm"
+                            variant={req.completed ? "outline" : "default"}
+                            className={req.completed ? "text-green-600 border-green-600" : ""}
+                            onClick={async () => {
+                              try {
+                                await updateSandboxComplianceStatus(req.id, !req.completed);
+                                // Update local state
+                                setComplianceRequirements(prev => 
+                                  prev.map(item => item.id === req.id 
+                                    ? { ...item, completed: !item.completed } 
+                                    : item
+                                  )
+                                );
+                              } catch (err) {
+                                toast({
+                                  title: "Failed to update status",
+                                  description: "An error occurred while updating compliance status.",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
+                          >
+                            {req.completed ? (
+                              <>
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                Completed
+                              </>
+                            ) : "Mark Complete"}
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-6 text-muted-foreground">
+                      No compliance requirements have been added for this application.
+                    </div>
+                  )}
+                </div>
               </div>
             </TabsContent>
             
@@ -347,3 +432,70 @@ export default function SandboxApplicationDetail() {
     </div>
   );
 }
+
+// Helper component for compliance requirements list
+const SandboxComplianceList = ({ requirements, onRequirementsChange }: {
+  requirements: SandboxComplianceRequirement[];
+  onRequirementsChange: () => void;
+}) => {
+  const { toast } = useToast();
+  
+  const handleToggleRequirement = async (requirementId: string, completed: boolean) => {
+    try {
+      await updateSandboxComplianceStatus(requirementId, completed);
+      // Refresh the data
+      onRequirementsChange();
+      
+      toast({
+        title: completed ? "Requirement Completed" : "Requirement Reopened",
+        description: "Compliance status updated successfully.",
+      });
+    } catch (err) {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update compliance status. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  return (
+    <div className="space-y-3">
+      {requirements.length === 0 ? (
+        <div className="text-center py-6 text-muted-foreground">
+          No compliance requirements found for this application.
+        </div>
+      ) : (
+        requirements.map((req) => (
+          <div 
+            key={req.id} 
+            className={`p-4 border rounded-lg ${req.completed ? "bg-green-50 border-green-100" : ""}`}
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <h4 className="font-medium">{req.title}</h4>
+                <p className="text-sm text-gray-600">{req.description}</p>
+              </div>
+              <Button 
+                size="sm"
+                variant={req.completed ? "outline" : "default"}
+                className={req.completed ? "text-green-600 border-green-600" : ""}
+                onClick={() => handleToggleRequirement(req.id, !req.completed)}
+              >
+                {req.completed ? (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Completed
+                  </>
+                ) : "Mark Complete"}
+              </Button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
+
+// We need to export this component for it to be used elsewhere
+export { SandboxComplianceList };

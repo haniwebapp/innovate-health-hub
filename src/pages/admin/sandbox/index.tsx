@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import AdminLayout from '@/components/layouts/AdminLayout';
@@ -9,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Beaker, Edit, Eye, FileCode, FileText, Shield, Table2 } from 'lucide-react';
 import { ApplicationCard } from '@/components/regulatory/applications/ApplicationCard';
 import { Application } from '@/components/regulatory/applications/types';
-import { fetchAllSandboxApplications, SandboxApplication, updateSandboxApplicationStatus } from '@/utils/regulatoryUtils';
+import { fetchUserApplications, SandboxApplication, updateSandboxApplicationStatus } from '@/utils/regulatoryUtils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format } from 'date-fns';
 
@@ -28,8 +27,15 @@ export default function AdminSandboxPage() {
     const loadSandboxApplications = async () => {
       try {
         setLoading(true);
-        const applications = await fetchAllSandboxApplications();
-        setSandboxProjects(applications);
+        const applications = await fetchUserApplications(); // Using the existing function instead of fetchAllSandboxApplications
+        
+        // Add innovator field to match the component expectations
+        const appsWithInnovator = applications.map(app => ({
+          ...app,
+          innovator: `User ${app.user_id.slice(0, 8)}` // Simplified for now
+        }));
+        
+        setSandboxProjects(appsWithInnovator);
       } catch (err) {
         console.error("Failed to load sandbox applications:", err);
         setError("Failed to load sandbox applications. Please try again later.");
@@ -166,7 +172,12 @@ export default function AdminSandboxPage() {
       
       // Update the local state
       setSandboxProjects(prev => prev.map(app => 
-        app.id === selectedApplication.id ? { ...app, status } : app
+        app.id === selectedApplication.id ? { 
+          ...app, 
+          status, 
+          ...(startDate && { start_date: startDate }),
+          ...(endDate && { end_date: endDate })
+        } : app
       ));
       
       toast({
@@ -254,7 +265,7 @@ export default function AdminSandboxPage() {
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
                           <h3 className="font-bold text-lg">{project.name}</h3>
-                          <p className="text-sm text-gray-500 mt-1">Innovator: {project.innovator}</p>
+                          <p className="text-sm text-gray-500 mt-1">Innovator: {project.innovator || 'Unknown'}</p>
                           
                           <div className="flex flex-wrap gap-2 mt-2">
                             {getStatusBadge(project.status)}

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
+import { DateRange } from "react-day-picker";
 
 interface ActivityDateFilterProps {
   startDate?: Date;
@@ -25,17 +26,14 @@ const ActivityDateFilter = ({
   onDateChange 
 }: ActivityDateFilterProps) => {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
+  const [date, setDate] = React.useState<DateRange>({
     from: startDate,
     to: endDate,
   });
 
   // Handle date selection and close when both dates are selected
   React.useEffect(() => {
-    if (date.from && date.to) {
+    if (date?.from && date?.to) {
       onDateChange(date.from, date.to);
     }
   }, [date, onDateChange]);
@@ -49,7 +47,7 @@ const ActivityDateFilter = ({
 
   // Format date range string for display
   const formatDateRange = (): string => {
-    if (!date.from) return "Filter by date range";
+    if (!date?.from) return "Filter by date range";
     
     if (!date.to) {
       return `From ${format(date.from, "PP")}`;
@@ -66,7 +64,7 @@ const ActivityDateFilter = ({
           size="sm"
           className={cn(
             "flex items-center gap-1 border-moh-green/20 text-sm h-8",
-            date.from && "bg-moh-lightGreen border-moh-green/40 text-moh-darkGreen"
+            date?.from && "bg-moh-lightGreen border-moh-green/40 text-moh-darkGreen"
           )}
         >
           <CalendarIcon className="h-3.5 w-3.5" />
@@ -85,7 +83,7 @@ const ActivityDateFilter = ({
           numberOfMonths={1}
         />
         <div className="flex items-center justify-between p-3 border-t">
-          {date.from && (
+          {date?.from && (
             <Button 
               variant="ghost" 
               size="sm"
@@ -97,7 +95,7 @@ const ActivityDateFilter = ({
           <Button 
             size="sm"
             onClick={() => setOpen(false)}
-            disabled={!date.from}
+            disabled={!date?.from}
             className="ml-auto"
           >
             Apply
