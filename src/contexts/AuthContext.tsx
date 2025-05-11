@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      // Use direct query instead of joining with user_type to avoid recursion
       const { data, error } = await supabase
         .from('profiles')
         .select('first_name, last_name, avatar_url')
@@ -109,7 +110,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkIfUserIsAdmin = async (userId: string) => {
     try {
-      // Call the safer function we created to avoid recursion issues
       // First try to use the RPC function if it exists
       const { data: isAdminResult, error: rpcError } = await supabase
         .rpc('is_admin_user');
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      // Fallback to direct query if RPC fails
+      // Fallback to direct query if RPC fails, avoiding recursion
       const { data, error } = await supabase
         .from('profiles')
         .select('user_type, roles')

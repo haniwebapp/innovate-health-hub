@@ -1,13 +1,20 @@
 
-import React from "react";
-import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import React, { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 export default function AdminIndexPage() {
   const { isAdmin, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
   
+  useEffect(() => {
+    // Redirect to the embedded admin dashboard
+    if (isAuthenticated && isAdmin && !isLoading) {
+      navigate("/dashboard/admin");
+    }
+  }, [isAuthenticated, isAdmin, isLoading, navigate]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -18,12 +25,18 @@ export default function AdminIndexPage() {
   }
   
   if (!isAuthenticated) {
-    return <Navigate to="/auth/login" state={{ from: "/admin" }} replace />;
+    return <Navigate to="/auth/login" state={{ from: "/dashboard/admin" }} replace />;
   }
   
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
   
-  return <AdminDashboard />;
+  // This will only show briefly before the redirect happens
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Loader2 className="w-10 h-10 text-moh-green animate-spin" />
+      <span className="ml-2 text-moh-green font-medium">Redirecting to admin dashboard...</span>
+    </div>
+  );
 }

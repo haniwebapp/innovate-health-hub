@@ -21,57 +21,57 @@ export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
       isCollapsed={isCollapsed} 
       items={[
         { 
-          to: "/admin", 
+          to: "/dashboard/admin", 
           icon: <BarChart3 size={18} className="text-moh-gold" />, 
-          text: "Dashboard"
+          text: "Admin Dashboard"
         },
         { 
-          to: "/admin/cms", 
+          to: "/dashboard/admin/cms", 
           icon: <FileText size={18} className="text-moh-gold" />, 
           text: "CMS"
         },
         { 
-          to: "/admin/users", 
+          to: "/dashboard/admin/users", 
           icon: <Users size={18} className="text-moh-gold" />, 
           text: "Users"
         },
         { 
-          to: "/admin/challenges", 
+          to: "/dashboard/admin/challenges", 
           icon: <Award size={18} className="text-moh-gold" />, 
           text: "Challenges"
         },
         { 
-          to: "/admin/innovations", 
+          to: "/dashboard/admin/innovations", 
           icon: <Lightbulb size={18} className="text-moh-gold" />, 
           text: "Innovations"
         },
         { 
-          to: "/admin/investment", 
+          to: "/dashboard/admin/investment", 
           icon: <DollarSign size={18} className="text-moh-gold" />, 
           text: "Investment"
         },
         { 
-          to: "/admin/sandbox", 
+          to: "/dashboard/admin/regulatory", 
           icon: <ShieldCheck size={18} className="text-moh-gold" />, 
           text: "Regulatory"
         },
         { 
-          to: "/admin/knowledge", 
+          to: "/dashboard/admin/knowledge", 
           icon: <BookOpen size={18} className="text-moh-gold" />, 
           text: "Knowledge"
         },
         { 
-          to: "/admin/notifications", 
+          to: "/dashboard/admin/notifications", 
           icon: <Bell size={18} className="text-moh-gold" />, 
           text: "Notifications"
         },
         { 
-          to: "/admin/integrations", 
+          to: "/dashboard/admin/integrations", 
           icon: <Plug size={18} className="text-moh-gold" />, 
           text: "Integrations"
         },
         { 
-          to: "/admin/settings", 
+          to: "/dashboard/admin/settings", 
           icon: <Settings size={18} className="text-moh-gold" />, 
           text: "Settings"
         }

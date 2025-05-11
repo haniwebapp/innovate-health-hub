@@ -54,9 +54,10 @@ export default function UserProfileForm() {
     setLoadError(null);
     
     try {
+      // Direct query to avoid recursion
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('first_name, last_name, user_type, organization, avatar_url')
         .eq('id', user.id)
         .single();
         
@@ -92,7 +93,7 @@ export default function UserProfileForm() {
     } finally {
       setIsLoading(false);
     }
-  }, [user, form, toast, t]);
+  }, [user, form, t]);
   
   useEffect(() => {
     loadUserProfile();

@@ -11,7 +11,8 @@ import {
   Calendar, 
   ChevronRight, 
   Settings,
-  Shield 
+  Shield,
+  Layers 
 } from "lucide-react";
 
 export function OverviewTab() {

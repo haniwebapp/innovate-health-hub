@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
 import { AdminDashboardHeader } from "@/components/admin/dashboard/AdminDashboardHeader";
 import { AdminStatCards } from "@/components/admin/dashboard/AdminStatCards";
 import { AdminDashboardTabs } from "@/components/admin/dashboard/AdminDashboardTabs";
@@ -55,15 +54,13 @@ const mockUsers: UserProfile[] = [
 
 export default function AdminDashboardPage() {
   const { isAdmin } = useAuth();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
 
   if (!isAdmin) {
     return <AccessDeniedSection />;
   }
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4 md:p-6">
+    <div>
       <AdminDashboardHeader />
       <AdminStatCards userCount={mockUsers.length} />
       <AdminDashboardTabs users={mockUsers} />
