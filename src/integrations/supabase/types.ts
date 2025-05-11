@@ -797,6 +797,51 @@ export type Database = {
           },
         ]
       }
+      market_analysis_reports: {
+        Row: {
+          cagr: number | null
+          challenges: string[] | null
+          created_at: string | null
+          id: string
+          key_players: Json | null
+          market_size: number | null
+          opportunities: string[] | null
+          region: string
+          report_date: string | null
+          sector: string
+          trends: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          cagr?: number | null
+          challenges?: string[] | null
+          created_at?: string | null
+          id?: string
+          key_players?: Json | null
+          market_size?: number | null
+          opportunities?: string[] | null
+          region: string
+          report_date?: string | null
+          sector: string
+          trends?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          cagr?: number | null
+          challenges?: string[] | null
+          created_at?: string | null
+          id?: string
+          key_players?: Json | null
+          market_size?: number | null
+          opportunities?: string[] | null
+          region?: string
+          report_date?: string | null
+          sector?: string
+          trends?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       market_trends: {
         Row: {
           category: string
@@ -1495,6 +1540,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vision_2030_alignment_analyses: {
+        Row: {
+          alignment_areas: string[] | null
+          alignment_score: number
+          analyzed_at: string | null
+          created_at: string | null
+          id: string
+          improvement_areas: string[] | null
+          innovation_id: string
+          potential_impact: string | null
+          recommendations: string[] | null
+          updated_at: string | null
+          vision2030_objectives: string[] | null
+        }
+        Insert: {
+          alignment_areas?: string[] | null
+          alignment_score: number
+          analyzed_at?: string | null
+          created_at?: string | null
+          id?: string
+          improvement_areas?: string[] | null
+          innovation_id: string
+          potential_impact?: string | null
+          recommendations?: string[] | null
+          updated_at?: string | null
+          vision2030_objectives?: string[] | null
+        }
+        Update: {
+          alignment_areas?: string[] | null
+          alignment_score?: number
+          analyzed_at?: string | null
+          created_at?: string | null
+          id?: string
+          improvement_areas?: string[] | null
+          innovation_id?: string
+          potential_impact?: string | null
+          recommendations?: string[] | null
+          updated_at?: string | null
+          vision2030_objectives?: string[] | null
+        }
+        Relationships: []
       }
       webinar_registrations: {
         Row: {
