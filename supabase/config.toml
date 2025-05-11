@@ -38,6 +38,9 @@ verify_jwt = true
 [functions.vision-2030-alignment]
 verify_jwt = true
 
+[functions.policy-impact-simulation]
+verify_jwt = true
+
 [functions.investment-match]
 verify_jwt = true
 

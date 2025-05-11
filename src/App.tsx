@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -79,6 +78,8 @@ import AdminKnowledgePage from './pages/admin/knowledge/index';
 import AdminNotificationsPage from './pages/admin/notifications/index';
 import AdminIntegrationsPage2 from './pages/admin/integrations/index';
 
+import PolicyPage from './pages/policy';
+
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -157,6 +158,9 @@ function App() {
                     
                     <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
                     <Route path="create-challenge" element={<CreateChallengePage />} />
+                    
+                    {/* Policy Routes */}
+                    <Route path="policy" element={<PolicyPage />} />
                     
                     {/* Admin Routes */}
                     <Route path="admin/users" element={<AdminUsersPage />} />
