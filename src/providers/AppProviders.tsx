@@ -1,30 +1,26 @@
+import React from 'react';
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/contexts/ToastContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "@/components/theme-provider"
+import { HelmetProvider } from 'react-helmet-async';
 
-import { ReactNode } from 'react';
-import { ThemeProvider } from "next-themes";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { AuthProvider } from '@/contexts/AuthContext';
+export default function AppProviders({ children }: { children: React.ReactNode }) {
+  const [queryClient] = React.useState(() => new QueryClient());
 
-interface AppProvidersProps {
-  children: ReactNode;
-  queryClient: QueryClient;
-}
-
-export function AppProviders({ children, queryClient }: AppProvidersProps) {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="moh-theme-preference">
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <LanguageProvider>
-            <TooltipProvider>
+    <HelmetProvider>
+      <ThemeProvider defaultTheme="system" storageKey="vite-react-theme">
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ToastProvider>
               {children}
-              <Toaster />
-            </TooltipProvider>
-          </LanguageProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+            </ToastProvider>
+          </AuthProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
