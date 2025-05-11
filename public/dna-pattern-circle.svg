@@ -1,0 +1,48 @@
+
+<svg width="400" height="600" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circular DNA double helix -->
+  <g opacity="0.6">
+    <!-- Left strand -->
+    <path d="M180,50 C120,150 280,250 180,350 C120,450 280,550 180,650" fill="none" stroke="#00814A" stroke-width="1.5" />
+    
+    <!-- Right strand -->
+    <path d="M220,50 C280,150 120,250 220,350 C280,450 120,550 220,650" fill="none" stroke="#00814A" stroke-width="1.5" />
+    
+    <!-- Connecting bases -->
+    <line x1="180" y1="100" x2="220" y2="100" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="150" x2="220" y2="150" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="200" x2="220" y2="200" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="250" x2="220" y2="250" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="300" x2="220" y2="300" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="350" x2="220" y2="350" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="400" x2="220" y2="400" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="450" x2="220" y2="450" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="500" x2="220" y2="500" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="550" x2="220" y2="550" stroke="#C3A86B" stroke-width="1.2" />
+    <line x1="180" y1="600" x2="220" y2="600" stroke="#C3A86B" stroke-width="1.2" />
+    
+    <!-- Nodes -->
+    <circle cx="180" cy="100" r="3" fill="#00814A" />
+    <circle cx="220" cy="100" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="150" r="3" fill="#00814A" />
+    <circle cx="220" cy="150" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="200" r="3" fill="#00814A" />
+    <circle cx="220" cy="200" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="250" r="3" fill="#00814A" />
+    <circle cx="220" cy="250" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="300" r="3" fill="#00814A" />
+    <circle cx="220" cy="300" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="350" r="3" fill="#00814A" />
+    <circle cx="220" cy="350" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="400" r="3" fill="#00814A" />
+    <circle cx="220" cy="400" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="450" r="3" fill="#00814A" />
+    <circle cx="220" cy="450" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="500" r="3" fill="#00814A" />
+    <circle cx="220" cy="500" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="550" r="3" fill="#00814A" />
+    <circle cx="220" cy="550" r="3" fill="#C3A86B" />
+    <circle cx="180" cy="600" r="3" fill="#00814A" />
+    <circle cx="220" cy="600" r="3" fill="#C3A86B" />
+  </g>
+</svg>

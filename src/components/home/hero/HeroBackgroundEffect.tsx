@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Dna, Atom, TestTube, Microscope } from "lucide-react";
 
 export function HeroBackgroundEffect() {
   const [particles, setParticles] = useState<Array<{
@@ -12,6 +13,30 @@ export function HeroBackgroundEffect() {
     delay: number;
     color: string;
   }>>([]);
+
+  // DNA genetic code letters
+  const geneticLetters = ['A', 'T', 'G', 'C'];
+  
+  // Generate genetic code particles
+  const geneticParticles = Array.from({ length: 20 }, (_, i) => ({
+    letter: geneticLetters[Math.floor(Math.random() * geneticLetters.length)],
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 14 + 10,
+    duration: Math.random() * 15 + 10,
+    delay: Math.random() * 5,
+    opacity: Math.random() * 0.3 + 0.1
+  }));
+
+  // DNA and genetic icons with positions
+  const geneticIcons = [
+    { Icon: Dna, x: 15, y: 20, size: 24, color: 'rgba(0, 129, 74, 0.2)', duration: 18 },
+    { Icon: Atom, x: 80, y: 35, size: 30, color: 'rgba(195, 168, 107, 0.2)', duration: 20 },
+    { Icon: TestTube, x: 25, y: 70, size: 28, color: 'rgba(0, 129, 74, 0.25)', duration: 22 },
+    { Icon: Microscope, x: 70, y: 75, size: 32, color: 'rgba(195, 168, 107, 0.25)', duration: 24 },
+    { Icon: Dna, x: 45, y: 30, size: 20, color: 'rgba(0, 129, 74, 0.15)', duration: 25 },
+    { Icon: Atom, x: 60, y: 60, size: 22, color: 'rgba(195, 168, 107, 0.15)', duration: 19 }
+  ];
 
   useEffect(() => {
     // Generate random particles
@@ -37,6 +62,12 @@ export function HeroBackgroundEffect() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* DNA pattern overlay */}
+      <div className="absolute inset-0 bg-[url('/dna-pattern.svg')] opacity-[0.07] bg-repeat"></div>
+      
+      {/* Animated DNA double helix */}
+      <div className="absolute inset-0 bg-[url('/dna-pattern-circle.svg')] opacity-[0.07] bg-repeat-y bg-center"></div>
+
       {/* Floating particles with improved effects */}
       {particles.map((particle) => (
         <motion.div
@@ -74,6 +105,64 @@ export function HeroBackgroundEffect() {
           }}
         />
       ))}
+
+      {/* Animated genetic code letters */}
+      {geneticParticles.map((particle, index) => (
+        <motion.div
+          key={`genetic-${index}`}
+          className="absolute font-mono font-bold text-moh-green/30"
+          style={{
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            fontSize: `${particle.size}px`,
+            opacity: particle.opacity,
+          }}
+          animate={{
+            y: [0, -20, 0],
+            opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        >
+          {particle.letter}
+        </motion.div>
+      ))}
+      
+      {/* Animated genetic icons */}
+      {geneticIcons.map((item, index) => {
+        const { Icon, x, y, size, color, duration } = item;
+        return (
+          <motion.div
+            key={`icon-${index}`}
+            className="absolute"
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              color: color,
+            }}
+            animate={{
+              y: [-5, 5, -5],
+              rotate: [-5, 5, -5],
+              scale: [1, 1.1, 1],
+              opacity: [0.5, 0.8, 0.5],
+            }}
+            transition={{
+              duration: duration,
+              repeat: Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+            }}
+          >
+            <Icon size={size} strokeWidth={1.5} />
+          </motion.div>
+        );
+      })}
 
       {/* Enhanced gradient orbs */}
       <motion.div
