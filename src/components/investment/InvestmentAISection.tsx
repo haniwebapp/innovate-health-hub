@@ -1,81 +1,134 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Zap, Brain, BarChart3, TrendingUp } from "lucide-react";
+import { Loader2, Zap, Brain, BarChart3, TrendingUp, Info, AreaChart } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { InvestmentAIService, MarketTrendParams } from "@/services/ai/InvestmentAIService";
+import { AIMatchScoreCard } from "./AIMatchScoreCard";
+import { AIInsightsCard } from "./AIInsightsCard";
 
-// Sample data - in a real app, this would come from an API or database
-const aiMatchScores = [
-  {
-    name: "Connected Health Solutions Fund",
-    score: 92,
-    reason: "Strong alignment with your digital health focus and target market.",
-    additionalInfo: [
-      { label: "Investment Range", value: "$500K-2M" },
-      { label: "Focus", value: "Digital Health" },
-      { label: "Time to Decision", value: "4-6 weeks" }
-    ]
-  },
-  {
-    name: "Saudi Healthcare Innovation Fund",
-    score: 86,
-    reason: "Good fit for early-stage healthcare startups with traction.",
-    additionalInfo: [
-      { label: "Investment Range", value: "$1M-5M" },
-      { label: "Focus", value: "Healthcare Tech" },
-      { label: "Time to Decision", value: "6-8 weeks" }
-    ]
-  },
-  {
-    name: "Medical Device Growth Partners",
-    score: 78,
-    reason: "Potential match for hardware-focused healthcare solutions.",
-    additionalInfo: [
-      { label: "Investment Range", value: "$2M-10M" },
-      { label: "Focus", value: "Medical Devices" },
-      { label: "Time to Decision", value: "8-10 weeks" }
-    ]
-  }
-];
-
-const aiInsights = [
-  "Digital health solutions focused on remote patient monitoring have seen a 34% increase in funding over the past quarter.",
-  "The average investment size for AI-powered diagnostic tools has grown to $3.2M, a 28% increase year-over-year.",
-  "Healthcare solutions integrating with Vision 2030 initiatives are receiving 40% faster investor interest and response.",
-  "Regulatory-approved solutions are securing investment at 2.5x the rate of pre-approval innovations."
-];
-
-const marketTrendInsights = [
-  "Telemedicine solutions have seen sustained growth with 47% higher adoption rates post-pandemic.",
-  "AI-driven diagnostic tools are the fastest growing segment with 52% CAGR expected through 2027.",
-  "Saudi investors are increasingly focused on solutions that address regional healthcare challenges.",
-  "Preventive healthcare innovations are attracting 38% more funding than treatment-focused solutions."
-];
+// Sample innovation data for testing
+const testInnovationData = {
+  name: "HealthMonitor Pro",
+  description: "A wearable device that continuously monitors vital signs and uses AI to detect early warning signs of health issues.",
+  stage: "early",
+  sector: "Digital Health",
+  fundingNeeded: 2000000,
+  teamSize: 8,
+  traction: "500 beta users, 3 hospital partnerships",
+  patentStatus: "Patent pending",
+  regulatoryStatus: "FDA approval in progress"
+};
 
 export function InvestmentAISection() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState('matching');
-  const [selectedSector, setSelectedSector] = useState('all');
+  const [selectedSector, setSelectedSector] = useState('digital-health');
   const [searchQuery, setSearchQuery] = useState('');
+  const [aiMatchScores, setAiMatchScores] = useState<any[]>([]);
+  const [aiInsights, setAiInsights] = useState<string[]>([]);
+  const [marketTrendInsights, setMarketTrendInsights] = useState<any>(null);
   const { toast } = useToast();
 
-  const handleAnalysis = () => {
+  const handleAnalysis = async () => {
     setIsAnalyzing(true);
     
-    // Simulate API call to analyze market trends
-    setTimeout(() => {
-      setIsAnalyzing(false);
+    try {
+      // Generate investment matches based on test data
+      const matchResult = await InvestmentAIService.generateMatchAnalysis(
+        testInnovationData,
+        {
+          investmentFocus: [selectedSector],
+          investmentStage: ["early"],
+          geographicFocus: ["Saudi Arabia"],
+          investmentSizeMin: 500000,
+          investmentSizeMax: 5000000
+        }
+      );
+      
+      // Generate market analysis for the selected sector
+      const marketParams: MarketTrendParams = {
+        sector: selectedSector === 'all' ? 'Healthcare' : selectedSector.replace('-', ' '),
+        timeframe: "Next 2 years",
+        region: "Saudi Arabia"
+      };
+      
+      const marketAnalysis = await InvestmentAIService.generateMarketAnalysis(marketParams);
+      
+      // Create formatted match scores for display
+      const formattedMatchScores = [
+        {
+          name: "Connected Health Solutions Fund",
+          score: matchResult.matchScore,
+          reason: matchResult.mainReasons[0] || "Strong alignment with your digital health focus and target market.",
+          additionalInfo: [
+            { label: "Investment Range", value: "$500K-2M" },
+            { label: "Focus", value: "Digital Health" },
+            { label: "Time to Decision", value: "4-6 weeks" }
+          ]
+        },
+        {
+          name: "Saudi Healthcare Innovation Fund",
+          score: Math.max(30, matchResult.matchScore - 12),
+          reason: matchResult.mainReasons[1] || "Good fit for early-stage healthcare startups with traction.",
+          additionalInfo: [
+            { label: "Investment Range", value: "$1M-5M" },
+            { label: "Focus", value: "Healthcare Tech" },
+            { label: "Time to Decision", value: "6-8 weeks" }
+          ]
+        },
+        {
+          name: "Medical Device Growth Partners",
+          score: Math.max(20, matchResult.matchScore - 20),
+          reason: matchResult.mainReasons[2] || "Potential match for hardware-focused healthcare solutions.",
+          additionalInfo: [
+            { label: "Investment Range", value: "$2M-10M" },
+            { label: "Focus", value: "Medical Devices" },
+            { label: "Time to Decision", value: "8-10 weeks" }
+          ]
+        }
+      ];
+      
+      setAiMatchScores(formattedMatchScores);
+      
+      // Set AI insights from the SWOT analysis
+      const insights = [
+        ...matchResult.swotAnalysis.opportunities.map(o => o),
+        ...matchResult.keyMetrics.map(m => `Key metric to highlight: ${m}`),
+        matchResult.recommendedApproach,
+        ...matchResult.swotAnalysis.strengths.map(s => `Strength: ${s}`)
+      ].slice(0, 4);
+      
+      setAiInsights(insights);
+      
+      // Set market trends
+      setMarketTrendInsights(marketAnalysis);
+      
       toast({
         title: "Analysis Complete",
         description: "AI has analyzed the latest market trends and investment opportunities.",
       });
-    }, 2000);
+    } catch (error: any) {
+      console.error("Analysis error:", error);
+      toast({
+        title: "Analysis Error",
+        description: error.message || "An error occurred during analysis",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
+  
+  // Auto-run analysis on first load
+  useEffect(() => {
+    handleAnalysis();
+  }, []);
 
   return (
     <section className="py-16 bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
@@ -229,39 +282,47 @@ export function InvestmentAISection() {
                   />
                 </div>
                 
-                {aiMatchScores.map((match, index) => (
-                  <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-semibold text-lg">{match.name}</h3>
-                      <Badge className={`${match.score > 85 ? 'bg-green-600' : match.score > 75 ? 'bg-moh-gold' : 'bg-white/30'}`}>
-                        {match.score}% Match
-                      </Badge>
-                    </div>
-                    <p className="text-moh-lightGreen mb-3">{match.reason}</p>
-                    
-                    {match.additionalInfo && (
-                      <div className="grid grid-cols-3 gap-2 mb-4">
-                        {match.additionalInfo.map((info, i) => (
-                          <div key={i} className="bg-white/5 p-2 rounded text-center">
-                            <p className="text-xs text-moh-lightGreen">{info.label}</p>
-                            <p className="font-medium">{info.value}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    
-                    <div className="w-full bg-white/5 rounded-full h-2 mb-1">
-                      <div 
-                        className="bg-gradient-to-r from-moh-green to-moh-gold h-2 rounded-full" 
-                        style={{ width: `${match.score}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between text-xs text-moh-lightGreen">
-                      <span>Low match</span>
-                      <span>High match</span>
-                    </div>
+                {isAnalyzing ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <Loader2 className="h-12 w-12 animate-spin text-moh-gold mb-4" />
+                    <p className="text-lg font-medium">Analyzing investment matches...</p>
+                    <p className="text-sm text-moh-lightGreen">This may take a moment</p>
                   </div>
-                ))}
+                ) : (
+                  aiMatchScores.map((match, index) => (
+                    <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-semibold text-lg">{match.name}</h3>
+                        <Badge className={`${match.score > 85 ? 'bg-green-600' : match.score > 75 ? 'bg-moh-gold' : 'bg-white/30'}`}>
+                          {match.score}% Match
+                        </Badge>
+                      </div>
+                      <p className="text-moh-lightGreen mb-3">{match.reason}</p>
+                      
+                      {match.additionalInfo && (
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                          {match.additionalInfo.map((info, i) => (
+                            <div key={i} className="bg-white/5 p-2 rounded text-center">
+                              <p className="text-xs text-moh-lightGreen">{info.label}</p>
+                              <p className="font-medium">{info.value}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <div className="w-full bg-white/5 rounded-full h-2 mb-1">
+                        <div 
+                          className="bg-gradient-to-r from-moh-green to-moh-gold h-2 rounded-full" 
+                          style={{ width: `${match.score}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs text-moh-lightGreen">
+                        <span>Low match</span>
+                        <span>High match</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </TabsContent>
               
               <TabsContent value="insights">
@@ -271,18 +332,25 @@ export function InvestmentAISection() {
                     <h3 className="text-xl font-medium">AI Investment Insights</h3>
                   </div>
                   
-                  <div className="space-y-4">
-                    {aiInsights.map((insight, index) => (
-                      <div key={index} className="bg-white/5 p-4 rounded-lg">
-                        <div className="flex">
-                          <span className="flex h-6 w-6 mr-3 rounded-full bg-moh-gold/50 items-center justify-center text-sm">
-                            {index + 1}
-                          </span>
-                          <p>{insight}</p>
+                  {isAnalyzing ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <Loader2 className="h-12 w-12 animate-spin text-moh-gold mb-4" />
+                      <p>Generating investment insights...</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {aiInsights.map((insight, index) => (
+                        <div key={index} className="bg-white/5 p-4 rounded-lg">
+                          <div className="flex">
+                            <span className="flex h-6 w-6 mr-3 rounded-full bg-moh-gold/50 items-center justify-center text-sm">
+                              {index + 1}
+                            </span>
+                            <p>{insight}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                   
                   <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
                     <h4 className="font-medium mb-2 flex items-center">
@@ -290,7 +358,9 @@ export function InvestmentAISection() {
                       Recommendation
                     </h4>
                     <p className="text-moh-lightGreen">
-                      Based on current trends, focus on solutions that integrate with existing healthcare systems and address specific regional needs for the highest investment potential.
+                      {isAnalyzing 
+                        ? "Generating recommendations..." 
+                        : "Based on current trends, focus on solutions that integrate with existing healthcare systems and address specific regional needs for the highest investment potential."}
                     </p>
                   </div>
                 </div>
@@ -303,49 +373,80 @@ export function InvestmentAISection() {
                     <h3 className="text-xl font-medium">Healthcare Investment Trends</h3>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="bg-white/5 p-4 rounded-lg">
-                      <h4 className="font-medium text-moh-lightGreen mb-1">Digital Health</h4>
-                      <div className="flex items-end space-x-1 h-32 mt-4 mb-2">
-                        <div className="bg-moh-green/70 w-1/5 h-[20%] rounded-t"></div>
-                        <div className="bg-moh-green/70 w-1/5 h-[30%] rounded-t"></div>
-                        <div className="bg-moh-green/70 w-1/5 h-[45%] rounded-t"></div>
-                        <div className="bg-moh-green/70 w-1/5 h-[60%] rounded-t"></div>
-                        <div className="bg-moh-green/70 w-1/5 h-[80%] rounded-t"></div>
-                      </div>
-                      <p className="text-sm text-moh-lightGreen">+45% YoY Growth</p>
+                  {isAnalyzing ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <Loader2 className="h-12 w-12 animate-spin text-moh-gold mb-4" />
+                      <p>Analyzing market trends...</p>
                     </div>
-                    
-                    <div className="bg-white/5 p-4 rounded-lg">
-                      <h4 className="font-medium text-moh-lightGreen mb-1">Medical Devices</h4>
-                      <div className="flex items-end space-x-1 h-32 mt-4 mb-2">
-                        <div className="bg-moh-gold/70 w-1/5 h-[40%] rounded-t"></div>
-                        <div className="bg-moh-gold/70 w-1/5 h-[38%] rounded-t"></div>
-                        <div className="bg-moh-gold/70 w-1/5 h-[45%] rounded-t"></div>
-                        <div className="bg-moh-gold/70 w-1/5 h-[50%] rounded-t"></div>
-                        <div className="bg-moh-gold/70 w-1/5 h-[58%] rounded-t"></div>
+                  ) : marketTrendInsights ? (
+                    <>
+                      <div className="mb-4 p-4 bg-white/5 rounded-lg">
+                        <h4 className="font-medium mb-2 flex items-center">
+                          <Info className="h-4 w-4 mr-2 text-moh-gold" />
+                          Market Summary
+                        </h4>
+                        <p className="text-moh-lightGreen">{marketTrendInsights.summary}</p>
+                        
+                        <div className="grid grid-cols-2 gap-4 mt-4">
+                          <div className="bg-white/5 p-3 rounded-lg text-center">
+                            <p className="text-xs text-moh-lightGreen">Growth Rate</p>
+                            <p className="text-xl font-medium">{marketTrendInsights.growthRate}%</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded-lg text-center">
+                            <p className="text-xs text-moh-lightGreen">Market Size</p>
+                            <p className="text-xl font-medium">{marketTrendInsights.marketSize}</p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-sm text-moh-lightGreen">+22% YoY Growth</p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div className="bg-white/5 p-4 rounded-lg">
+                          <h4 className="font-medium text-moh-lightGreen mb-3">Key Trends</h4>
+                          <ul className="space-y-2">
+                            {marketTrendInsights.keyTrends.map((trend: string, i: number) => (
+                              <li key={i} className="flex items-start">
+                                <TrendingUp className="h-4 w-4 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />
+                                <span className="text-sm">{trend}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div className="bg-white/5 p-4 rounded-lg">
+                          <h4 className="font-medium text-moh-lightGreen mb-3">Emerging Opportunities</h4>
+                          <ul className="space-y-2">
+                            {marketTrendInsights.emergingOpportunities.map((opportunity: string, i: number) => (
+                              <li key={i} className="flex items-start">
+                                <Zap className="h-4 w-4 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />
+                                <span className="text-sm">{opportunity}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white/5 p-4 rounded-lg mb-6">
+                        <h4 className="font-medium text-moh-lightGreen mb-3">Vision 2030 Alignment</h4>
+                        <p className="text-sm">{marketTrendInsights.vision2030Alignment}</p>
+                      </div>
+                      
+                      <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
+                        <h4 className="font-medium mb-2">Investment Recommendations</h4>
+                        <ul className="space-y-2">
+                          {marketTrendInsights.investmentRecommendations.map((rec: string, i: number) => (
+                            <li key={i} className="flex items-start">
+                              <BarChart3 className="h-4 w-4 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />
+                              <span className="text-sm text-moh-lightGreen">{rec}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-8">
+                      <p>No market trend data available</p>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-3 mb-6">
-                    {marketTrendInsights.map((insight, index) => (
-                      <div key={index} className="bg-white/5 p-3 rounded-lg">
-                        <p className="text-sm flex">
-                          <TrendingUp className="h-4 w-4 mr-2 text-moh-gold flex-shrink-0 mt-0.5" />
-                          <span>{insight}</span>
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">Market Outlook</h4>
-                    <p className="text-moh-lightGreen">
-                      The Saudi healthcare investment market is projected to grow by 32% over the next two years, with digital health solutions and AI-driven diagnostics leading the expansion.
-                    </p>
-                  </div>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
