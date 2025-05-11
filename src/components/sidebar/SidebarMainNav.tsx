@@ -17,10 +17,10 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
   };
   
   return (
-    <SidebarNavSection isCollapsed={isCollapsed}>
+    <SidebarNavSection>
       <SidebarNavItem
         isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard")}
+        active={isActive("/dashboard")}
         href="/dashboard"
         icon={<Home className="h-[1.2rem] w-[1.2rem]" />}
         label="Dashboard"
@@ -28,7 +28,7 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
       
       <SidebarNavItem
         isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/challenges")}
+        active={isActive("/dashboard/challenges")}
         href="/dashboard/challenges"
         icon={<LineChart className="h-[1.2rem] w-[1.2rem]" />}
         label="Challenges"
@@ -36,7 +36,7 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
       
       <SidebarNavItem
         isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/submissions")}
+        active={isActive("/dashboard/submissions")}
         href="/dashboard/submissions"
         icon={<Send className="h-[1.2rem] w-[1.2rem]" />}
         label="Submissions"
@@ -44,7 +44,7 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
       
       <SidebarNavItem
         isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/activity")}
+        active={isActive("/dashboard/activity")}
         href="/dashboard/activity"
         icon={<FileText className="h-[1.2rem] w-[1.2rem]" />}
         label="Activity"
@@ -52,7 +52,7 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
       
       <SidebarNavItem
         isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/support")}
+        active={isActive("/dashboard/support")}
         href="/dashboard/support"
         icon={<HelpCircle className="h-[1.2rem] w-[1.2rem]" />}
         label="Support"
