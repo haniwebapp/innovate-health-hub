@@ -1,12 +1,29 @@
 
-import { AlertTriangle } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { Shield } from "lucide-react";
 
 export function AccessDeniedSection() {
   return (
-    <div className="flex flex-col items-center justify-center h-64 p-6 bg-red-50 border border-red-200 rounded-lg">
-      <AlertTriangle className="h-12 w-12 text-red-500 mb-2" />
-      <h2 className="text-2xl font-bold text-red-700">Access Denied</h2>
-      <p className="text-red-600">You don't have permission to view this page.</p>
+    <div className="flex flex-col items-center justify-center py-12">
+      <div className="p-4 rounded-full bg-red-50 mb-4">
+        <Shield className="h-12 w-12 text-red-500" />
+      </div>
+      <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
+      <p className="text-center text-muted-foreground mb-6 max-w-md">
+        You don't have permission to access this area. 
+        This section is restricted to administrators only.
+      </p>
+      <Alert variant="destructive" className="mb-6 max-w-md">
+        <AlertTitle>Admin privileges required</AlertTitle>
+        <AlertDescription>
+          If you believe you should have access, please contact your system administrator.
+        </AlertDescription>
+      </Alert>
+      <Button asChild>
+        <Link to="/dashboard">Return to Dashboard</Link>
+      </Button>
     </div>
   );
 }

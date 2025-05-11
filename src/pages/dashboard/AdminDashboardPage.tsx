@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { AdminDashboardHeader } from "@/components/admin/dashboard/AdminDashboardHeader";
@@ -7,53 +7,58 @@ import { AdminStatCards } from "@/components/admin/dashboard/AdminStatCards";
 import { AdminDashboardTabs } from "@/components/admin/dashboard/AdminDashboardTabs";
 import { AccessDeniedSection } from "@/components/admin/dashboard/AccessDeniedSection";
 import { UserProfile } from "@/types/admin";
-
-// Demo data for the dashboard
-const mockUsers: UserProfile[] = [
-  {
-    id: "1",
-    email: "john@mohplatform.sa",
-    firstName: "John",
-    lastName: "Ahmed",
-    userType: "Healthcare Provider",
-    organization: "King Fahad Medical City",
-    lastSignIn: "2025-05-09",
-    status: "active"
-  },
-  {
-    id: "2",
-    email: "sarah@mohplatform.sa",
-    firstName: "Sarah",
-    lastName: "Al-Otaibi",
-    userType: "Innovator",
-    organization: "Saudi Health Council",
-    lastSignIn: "2025-05-08",
-    status: "active"
-  },
-  {
-    id: "3",
-    email: "admin@moh.gov.sa",
-    firstName: "Mohammed",
-    lastName: "Al-Faisal",
-    userType: "Administrator",
-    organization: "Ministry of Health",
-    lastSignIn: "2025-05-10",
-    status: "active"
-  },
-  {
-    id: "4",
-    email: "reem@healthcare.sa",
-    firstName: "Reem",
-    lastName: "Abdullah",
-    userType: "Researcher",
-    organization: "King Abdullah Medical Research Center",
-    lastSignIn: "2025-05-01",
-    status: "inactive"
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminDashboardPage() {
   const { isAdmin } = useAuth();
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Only fetch if the user is an admin
+    if (isAdmin) {
+      fetchUsers();
+    }
+  }, [isAdmin]);
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+
+      // Map profiles to UserProfile format
+      const mappedUsers: UserProfile[] = profiles.map((profile: any) => {
+        return {
+          id: profile.id,
+          email: profile.email || "", 
+          firstName: profile.first_name || "",
+          lastName: profile.last_name || "",
+          userType: profile.user_type || "user",
+          organization: profile.organization || "",
+          lastSignIn: profile.last_sign_in ? new Date(profile.last_sign_in).toLocaleDateString() : "Never",
+          status: profile.status as "active" | "inactive" || "active"
+        };
+      });
+
+      setUsers(mappedUsers);
+    } catch (error: any) {
+      console.error("Error fetching users:", error);
+      toast({
+        variant: "destructive",
+        title: "Error fetching users",
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!isAdmin) {
     return <AccessDeniedSection />;
@@ -62,8 +67,8 @@ export default function AdminDashboardPage() {
   return (
     <div>
       <AdminDashboardHeader />
-      <AdminStatCards userCount={mockUsers.length} />
-      <AdminDashboardTabs users={mockUsers} />
+      <AdminStatCards userCount={users.length} isLoading={isLoading} />
+      <AdminDashboardTabs users={users} />
     </div>
   );
 }

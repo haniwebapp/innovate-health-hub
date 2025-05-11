@@ -1,51 +1,116 @@
 
-export type UserProfile = {
+export interface UserProfile {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
-  userType?: string;
+  firstName: string;
+  lastName: string;
+  userType: string;
   organization?: string;
-  lastSignIn?: string;
+  lastSignIn: string;
   status: "active" | "inactive";
-};
+}
 
-export type GeneralSettings = {
+export interface ProfileWithEmail extends UserProfile {
+  email: string;
+}
+
+export interface GeneralSettings {
   allowNewRegistrations: boolean;
   requireEmailVerification: boolean;
   enableNotifications: boolean;
   maintenanceMode: boolean;
-};
+  [key: string]: boolean;
+}
 
-export type ChallengeSettings = {
+export interface ChallengeSettings {
   requireApproval: boolean;
   allowPublicSubmissions: boolean;
   autoCloseExpiredChallenges: boolean;
   submissionTimeLimit: string;
-};
-
-// Update to ensure avatar_url is included
-export interface ProfileData {
-  first_name?: string;
-  last_name?: string;
-  user_type?: string;
-  organization?: string;
-  avatar_url?: string;
-  email?: string;
-  updated_at?: string;
+  [key: string]: boolean | string;
 }
 
-export interface ProfileWithEmail {
-  id: string;
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  user_type?: string;
-  organization?: string;
-  last_sign_in?: string;
+export interface TableFilter {
+  field: string;
+  value: string;
+}
+
+export interface SystemEvent {
+  text: string;
+  time: string;
+  type: "user" | "submission" | "challenge" | "system";
+}
+
+export interface SystemHealth {
+  name: string;
   status: string;
-  avatar_url?: string;
-  created_at: string;
-  updated_at: string;
-  roles: string[];
+  value: number;
+}
+
+export interface AdminStatCard {
+  title: string;
+  value: number;
+  icon: React.ReactNode;
+  color: string;
+  textColor: string;
+}
+
+export interface Integration {
+  id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  type: string;
+  config: any;
+}
+
+export interface Challenge {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: "active" | "draft" | "closed";
+  startDate: string;
+  endDate: string;
+  submissions: number;
+}
+
+export interface Innovation {
+  id: string;
+  title: string;
+  creator: string;
+  status: string;
+  submittedDate: string;
+  category: string;
+}
+
+export interface InvestmentProgram {
+  id: string;
+  name: string;
+  type: string;
+  amount: string;
+  status: string;
+  applicants: number;
+  deadline: string;
+}
+
+export interface SandboxProject {
+  id: string;
+  name: string;
+  innovator: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  riskLevel: string;
+}
+
+export interface KnowledgeResource {
+  id: string;
+  title: string;
+  type: string;
+  category: string;
+  tags: string[];
+  dateAdded: string;
+  downloads: number;
+  featured: boolean;
 }
