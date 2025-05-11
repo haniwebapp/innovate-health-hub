@@ -39,23 +39,28 @@ serve(async (req) => {
           {
             role: "system",
             content: `
-              You are an AI healthcare market analyst specializing in investment trends and forecasting.
-              Analyze the provided healthcare sector, timeframe, and region to provide market insights and investment opportunities.
+              You are an AI market analyst specializing in healthcare innovation trends in Saudi Arabia.
+              Analyze the provided sector and parameters to deliver strategic market insights.
               Your response MUST be in valid JSON format with these fields:
               {
-                "summary": "Brief summary of market conditions",
+                "summary": "Brief summary of current market trends",
                 "growthRate": number (percentage),
-                "marketSize": "Market size estimation with unit",
+                "marketSize": "Market size in SAR or USD with proper notation",
                 "keyTrends": ["Trend 1", "Trend 2", "Trend 3", "Trend 4"],
-                "emergingOpportunities": ["Opportunity 1", "Opportunity 2"],
-                "riskFactors": ["Risk 1", "Risk 2"],
+                "emergingOpportunities": ["Opportunity 1", "Opportunity 2", "Opportunity 3"],
+                "riskFactors": ["Risk 1", "Risk 2", "Risk 3"],
                 "competitiveLandscape": {
                   "keyPlayers": ["Player 1", "Player 2", "Player 3"],
-                  "marketShare": {"Player 1": number, "Player 2": number, "Player 3": number, "Others": number},
+                  "marketShare": {
+                    "Player 1": number,
+                    "Player 2": number,
+                    "Player 3": number,
+                    "Others": number
+                  },
                   "barriers": ["Barrier 1", "Barrier 2"]
                 },
-                "regulatoryImpact": "Description of regulatory environment impact",
-                "vision2030Alignment": "How this sector aligns with Saudi Vision 2030",
+                "regulatoryImpact": "Description of relevant regulatory factors",
+                "vision2030Alignment": "How this sector aligns with Saudi Vision 2030 goals",
                 "investmentRecommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"]
               }
               Remember: Only return valid JSON - do not include any other text or explanation.
@@ -63,10 +68,9 @@ serve(async (req) => {
           },
           {
             role: "user",
-            content: `Provide market analysis for:
-              Sector: ${sector}
-              ${timeframe ? `Timeframe: ${timeframe}` : 'Timeframe: Next 3-5 years'}
-              ${region ? `Region: ${region}` : 'Region: Saudi Arabia'}`
+            content: `Analyze market trends for the ${sector} sector in healthcare${
+              region ? ` in ${region}` : ""
+            }${timeframe ? ` for the ${timeframe}` : ""}.`
           }
         ],
         temperature: 0.4,

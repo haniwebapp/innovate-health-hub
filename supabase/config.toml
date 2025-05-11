@@ -72,7 +72,14 @@ redirect_uri = ""
 # or any other third-party OIDC providers.
 url = ""
 
-[analytics]
-enabled = false
-port = 54327
-vector_port = 54328
+[functions]
+# Port to use for Functions server.
+port = 54328
+# Secret used to encrypt secrets specified in environment variables.
+secret_key = ""
+
+[functions.market-analysis]
+verify_jwt = true
+
+[functions.challenge-ideas-generator]
+verify_jwt = true
