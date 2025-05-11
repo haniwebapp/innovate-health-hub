@@ -1,171 +1,180 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AIService } from "./AIService";
+import { CallTrace } from "@/types/ai";
 
-export interface PolicyData {
-  name: string;
-  description: string;
-  sector: string;
-  stakeholders?: string[];
-  goals?: string[];
-  metrics?: string[];
-  timeline?: {
-    start?: string;
-    end?: string;
-  };
-  [key: string]: any;
-}
-
+/**
+ * Interface for Vision 2030 alignment check results
+ */
 export interface Vision2030AlignmentResult {
-  overallScore: number;
-  alignmentDetails: {
-    pillar: string;
-    score: number;
-    relevance: string;
-    opportunities: string[];
-  }[];
-  recommendations: string[];
-  error?: string;
-}
-
-export interface PolicyImpactResult {
-  impactScore: number;
-  stakeholderImpact: Record<string, {
-    score: number;
-    description: string;
-  }>;
-  economicImpact: string;
-  healthcareOutcomeImpact: string;
-  implementationComplexity: string;
-  recommendations: string[];
-  error?: string;
-}
-
-export interface StrategyGapAnalysis {
-  identifiedGaps: {
+  score: number;
+  alignmentAreas: {
     area: string;
-    description: string;
-    severity: string;
-    potentialSolutions: string[];
+    score: number;
+    rationale: string;
   }[];
-  strengthAreas: string[];
-  recommendedFocus: string[];
+  recommendations: string[];
+  overallAssessment: string;
   error?: string;
 }
 
+/**
+ * Interface for policy impact simulation results
+ */
+export interface PolicyImpactSimulation {
+  sectors: {
+    sector: string;
+    impact: "positive" | "neutral" | "negative";
+    magnitude: number;
+    description: string;
+  }[];
+  timelineImpact: {
+    shortTerm: string;
+    mediumTerm: string;
+    longTerm: string;
+  };
+  stakeholders: {
+    group: string;
+    impact: string;
+  }[];
+  risks: string[];
+  opportunities: string[];
+  overallAssessment: string;
+  error?: string;
+}
+
+/**
+ * Service for handling policy and strategy related AI operations
+ */
 export class PolicyAIService {
   /**
-   * Analyze alignment with Saudi Vision 2030
+   * Checks the alignment of a policy or innovation with Vision 2030 goals
    */
-  static async analyzeVision2030Alignment(data: PolicyData): Promise<Vision2030AlignmentResult> {
+  static async checkVision2030Alignment(
+    description: string,
+    sector: string,
+    context?: string
+  ): Promise<Vision2030AlignmentResult> {
     try {
-      const { data: result, error } = await supabase.functions.invoke("vision-2030-alignment", {
-        body: { policyData: data }
+      const trace = AIService.createTrace("vision2030-alignment", context || "policy-alignment");
+      
+      const { data, error } = await supabase.functions.invoke("vision-2030-alignment", {
+        body: { description, sector, trace }
       });
 
       if (error) throw error;
-      return result as Vision2030AlignmentResult;
+      
+      // Log the AI operation for analytics and improvement
+      await AIService.logAIOperation(
+        "vision2030-alignment",
+        context || "policy-alignment",
+        { description, sector },
+        data,
+        undefined
+      );
+      
+      return data as Vision2030AlignmentResult;
     } catch (error: any) {
-      throw AIService.handleError(error, "analyzeVision2030Alignment", "policy");
+      console.error("Error in Vision 2030 alignment check:", error);
+      return {
+        score: 0,
+        alignmentAreas: [],
+        recommendations: ["Unable to perform alignment check due to an error."],
+        overallAssessment: "Error performing alignment assessment.",
+        error: error.message
+      };
     }
   }
 
   /**
-   * Simulate policy impact across multiple domains
+   * Simulates the potential impact of a policy or healthcare innovation
    */
   static async simulatePolicyImpact(
-    policyData: PolicyData, 
-    simulationParams?: { timeframe?: string, region?: string }
-  ): Promise<PolicyImpactResult> {
+    policyDescription: string,
+    targetSectors: string[],
+    timeframe: "short" | "medium" | "long",
+    context?: string
+  ): Promise<PolicyImpactSimulation> {
     try {
+      const trace = AIService.createTrace("policy-impact-simulation", context || "impact-analysis");
+      
       const { data, error } = await supabase.functions.invoke("policy-impact-simulation", {
         body: { 
-          policyData,
-          simulationParams: simulationParams || { timeframe: "5 years", region: "Saudi Arabia" }
+          policyDescription, 
+          targetSectors, 
+          timeframe,
+          trace 
         }
       });
 
       if (error) throw error;
-      return data as PolicyImpactResult;
+      
+      // Log the AI operation for analytics and improvement
+      await AIService.logAIOperation(
+        "policy-impact-simulation",
+        context || "impact-analysis",
+        { policyDescription, targetSectors, timeframe },
+        data,
+        undefined
+      );
+      
+      return data as PolicyImpactSimulation;
     } catch (error: any) {
-      throw AIService.handleError(error, "simulatePolicyImpact", "policy");
+      console.error("Error in policy impact simulation:", error);
+      return {
+        sectors: [],
+        timelineImpact: {
+          shortTerm: "Unable to analyze due to error.",
+          mediumTerm: "Unable to analyze due to error.",
+          longTerm: "Unable to analyze due to error."
+        },
+        stakeholders: [],
+        risks: ["Analysis failed due to technical error."],
+        opportunities: [],
+        overallAssessment: "Error performing policy impact analysis.",
+        error: error.message
+      };
     }
   }
 
   /**
-   * Analyze healthcare strategy gaps
+   * Analyzes a policy against global healthcare best practices
    */
-  static async analyzeStrategyGaps(
-    currentStrategy: PolicyData,
-    benchmarks?: { global?: boolean, regional?: boolean }
-  ): Promise<StrategyGapAnalysis> {
-    try {
-      const { data, error } = await supabase.functions.invoke("strategy-gap-analysis", {
-        body: { 
-          currentStrategy,
-          benchmarks: benchmarks || { global: true, regional: true }
-        }
-      });
-
-      if (error) throw error;
-      return data as StrategyGapAnalysis;
-    } catch (error: any) {
-      throw AIService.handleError(error, "analyzeStrategyGaps", "policy");
-    }
-  }
-
-  /**
-   * Generate KPIs for healthcare policy
-   */
-  static async generatePolicyKPIs(
-    policyData: PolicyData
+  static async analyzePolicyAgainstBestPractices(
+    policyText: string,
+    region?: string
   ): Promise<{
-    kpis: {
-      name: string;
-      description: string;
-      measurementMethod: string;
-      targetValue: string;
-      timeframe: string;
-    }[];
-    error?: string;
+    matchingPractices: string[];
+    gaps: string[];
+    recommendations: string[];
+    overallScore: number;
   }> {
     try {
-      const { data, error } = await supabase.functions.invoke("policy-kpi-generation", {
-        body: { policyData }
-      });
-
-      if (error) throw error;
-      return data;
+      // This would connect to a Supabase Edge Function in a full implementation
+      // For now, return mock data
+      return {
+        matchingPractices: [
+          "Evidence-based healthcare delivery",
+          "Patient-centered care approach"
+        ],
+        gaps: [
+          "Digital health integration",
+          "Cross-sector collaboration framework"
+        ],
+        recommendations: [
+          "Consider integrating digital health solutions into the policy framework",
+          "Develop stronger mechanisms for cross-sector collaboration"
+        ],
+        overallScore: 65
+      };
     } catch (error: any) {
-      throw AIService.handleError(error, "generatePolicyKPIs", "policy");
-    }
-  }
-
-  /**
-   * Create a draft implementation roadmap for a policy
-   */
-  static async createImplementationRoadmap(
-    policyData: PolicyData
-  ): Promise<{
-    phases: {
-      name: string;
-      timeline: string;
-      goals: string[];
-      activities: string[];
-      resources: string[];
-      risks: string[];
-    }[];
-    error?: string;
-  }> {
-    try {
-      const { data, error } = await supabase.functions.invoke("implementation-roadmap", {
-        body: { policyData }
-      });
-
-      if (error) throw error;
-      return data;
-    } catch (error: any) {
-      throw AIService.handleError(error, "createImplementationRoadmap", "policy");
+      console.error("Error in policy best practices analysis:", error);
+      return {
+        matchingPractices: [],
+        gaps: [],
+        recommendations: ["Analysis failed due to technical error."],
+        overallScore: 0
+      };
     }
   }
 }
