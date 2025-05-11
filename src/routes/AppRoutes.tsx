@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Dashboard from '@/pages/dashboard';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import AdminLayout from '@/components/layouts/AdminLayout';
