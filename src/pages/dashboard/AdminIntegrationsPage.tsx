@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { Plus, Search, Shield, Settings } from "lucide-react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import IntegrationList from "@/components/admin/IntegrationList";
 import IntegrationForm from "@/components/admin/IntegrationForm";
-import IntegrationSettingsTab from "@/components/admin/IntegrationSettingsTab";
+import { IntegrationSettingsTab } from "@/components/admin/IntegrationSettingsTab"; // Changed to named import
 import { fetchIntegrations, Integration } from "@/utils/integrationUtils";
 import { AdminLoading, AdminError } from "@/components/admin/ui/AdminPageState";
 import { motion } from "framer-motion";
@@ -121,7 +120,7 @@ export default function AdminIntegrationsPage() {
           transition={{ duration: 0.3 }}
         >
           <IntegrationForm 
-            onSuccess={handleIntegrationAdded} 
+            onSave={handleIntegrationAdded} 
             onCancel={handleCancel}
           />
         </motion.div>
@@ -144,8 +143,9 @@ export default function AdminIntegrationsPage() {
             </div>
             
             <IntegrationList 
-              integrations={filteredIntegrations} 
-              onUpdate={handleIntegrationUpdated} 
+              category="data"
+              title="Integrations" 
+              description="Manage your integrations"
             />
           </TabsContent>
           

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -161,7 +160,10 @@ export default function IntegrationList({ category, title, description }: Integr
             <Button 
               variant="outline" 
               size="sm"
-              onClick={handleAddIntegration}
+              onClick={() => toast({
+                title: "Add Integration",
+                description: "This feature will be implemented in the next phase.",
+              })}
               className="border-moh-green/30 text-moh-green hover:bg-moh-lightGreen/20"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -170,7 +172,7 @@ export default function IntegrationList({ category, title, description }: Integr
             <Button 
               variant="outline" 
               size="sm"
-              onClick={handleRefresh}
+              onClick={() => loadIntegrations()}
               disabled={loading || isRefreshing}
               className="border-moh-green/30 text-moh-green hover:bg-moh-lightGreen/20"
             >

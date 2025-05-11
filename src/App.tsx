@@ -1,7 +1,7 @@
 
 import { QueryClient } from '@tanstack/react-query';
 import { AppProviders } from './providers/AppProviders';
-import { AppRoutes } from './routes/AppRoutes';
+import { appRoutes } from './routes/AppRoutes'; // Changed AppRoutes to appRoutes
 import './App.css';
 import './services/ai/AIServiceRegistry'; // Import the registry to ensure services get registered
 
@@ -10,7 +10,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <AppProviders queryClient={queryClient}>
-      <AppRoutes />
+      {appRoutes}
     </AppProviders>
   );
 }

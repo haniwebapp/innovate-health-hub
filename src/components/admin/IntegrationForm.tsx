@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,11 +11,12 @@ import { useToast } from "@/hooks/use-toast";
 import { createIntegration } from "@/utils/integrationUtils";
 
 interface IntegrationFormProps {
-  onSave: () => void;
+  onSave: () => void;  // Changed from onSuccess to onSave
   onCancel: () => void;
 }
 
 export default function IntegrationForm({ onSave, onCancel }: IntegrationFormProps) {
+  
   const { toast } = useToast();
   const [formTab, setFormTab] = useState("general");
   const [loading, setLoading] = useState(false);
@@ -40,6 +40,7 @@ export default function IntegrationForm({ onSave, onCancel }: IntegrationFormPro
   const [healthChecks, setHealthChecks] = useState(false);
 
   const handleSave = async () => {
+    
     if (!name || !type) {
       toast({
         title: "Missing fields",
@@ -100,6 +101,7 @@ export default function IntegrationForm({ onSave, onCancel }: IntegrationFormPro
   };
 
   return (
+    
     <Card>
       <CardHeader>
         <CardTitle>Add New Integration</CardTitle>
