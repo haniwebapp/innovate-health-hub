@@ -412,6 +412,96 @@ export type Database = {
           },
         ]
       }
+      compliance_standards: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          issuing_body: string
+          name: string
+          publication_date: string | null
+          requirements: Json | null
+          updated_at: string | null
+          url: string | null
+          version: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          issuing_body: string
+          name: string
+          publication_date?: string | null
+          requirements?: Json | null
+          updated_at?: string | null
+          url?: string | null
+          version?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          issuing_body?: string
+          name?: string
+          publication_date?: string | null
+          requirements?: Json | null
+          updated_at?: string | null
+          url?: string | null
+          version?: string | null
+        }
+        Relationships: []
+      }
+      ethics_assessment_results: {
+        Row: {
+          application_id: string
+          assessed_at: string | null
+          concerns: string[] | null
+          created_at: string | null
+          fairness_score: number
+          id: string
+          overall_score: number
+          privacy_score: number
+          recommendations: string[] | null
+          safety_score: number
+          summary: string
+          transparency_score: number
+          updated_at: string | null
+        }
+        Insert: {
+          application_id: string
+          assessed_at?: string | null
+          concerns?: string[] | null
+          created_at?: string | null
+          fairness_score: number
+          id?: string
+          overall_score: number
+          privacy_score: number
+          recommendations?: string[] | null
+          safety_score: number
+          summary: string
+          transparency_score: number
+          updated_at?: string | null
+        }
+        Update: {
+          application_id?: string
+          assessed_at?: string | null
+          concerns?: string[] | null
+          created_at?: string | null
+          fairness_score?: number
+          id?: string
+          overall_score?: number
+          privacy_score?: number
+          recommendations?: string[] | null
+          safety_score?: number
+          summary?: string
+          transparency_score?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       innovation_investments: {
         Row: {
           amount: number
@@ -1016,6 +1106,57 @@ export type Database = {
           status?: string
           updated_at?: string
           user_type?: string | null
+        }
+        Relationships: []
+      }
+      regulatory_analysis_results: {
+        Row: {
+          analyzed_at: string | null
+          applicable_regulations: Json | null
+          application_id: string
+          compliance_score: number
+          compliance_timeline: Json | null
+          created_at: string | null
+          documentation_needed: string[] | null
+          id: string
+          key_requirements: Json | null
+          next_steps: string[] | null
+          risk_level: string
+          summary: string
+          testing_requirements: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          analyzed_at?: string | null
+          applicable_regulations?: Json | null
+          application_id: string
+          compliance_score: number
+          compliance_timeline?: Json | null
+          created_at?: string | null
+          documentation_needed?: string[] | null
+          id?: string
+          key_requirements?: Json | null
+          next_steps?: string[] | null
+          risk_level: string
+          summary: string
+          testing_requirements?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          analyzed_at?: string | null
+          applicable_regulations?: Json | null
+          application_id?: string
+          compliance_score?: number
+          compliance_timeline?: Json | null
+          created_at?: string | null
+          documentation_needed?: string[] | null
+          id?: string
+          key_requirements?: Json | null
+          next_steps?: string[] | null
+          risk_level?: string
+          summary?: string
+          testing_requirements?: string[] | null
+          updated_at?: string | null
         }
         Relationships: []
       }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
@@ -51,8 +50,14 @@ export default function Vision2030AlignmentPage() {
     
     try {
       // Bundle the form data as the innovation data
-      const innovationData = {
-        ...values,
+      const innovationData: InnovationData = {
+        description: values.description || '',
+        name: values.name || '',
+        sector: values.sector || '',
+        target_audience: values.target_audience || '',
+        technology: values.technology || '',
+        impact: values.impact || '',
+        stage: 'development' // Add this required field
       };
       
       // Call the Vision 2030 alignment service

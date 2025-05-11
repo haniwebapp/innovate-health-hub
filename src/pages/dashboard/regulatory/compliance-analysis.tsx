@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { 
@@ -33,6 +32,7 @@ import { RegulatoryAIService, InnovationData } from '@/services/ai/complianceAI/
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
   name: z.string().min(3, 'Innovation name is required'),
@@ -73,6 +73,8 @@ export default function ComplianceAnalysisPage() {
       hasPatientData: false,
     }
   });
+  
+  const navigate = useNavigate();
   
   const onSubmit = async (values: FormValues) => {
     setIsAnalyzing(true);
