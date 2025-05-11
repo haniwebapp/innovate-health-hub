@@ -6,11 +6,17 @@ export class AdminLogService {
   /**
    * Add a new log entry
    */
-  static async addLog(logData: Omit<AdminLog, 'id' | 'created_at'>): Promise<AdminLog | null> {
+  static async addLog(logData: Omit<AdminLog, "id" | "created_at">): Promise<AdminLog | null> {
     try {
       const { data, error } = await supabase
         .from('admin_logs')
-        .insert(logData)
+        .insert({
+          log_type: logData.log_type,
+          source: logData.source,
+          severity: logData.severity,
+          details: logData.details,
+          user_id: logData.user_id
+        })
         .select()
         .single();
       

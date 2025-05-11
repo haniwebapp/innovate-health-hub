@@ -1,6 +1,17 @@
 
 import { DateRange } from "react-day-picker";
 
+// Admin log types
+export interface AdminLog {
+  id: string;
+  log_type: string;
+  source: string;
+  details: Record<string, any>;
+  severity: "info" | "warning" | "error" | "critical";
+  created_at: Date;
+  user_id?: string;
+}
+
 // Admin user profile types
 export interface UserProfile {
   id: string;
