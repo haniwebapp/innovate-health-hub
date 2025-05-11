@@ -125,3 +125,51 @@ export interface StakeholderImpactResult {
   recommendations: string[];
   error?: string;
 }
+
+/**
+ * Interface for policy annotation results
+ */
+export interface PolicyAnnotationResult {
+  annotations: PolicyAnnotation[];
+  overallAnalysis: string;
+  keyTakeaways: string[];
+  error?: string;
+}
+
+/**
+ * Interface for a single policy annotation
+ */
+export interface PolicyAnnotation {
+  section: string;
+  annotation: string;
+  guidelines: string[];
+  challenges: string[];
+}
+
+/**
+ * Interface for implementation guidance
+ */
+export interface ImplementationGuidanceResult {
+  implementationSteps: string[];
+  requiredResources: string[];
+  stakeholders: string[];
+  timeline: {
+    shortTerm: string[];
+    mediumTerm: string[];
+    longTerm: string[];
+  };
+  potentialChallenges: string[];
+  successMetrics: string[];
+  error?: string;
+}
+
+/**
+ * Interface for policy Q&A results
+ */
+export interface PolicyQAResult {
+  answer: string;
+  confidence: "high" | "medium" | "low";
+  relevantSections: string[];
+  suggestions: string[];
+  error?: string;
+}

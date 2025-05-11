@@ -2,6 +2,7 @@
 import { VisionAlignmentService } from "./policy/VisionAlignmentService";
 import { ImpactSimulationService } from "./policy/ImpactSimulationService";
 import { BestPracticesService } from "./policy/BestPracticesService";
+import { PolicyAnnotationService } from "./policy/PolicyAnnotationService";
 
 // Re-export types from the policy types file
 export * from "./policy/types";
@@ -21,4 +22,9 @@ export class PolicyAIService {
 
   // Best practices services
   static analyzePolicyAgainstBestPractices = BestPracticesService.analyzePolicyAgainstBestPractices;
+  
+  // Policy annotation and Q&A services
+  static annotatePolicy = PolicyAnnotationService.annotatePolicy;
+  static getImplementationGuidance = PolicyAnnotationService.getImplementationGuidance;
+  static askPolicyQuestion = PolicyAnnotationService.askQuestion;
 }

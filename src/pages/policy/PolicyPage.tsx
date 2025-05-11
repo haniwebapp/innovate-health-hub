@@ -5,7 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Vision2030AlignmentChecker } from "@/components/policy/Vision2030AlignmentChecker";
 import { PolicyImpactSimulator } from "@/components/policy/PolicyImpactSimulator"; 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark } from "lucide-react";
+import { Landmark, FileText, PenSquare, Bell } from "lucide-react";
+import { PolicyAnnotator } from "@/components/policy/PolicyAnnotator";
+import { DocumentChangeNotifier } from "@/components/policy/DocumentChangeNotifier";
 
 export default function PolicyPage() {
   const [activeTab, setActiveTab] = useState("alignment");
@@ -30,6 +32,8 @@ export default function PolicyPage() {
         <TabsList>
           <TabsTrigger value="alignment">Vision 2030 Alignment</TabsTrigger>
           <TabsTrigger value="impact">Impact Simulation</TabsTrigger>
+          <TabsTrigger value="annotations">Policy Analyzer</TabsTrigger>
+          <TabsTrigger value="notifications">Change Notifications</TabsTrigger>
           <TabsTrigger value="strategy">Strategy Analysis</TabsTrigger>
         </TabsList>
         
@@ -39,6 +43,14 @@ export default function PolicyPage() {
         
         <TabsContent value="impact">
           <PolicyImpactSimulator />
+        </TabsContent>
+        
+        <TabsContent value="annotations">
+          <PolicyAnnotator />
+        </TabsContent>
+        
+        <TabsContent value="notifications">
+          <DocumentChangeNotifier />
         </TabsContent>
         
         <TabsContent value="strategy">

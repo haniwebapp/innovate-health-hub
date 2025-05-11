@@ -1,47 +1,50 @@
 
-// Import the AIService base class
-import { AIService } from "./AIService";
-
-// Import all service implementations
-import { InvestmentAIService } from "./InvestmentAIService";
-import { RegulatoryAIService } from "./RegulatoryAIService";
+import { AIService, AIServiceType } from "./AIService";
 import { InnovationAIService } from "./InnovationAIService";
-import { KnowledgeAIService } from "./KnowledgeAIService";
+import { RegulatoryAIService } from "./RegulatoryAIService"; 
+import { InvestmentAIService } from "./InvestmentAIService";
+import { KnowledgeAIService } from "./KnowledgeAIService"; 
 import { PolicyAIService } from "./PolicyAIService";
+import { AdminAIService } from "./admin/AdminAIService";
 import { ChallengeAIService } from "./challenge/ChallengeAIService";
+import { CommunityAIService } from "./community/CommunityAIService";
+import { ComplianceAIService } from "./compliance/ComplianceAIService";
+import { EventsAIService } from "./events/EventsAIService";
 import { SupportAIService } from "./support/SupportAIService";
 import { ClinicalAIService } from "./clinical/ClinicalAIService";
-import { EventsAIService } from "./events/EventsAIService";
-import { AdminAIService } from "./admin/AdminAIService";
-import { ComplianceAIService } from "./compliance/ComplianceAIService";
-import { CommunityAIService } from "./community/CommunityAIService";
 
-// Register all services with the AIService class
-AIService.investment = InvestmentAIService;
-AIService.regulatory = RegulatoryAIService;
+// Register all AI services with the central registry
 AIService.innovation = InnovationAIService;
+AIService.regulatory = RegulatoryAIService;
+AIService.investment = InvestmentAIService;
 AIService.knowledge = KnowledgeAIService;
 AIService.policy = PolicyAIService;
+AIService.admin = AdminAIService;
 AIService.challenge = ChallengeAIService;
+AIService.community = CommunityAIService;
+AIService.compliance = ComplianceAIService;
+AIService.events = EventsAIService;
 AIService.support = SupportAIService;
 AIService.clinical = ClinicalAIService;
-AIService.events = EventsAIService;
-AIService.admin = AdminAIService;
-AIService.compliance = ComplianceAIService;
-AIService.community = CommunityAIService;
 
-// Export registered services to ensure the registration code runs
-export const registeredServices = {
-  investment: InvestmentAIService,
-  regulatory: RegulatoryAIService,
-  innovation: InnovationAIService,
-  knowledge: KnowledgeAIService,
-  policy: PolicyAIService,
-  challenge: ChallengeAIService,
-  support: SupportAIService,
-  clinical: ClinicalAIService,
-  events: EventsAIService,
-  admin: AdminAIService,
-  compliance: ComplianceAIService,
-  community: CommunityAIService
+// Export a function to get a specific service by type
+export function getAIService(type: AIServiceType) {
+  return AIService[type];
+}
+
+// Export all services
+export {
+  AIService,
+  InnovationAIService,
+  RegulatoryAIService,
+  InvestmentAIService,
+  KnowledgeAIService,
+  PolicyAIService,
+  AdminAIService,
+  ChallengeAIService,
+  CommunityAIService,
+  ComplianceAIService,
+  EventsAIService,
+  SupportAIService,
+  ClinicalAIService
 };
