@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
@@ -11,7 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Loader2, ArrowRight, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { InvestmentAIService } from '@/services/ai/InvestmentAIService';
+import { InvestmentAIService, InnovationData } from '@/services/ai/InvestmentAIService';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 
