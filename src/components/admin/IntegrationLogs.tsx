@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RefreshCw, Info, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { AdminLoading, AdminError, AdminEmpty } from "@/components/admin/ui/AdminPageState";
 
 interface IntegrationLogsProps {
   integrationId: string;
@@ -77,49 +78,25 @@ export default function IntegrationLogs({ integrationId }: IntegrationLogsProps)
   };
 
   if (loading) {
-    return (
-      <div className="space-y-3">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium">Integration Logs</h3>
-          <Skeleton className="h-8 w-20" />
-        </div>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-md border p-3">
-            <div className="flex items-center justify-between mb-1">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-16" />
-            </div>
-            <Skeleton className="h-3 w-full mt-2" />
-          </div>
-        ))}
-      </div>
-    );
+    return <AdminLoading message="Loading integration logs..." />;
   }
 
   if (error) {
     return (
-      <div className="rounded-md border border-red-200 bg-red-50 p-4 text-center">
-        <AlertCircle className="h-6 w-6 text-red-500 mx-auto mb-2" />
-        <p className="text-red-800 font-medium">Failed to load logs</p>
-        <p className="text-red-600 text-sm mb-2">{error.message}</p>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={loadLogs} 
-          className="mt-2"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" /> Try Again
-        </Button>
-      </div>
+      <AdminError
+        title="Failed to load logs" 
+        description={error.message}
+        onRetry={loadLogs}
+      />
     );
   }
 
   if (logs.length === 0) {
     return (
-      <div className="text-center p-4 border rounded-md bg-muted/20">
-        <Info className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
-        <p className="text-muted-foreground">No logs found for this integration</p>
-      </div>
+      <AdminEmpty 
+        message="No logs found for this integration"
+        icon={<Info className="h-6 w-6 text-muted-foreground" />}
+      />
     );
   }
 
