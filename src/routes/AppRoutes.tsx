@@ -1,3 +1,4 @@
+
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
@@ -71,6 +72,7 @@ import AdminSandboxPage from '@/pages/admin/sandbox/index';
 import AdminKnowledgePage from '@/pages/admin/knowledge/index';
 import AdminNotificationsPage from '@/pages/admin/notifications/index';
 import AdminIntegrationsPage2 from '@/pages/admin/integrations/index';
+import AdminSettingsPage2 from '@/pages/admin/SettingsPage';
 
 import PolicyPage from '@/pages/policy/index';
 
@@ -154,7 +156,7 @@ export function AppRoutes() {
         } />
         <Route path="admin/users" element={
           <ProtectedRoute adminOnly={true}>
-            <AdminUsersPage />
+            <AdminUserManagementPage />
           </ProtectedRoute>
         } />
         <Route path="admin/analytics" element={
@@ -164,12 +166,12 @@ export function AppRoutes() {
         } />
         <Route path="admin/settings" element={
           <ProtectedRoute adminOnly={true}>
-            <AdminSettingsPage />
+            <AdminSettingsPage2 />
           </ProtectedRoute>
         } />
         <Route path="admin/integrations" element={
           <ProtectedRoute adminOnly={true}>
-            <AdminIntegrationsPage />
+            <AdminIntegrationsPage2 />
           </ProtectedRoute>
         } />
         <Route path="admin/cms" element={

@@ -29,8 +29,10 @@ export function OverviewTab() {
           <CardHeader className="bg-slate-50 border-b">
             <CardTitle className="text-lg font-semibold flex items-center justify-between">
               <span>Platform Activity</span>
-              <Button variant="ghost" size="sm" className="text-xs">
-                View all <ChevronRight size={14} />
+              <Button variant="ghost" size="sm" className="text-xs" asChild>
+                <Link to="/dashboard/admin/analytics">
+                  View all <ChevronRight size={14} />
+                </Link>
               </Button>
             </CardTitle>
           </CardHeader>
