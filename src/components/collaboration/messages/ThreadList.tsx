@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Users, MessageSquarePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -26,18 +26,19 @@ export function ThreadList({ threads, selectedThreadId, onSelectThread, isLoadin
 
   // Format the timestamp to a readable format
   const formatTimestamp = (timestamp: string) => {
-    return format(new Date(timestamp), "MMM d");
+    const date = new Date(timestamp);
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === now.toDateString()) {
+      return format(date, "h:mm a"); // Today, show time only
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    } else {
+      return format(date, "MMM d");
+    }
   };
-
-  if (isLoading) {
-    return (
-      <div className="p-4">
-        <div className="flex items-center justify-center h-20">
-          <p className="text-muted-foreground">Loading conversations...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="border-r h-full flex flex-col">
@@ -53,10 +54,14 @@ export function ThreadList({ threads, selectedThreadId, onSelectThread, isLoadin
         </div>
       </div>
       
-      <ScrollArea className="flex-1">
-        <div className="p-3 space-y-1">
-          {filteredThreads.length > 0 ? (
-            filteredThreads.map(thread => (
+      {isLoading ? (
+        <div className="p-6 flex justify-center">
+          <p className="text-muted-foreground">Loading conversations...</p>
+        </div>
+      ) : filteredThreads.length > 0 ? (
+        <ScrollArea className="flex-1">
+          <div className="p-3 space-y-1">
+            {filteredThreads.map(thread => (
               <Button
                 key={thread.id}
                 variant="ghost"
@@ -68,7 +73,9 @@ export function ThreadList({ threads, selectedThreadId, onSelectThread, isLoadin
               >
                 <div className="flex w-full items-start gap-2">
                   <Avatar className="h-10 w-10">
-                    <AvatarFallback>
+                    <AvatarFallback className={cn(
+                      thread.is_group ? "bg-blue-100 text-blue-700" : "bg-moh-green/20 text-moh-green"
+                    )}>
                       {thread.title.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -85,14 +92,18 @@ export function ThreadList({ threads, selectedThreadId, onSelectThread, isLoadin
                   </div>
                 </div>
               </Button>
-            ))
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground">No conversations found</p>
-            </div>
-          )}
+            ))}
+          </div>
+        </ScrollArea>
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+          <MessageSquarePlus className="h-12 w-12 text-muted-foreground/50 mb-2" />
+          <p className="text-muted-foreground mb-1">No conversations found</p>
+          <p className="text-xs text-muted-foreground/75 mb-4">
+            Create a new conversation to get started
+          </p>
         </div>
-      </ScrollArea>
+      )}
     </div>
   );
 }

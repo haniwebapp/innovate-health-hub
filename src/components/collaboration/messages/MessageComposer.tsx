@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal } from "lucide-react";
+import { SendHorizontal, Loader2 } from "lucide-react";
 import { Thread } from "@/utils/messageUtils";
 
 interface MessageComposerProps {
@@ -17,13 +17,21 @@ export function MessageComposer({ selectedThread, onSendMessage, isLoading }: Me
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!message.trim()) return;
+    if (!message.trim() || isLoading) return;
     
     try {
       await onSendMessage(message);
       setMessage("");
     } catch (error) {
       console.error("Failed to send message", error);
+      // Error is handled in the parent component
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
@@ -35,6 +43,7 @@ export function MessageComposer({ selectedThread, onSendMessage, isLoading }: Me
           rows={2}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           disabled={!selectedThread || isLoading}
           className="resize-none pr-14"
         />
@@ -44,7 +53,11 @@ export function MessageComposer({ selectedThread, onSendMessage, isLoading }: Me
           disabled={!message.trim() || !selectedThread || isLoading}
           className="absolute bottom-2 right-2"
         >
-          <SendHorizontal className="h-5 w-5" />
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <SendHorizontal className="h-4 w-4" />
+          )}
           <span className="sr-only">Send message</span>
         </Button>
       </div>

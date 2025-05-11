@@ -6,10 +6,11 @@ import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { MessageList } from "@/components/collaboration/messages/MessageList";
 import { MessageComposer } from "@/components/collaboration/messages/MessageComposer";
 import { ThreadList } from "@/components/collaboration/messages/ThreadList";
-import { Thread, Message, fetchUserThreads, fetchThreadMessages, sendMessage, markMessagesAsRead } from "@/utils/messageUtils";
+import { Thread, Message, fetchUserThreads, fetchThreadMessages, sendMessage, markMessagesAsRead, createThread } from "@/utils/messageUtils";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import NewThreadDialog from "@/components/collaboration/messages/NewThreadDialog";
 
 export default function MessagesPage() {
@@ -18,8 +19,10 @@ export default function MessagesPage() {
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [selectedThread, setSelectedThread] = useState<Thread | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -29,28 +32,40 @@ export default function MessagesPage() {
     const loadThreads = async () => {
       try {
         setIsLoading(true);
+        setFetchError(null);
+        
+        if (!user) {
+          setFetchError("Authentication required");
+          setIsLoading(false);
+          return;
+        }
+        
         const userThreads = await fetchUserThreads();
         setThreads(userThreads);
-        setIsLoading(false);
       } catch (error) {
         console.error("Failed to load threads:", error);
+        setFetchError("Failed to load conversations");
         toast({
           variant: "destructive",
           title: "Error loading conversations",
           description: "Please try again later."
         });
+      } finally {
         setIsLoading(false);
       }
     };
     
-    loadThreads();
-  }, [toast]);
+    if (user) {
+      loadThreads();
+    }
+  }, [toast, user]);
   
   // Fetch messages when a thread is selected
   useEffect(() => {
     const loadMessages = async () => {
       if (selectedThreadId) {
         try {
+          setIsFetching(true);
           const threadMessages = await fetchThreadMessages(selectedThreadId);
           setMessages(threadMessages);
           
@@ -67,6 +82,8 @@ export default function MessagesPage() {
             title: "Error loading messages",
             description: "Please try again later."
           });
+        } finally {
+          setIsFetching(false);
         }
       } else {
         setMessages([]);
@@ -96,7 +113,7 @@ export default function MessagesPage() {
           : thread
       ));
       
-      setIsSending(false);
+      return Promise.resolve();
     } catch (error) {
       console.error("Failed to send message:", error);
       toast({
@@ -104,32 +121,54 @@ export default function MessagesPage() {
         title: "Failed to send message",
         description: "Please try again."
       });
+      return Promise.reject(error);
+    } finally {
       setIsSending(false);
     }
   };
   
   const handleCreateThread = async (title: string, participantIds: string[]) => {
-    // This will be implemented in the NewThreadDialog component
     setIsDialogOpen(false);
     
-    // Refresh threads list after creating a new thread
     try {
+      setIsLoading(true);
+      
+      // Create new thread
+      const newThread = await createThread(title, participantIds);
+      
+      // Refresh threads list
       const userThreads = await fetchUserThreads();
       setThreads(userThreads);
       
-      // Select the newly created thread (assumed to be the first one)
-      if (userThreads.length > 0) {
-        setSelectedThreadId(userThreads[0].id);
-      }
+      // Select the newly created thread
+      setSelectedThreadId(newThread.id);
       
       toast({
         title: "Conversation created",
         description: "Your new conversation has been created."
       });
     } catch (error) {
-      console.error("Failed to refresh threads:", error);
+      console.error("Failed to create thread:", error);
+      toast({
+        variant: "destructive",
+        title: "Failed to create conversation",
+        description: "Please try again."
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-14rem)]">
+        <Card className="p-6 text-center">
+          <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
+          <p className="text-muted-foreground mb-4">Please sign in to access the messaging system.</p>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -142,36 +181,54 @@ export default function MessagesPage() {
           ]}
         />
         
-        <Button onClick={() => setIsDialogOpen(true)}>
+        <Button onClick={() => setIsDialogOpen(true)} disabled={isLoading}>
           <Plus className="h-4 w-4 mr-2" />
           New Conversation
         </Button>
       </div>
       
-      <Card className="h-[calc(100vh-14rem)] flex">
-        <div className="w-full md:w-72 lg:w-80 h-full">
-          <ThreadList 
-            threads={threads}
-            selectedThreadId={selectedThreadId}
-            onSelectThread={handleSelectThread}
-            isLoading={isLoading}
-          />
+      {isLoading && (
+        <div className="flex justify-center p-8">
+          <Loader2 className="h-8 w-8 text-moh-green animate-spin" />
         </div>
-        
-        <div className="flex-1 flex flex-col h-full">
-          <MessageList 
-            messages={messages}
-            selectedThread={selectedThread}
-            currentUserId={user?.id || ''}
-            isLoading={isLoading}
-          />
-          <MessageComposer 
-            selectedThread={selectedThread}
-            onSendMessage={handleSendMessage}
-            isLoading={isSending}
-          />
-        </div>
-      </Card>
+      )}
+      
+      {fetchError && !isLoading && (
+        <Card className="p-6 text-center">
+          <h2 className="text-lg font-semibold mb-2">Error</h2>
+          <p className="text-muted-foreground mb-4">{fetchError}</p>
+          <Button onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </Card>
+      )}
+      
+      {!isLoading && !fetchError && (
+        <Card className="h-[calc(100vh-14rem)] flex">
+          <div className="w-full md:w-72 lg:w-80 h-full">
+            <ThreadList 
+              threads={threads}
+              selectedThreadId={selectedThreadId}
+              onSelectThread={handleSelectThread}
+              isLoading={false}
+            />
+          </div>
+          
+          <div className="flex-1 flex flex-col h-full">
+            <MessageList 
+              messages={messages}
+              selectedThread={selectedThread}
+              currentUserId={user?.id || ''}
+              isLoading={isFetching}
+            />
+            <MessageComposer 
+              selectedThread={selectedThread}
+              onSendMessage={handleSendMessage}
+              isLoading={isSending}
+            />
+          </div>
+        </Card>
+      )}
       
       <NewThreadDialog 
         open={isDialogOpen} 

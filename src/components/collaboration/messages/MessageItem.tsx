@@ -3,6 +3,7 @@ import { Message } from "@/utils/messageUtils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { useState, useEffect } from "react";
 
 interface MessageItemProps {
   message: Message;
@@ -10,8 +11,13 @@ interface MessageItemProps {
 }
 
 export function MessageItem({ message, isFromCurrentUser }: MessageItemProps) {
+  const [formattedTime, setFormattedTime] = useState<string>("");
+  
   // Format the timestamp
-  const formattedTime = format(new Date(message.created_at), "p");
+  useEffect(() => {
+    const messageDate = new Date(message.created_at);
+    setFormattedTime(format(messageDate, "p"));
+  }, [message.created_at]);
   
   // Get the initials for the avatar
   const getInitials = (id: string) => {
@@ -41,9 +47,9 @@ export function MessageItem({ message, isFromCurrentUser }: MessageItemProps) {
               : "bg-gray-100 text-gray-800 rounded-bl-none"
           )}
         >
-          <p>{message.content}</p>
+          <p className="whitespace-pre-wrap">{message.content}</p>
         </div>
-        <span className="text-xs text-muted-foreground block mt-1">
+        <span className="text-xs text-muted-foreground block mt-1 px-1">
           {formattedTime}
         </span>
       </div>
