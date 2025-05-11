@@ -11,8 +11,7 @@ import {
   Shield, 
   BookOpen, 
   Bell, 
-  Award,
-  Layers
+  Award 
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "react-router-dom";
@@ -36,11 +35,6 @@ export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
       icon: <BarChart3 size={18} className="text-moh-gold" />, 
       text: "Admin Dashboard",
       exact: true
-    },
-    { 
-      to: "/dashboard/admin/phases", 
-      icon: <Layers size={18} className="text-moh-gold" />, 
-      text: "Admin Roadmap"
     },
     { 
       to: "/dashboard/admin/cms", 

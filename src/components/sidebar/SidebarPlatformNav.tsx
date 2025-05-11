@@ -1,6 +1,6 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
-import { DollarSign, BookOpen, ShieldCheck, Users, BarChart3, LineChart, ChartPieIcon, Layers } from "lucide-react";
+import { DollarSign, BookOpen, ShieldCheck, Users, BarChart3, LineChart, ChartPieIcon } from "lucide-react";
 
 interface SidebarPlatformNavProps {
   isCollapsed: boolean;
@@ -12,11 +12,6 @@ export function SidebarPlatformNav({ isCollapsed }: SidebarPlatformNavProps) {
       title="Platform" 
       isCollapsed={isCollapsed} 
       items={[
-        { 
-          to: "/platform/phases", 
-          icon: <Layers size={18} className="text-moh-green" />, 
-          text: "Platform Roadmap" 
-        },
         { 
           to: "/dashboard/investment", 
           icon: <DollarSign size={18} className="text-moh-green" />, 
