@@ -1,6 +1,4 @@
 
-import { CallTrace } from "@/types/ai";
-
 export enum AIServiceType {
   INVESTMENT = "investment",
   REGULATORY = "regulatory",
@@ -9,13 +7,39 @@ export enum AIServiceType {
   POLICY = "policy"
 }
 
+export interface AIServiceStaticReferences {
+  investment: any;
+  regulatory: any;
+  innovation: any;
+  knowledge: any;
+  policy: any;
+}
+
+import { CallTrace } from "@/types/ai";
+
 export class AIService {
-  // Declare static properties for service references
-  static investment: any;
-  static regulatory: any;
-  static innovation: any;
-  static knowledge: any;
-  static policy: any;
+  // Define services container to avoid circular dependencies
+  private static services: AIServiceStaticReferences = {
+    investment: null,
+    regulatory: null,
+    innovation: null,
+    knowledge: null,
+    policy: null
+  };
+  
+  // Getters for service access
+  static get investment() { return this.services.investment; }
+  static get regulatory() { return this.services.regulatory; }
+  static get innovation() { return this.services.innovation; }
+  static get knowledge() { return this.services.knowledge; }
+  static get policy() { return this.services.policy; }
+  
+  // Setters for service initialization
+  static set investment(service: any) { this.services.investment = service; }
+  static set regulatory(service: any) { this.services.regulatory = service; }
+  static set innovation(service: any) { this.services.innovation = service; }
+  static set knowledge(service: any) { this.services.knowledge = service; }
+  static set policy(service: any) { this.services.policy = service; }
 
   /**
    * Creates a standardized trace object for AI operation tracking
@@ -123,14 +147,15 @@ export class AIService {
   }
 }
 
-// Import services AFTER defining AIService to avoid circular dependency
+// Import and register services AFTER defining AIService to avoid circular dependency
+// The order matters here - define class first, then import dependencies, then register services
 import { InvestmentAIService } from "./InvestmentAIService";
 import { RegulatoryAIService } from "./RegulatoryAIService";
 import { InnovationAIService } from "./InnovationAIService";
 import { KnowledgeAIService } from "./KnowledgeAIService";
 import { PolicyAIService } from "./PolicyAIService";
 
-// Add service references after the class definition to avoid circular references
+// Register service references
 AIService.investment = InvestmentAIService;
 AIService.regulatory = RegulatoryAIService;
 AIService.innovation = InnovationAIService;
