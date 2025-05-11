@@ -265,19 +265,27 @@ export async function submitSandboxApplication(application: Partial<SandboxAppli
     if (!session.session?.user?.id) throw new Error('User not authenticated');
 
     // Ensure required fields are provided
-    const requiredFields = ['name', 'description', 'innovation_type', 'organization_type', 'innovator'];
+    const requiredFields = ['name', 'description', 'innovation_type', 'organization_type'];
     for (const field of requiredFields) {
       if (!application[field as keyof Partial<SandboxApplication>]) {
         throw new Error(`Missing required field: ${field}`);
       }
     }
     
+    // Create a valid Supabase insert object with all required fields
+    const insertData = {
+      ...application,
+      user_id: session.session.user.id,
+      name: application.name!, // We've verified this is not null above
+      description: application.description!, // We've verified this is not null above
+      innovation_type: application.innovation_type!, // We've verified this is not null above
+      organization_type: application.organization_type!, // We've verified this is not null above
+      innovator: application.innovator || session.session.user.id // Default to user ID if not provided
+    };
+    
     const { data, error } = await supabase
       .from('sandbox_applications')
-      .insert({
-        ...application,
-        user_id: session.session.user.id
-      })
+      .insert(insertData)
       .select('id')
       .single();
 

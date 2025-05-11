@@ -1,4 +1,5 @@
 
+import { formatDistanceToNow } from "date-fns";
 import { supabase } from '@/integrations/supabase/client';
 
 export interface ActivityLog {
@@ -14,7 +15,13 @@ export interface ActivityLog {
 }
 
 export function formatActivityDetails(activity: ActivityLog) {
-  const details = activity.details?.data || {};
+  let details: Record<string, any> = {};
+  
+  // Safely extract details.data
+  if (activity.details && typeof activity.details === 'object' && 'data' in activity.details) {
+    details = activity.details.data || {};
+  }
+  
   const resourceType = activity.resource_type;
   const activityType = activity.activity_type;
   
@@ -92,7 +99,7 @@ export function formatActivityDetails(activity: ActivityLog) {
   return { title, description, icon, color };
 }
 
-// Add the missing groupActivitiesByDate function
+// Interface for grouped activities
 interface GroupedActivities {
   date: string;
   activities: ActivityLog[];
@@ -119,7 +126,7 @@ export function groupActivitiesByDate(activities: ActivityLog[]): GroupedActivit
   });
 }
 
-// Add getActivityCount function
+// Get activity count function
 export async function getActivityCount(resourceType?: string): Promise<number> {
   try {
     const { data: session } = await supabase.auth.getSession();
@@ -187,15 +194,20 @@ export async function fetchUserActivity(
     }
 
     // Transform the data to match ActivityLog type
-    const formattedData: ActivityLog[] = data.map(item => ({
-      id: item.id,
-      user_id: item.user_id,
-      activity_type: item.activity_type,
-      resource_type: item.resource_type,
-      resource_id: item.resource_id,
-      created_at: item.created_at,
-      details: item.details ? { data: item.details.data || {} } : undefined
-    }));
+    const formattedData: ActivityLog[] = data.map(item => {
+      return {
+        id: item.id,
+        user_id: item.user_id,
+        activity_type: item.activity_type,
+        resource_type: item.resource_type,
+        resource_id: item.resource_id,
+        created_at: item.created_at,
+        details: item.details ? { 
+          data: typeof item.details === 'object' && item.details !== null ? 
+            (item.details.data || {}) : {}
+        } : undefined
+      };
+    });
     
     return formattedData;
   } catch (error) {
