@@ -27,7 +27,13 @@ export class ComplianceService {
       
       if (error) throw error;
       
-      return data as ComplianceRecord;
+      // Convert string dates to Date objects
+      return data ? {
+        ...data,
+        created_at: new Date(data.created_at),
+        updated_at: new Date(data.updated_at),
+        reviewed_at: data.reviewed_at ? new Date(data.reviewed_at) : undefined
+      } as ComplianceRecord : null;
     } catch (error) {
       console.error("Error creating compliance record:", error);
       return null;
@@ -69,7 +75,13 @@ export class ComplianceService {
       
       if (error) throw error;
       
-      return (data || []) as ComplianceRecord[];
+      // Convert string dates to Date objects
+      return (data || []).map(record => ({
+        ...record,
+        created_at: new Date(record.created_at),
+        updated_at: new Date(record.updated_at),
+        reviewed_at: record.reviewed_at ? new Date(record.reviewed_at) : undefined
+      })) as ComplianceRecord[];
     } catch (error) {
       console.error("Error getting compliance records:", error);
       return [];
@@ -89,7 +101,13 @@ export class ComplianceService {
       
       if (error) throw error;
       
-      return data as ComplianceRecord;
+      // Convert string dates to Date objects
+      return data ? {
+        ...data,
+        created_at: new Date(data.created_at),
+        updated_at: new Date(data.updated_at),
+        reviewed_at: data.reviewed_at ? new Date(data.reviewed_at) : undefined
+      } as ComplianceRecord : null;
     } catch (error) {
       console.error(`Error getting compliance record with ID ${id}:`, error);
       return null;
@@ -113,7 +131,13 @@ export class ComplianceService {
       
       if (error) throw error;
       
-      return data as ComplianceRecord;
+      // Convert string dates to Date objects
+      return data ? {
+        ...data,
+        created_at: new Date(data.created_at),
+        updated_at: new Date(data.updated_at),
+        reviewed_at: data.reviewed_at ? new Date(data.reviewed_at) : undefined
+      } as ComplianceRecord : null;
     } catch (error) {
       console.error(`Error updating compliance record with ID ${id}:`, error);
       return null;
@@ -144,7 +168,13 @@ export class ComplianceService {
       
       if (error) throw error;
       
-      return data as ComplianceRecord;
+      // Convert string dates to Date objects
+      return data ? {
+        ...data,
+        created_at: new Date(data.created_at),
+        updated_at: new Date(data.updated_at),
+        reviewed_at: data.reviewed_at ? new Date(data.reviewed_at) : undefined
+      } as ComplianceRecord : null;
     } catch (error) {
       console.error(`Error reviewing compliance record with ID ${id}:`, error);
       return null;

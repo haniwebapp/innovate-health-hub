@@ -16,7 +16,11 @@ export class AdminLogService {
       
       if (error) throw error;
       
-      return data as AdminLog;
+      // Convert string dates to Date objects
+      return data ? {
+        ...data,
+        created_at: new Date(data.created_at)
+      } as AdminLog : null;
     } catch (error) {
       console.error("Error adding admin log:", error);
       return null;
@@ -115,8 +119,14 @@ export class AdminLogService {
       
       if (error) throw error;
       
+      // Convert string dates to Date objects
+      const logs = (data || []).map(log => ({
+        ...log,
+        created_at: new Date(log.created_at)
+      })) as AdminLog[];
+      
       return {
-        logs: (data || []) as AdminLog[],
+        logs,
         totalCount: count || 0
       };
     } catch (error) {

@@ -75,7 +75,11 @@ export class ClinicalAIService {
           .single();
         
         if (!error && data) {
-          tags.push(data as ClinicalTag);
+          // Convert string dates to Date objects
+          tags.push({
+            ...data,
+            created_at: new Date(data.created_at)
+          } as ClinicalTag);
         }
       }
       
@@ -97,7 +101,12 @@ export class ClinicalAIService {
       
       if (error) throw error;
       
-      return data?.similarRecords || [];
+      // Convert string dates to Date objects in the returned records
+      return data?.similarRecords ? data.similarRecords.map((record: any) => ({
+        ...record,
+        created_at: new Date(record.created_at),
+        updated_at: new Date(record.updated_at)
+      })) : [];
     } catch (error) {
       console.error(`Error finding similar clinical records to ${recordId}:`, error);
       return [];
