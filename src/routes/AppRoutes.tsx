@@ -134,9 +134,9 @@ export function AppRoutes() {
         
         {/* User Portal Routes - Phase 2 */}
         <Route path="investment" element={<DashboardInvestmentPage />} />
-        <Route path="investment/portfolio" element={<PortfolioPage />} />
-        <Route path="investment/market-analysis" element={<MarketAnalysisPage />} />
-        <Route path="investment/trends" element={<InvestmentTrendsPage />} />
+        <Route path="investment/portfolio" element={<DashboardPortfolioPage />} />
+        <Route path="investment/market-analysis" element={<DashboardMarketAnalysisPage />} />
+        <Route path="investment/trends" element={<DashboardInvestmentTrendsPage />} />
         <Route path="regulatory" element={<DashboardRegulatoryPage />} />
         <Route path="regulatory/applications/new" element={<NewRegulatoryApplicationPage />} />
         <Route path="regulatory/applications/:id" element={<ApplicationDetailsPage />} />

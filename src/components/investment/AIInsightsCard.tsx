@@ -1,44 +1,58 @@
 
-import { Card } from "@/components/ui/card";
-import { Lightbulb, BarChart3, TrendingUp } from "lucide-react";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { LightbulbIcon } from "lucide-react";
 
 interface AIInsightsCardProps {
   insights: string[];
   title?: string;
   icon?: React.ReactNode;
-  className?: string;
   bgColor?: string;
   borderColor?: string;
   textColor?: string;
 }
 
-export function AIInsightsCard({ 
-  insights, 
-  title = "AI Insights", 
-  icon = <Lightbulb className="h-5 w-5 text-moh-gold" />,
-  className = "",
-  bgColor = "bg-moh-lightGreen",
-  borderColor = "border-moh-green/30",
-  textColor = "text-gray-800"
+export function AIInsightsCard({
+  insights,
+  title = "AI Insights",
+  icon = <LightbulbIcon className="h-5 w-5 text-yellow-500" />,
+  bgColor = "bg-yellow-50",
+  borderColor = "border-yellow-200",
+  textColor = "text-yellow-900"
 }: AIInsightsCardProps) {
-  if (insights.length === 0) return null;
-  
   return (
-    <Card className={`p-6 mb-8 border-l-4 ${borderColor} ${bgColor} ${className}`}>
-      <h3 className={`text-xl font-semibold mb-4 flex items-center gap-2 ${textColor}`}>
-        {icon}
-        {title}
-      </h3>
-      <div className="space-y-3">
-        {insights.map((insight, i) => (
-          <div key={i} className={`flex items-start ${i < insights.length - 1 ? "pb-3 border-b border-gray-100" : ""}`}>
-            {i === 0 && <TrendingUp className="h-5 w-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" />}
-            {i === 1 && <BarChart3 className="h-5 w-5 mr-2 text-moh-green mt-0.5 flex-shrink-0" />}
-            {i >= 2 && <Lightbulb className="h-5 w-5 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />}
-            <p className={`${textColor}`}>{insight}</p>
-          </div>
-        ))}
-      </div>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <Card className={`${bgColor} ${borderColor} overflow-hidden shadow-sm`}>
+        <CardHeader className="pb-2">
+          <CardTitle className={`text-xl flex items-center gap-2 ${textColor}`}>
+            {icon}
+            {title}
+            <Badge variant="outline" className="ml-2 font-normal text-xs">AI Generated</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            {insights.map((insight, index) => (
+              <motion.li
+                key={index}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 * index }}
+                className="flex items-start gap-2"
+              >
+                <span className="flex-shrink-0 mt-1">•</span>
+                <span className={`text-sm ${textColor}`}>{insight}</span>
+              </motion.li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

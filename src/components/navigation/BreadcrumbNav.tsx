@@ -1,124 +1,39 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-  BreadcrumbEllipsis,
-} from "@/components/ui/breadcrumb";
-import { Home } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useWindowSize } from "@/hooks/use-window-size";
 
-interface BreadcrumbNavItem {
-  label: string;
-  href?: string;
-}
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { ChevronRight } from "lucide-react";
 
 interface BreadcrumbNavProps {
-  items?: BreadcrumbNavItem[];
   currentPage: string;
-  className?: string;
-  showHomeIcon?: boolean;
-  maxItems?: number;
+  items?: Array<{
+    label: string;
+    href: string;
+  }>;
 }
 
-export default function BreadcrumbNav({
-  items = [],
-  currentPage,
-  className,
-  showHomeIcon = true,
-  maxItems = 3,
-}: BreadcrumbNavProps) {
-  const location = useLocation();
-  const { isMobile } = useWindowSize();
-  
-  // Generate breadcrumb items based on current path if not provided
-  const breadcrumbItems = items.length > 0 ? items : generateBreadcrumbItems(location.pathname);
-  
-  // If on mobile and we have more items than maxItems, limit what we show
-  const displayItems = isMobile && breadcrumbItems.length > maxItems
-    ? [
-        // Always show first item
-        breadcrumbItems[0],
-        // Show ellipsis if we have more than maxItems
-        ...(breadcrumbItems.length > maxItems ? [{ label: '...' }] : []),
-        // Show the last item
-        breadcrumbItems[breadcrumbItems.length - 1],
-      ]
-    : breadcrumbItems;
-
+export default function BreadcrumbNav({ currentPage, items = [] }: BreadcrumbNavProps) {
   return (
-    <Breadcrumb className={cn("mb-4", className)}>
+    <Breadcrumb className="mb-4">
       <BreadcrumbList>
-        {showHomeIcon && (
-          <>
+        {items.map((item, index) => (
+          <React.Fragment key={index}>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link to="/">
-                  <Home className="h-4 w-4" />
+                <Link to={item.href} className="text-moh-green hover:text-moh-darkGreen">
+                  {item.label}
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-          </>
-        )}
-        
-        {displayItems.map((item, index) => (
-          <React.Fragment key={index}>
-            <BreadcrumbItem>
-              {item.label === '...' ? (
-                <BreadcrumbEllipsis />
-              ) : item.href ? (
-                <BreadcrumbLink asChild>
-                  <Link to={item.href}>{item.label}</Link>
-                </BreadcrumbLink>
-              ) : (
-                <BreadcrumbPage>{item.label}</BreadcrumbPage>
-              )}
-            </BreadcrumbItem>
-            {index < displayItems.length - 1 && <BreadcrumbSeparator />}
+            <BreadcrumbSeparator>
+              <ChevronRight className="h-4 w-4" />
+            </BreadcrumbSeparator>
           </React.Fragment>
         ))}
-        
-        <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>{isMobile && currentPage.length > 20 
-            ? `${currentPage.substring(0, 20)}...` 
-            : currentPage}
-          </BreadcrumbPage>
+          <BreadcrumbPage className="font-medium">{currentPage}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
   );
-}
-
-function generateBreadcrumbItems(path: string): BreadcrumbNavItem[] {
-  const segments = path.split('/').filter(Boolean);
-  const breadcrumbs: BreadcrumbNavItem[] = [];
-  
-  let currentPath = '';
-  
-  segments.forEach((segment, index) => {
-    // Skip the last segment as it represents the current page
-    if (index === segments.length - 1) return;
-    
-    currentPath += `/${segment}`;
-    
-    // Format segment name (replace hyphens with spaces, capitalize)
-    const label = segment
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-    
-    breadcrumbs.push({
-      label,
-      href: currentPath
-    });
-  });
-  
-  return breadcrumbs;
 }
