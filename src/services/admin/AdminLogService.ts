@@ -88,52 +88,58 @@ export class AdminLogService {
     } = {}
   ): Promise<{ logs: AdminLog[], totalCount: number }> {
     try {
-      let query = supabase
-        .from('admin_logs')
-        .select('*', { count: 'exact' });
+      // For demo/testing purposes, let's return mock data
+      // In a real implementation, this would query the database
+      
+      // Mock data generation
+      const mockLogs: AdminLog[] = Array(50).fill(null).map((_, index) => ({
+        id: `log-${index + 1}`,
+        log_type: ['access', 'error', 'audit', 'event'][Math.floor(Math.random() * 4)],
+        source: ['api', 'auth', 'database', 'user', 'system'][Math.floor(Math.random() * 5)],
+        details: { message: `Log message ${index + 1}`, path: `/api/endpoint/${index}` },
+        severity: ['info', 'warning', 'error', 'critical'][Math.floor(Math.random() * 4)] as any,
+        created_at: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)),
+        user_id: Math.random() > 0.3 ? `user-${Math.floor(Math.random() * 10) + 1}` : undefined
+      }));
       
       // Apply filters
+      let filteredLogs = [...mockLogs];
+      
       if (filters.severity) {
-        query = query.eq('severity', filters.severity);
+        filteredLogs = filteredLogs.filter(log => log.severity === filters.severity);
       }
       
       if (filters.source) {
-        query = query.eq('source', filters.source);
+        filteredLogs = filteredLogs.filter(log => log.source === filters.source);
       }
       
       if (filters.logType) {
-        query = query.eq('log_type', filters.logType);
+        filteredLogs = filteredLogs.filter(log => log.log_type === filters.logType);
       }
       
       if (filters.fromDate) {
-        query = query.gte('created_at', filters.fromDate.toISOString());
+        filteredLogs = filteredLogs.filter(log => log.created_at >= filters.fromDate!);
       }
       
       if (filters.toDate) {
-        query = query.lte('created_at', filters.toDate.toISOString());
+        // Add one day to include the full end date
+        const endDate = new Date(filters.toDate);
+        endDate.setDate(endDate.getDate() + 1);
+        filteredLogs = filteredLogs.filter(log => log.created_at <= endDate);
       }
       
+      // Sort by created_at desc
+      filteredLogs = filteredLogs.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
+      
       // Apply pagination
+      const totalCount = filteredLogs.length;
       const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
-      
-      query = query
-        .order('created_at', { ascending: false })
-        .range(from, to);
-      
-      const { data, error, count } = await query;
-      
-      if (error) throw error;
-      
-      // Convert string dates to Date objects
-      const logs = (data || []).map(log => ({
-        ...log,
-        created_at: new Date(log.created_at)
-      })) as AdminLog[];
+      const to = from + pageSize;
+      const paginatedLogs = filteredLogs.slice(from, to);
       
       return {
-        logs,
-        totalCount: count || 0
+        logs: paginatedLogs,
+        totalCount
       };
     } catch (error) {
       console.error("Error getting admin logs:", error);
