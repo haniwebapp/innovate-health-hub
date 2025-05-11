@@ -14,7 +14,7 @@ export function SidebarPlatformNav({ isCollapsed }: SidebarPlatformNavProps) {
       items={[
         { 
           to: "/dashboard/investment", 
-          icon: <DollarSign size={18} className="text-purple-600" />, 
+          icon: <DollarSign size={18} className="text-moh-green" />, 
           text: "Investment Hub" 
         },
         { 
@@ -33,18 +33,18 @@ export function SidebarPlatformNav({ isCollapsed }: SidebarPlatformNavProps) {
           text: "Collaboration" 
         },
         {
-          to: "/dashboard/investment/analyze",
-          icon: <BarChart3 size={18} className="text-purple-600" />,
+          to: "/dashboard/investment/market-analysis",
+          icon: <BarChart3 size={18} className="text-moh-green" />,
           text: "Market Analysis"
         },
         {
           to: "/dashboard/investment/portfolio",
-          icon: <ChartPieIcon size={18} className="text-purple-600" />,
+          icon: <ChartPieIcon size={18} className="text-moh-green" />,
           text: "Portfolio"
         },
         {
           to: "/dashboard/investment/trends",
-          icon: <LineChart size={18} className="text-purple-600" />,
+          icon: <LineChart size={18} className="text-moh-green" />,
           text: "Investment Trends"
         }
       ]}

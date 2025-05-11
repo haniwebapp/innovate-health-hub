@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -42,6 +43,9 @@ import ContactInformationPage from './pages/innovations/submit/contact';
 import ReviewPage from './pages/innovations/submit/review';
 
 import InvestmentPage from './pages/investment';
+import PortfolioPage from './pages/investment/portfolio';
+import MarketAnalysisPage from './pages/investment/market-analysis';
+import InvestmentTrendsPage from './pages/investment/investment-trends';
 import RegulatoryPage2 from './pages/regulatory';
 
 import KnowledgeHubPage from './pages/knowledge-hub';
@@ -140,6 +144,9 @@ function App() {
                     
                     {/* User Portal Routes - Phase 2 */}
                     <Route path="investment" element={<DashboardInvestmentPage />} />
+                    <Route path="investment/portfolio" element={<PortfolioPage />} />
+                    <Route path="investment/market-analysis" element={<MarketAnalysisPage />} />
+                    <Route path="investment/trends" element={<InvestmentTrendsPage />} />
                     <Route path="regulatory" element={<DashboardRegulatoryPage />} />
                     <Route path="regulatory/applications/new" element={<NewRegulatoryApplicationPage />} />
                     <Route path="regulatory/applications/:id" element={<ApplicationDetailsPage />} />
