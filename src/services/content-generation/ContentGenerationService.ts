@@ -1,6 +1,10 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { StoryGenerationPrompt, StoryGenerationResult, StoryAnalysisResult } from "@/services/ai/success/SuccessStoryAIService";
+import { 
+  StoryGenerationPrompt, 
+  StoryGenerationResult, 
+  StoryAnalysisResult 
+} from "@/services/ai/success/types";
 
 export class ContentGenerationService {
   /**
