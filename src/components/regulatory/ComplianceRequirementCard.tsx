@@ -1,8 +1,10 @@
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Check, Clock, AlertTriangle, FileCheck } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface ComplianceRequirement {
   id: string;
@@ -17,41 +19,76 @@ interface ComplianceRequirementCardProps {
   onMarkComplete: (id: string) => void;
 }
 
-export function ComplianceRequirementCard({ requirement, onMarkComplete }: ComplianceRequirementCardProps) {
+export function ComplianceRequirementCard({ 
+  requirement,
+  onMarkComplete
+}: ComplianceRequirementCardProps) {
+  const { id, title, description, status, completed } = requirement;
+  
+  const getStatusBadge = () => {
+    switch (status) {
+      case 'required':
+        return <Badge className={completed ? "bg-green-500" : "bg-red-500"}>Required</Badge>;
+      case 'recommended':
+        return <Badge className="bg-amber-500">Recommended</Badge>;
+      case 'optional':
+        return <Badge className="bg-gray-500">Optional</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+  
+  const getStatusIcon = () => {
+    if (completed) {
+      return <Check className="h-5 w-5 text-green-500" />;
+    }
+    
+    switch (status) {
+      case 'required':
+        return <AlertTriangle className="h-5 w-5 text-red-500" />;
+      case 'recommended':
+        return <Clock className="h-5 w-5 text-amber-500" />;
+      default:
+        return <FileCheck className="h-5 w-5 text-gray-500" />;
+    }
+  };
+  
   return (
-    <div 
-      className={cn(
-        "p-4 border rounded-md",
-        requirement.completed ? "bg-green-50 border-green-200" : "bg-white"
-      )}
-    >
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          {requirement.status === "required" && (
-            <Badge className="bg-red-500">Required</Badge>
-          )}
-          {requirement.status === "recommended" && (
-            <Badge className="bg-amber-500">Recommended</Badge>
-          )}
-          {requirement.status === "optional" && (
-            <Badge className="bg-gray-500">Optional</Badge>
-          )}
-          <h5 className="font-medium">{requirement.title}</h5>
+    <Card className={cn(
+      "transition-colors",
+      completed && "border-green-200 bg-green-50"
+    )}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="mt-1">
+              {getStatusIcon()}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h4 className="font-medium">{title}</h4>
+                {getStatusBadge()}
+              </div>
+              <p className="text-sm text-gray-600">{description}</p>
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <Button
+              size="sm"
+              variant={completed ? "outline" : "default"}
+              className={completed ? "border-green-500 text-green-700" : ""}
+              onClick={() => onMarkComplete(id)}
+            >
+              {completed ? (
+                <>
+                  <Check className="h-4 w-4 mr-1" />
+                  Completed
+                </>
+              ) : "Mark Complete"}
+            </Button>
+          </div>
         </div>
-        <Button 
-          size="sm" 
-          variant={requirement.completed ? "outline" : "default"}
-          className={requirement.completed ? "border-green-500 text-green-500" : ""}
-          onClick={() => onMarkComplete(requirement.id)}
-        >
-          {requirement.completed ? (
-            <>
-              <CheckCircle className="h-4 w-4 mr-1" /> Completed
-            </>
-          ) : "Mark Complete"}
-        </Button>
-      </div>
-      <p className="text-sm text-gray-600 mt-2">{requirement.description}</p>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

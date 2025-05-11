@@ -1,354 +1,402 @@
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Loader2, CheckCircle2, ArrowUpRight, MessageSquare, ChevronRight, BarChart3, ArrowDown } from "lucide-react";
-import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
-import { useToast } from "@/components/ui/use-toast";
-import { InvestmentAIService, InnovationData, Vision2030Alignment } from "@/services/ai/InvestmentAIService";
+import React, { useState } from 'react';
+import { useToast } from "@/hooks/use-toast";
+import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Loader2, ArrowRight, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { InvestmentAIService } from '@/services/ai/InvestmentAIService';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 
-export default function DashboardVision2030AlignmentPage() {
-  const [innovationData, setInnovationData] = useState<InnovationData>({
-    name: "",
-    description: "",
-    stage: "seed",
-    sector: "digital-health"
-  });
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [alignmentResult, setAlignmentResult] = useState<Vision2030Alignment | null>(null);
+const formSchema = z.object({
+  name: z.string().min(3, 'Innovation name is required'),
+  description: z.string().min(10, 'Please provide a detailed description'),
+  sector: z.string().min(1, 'Sector is required'),
+  target_audience: z.string().optional(),
+  technology: z.string().optional(),
+  impact: z.string().min(10, 'Please describe the expected impact'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export default function Vision2030AlignmentPage() {
   const { toast } = useToast();
-
-  // Handle form input changes
-  const handleInnovationChange = (field: keyof InnovationData, value: string | number) => {
-    setInnovationData(prev => ({ ...prev, [field]: value }));
-  };
-
-  // Generate Vision 2030 alignment analysis
-  const handleAnalyzeAlignment = async () => {
-    if (!innovationData.name || !innovationData.description) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please provide at least the innovation name and description."
-      });
-      return;
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [alignmentResults, setAlignmentResults] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      sector: '',
+      target_audience: '',
+      technology: '',
+      impact: ''
     }
-
+  });
+  
+  const onSubmit = async (values: FormValues) => {
     setIsAnalyzing(true);
-
+    setError(null);
+    
     try {
-      const result = await InvestmentAIService.analyzeVision2030Alignment(innovationData);
+      // Bundle the form data as the innovation data
+      const innovationData = {
+        ...values,
+      };
       
-      setAlignmentResult(result);
-      
-      if (result.error) {
-        throw new Error(result.error);
-      }
+      // Call the Vision 2030 alignment service
+      const results = await InvestmentAIService.analyzeVision2030Alignment(innovationData);
+      setAlignmentResults(results);
       
       toast({
-        title: "Analysis complete",
-        description: "Your innovation has been analyzed for Vision 2030 alignment."
+        title: "Analysis Complete",
+        description: "Vision 2030 alignment analysis has been generated.",
       });
-    } catch (error: any) {
-      console.error("Error analyzing Vision 2030 alignment:", error);
+    } catch (err) {
+      console.error("Failed to analyze Vision 2030 alignment:", err);
+      setError("We couldn't complete the Vision 2030 alignment analysis. Please try again later.");
+      
       toast({
         variant: "destructive",
-        title: "Analysis failed",
-        description: error.message || "Failed to analyze Vision 2030 alignment."
+        title: "Analysis Failed",
+        description: "There was an error analyzing your innovation's alignment with Vision 2030.",
       });
     } finally {
       setIsAnalyzing(false);
     }
   };
-
-  // Get color based on alignment score
-  const getAlignmentColor = (score: number): string => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    if (score >= 40) return "text-orange-500";
-    return "text-red-600";
+  
+  const getAlignmentBadge = (score: number) => {
+    if (score >= 85) return <Badge className="bg-green-600">Strong Alignment</Badge>;
+    if (score >= 70) return <Badge className="bg-emerald-500">Good Alignment</Badge>;
+    if (score >= 50) return <Badge className="bg-amber-500">Moderate Alignment</Badge>;
+    return <Badge className="bg-red-500">Weak Alignment</Badge>;
   };
-
+  
   return (
     <div className="space-y-6">
       <BreadcrumbNav 
         currentPage="Vision 2030 Alignment" 
         items={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Investment Hub", href: "/dashboard/investment" }
+          { label: "Investment", href: "/dashboard/investment" },
         ]}
       />
       
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Vision 2030 Alignment</h1>
-        <p className="text-muted-foreground">
-          Analyze how well your healthcare innovation aligns with Saudi Vision 2030 goals
-        </p>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Healthcare Innovation Details</CardTitle>
-            <CardDescription>Provide information about your innovation for analysis</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1">Innovation Name*</label>
-              <Input 
-                id="name" 
-                value={innovationData.name} 
-                onChange={(e) => handleInnovationChange("name", e.target.value)}
-                placeholder="Enter your innovation name"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium mb-1">Description*</label>
-              <Textarea 
-                id="description" 
-                value={innovationData.description}
-                onChange={(e) => handleInnovationChange("description", e.target.value)}
-                placeholder="Describe your healthcare innovation in detail"
-                className="h-32"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="sector" className="block text-sm font-medium mb-1">Sector</label>
-              <Select 
-                value={innovationData.sector}
-                onValueChange={(value) => handleInnovationChange("sector", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select sector" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="digital-health">Digital Health</SelectItem>
-                  <SelectItem value="medical-devices">Medical Devices</SelectItem>
-                  <SelectItem value="biotech">Biotech</SelectItem>
-                  <SelectItem value="pharmaceuticals">Pharmaceuticals</SelectItem>
-                  <SelectItem value="healthcare-services">Healthcare Services</SelectItem>
-                  <SelectItem value="mental-health">Mental Health</SelectItem>
-                  <SelectItem value="wellness">Wellness & Prevention</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <label htmlFor="stage" className="block text-sm font-medium mb-1">Development Stage</label>
-              <Select 
-                value={innovationData.stage}
-                onValueChange={(value) => handleInnovationChange("stage", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select stage" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="idea">Idea</SelectItem>
-                  <SelectItem value="prototype">Prototype</SelectItem>
-                  <SelectItem value="mvp">MVP</SelectItem>
-                  <SelectItem value="seed">Seed</SelectItem>
-                  <SelectItem value="early-growth">Early Growth</SelectItem>
-                  <SelectItem value="scaling">Scaling</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <label htmlFor="additional" className="block text-sm font-medium mb-1">Additional Information (Optional)</label>
-              <Textarea 
-                id="additional" 
-                value={innovationData.additionalInfo || ''}
-                onChange={(e) => handleInnovationChange("additionalInfo", e.target.value)}
-                placeholder="Any other relevant information about your innovation"
-                className="h-20"
-              />
-            </div>
-            
-            <Button 
-              onClick={handleAnalyzeAlignment}
-              className="w-full bg-moh-green hover:bg-moh-darkGreen"
-              disabled={isAnalyzing || !innovationData.name || !innovationData.description}
-            >
-              {isAnalyzing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  Analyze Vision 2030 Alignment
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-        
-        <Card className="lg:col-span-2">
-          {isAnalyzing ? (
-            <CardContent className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="h-10 w-10 animate-spin text-moh-green mb-4" />
-              <h3 className="text-lg font-medium">Analyzing Vision 2030 Alignment</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                Evaluating how your innovation supports Saudi Arabia's healthcare transformation goals...
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-2xl font-semibold text-moh-darkGreen mb-4">
+                Vision 2030 Alignment Analysis
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Evaluate how well your healthcare innovation aligns with Saudi Vision 2030's healthcare transformation goals. 
+                This AI-powered analysis will provide insights on alignment areas and opportunities for improvement.
               </p>
-            </CardContent>
-          ) : alignmentResult ? (
-            <>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Vision 2030 Alignment Analysis</CardTitle>
-                    <CardDescription>AI-powered assessment of alignment with Saudi Vision 2030 healthcare goals</CardDescription>
-                  </div>
-                  <div className="text-right">
-                    <span className={`text-2xl font-bold ${getAlignmentColor(alignmentResult.alignmentScore)}`}>
-                      {alignmentResult.alignmentScore}%
-                    </span>
-                    <p className="text-xs text-muted-foreground">Alignment Score</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-medium mb-2 flex items-center">
-                    <CheckCircle2 className="h-4 w-4 mr-1 text-moh-green" />
-                    Primary Areas of Alignment
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {alignmentResult.alignmentAreas.map((area, index) => (
-                      <div key={index} className="flex items-center space-x-2 border rounded-md p-2 bg-moh-lightGreen/10">
-                        <CheckCircle2 className="h-4 w-4 text-moh-green flex-shrink-0" />
-                        <span className="text-sm">{area}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="border-t pt-4">
-                  <h3 className="text-sm font-medium mb-2">
-                    Vision 2030 Healthcare Objectives Addressed
-                  </h3>
-                  <div className="space-y-2">
-                    {alignmentResult.vision2030Objectives.map((objective, index) => (
-                      <div key={index} className="flex items-start">
-                        <div className="bg-moh-green text-white rounded-full w-5 h-5 flex items-center justify-center mr-2 text-xs flex-shrink-0 mt-0.5">
-                          {index + 1}
-                        </div>
-                        <p className="text-sm">{objective}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4">
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">
-                      Areas for Improvement
-                    </h3>
-                    <div className="space-y-2">
-                      {alignmentResult.improvementAreas.map((area, index) => (
-                        <div key={index} className="flex items-start">
-                          <ArrowDown className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-                          <p className="text-sm">{area}</p>
-                        </div>
-                      ))}
-                    </div>
+              
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Innovation Name</FormLabel>
+                        <FormControl>
+                          <input 
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="Enter the name of your innovation" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Innovation Description</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Describe your healthcare innovation in detail" 
+                            className="min-h-[120px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Provide details about what your innovation does and how it works.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="sector"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Healthcare Sector</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select healthcare sector" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="telehealth">Telehealth</SelectItem>
+                              <SelectItem value="medical-devices">Medical Devices</SelectItem>
+                              <SelectItem value="digital-health">Digital Health</SelectItem>
+                              <SelectItem value="pharmaceuticals">Pharmaceuticals</SelectItem>
+                              <SelectItem value="diagnostics">Diagnostics</SelectItem>
+                              <SelectItem value="mental-health">Mental Health</SelectItem>
+                              <SelectItem value="preventative-care">Preventative Care</SelectItem>
+                              <SelectItem value="elderly-care">Elderly Care</SelectItem>
+                              <SelectItem value="maternal-child">Maternal & Child Health</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="technology"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Technology Used</FormLabel>
+                          <FormControl>
+                            <input 
+                              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                              placeholder="Primary technologies used (e.g., AI, IoT, Mobile)" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">
-                      Recommendations to Enhance Alignment
-                    </h3>
-                    <div className="space-y-2">
-                      {alignmentResult.recommendations.map((recommendation, index) => (
-                        <div key={index} className="flex items-start">
-                          <ArrowUpRight className="h-4 w-4 text-moh-green mr-2 flex-shrink-0 mt-0.5" />
-                          <p className="text-sm">{recommendation}</p>
-                        </div>
-                      ))}
-                    </div>
+                  <FormField
+                    control={form.control}
+                    name="target_audience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Target Audience</FormLabel>
+                        <FormControl>
+                          <input 
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="Who will benefit from this innovation?" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="impact"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Expected Impact</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Describe the healthcare impact you expect to achieve" 
+                            className="min-h-[100px]"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Explain how your innovation will improve healthcare outcomes or experiences.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="pt-4">
+                    <Button 
+                      type="submit" 
+                      className="bg-moh-darkGreen hover:bg-moh-darkGreen/90 w-full md:w-auto"
+                      disabled={isAnalyzing}
+                    >
+                      {isAnalyzing ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Analyzing Alignment
+                        </>
+                      ) : (
+                        <>
+                          Analyze Vision 2030 Alignment
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
                   </div>
-                </div>
-                
-                <div className="border-t pt-4">
-                  <h3 className="text-sm font-medium mb-2">
-                    Potential Impact on Vision 2030 Healthcare KPIs
-                  </h3>
-                  <div className="bg-moh-lightGreen/20 p-3 rounded-md border border-moh-green/20">
-                    <p className="text-sm">{alignmentResult.potentialImpact}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </>
-          ) : (
-            <CardContent className="flex flex-col items-center justify-center py-20">
-              <MessageSquare className="h-10 w-10 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">No Analysis Generated Yet</h3>
-              <p className="text-sm text-muted-foreground mt-2 max-w-md text-center">
-                Complete the innovation details form and generate an analysis to see Vision 2030 alignment insights
-              </p>
+                </form>
+              </Form>
             </CardContent>
-          )}
-        </Card>
+          </Card>
+        </div>
+        
+        <div>
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="text-lg font-semibold text-moh-darkGreen mb-3">
+                Why Align with Vision 2030?
+              </h3>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Improve chances of securing government partnerships and support</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Access specialized funding and resources for aligned innovations</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Benefit from strategic priority areas in healthcare transformation</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Increase market relevance within Saudi Arabia's healthcare ecosystem</span>
+                </li>
+                <li className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                  <span>Contribute to national healthcare goals and social impact</span>
+                </li>
+              </ul>
+              
+              <div className="mt-6 pt-6 border-t border-border">
+                <h4 className="font-medium mb-2">Key Vision 2030 Healthcare Goals</h4>
+                <ul className="space-y-1 text-sm text-gray-600">
+                  <li>• Improve quality and efficiency of healthcare services</li>
+                  <li>• Expand privatization of government healthcare services</li>
+                  <li>• Focus on preventative care and reducing infectious diseases</li>
+                  <li>• Develop digital healthcare infrastructure</li>
+                  <li>• Increase capacity and quality of healthcare workforce</li>
+                  <li>• Improve healthcare access in all regions</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Vision 2030 Healthcare Transformation Resources</CardTitle>
-          <CardDescription>Learn more about Saudi Vision 2030 healthcare goals and alignment</CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-slate-50 border rounded-xl p-4 flex flex-col h-full">
-            <div className="bg-moh-lightGreen w-10 h-10 rounded-md flex items-center justify-center mb-3">
-              <BarChart3 className="h-5 w-5 text-moh-green" />
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
+      {alignmentResults && (
+        <Card className="border-l-4 border-l-moh-darkGreen">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-5">
+              <h3 className="text-xl font-semibold">Vision 2030 Alignment Results</h3>
+              <div className="flex flex-col items-center">
+                {getAlignmentBadge(alignmentResults.alignmentScore)}
+                <div className="w-full mt-2">
+                  <div className="flex justify-between items-center text-sm mb-1">
+                    <span>Alignment Score</span>
+                    <span className="font-medium">{alignmentResults.alignmentScore}%</span>
+                  </div>
+                  <Progress value={alignmentResults.alignmentScore} className="h-2" />
+                </div>
+              </div>
             </div>
-            <h3 className="font-medium mb-1">Healthcare Sector Transformation Strategy</h3>
-            <p className="text-sm text-muted-foreground mb-auto">
-              Learn about the key initiatives to transform healthcare delivery in Saudi Arabia by 2030.
-            </p>
-            <Button variant="outline" size="sm" className="mt-4 flex items-center gap-1">
-              View Strategy
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-          
-          <div className="bg-slate-50 border rounded-xl p-4 flex flex-col h-full">
-            <div className="bg-moh-lightGreen w-10 h-10 rounded-md flex items-center justify-center mb-3">
-              <BarChart3 className="h-5 w-5 text-moh-green" />
+            
+            <div className="grid md:grid-cols-2 gap-6 mt-6">
+              <div>
+                <h4 className="font-medium text-moh-darkGreen mb-2">Primary Alignment Areas</h4>
+                <ul className="space-y-1 text-gray-700">
+                  {alignmentResults.alignmentAreas?.map((area: string, idx: number) => (
+                    <li key={idx} className="flex items-start">
+                      <CheckCircle className="h-4 w-4 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{area}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-medium text-moh-darkGreen mb-2">Vision 2030 Healthcare Objectives</h4>
+                <ul className="space-y-1 text-gray-700">
+                  {alignmentResults.vision2030Objectives?.map((objective: string, idx: number) => (
+                    <li key={idx} className="flex items-start">
+                      <CheckCircle className="h-4 w-4 text-moh-green mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{objective}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="md:col-span-2">
+                <h4 className="font-medium text-moh-darkGreen mb-2">Potential Impact on Vision 2030 KPIs</h4>
+                <p className="text-gray-700">{alignmentResults.potentialImpact}</p>
+              </div>
+              
+              <div>
+                <h4 className="font-medium text-amber-600 mb-2">Areas for Improvement</h4>
+                <ul className="space-y-1 text-gray-700">
+                  {alignmentResults.improvementAreas?.map((area: string, idx: number) => (
+                    <li key={idx} className="flex items-start">
+                      <Clock className="h-4 w-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{area}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-medium text-moh-darkGreen mb-2">Recommendations</h4>
+                <ul className="space-y-1 text-gray-700">
+                  {alignmentResults.recommendations?.map((rec: string, idx: number) => (
+                    <li key={idx} className="flex items-start">
+                      <ArrowRight className="h-4 w-4 text-moh-darkGreen mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <h3 className="font-medium mb-1">Healthcare Investment Priorities</h3>
-            <p className="text-sm text-muted-foreground mb-auto">
-              Explore the priority areas for healthcare investment aligned with Vision 2030 goals.
-            </p>
-            <Button variant="outline" size="sm" className="mt-4 flex items-center gap-1">
-              View Priorities
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-          
-          <div className="bg-slate-50 border rounded-xl p-4 flex flex-col h-full">
-            <div className="bg-moh-lightGreen w-10 h-10 rounded-md flex items-center justify-center mb-3">
-              <BarChart3 className="h-5 w-5 text-moh-green" />
+            
+            <div className="mt-6 pt-4 border-t flex justify-end">
+              <Button variant="outline" className="mr-3">
+                Save Analysis
+              </Button>
+              <Button>
+                Download Report
+              </Button>
             </div>
-            <h3 className="font-medium mb-1">Vision 2030 KPI Framework</h3>
-            <p className="text-sm text-muted-foreground mb-auto">
-              Access the key performance indicators for measuring Vision 2030 healthcare success.
-            </p>
-            <Button variant="outline" size="sm" className="mt-4 flex items-center gap-1">
-              View Framework
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

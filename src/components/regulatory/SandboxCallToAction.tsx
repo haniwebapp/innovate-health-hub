@@ -1,30 +1,35 @@
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function SandboxCallToAction() {
   return (
-    <Card className="border-l-4 border-l-moh-green">
-      <CardContent className="pt-6 pb-4">
-        <div className="md:flex items-start justify-between">
-          <div className="space-y-2 mb-4 md:mb-0">
-            <h2 className="text-xl font-medium">Apply for the Regulatory Sandbox</h2>
-            <p className="text-muted-foreground max-w-xl">
-              Test your healthcare innovations in a controlled environment with reduced regulatory barriers.
-              Submit your application to get started.
-            </p>
-          </div>
-          <Button asChild className="bg-moh-green hover:bg-moh-darkGreen">
-            <Link to="/dashboard/regulatory/applications/new" className="flex items-center">
+    <div className="bg-moh-darkGreen rounded-xl p-6 md:p-8 text-white mb-8">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 className="text-xl font-bold flex items-center">
+            <Sparkles className="h-5 w-5 mr-2" />
+            Healthcare Regulatory Sandbox Program
+          </h3>
+          <p className="mt-2 text-white/80 max-w-2xl">
+            Apply to test your healthcare innovation in our regulatory sandbox environment. 
+            Benefit from expedited regulatory guidance, expert support, and a clear pathway to compliance.
+          </p>
+        </div>
+        <div className="flex-shrink-0">
+          <Button 
+            asChild
+            size="lg" 
+            className="bg-white text-moh-darkGreen hover:bg-white/90"
+          >
+            <Link to="/dashboard/regulatory/applications/new">
               Apply for Sandbox
-              <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

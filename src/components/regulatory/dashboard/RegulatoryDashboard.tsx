@@ -1,362 +1,324 @@
 
-import { useState, useEffect } from "react";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { 
-  AlertCircle, 
-  ArrowRight, 
-  FileText, 
-  Loader2, 
-  PlusCircle,
-  Shield
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { RegulatoryFrameworkCard } from "../RegulatoryFrameworkCard";
-import { SandboxApplicationList } from "../sandbox/SandboxApplicationList";
-import { ComplianceRequirementCard } from "../ComplianceRequirementCard";
-
-import { 
-  fetchRegulatoryFrameworks, 
-  fetchUserApplications, 
-  RegulatoryFramework,
-  SandboxApplication
-} from "@/utils/regulatoryUtils";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { BadgePlus, AlertCircle, ListFilter, ClipboardCheck, PlusCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { useToast } from '@/components/ui/use-toast';
+import { fetchUserSandboxApplications, SandboxApplication } from '@/utils/regulatoryUtils';
+import { RegulatoryAIService, InnovationData, RegulatoryAnalysis } from '@/services/ai/RegulatoryAIService';
 
 export function RegulatoryDashboard() {
-  const [frameworks, setFrameworks] = useState<RegulatoryFramework[]>([]);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [applications, setApplications] = useState<SandboxApplication[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
-  const [error, setError] = useState<string | null>(null);
-  const [selectedFrameworkId, setSelectedFrameworkId] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('applications');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [complianceResults, setComplianceResults] = useState<RegulatoryAnalysis | null>(null);
+  
   useEffect(() => {
-    async function loadData() {
-      setIsLoading(true);
-      setError(null);
+    const loadApplications = async () => {
       try {
-        const [frameworksData, applicationsData] = await Promise.all([
-          fetchRegulatoryFrameworks(),
-          fetchUserApplications()
-        ]);
-        
-        setFrameworks(frameworksData);
-        setApplications(applicationsData);
-        
-        // Select first framework by default if there are frameworks
-        if (frameworksData.length > 0) {
-          setSelectedFrameworkId(frameworksData[0].id);
-        }
-      } catch (err: any) {
-        console.error("Error loading regulatory data:", err);
-        setError(err.message || "Failed to load data");
+        const userApplications = await fetchUserSandboxApplications();
+        setApplications(userApplications);
+      } catch (error) {
+        console.error('Error loading regulatory applications:', error);
+        toast({
+          variant: "destructive",
+          title: "Error loading applications",
+          description: "Failed to load your regulatory applications. Please try again later.",
+        });
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
+    };
+    
+    loadApplications();
+  }, [toast]);
+  
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <Badge className="bg-green-500">Active Testing</Badge>;
+      case 'pending':
+        return <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">Pending Approval</Badge>;
+      case 'completed':
+        return <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">Completed</Badge>;
+      case 'rejected':
+        return <Badge variant="destructive">Rejected</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
-
-    loadData();
-  }, []);
-
-  // Calculate statistics for overview
-  const pendingApplications = applications.filter(app => app.status === 'pending').length;
-  const approvedApplications = applications.filter(app => app.status === 'approved').length;
-  const inReviewApplications = applications.filter(app => app.status === 'in-review').length;
+  };
+  
+  const handleQuickAnalysis = async () => {
+    setIsAnalyzing(true);
+    
+    try {
+      // Example data for testing
+      const mockInnovationData: InnovationData = {
+        name: "HealthMonitor Pro",
+        description: "A wearable device that continuously monitors vital signs and alerts healthcare providers about abnormalities in real-time.",
+        type: "medical-device",
+        sector: "remote-monitoring",
+        stage: "prototype",
+        medicalClaims: ["Continuous vital sign monitoring", "Early detection of health deterioration"],
+        targetUsers: ["Chronic disease patients", "Elderly", "Post-operative recovery patients"],
+        dataCollection: "Heart rate, blood pressure, oxygen saturation, body temperature",
+        patientImpact: "Improved patient outcomes through early intervention and reduced hospital readmissions"
+      };
+      
+      const analysis = await RegulatoryAIService.generateComplianceAnalysis(mockInnovationData);
+      setComplianceResults(analysis);
+      
+      toast({
+        title: "Analysis Complete",
+        description: "Your quick compliance analysis has been generated.",
+      });
+    } catch (error) {
+      console.error('Error generating compliance analysis:', error);
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Failed to generate regulatory compliance analysis. Please try again.",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
   
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-moh-darkGreen tracking-tight">
-            Regulatory Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your regulatory applications and sandbox testing
-          </p>
-        </div>
-        
-        <Button 
-          asChild
-          className="bg-moh-green hover:bg-moh-darkGreen self-start"
-        >
-          <Link to="/dashboard/regulatory/apply">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            New Application
-          </Link>
-        </Button>
-      </div>
-
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-moh-green mr-2" />
-          <p>Loading regulatory data...</p>
-        </div>
-      ) : error ? (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-medium flex items-center">
-                  <Shield className="h-4 w-4 mr-2 text-amber-500" />
-                  Pending
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-bold">{pendingApplications}</span>
-                  <Badge variant="outline" className="text-amber-500 bg-amber-50 border-amber-200">
-                    Needs Action
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-medium flex items-center">
-                  <Shield className="h-4 w-4 mr-2 text-blue-500" />
-                  In Review
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-bold">{inReviewApplications}</span>
-                  <Badge variant="outline" className="text-blue-500 bg-blue-50 border-blue-200">
-                    Processing
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-medium flex items-center">
-                  <Shield className="h-4 w-4 mr-2 text-green-500" />
-                  Approved
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-bold">{approvedApplications}</span>
-                  <Badge variant="outline" className="text-green-500 bg-green-50 border-green-200">
-                    Active
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <CardTitle className="text-2xl text-moh-darkGreen">Regulatory Dashboard</CardTitle>
+            <CardDescription>
+              Manage your regulatory sandbox applications and compliance requirements
+            </CardDescription>
           </div>
-
-          <Tabs 
-            defaultValue={activeTab} 
-            onValueChange={setActiveTab}
-            className="space-y-4"
-          >
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="applications">Applications</TabsTrigger>
-              <TabsTrigger value="frameworks">Frameworks</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="overview" className="space-y-4">
-              {applications.length > 0 ? (
-                <>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl">Your Recent Applications</CardTitle>
-                      <CardDescription>
-                        Your most recent regulatory sandbox applications
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <SandboxApplicationList 
-                        applications={applications.slice(0, 3)} 
-                        showViewAll={applications.length > 3}
-                        viewAllUrl="/dashboard/regulatory/applications"
-                      />
-                    </CardContent>
-                  </Card>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-xl">Frameworks</CardTitle>
-                        <CardDescription>
-                          Available regulatory frameworks
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {frameworks.slice(0, 2).map((framework) => (
-                          <RegulatoryFrameworkCard 
-                            key={framework.id}
-                            framework={{
-                              ...framework,
-                              completedSteps: 0,
-                              steps: []
-                            }}
-                            isSelected={selectedFrameworkId === framework.id}
-                            onSelect={setSelectedFrameworkId}
-                            compact={true}
-                          />
-                        ))}
-                        
-                        {frameworks.length > 2 && (
-                          <div className="pt-2 text-center">
-                            <Button 
-                              variant="ghost" 
-                              className="text-moh-green"
-                              asChild
-                            >
-                              <Link to="/dashboard/regulatory/frameworks">
-                                View all frameworks
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                              </Link>
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-xl">Resources</CardTitle>
-                        <CardDescription>
-                          Regulatory guidance and documentation
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {["Sandbox Application Guide", "Compliance Documentation", "Testing Guidelines"].map((resource, i) => (
-                          <div key={i} className="flex items-center p-3 border rounded-lg">
-                            <FileText className="h-5 w-5 text-moh-green mr-3" />
-                            <div className="flex-1">
-                              <h3 className="text-sm font-medium">{resource}</h3>
-                              <p className="text-xs text-muted-foreground">
-                                PDF • Updated {new Date().toLocaleDateString()}
-                              </p>
-                            </div>
-                            <Button variant="ghost" size="sm">
-                              <ArrowRight className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                      </CardContent>
-                    </Card>
+          <Button onClick={() => navigate('/dashboard/regulatory/applications/new')}>
+            <BadgePlus className="h-4 w-4 mr-2" />
+            New Application
+          </Button>
+        </div>
+      </CardHeader>
+      
+      <CardContent>
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="applications">Applications</TabsTrigger>
+            <TabsTrigger value="compliance">Compliance</TabsTrigger>
+            <TabsTrigger value="quick-check">Quick Check</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="applications" className="space-y-6">
+            {loading ? (
+              <div className="flex items-center justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-moh-darkGreen"></div>
+              </div>
+            ) : applications.length === 0 ? (
+              <div className="text-center py-12 border border-dashed rounded-md">
+                <div className="flex justify-center mb-4">
+                  <div className="bg-moh-green/10 p-3 rounded-full">
+                    <ClipboardCheck className="h-6 w-6 text-moh-green" />
                   </div>
-                </>
-              ) : (
-                <div className="text-center py-12 bg-muted/20 rounded-lg border border-dashed">
-                  <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No Applications Yet</h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Create your first regulatory sandbox application to test innovations in a controlled environment with reduced regulatory barriers.
-                  </p>
-                  <Button 
-                    asChild
-                    className="bg-moh-green hover:bg-moh-darkGreen"
-                  >
-                    <Link to="/dashboard/regulatory/apply">
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Start Application
-                    </Link>
+                </div>
+                <h3 className="text-lg font-medium mb-2">No applications yet</h3>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  You haven't submitted any regulatory sandbox applications yet. 
+                  Apply to get help with your innovation's regulatory journey.
+                </p>
+                <Button onClick={() => navigate('/dashboard/regulatory/applications/new')}>
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Apply for Sandbox
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium">Your Applications</h3>
+                  <Button variant="outline" size="sm">
+                    <ListFilter className="h-4 w-4 mr-1" />
+                    Filter
                   </Button>
                 </div>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="applications">
-              <Card>
+                
+                <div className="space-y-4">
+                  {applications.map((app) => (
+                    <Card key={app.id} className="overflow-hidden">
+                      <div className="border-l-4 border-moh-darkGreen">
+                        <CardContent className="p-6">
+                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <h4 className="font-bold">{app.name}</h4>
+                                {getStatusBadge(app.status)}
+                              </div>
+                              
+                              <p className="text-sm text-gray-500 mb-3">{app.description}</p>
+                              
+                              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                                <div>
+                                  <span className="font-medium text-gray-500">Submitted:</span>{' '}
+                                  {new Date(app.submitted_at).toLocaleDateString()}
+                                </div>
+                                <div>
+                                  <span className="font-medium text-gray-500">Type:</span>{' '}
+                                  {app.innovation_type.replace('-', ' ')}
+                                </div>
+                                {app.start_date && (
+                                  <div>
+                                    <span className="font-medium text-gray-500">Started:</span>{' '}
+                                    {new Date(app.start_date).toLocaleDateString()}
+                                  </div>
+                                )}
+                                {app.end_date && (
+                                  <div>
+                                    <span className="font-medium text-gray-500">Ends:</span>{' '}
+                                    {new Date(app.end_date).toLocaleDateString()}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="flex-shrink-0">
+                              <Button 
+                                variant="outline" 
+                                className="w-full md:w-auto mb-2 md:mb-0 md:mr-2"
+                              >
+                                View Application
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          {app.status === 'active' && (
+                            <div className="mt-4">
+                              <div className="flex justify-between text-sm mb-1">
+                                <span>Testing Progress</span>
+                                <span>{app.progress}%</span>
+                              </div>
+                              <Progress value={app.progress} className="h-2" />
+                            </div>
+                          )}
+                        </CardContent>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="compliance">
+            <div className="text-center py-12 border border-dashed rounded-md">
+              <div className="flex justify-center mb-4">
+                <div className="bg-moh-green/10 p-3 rounded-full">
+                  <ClipboardCheck className="h-6 w-6 text-moh-green" />
+                </div>
+              </div>
+              <h3 className="text-lg font-medium mb-2">Compliance Management</h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                Track your compliance requirements and documentation in one place.
+                First, submit a sandbox application to get started.
+              </p>
+              <Button onClick={() => navigate('/dashboard/regulatory/applications/new')}>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Submit Application
+              </Button>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="quick-check">
+            <div className="flex flex-col md:flex-row gap-6">
+              <Card className="md:w-1/2">
                 <CardHeader>
-                  <CardTitle className="text-xl">Your Applications</CardTitle>
+                  <CardTitle className="text-lg">Quick Compliance Check</CardTitle>
                   <CardDescription>
-                    All your regulatory sandbox applications
+                    Get a quick AI-powered assessment of your regulatory requirements
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {applications.length > 0 ? (
-                    <SandboxApplicationList 
-                      applications={applications} 
-                      showViewAll={false}
-                    />
-                  ) : (
-                    <div className="text-center py-8">
-                      <p className="text-muted-foreground mb-4">
-                        You haven't submitted any applications yet
-                      </p>
-                      <Button 
-                        asChild
-                        className="bg-moh-green hover:bg-moh-darkGreen"
-                      >
-                        <Link to="/dashboard/regulatory/apply">
-                          <PlusCircle className="mr-2 h-4 w-4" />
-                          New Application
-                        </Link>
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="frameworks">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">Regulatory Frameworks</CardTitle>
-                  <CardDescription>
-                    Frameworks applicable to your healthcare innovations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {frameworks.map((framework) => (
-                    <RegulatoryFrameworkCard 
-                      key={framework.id}
-                      framework={{
-                        ...framework,
-                        completedSteps: 0,
-                        steps: []
-                      }}
-                      isSelected={selectedFrameworkId === framework.id}
-                      onSelect={setSelectedFrameworkId}
-                    />
-                  ))}
+                  <p className="mb-6 text-sm text-gray-600">
+                    This tool provides a preliminary analysis of potential regulatory requirements
+                    for a healthcare innovation. It's not a substitute for professional regulatory advice.
+                  </p>
                   
-                  {frameworks.length === 0 && (
-                    <div className="text-center py-8">
-                      <p className="text-muted-foreground">
-                        No frameworks available
-                      </p>
-                    </div>
-                  )}
+                  <Button 
+                    onClick={handleQuickAnalysis} 
+                    disabled={isAnalyzing}
+                    className="w-full bg-moh-darkGreen hover:bg-moh-darkGreen/90"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-b-transparent mr-2"></div>
+                        Analyzing...
+                      </>
+                    ) : (
+                      "Run Quick Analysis"
+                    )}
+                  </Button>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
-        </>
-      )}
-    </motion.div>
+              
+              {complianceResults && (
+                <Card className="md:w-1/2 overflow-auto">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Analysis Results</CardTitle>
+                    <CardDescription>
+                      Risk Level: <Badge>{complianceResults.riskLevel}</Badge>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="max-h-80 overflow-y-auto">
+                    <div className="mb-4">
+                      <h4 className="font-medium mb-1">Summary</h4>
+                      <p className="text-sm text-gray-600">{complianceResults.summary}</p>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <h4 className="font-medium mb-1">Key Requirements</h4>
+                      <ul className="space-y-2 text-sm">
+                        {complianceResults.keyRequirements.slice(0, 3).map((req, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <span className="bg-amber-100 text-amber-800 text-xs px-1.5 py-0.5 rounded mr-2 mt-0.5">
+                              {req.complexity}
+                            </span>
+                            <div>
+                              <div>{req.requirement}</div>
+                              <div className="text-xs text-gray-500">Est: {req.estimatedTime}</div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-medium mb-1">Next Steps</h4>
+                      <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                        {complianceResults.nextSteps.slice(0, 3).map((step, idx) => (
+                          <li key={idx}>{step}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Compliance Score</span>
+                        <span className="font-medium">{complianceResults.complianceScore}%</span>
+                      </div>
+                      <Progress value={complianceResults.complianceScore} className="h-2 mt-1" />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }

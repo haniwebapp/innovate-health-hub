@@ -1,7 +1,6 @@
 
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
+import React from 'react';
+import { Card } from '@/components/ui/card';
 
 interface BenefitCardProps {
   title: string;
@@ -11,18 +10,16 @@ interface BenefitCardProps {
 
 export function BenefitCard({ title, description, icon }: BenefitCardProps) {
   return (
-    <Card className="border border-gray-100 hover:shadow-md transition-shadow">
-      <CardHeader className="pb-2">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-full bg-moh-lightGreen">
-            {icon}
-          </div>
-          <CardTitle className="text-xl">{title}</CardTitle>
+    <Card className="p-6 border border-gray-200 hover:border-moh-green/40 transition-colors">
+      <div className="flex items-start gap-4">
+        <div className="bg-moh-green/10 p-3 rounded-full">
+          {icon}
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600">{description}</p>
-      </CardContent>
+        <div>
+          <h3 className="text-lg font-semibold mb-2">{title}</h3>
+          <p className="text-gray-600">{description}</p>
+        </div>
+      </div>
     </Card>
   );
 }
