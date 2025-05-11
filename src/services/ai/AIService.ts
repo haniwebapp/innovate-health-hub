@@ -1,9 +1,4 @@
 
-import { InvestmentAIService } from "./InvestmentAIService";
-import { RegulatoryAIService } from "./RegulatoryAIService";
-import { InnovationAIService } from "./InnovationAIService";
-import { KnowledgeAIService } from "./KnowledgeAIService";
-import { PolicyAIService } from "./PolicyAIService";
 import { CallTrace } from "@/types/ai";
 
 export enum AIServiceType {
@@ -15,12 +10,6 @@ export enum AIServiceType {
 }
 
 export class AIService {
-  static investment = InvestmentAIService;
-  static regulatory = RegulatoryAIService;
-  static innovation = InnovationAIService;
-  static knowledge = KnowledgeAIService;
-  static policy = PolicyAIService;
-
   /**
    * Creates a standardized trace object for AI operation tracking
    */
@@ -126,3 +115,17 @@ export class AIService {
     return enhancedError;
   }
 }
+
+// Import services AFTER defining AIService to avoid circular dependency
+import { InvestmentAIService } from "./InvestmentAIService";
+import { RegulatoryAIService } from "./RegulatoryAIService";
+import { InnovationAIService } from "./InnovationAIService";
+import { KnowledgeAIService } from "./KnowledgeAIService";
+import { PolicyAIService } from "./PolicyAIService";
+
+// Add service references after the class definition to avoid circular references
+AIService.investment = InvestmentAIService;
+AIService.regulatory = RegulatoryAIService;
+AIService.innovation = InnovationAIService;
+AIService.knowledge = KnowledgeAIService;
+AIService.policy = PolicyAIService;
