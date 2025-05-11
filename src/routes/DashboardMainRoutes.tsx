@@ -12,6 +12,7 @@ import CreateChallengePage from '@/pages/dashboard/CreateChallengePage';
 import PolicyPage from '@/pages/policy/index';
 import StrategyDashboard from '@/pages/dashboard/strategy/index';
 import DashboardChallengesPage from '@/pages/dashboard/challenges/index';
+import SupportPage from '@/pages/dashboard/support/index';
 import { DashboardInnovationRoutes } from './DashboardInnovationRoutes';
 import { DashboardInvestmentRoutes } from './DashboardInvestmentRoutes';
 import { DashboardRegulatoryRoutes } from './DashboardRegulatoryRoutes';
@@ -35,6 +36,7 @@ export const DashboardMainRoutes = (
     <Route path="challenges" element={<DashboardChallengesPage />} />
     <Route path="policy" element={<PolicyPage />} />
     <Route path="strategy" element={<StrategyDashboard />} />
+    <Route path="support" element={<SupportPage />} />
     
     {/* Nested route groups */}
     {DashboardInnovationRoutes}

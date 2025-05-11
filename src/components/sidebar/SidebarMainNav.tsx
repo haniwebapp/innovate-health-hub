@@ -1,119 +1,62 @@
 
-import { NavLink } from "react-router-dom";
-import {
-  Blocks,
-  Home,
-  Settings,
-  Users,
-  BookOpen,
-  BadgeCheck,
-  LucideIcon,
-  MessageCircle,
-  Lightbulb,
-  BarChart,
-  Flag,
-  FileText
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { useAuth } from "@/contexts/AuthContext";
-
-interface SidebarNavItemProps {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-}
+import React from "react";
+import { useLocation } from "react-router-dom";
+import { Home, LineChart, FileText, Send, MessageCircle, HelpCircle } from "lucide-react";
+import { SidebarNavSection } from "./SidebarNavSection";
+import { SidebarNavItem } from "./SidebarNavItem";
 
 interface SidebarMainNavProps {
-  isCollapsed?: boolean;
+  isCollapsed: boolean;
 }
 
-// Export as named export to match the import in DashboardSidebar
-export function SidebarMainNav({ isCollapsed = false }: SidebarMainNavProps) {
-  const { t } = useLanguage();
-  const { user, isAdmin } = useAuth();
+export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
+  const { pathname } = useLocation();
   
-  const mainNavItems = [
-    {
-      href: "/dashboard",
-      label: t("nav.dashboard"),
-      icon: Home,
-    },
-    {
-      href: "/dashboard/innovations",
-      label: t("nav.innovations"),
-      icon: Lightbulb,
-    },
-    {
-      href: "/dashboard/investment",
-      label: t("nav.investment"),
-      icon: BarChart,
-    },
-    {
-      href: "/dashboard/regulatory",
-      label: t("nav.regulatory"),
-      icon: BadgeCheck,
-    },
-    {
-      href: "/dashboard/knowledge",
-      label: t("nav.knowledge"),
-      icon: BookOpen,
-    },
-    {
-      href: "/dashboard/strategy",
-      label: t("nav.strategy"),
-      icon: FileText,
-    },
-    {
-      href: "/dashboard/collaboration",
-      label: t("nav.collaboration"),
-      icon: MessageCircle,
-    },
-    ...(isAdmin
-      ? [
-          {
-            href: "/admin",
-            label: t("nav.admin"),
-            icon: Settings,
-          },
-        ]
-      : []),
-  ];
-
+  const isActive = (path: string) => {
+    return pathname === path || pathname.startsWith(`${path}/`);
+  };
+  
   return (
-    <div className="flex flex-col gap-1">
-      {mainNavItems.map((item) => (
-        <NavItem
-          key={item.href}
-          href={item.href}
-          label={item.label}
-          icon={item.icon}
-        />
-      ))}
-    </div>
+    <SidebarNavSection isCollapsed={isCollapsed}>
+      <SidebarNavItem
+        isCollapsed={isCollapsed}
+        isActive={isActive("/dashboard")}
+        href="/dashboard"
+        icon={<Home className="h-[1.2rem] w-[1.2rem]" />}
+        label="Dashboard"
+      />
+      
+      <SidebarNavItem
+        isCollapsed={isCollapsed}
+        isActive={isActive("/dashboard/challenges")}
+        href="/dashboard/challenges"
+        icon={<LineChart className="h-[1.2rem] w-[1.2rem]" />}
+        label="Challenges"
+      />
+      
+      <SidebarNavItem
+        isCollapsed={isCollapsed}
+        isActive={isActive("/dashboard/submissions")}
+        href="/dashboard/submissions"
+        icon={<Send className="h-[1.2rem] w-[1.2rem]" />}
+        label="Submissions"
+      />
+      
+      <SidebarNavItem
+        isCollapsed={isCollapsed}
+        isActive={isActive("/dashboard/activity")}
+        href="/dashboard/activity"
+        icon={<FileText className="h-[1.2rem] w-[1.2rem]" />}
+        label="Activity"
+      />
+      
+      <SidebarNavItem
+        isCollapsed={isCollapsed}
+        isActive={isActive("/dashboard/support")}
+        href="/dashboard/support"
+        icon={<HelpCircle className="h-[1.2rem] w-[1.2rem]" />}
+        label="Support"
+      />
+    </SidebarNavSection>
   );
 }
-
-function NavItem({ href, label, icon: Icon }: SidebarNavItemProps) {
-  return (
-    <Button
-      variant="ghost"
-      className="w-full justify-start"
-      asChild
-    >
-      <NavLink
-        to={href}
-        className={({ isActive }) =>
-          isActive ? "bg-accent text-accent-foreground" : ""
-        }
-      >
-        <Icon className="mr-2 h-4 w-4" />
-        {label}
-      </NavLink>
-    </Button>
-  );
-}
-
-// Also export as default for backward compatibility
-export default SidebarMainNav;
