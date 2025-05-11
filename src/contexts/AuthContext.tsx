@@ -109,10 +109,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkIfUserIsAdmin = async (userId: string) => {
     try {
-      // Using a direct query instead of the potentially recursive function
+      // Call the safer function we created to avoid recursion issues
+      // First try to use the RPC function if it exists
+      const { data: isAdminResult, error: rpcError } = await supabase
+        .rpc('is_admin_user');
+
+      if (!rpcError && isAdminResult !== null) {
+        setIsAdmin(isAdminResult);
+        return;
+      }
+      
+      // Fallback to direct query if RPC fails
       const { data, error } = await supabase
         .from('profiles')
-        .select('user_type')
+        .select('user_type, roles')
         .eq('id', userId)
         .single();
       
@@ -122,7 +132,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      setIsAdmin(data?.user_type === 'admin');
+      // Check both user_type and roles for admin status
+      const isAdminByType = data?.user_type === 'admin';
+      const isAdminByRole = Array.isArray(data?.roles) && data.roles.includes('admin');
+      setIsAdmin(isAdminByType || isAdminByRole);
+      
     } catch (error) {
       console.error("Error checking admin status:", error);
       setIsAdmin(false);
