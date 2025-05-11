@@ -1,4 +1,3 @@
-
 import { 
   AICapability, 
   AICapabilityCategory, 
@@ -11,7 +10,7 @@ import {
   Cpu, 
   LineChart, 
   GraduationCap, 
-  LawJustice, 
+  Scale, 
   FileText, 
   Headphones, 
   Trophy, 
@@ -237,6 +236,14 @@ export const getAICapabilitiesByUser = (isAdmin: boolean): AICapability[] => {
     return aiCapabilities;
   }
   return aiCapabilities.filter(capability => !capability.isAdminOnly);
+};
+
+export const getAdminCapabilities = (): AICapability[] => {
+  return aiCapabilities.filter(capability => capability.isAdminOnly);
+};
+
+export const getPlatformCapabilities = (): AICapability[] => {
+  return aiCapabilities.filter(capability => capability.isPlatformFeature);
 };
 
 export const getImplementedAICapabilities = (): AICapability[] => {
