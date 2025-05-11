@@ -167,7 +167,7 @@ export default function DashboardChallengesPage() {
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
 
   // Fetch challenges from API
-  const { data: challenges, isLoading: isLoadingChallenges } = useQuery({
+  const { data: challengesData, isLoading: isLoadingChallenges } = useQuery({
     queryKey: ['challenges'],
     queryFn: async () => {
       try {
@@ -177,7 +177,30 @@ export default function DashboardChallengesPage() {
           .eq('status', 'Open');
           
         if (error) throw error;
-        return data as Challenge[];
+        
+        // Transform the data to match the Challenge interface
+        const challenges: Challenge[] = data.map(item => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          long_description: item.long_description || "",
+          deadline: formatDate(item.end_date), // Format the end_date as deadline
+          submission_deadline: item.end_date, // Use end_date for submission_deadline
+          category: item.category,
+          participants: Math.floor(Math.random() * 50) + 10, // Mock data for participants count
+          prize: item.prize || "Prize to be announced",
+          image_url: item.image_url || "",
+          organizer: item.organizer,
+          status: item.status,
+          eligibility: item.eligibility || "",
+          requirements: Array.isArray(item.requirements) ? item.requirements : [],
+          timeline: [
+            { date: formatDate(item.start_date), event: "Challenge Launch" },
+            { date: formatDate(item.end_date), event: "Submission Deadline" }
+          ]
+        }));
+        
+        return challenges;
       } catch (error) {
         console.error('Error fetching challenges:', error);
         
@@ -220,8 +243,8 @@ export default function DashboardChallengesPage() {
   }, [user?.id]);
 
   // Get unique categories from challenges
-  const categories = challenges
-    ? ['All Categories', ...new Set(challenges.map(c => c.category))]
+  const categories = challengesData
+    ? ['All Categories', ...new Set(challengesData.map(c => c.category))]
     : ['All Categories'];
 
   // Map submissions to their challenges for easier lookup
@@ -231,7 +254,7 @@ export default function DashboardChallengesPage() {
   }, {} as Record<string, Submission>) || {};
 
   // Filter challenges based on search, category, and status
-  const filteredChallenges = challenges?.filter(challenge => {
+  const filteredChallenges = challengesData?.filter(challenge => {
     const matchesSearch = 
       challenge.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       challenge.description.toLowerCase().includes(searchQuery.toLowerCase());
