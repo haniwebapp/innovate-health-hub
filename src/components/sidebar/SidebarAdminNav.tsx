@@ -51,7 +51,7 @@ export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
           text: "Investment"
         },
         { 
-          to: "/dashboard/admin/regulatory", 
+          to: "/dashboard/admin/sandbox", 
           icon: <ShieldCheck size={18} className="text-moh-gold" />, 
           text: "Regulatory"
         },

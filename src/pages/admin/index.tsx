@@ -9,7 +9,7 @@ export default function AdminIndexPage() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Redirect to the embedded admin dashboard
+    // Redirect to the admin dashboard within the main dashboard layout
     if (isAuthenticated && isAdmin && !isLoading) {
       navigate("/dashboard/admin");
     }

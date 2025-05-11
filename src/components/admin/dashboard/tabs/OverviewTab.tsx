@@ -53,7 +53,7 @@ export function OverviewTab() {
                 { icon: Users, text: "View User Analytics", link: "/dashboard/admin/users" },
                 { icon: FileText, text: "Manage Content", link: "/dashboard/admin/cms" },
                 { icon: BarChart3, text: "View Reports", link: "/dashboard/admin/reports" },
-                { icon: Calendar, text: "Scheduled Tasks", link: "#" }
+                { icon: Calendar, text: "Scheduled Tasks", link: "/dashboard/admin" }
               ].map((item, i) => (
                 <Button 
                   key={i} 

@@ -60,7 +60,7 @@ import SandboxTestingPage from '@/pages/dashboard/regulatory/testing/[id]';
 import DocumentUploadPage from '@/pages/dashboard/regulatory/documents/upload';
 
 // Admin portal
-import AdminDashboardPage from '@/pages/admin/index';
+import AdminDashboardPage from '@/pages/dashboard/AdminDashboardPage';
 import AdminCmsPage from '@/pages/admin/cms/index';
 import AdminReportsPage from '@/pages/admin/reports/index';
 import AdminUserManagementPage from '@/pages/admin/users/index';
@@ -147,6 +147,11 @@ export function AppRoutes() {
         <Route path="policy" element={<PolicyPage />} />
         
         {/* Admin Routes within Dashboard */}
+        <Route path="admin" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminDashboardPage />
+          </ProtectedRoute>
+        } />
         <Route path="admin/users" element={
           <ProtectedRoute adminOnly={true}>
             <AdminUsersPage />
@@ -167,64 +172,47 @@ export function AppRoutes() {
             <AdminIntegrationsPage />
           </ProtectedRoute>
         } />
+        <Route path="admin/cms" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminCmsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/reports" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminReportsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/challenges" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminChallengeManagementPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/innovations" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminInnovationRegistryPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/investment" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminInvestmentToolsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/sandbox" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminSandboxPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/knowledge" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminKnowledgePage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/notifications" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminNotificationsPage />
+          </ProtectedRoute>
+        } />
       </Route>
-      
-      {/* Admin Portal Routes */}
-      <Route path="/admin" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminDashboardPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/cms" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminCmsPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/reports" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminReportsPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/users" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminUserManagementPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/challenges" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminChallengeManagementPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/innovations" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminInnovationRegistryPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/investment" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminInvestmentToolsPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/sandbox" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminSandboxPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/knowledge" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminKnowledgePage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/notifications" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminNotificationsPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/integrations" element={
-        <ProtectedRoute adminOnly={true}>
-          <AdminIntegrationsPage2 />
-        </ProtectedRoute>
-      } />
       
       {/* 404 Route */}
       <Route path="*" element={<NotFound />} />
