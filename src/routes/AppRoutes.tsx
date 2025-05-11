@@ -1,4 +1,5 @@
-import { Routes } from 'react-router-dom';
+
+import { Routes, Route } from 'react-router-dom';
 import { PublicRoutes } from './PublicRoutes';
 import { AuthRoutes } from './AuthRoutes';
 import { InnovationSubmissionRoutes } from './InnovationSubmissionRoutes';
