@@ -17,20 +17,46 @@ export default function IntegrationList({ category, title, description }: Integr
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
   useEffect(() => {
     const loadIntegrations = async () => {
       setLoading(true);
       setError(null);
+      setErrorDetails(null);
+      
       try {
+        console.log(`Fetching integrations for category: ${category}`);
         const data = await fetchIntegrationsByType(category);
+        console.log(`Received integrations:`, data);
         setIntegrations(data);
       } catch (error) {
         console.error("Error loading integrations:", error);
-        setError(error instanceof Error ? error : new Error("Failed to load integrations"));
+        
+        // Enhanced error logging
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        const stack = error instanceof Error && error.stack ? error.stack : "";
+        
+        console.error(`Detailed error info: ${errorMessage}`);
+        console.error(`Stack: ${stack}`);
+        
+        // Check for specific error types
+        let detailedError = "Unknown error occurred";
+        
+        if (errorMessage.includes("recursion")) {
+          detailedError = "Database recursion error detected. This is likely due to a Row Level Security policy issue.";
+        } else if (errorMessage.includes("permission denied")) {
+          detailedError = "Permission denied. Please verify you have admin access and are properly authenticated.";
+        } else if (errorMessage.includes("violates row-level security")) {
+          detailedError = "Row Level Security violation. Your user account doesn't have permission to access this data.";
+        }
+        
+        setError(error instanceof Error ? error : new Error(errorMessage));
+        setErrorDetails(detailedError);
+        
         toast({
           title: "Error loading integrations",
-          description: "There was a problem loading the integration list",
+          description: detailedError,
           variant: "destructive",
         });
       } finally {
@@ -43,6 +69,7 @@ export default function IntegrationList({ category, title, description }: Integr
 
   const handleToggleIntegration = async (id: string, isActive: boolean) => {
     try {
+      console.log(`Toggling integration ${id} to ${isActive}`);
       const updatedIntegration = await toggleIntegration(id, isActive);
       
       // Update the integration in the state
@@ -58,9 +85,15 @@ export default function IntegrationList({ category, title, description }: Integr
       });
     } catch (error) {
       console.error("Error toggling integration:", error);
+      
+      // Enhanced error handling
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      
       toast({
         title: "Error updating integration",
-        description: "There was a problem updating the integration status",
+        description: errorMessage.includes("recursion") 
+          ? "Database permission error. Please contact the administrator." 
+          : "There was a problem updating the integration status",
         variant: "destructive",
       });
     }
@@ -70,17 +103,29 @@ export default function IntegrationList({ category, title, description }: Integr
     // Simple retry function
     setIntegrations([]);
     setError(null);
+    setErrorDetails(null);
     setLoading(true);
+    
+    console.log("Retrying integration fetch...");
+    
     fetchIntegrationsByType(category)
       .then(data => {
+        console.log("Retry successful:", data);
         setIntegrations(data);
         setLoading(false);
       })
       .catch(err => {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        console.error("Retry failed:", errorMessage);
+        
         setError(err instanceof Error ? err : new Error("Failed to load integrations"));
+        setErrorDetails(errorMessage.includes("recursion") 
+          ? "Persistence of database permission issues. Please verify RLS policies." 
+          : "Failed to reload integrations");
+        
         setLoading(false);
         toast({
-          title: "Error loading integrations",
+          title: "Error reloading integrations",
           description: "Failed to reload integrations. Please try again later.",
           variant: "destructive",
         });
@@ -99,7 +144,7 @@ export default function IntegrationList({ category, title, description }: Integr
         ) : error ? (
           <AdminError 
             title="Failed to load integrations" 
-            description={error.message}
+            description={errorDetails || error.message}
             onRetry={handleRetry}
           />
         ) : integrations.length === 0 ? (

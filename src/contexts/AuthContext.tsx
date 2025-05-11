@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
@@ -79,6 +80,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const fetchUserProfile = async (userId: string) => {
     try {
       // Use direct query instead of joining with user_type to avoid recursion
+      console.log("Fetching user profile for ID:", userId);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('first_name, last_name, avatar_url')
@@ -91,6 +94,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       
       if (data && user) {
+        console.log("User profile data retrieved:", data);
+        
         // Update the user object with profile data
         setUser(currentUser => {
           if (!currentUser) return null;
@@ -103,22 +108,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
       }
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error("Exception fetching user profile:", error);
     }
   };
 
   const checkIfUserIsAdmin = async (userId: string) => {
     try {
+      console.log("Checking admin status for user ID:", userId);
+      
       // First try to use the RPC function if it exists
       const { data: isAdminResult, error: rpcError } = await supabase
         .rpc('is_admin_user');
 
+      console.log("RPC result:", isAdminResult, "Error:", rpcError);
+
       if (!rpcError && isAdminResult !== null) {
+        console.log("Setting admin status from RPC:", isAdminResult);
         setIsAdmin(isAdminResult);
         return;
       }
       
-      // Fallback to direct query if RPC fails
+      // Fallback to direct query if RPC fails - using a minimal select to avoid recursion
       const { data, error } = await supabase
         .from('profiles')
         .select('user_type')
@@ -131,10 +141,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
+      console.log("User type from profiles table:", data?.user_type);
       setIsAdmin(data?.user_type === 'admin');
       
     } catch (error) {
-      console.error("Error checking admin status:", error);
+      console.error("Exception checking admin status:", error);
       setIsAdmin(false);
     }
   };
