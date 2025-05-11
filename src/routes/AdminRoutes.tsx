@@ -5,7 +5,7 @@ import AdminAnalyticsPage from '@/pages/dashboard/AdminAnalyticsPage';
 import AdminSettingsPage from '@/pages/dashboard/AdminSettingsPage';
 import AdminUsersPage from '@/pages/dashboard/AdminUsersPage';
 import AdminIntegrationsPage from '@/pages/dashboard/AdminIntegrationsPage';
-import AdminLogsPage from '@/pages/admin/logs/index';
+import AdminLogsPage from '@/pages/admin/logs/AdminLogsPage';
 
 export const AdminRoutes = (
   <Routes>
