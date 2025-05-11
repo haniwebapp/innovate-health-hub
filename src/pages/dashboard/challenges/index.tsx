@@ -1,32 +1,20 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Challenge, Submission } from "@/types/challenges";
 import { recordUserActivity } from "@/utils/activityUtils";
 
+import ChallengesList from "@/components/challenges/dashboard/ChallengesList";
+import ChallengeFilters from "@/components/challenges/dashboard/ChallengeFilters";
+import ChallengeSearchBar from "@/components/challenges/dashboard/ChallengeSearchBar";
+import EmptyState from "@/components/challenges/dashboard/EmptyState";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ArrowRight,
-  Check,
-  Clock,
-  Filter,
-  Lightbulb,
-  Search,
-  Trophy,
-  CalendarClock,
-  Users
-} from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Lightbulb } from "lucide-react";
 
 // Helper function to format dates
 const formatDate = (dateString: string) => {
@@ -36,128 +24,6 @@ const formatDate = (dateString: string) => {
     day: "numeric",
   });
 };
-
-// Helper function to get status badge color
-const getStatusBadgeColor = (status: string) => {
-  const colors = {
-    'Open': 'bg-green-100 text-green-800 border-green-200',
-    'Closed': 'bg-red-100 text-red-800 border-red-200',
-    'In Progress': 'bg-blue-100 text-blue-800 border-blue-200',
-    'Submitted': 'bg-amber-100 text-amber-800 border-amber-200',
-    'Draft': 'bg-slate-100 text-slate-800 border-slate-200',
-    'Under Review': 'bg-purple-100 text-purple-800 border-purple-200',
-    'Complete': 'bg-moh-green/20 text-moh-darkGreen border-moh-green/30',
-  };
-  return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
-};
-
-// Challenge Card Component
-const ChallengeCard = ({ 
-  challenge, 
-  submission 
-}: { 
-  challenge: Challenge, 
-  submission?: Submission 
-}) => {
-  const hasSubmission = !!submission;
-  const submissionStatus = submission?.status || "";
-  const submissionProgress = hasSubmission ? 
-    (submissionStatus === "Complete" ? 100 : submissionStatus === "Submitted" ? 75 : 40) : 0;
-
-  return (
-    <Card className="h-full overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group border-moh-green/10">
-      <div className="h-40 overflow-hidden">
-        <img 
-          src={challenge.image_url || "https://images.unsplash.com/photo-1576089172869-4f5f6f315620?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"} 
-          alt={challenge.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-        />
-      </div>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <Badge className="bg-moh-gold hover:bg-moh-darkGold">{challenge.category}</Badge>
-          <div className="text-sm text-moh-darkGreen flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            <span>Deadline: {challenge.deadline}</span>
-          </div>
-        </div>
-        <CardTitle className="text-xl text-moh-darkGreen mt-2 group-hover:text-moh-green transition-colors">
-          {challenge.title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600 mb-4 line-clamp-3">{challenge.description}</p>
-        
-        {hasSubmission && (
-          <>
-            <div className="flex items-center justify-between text-sm text-gray-500 mb-1">
-              <span>Submission Progress</span>
-              <Badge className={getStatusBadgeColor(submissionStatus)}>
-                {submissionStatus}
-              </Badge>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-              <div 
-                className="bg-moh-green h-2 rounded-full" 
-                style={{ width: `${submissionProgress}%` }}
-              />
-            </div>
-          </>
-        )}
-        
-        <div className="flex justify-between text-sm text-gray-500">
-          <span className="flex items-center gap-1">
-            <Users className="h-3 w-3" />
-            {challenge.participants || 0} Participants
-          </span>
-          <span className="flex items-center gap-1">
-            <Trophy className="h-3 w-3" />
-            Prize: {challenge.prize}
-          </span>
-        </div>
-      </CardContent>
-      <CardFooter>
-        {hasSubmission ? (
-          <Button asChild className="w-full bg-moh-green hover:bg-moh-darkGreen text-white group">
-            <Link to={`/dashboard/submissions/${submission.id}`}>
-              View Submission
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
-        ) : (
-          <Button asChild className="w-full border-moh-green text-moh-green hover:bg-moh-green/10 group">
-            <Link to={`/dashboard/submit/${challenge.id}`}>
-              Submit Solution
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
-  );
-};
-
-// Loading Skeleton Component
-const ChallengeSkeleton = () => (
-  <div className="h-full animate-pulse">
-    <div className="h-40 bg-gray-200 rounded-t-lg"></div>
-    <div className="p-6">
-      <div className="flex justify-between mb-4">
-        <Skeleton className="h-5 w-20" />
-        <Skeleton className="h-5 w-32" />
-      </div>
-      <Skeleton className="h-7 w-full mb-4" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-2/3 mb-4" />
-      <div className="flex justify-between mb-4">
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-4 w-24" />
-      </div>
-      <Skeleton className="h-10 w-full rounded-md" />
-    </div>
-  </div>
-);
 
 export default function DashboardChallengesPage() {
   const { user } = useAuth();
@@ -179,7 +45,7 @@ export default function DashboardChallengesPage() {
         if (error) throw error;
         
         // Transform the data to match the Challenge interface
-        const challenges: Challenge[] = data.map(item => ({
+        const challenges = data.map(item => ({
           id: item.id,
           title: item.title,
           description: item.description,
@@ -193,7 +59,9 @@ export default function DashboardChallengesPage() {
           organizer: item.organizer,
           status: item.status,
           eligibility: item.eligibility || "",
-          requirements: Array.isArray(item.requirements) ? item.requirements : [],
+          requirements: Array.isArray(item.requirements) 
+            ? (item.requirements as string[]) 
+            : [],
           timeline: [
             { date: formatDate(item.start_date), event: "Challenge Launch" },
             { date: formatDate(item.end_date), event: "Submission Deadline" }
@@ -223,7 +91,7 @@ export default function DashboardChallengesPage() {
           .eq('user_id', user.id);
           
         if (error) throw error;
-        return data as Submission[];
+        return data;
       } catch (error) {
         console.error('Error fetching submissions:', error);
         return [];
@@ -251,7 +119,7 @@ export default function DashboardChallengesPage() {
   const submissionsByChallengeId = submissions?.reduce((acc, submission) => {
     acc[submission.challenge_id] = submission;
     return acc;
-  }, {} as Record<string, Submission>) || {};
+  }, {} as Record<string, any>) || {};
 
   // Filter challenges based on search, category, and status
   const filteredChallenges = challengesData?.filter(challenge => {
@@ -296,148 +164,69 @@ export default function DashboardChallengesPage() {
       <Separator />
 
       <Tabs defaultValue="all" onValueChange={(value) => setStatusFilter(value)}>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <TabsList>
-            <TabsTrigger value="all">All Challenges</TabsTrigger>
-            <TabsTrigger value="submitted">My Submissions</TabsTrigger>
-            <TabsTrigger value="not-submitted">Not Submitted</TabsTrigger>
-          </TabsList>
-          
-          <div className="flex items-center gap-2">
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
-            <Button variant="outline" onClick={handleResetFilters} size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Reset
-            </Button>
-          </div>
-        </div>
+        <ChallengeFilters 
+          categories={categories}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          handleResetFilters={handleResetFilters}
+        />
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-          <Input
-            placeholder="Search challenges by title or description..."
-            className="pl-10 mb-6"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        <ChallengeSearchBar 
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
 
         <TabsContent value="all" className="m-0">
-          {isLoadingChallenges || isLoadingSubmissions ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array(6).fill(0).map((_, index) => (
-                <ChallengeSkeleton key={index} />
-              ))}
-            </div>
-          ) : filteredChallenges?.length ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredChallenges.map((challenge) => (
-                <ChallengeCard
-                  key={challenge.id}
-                  challenge={challenge}
-                  submission={submissionsByChallengeId[challenge.id]}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto rounded-full bg-muted/20 flex items-center justify-center">
-                <Search className="h-8 w-8 text-muted" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">No challenges found</h3>
-              <p className="text-muted-foreground mt-2 mb-4">
-                We couldn't find any challenges matching your search criteria.
-              </p>
-              <Button variant="outline" onClick={handleResetFilters}>
-                Reset filters
-              </Button>
-            </div>
-          )}
+          <ChallengesList 
+            challenges={filteredChallenges}
+            submissions={submissionsByChallengeId}
+            isLoading={isLoadingChallenges || isLoadingSubmissions}
+            emptyState={
+              <EmptyState 
+                icon="search"
+                title="No challenges found"
+                description="We couldn't find any challenges matching your search criteria."
+                buttonText="Reset filters"
+                onButtonClick={handleResetFilters}
+              />
+            }
+          />
         </TabsContent>
         
         <TabsContent value="submitted" className="m-0">
-          {isLoadingChallenges || isLoadingSubmissions ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array(3).fill(0).map((_, index) => (
-                <ChallengeSkeleton key={index} />
-              ))}
-            </div>
-          ) : filteredChallenges?.filter(c => submissionsByChallengeId[c.id])?.length ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredChallenges
-                .filter(challenge => submissionsByChallengeId[challenge.id])
-                .map((challenge) => (
-                  <ChallengeCard
-                    key={challenge.id}
-                    challenge={challenge}
-                    submission={submissionsByChallengeId[challenge.id]}
-                  />
-                ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto rounded-full bg-muted/20 flex items-center justify-center">
-                <Trophy className="h-8 w-8 text-muted" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">No submissions yet</h3>
-              <p className="text-muted-foreground mt-2 mb-4">
-                You haven't submitted any solutions to challenges yet.
-              </p>
-              <Button asChild>
-                <Link to="/challenges">
-                  Browse Challenges
-                </Link>
-              </Button>
-            </div>
-          )}
+          <ChallengesList 
+            challenges={filteredChallenges?.filter(c => submissionsByChallengeId[c.id])}
+            submissions={submissionsByChallengeId}
+            isLoading={isLoadingChallenges || isLoadingSubmissions}
+            emptyState={
+              <EmptyState 
+                icon="trophy"
+                title="No submissions yet"
+                description="You haven't submitted any solutions to challenges yet."
+                buttonText="Browse Challenges"
+                onButtonClick={() => {}}
+                buttonLink="/challenges"
+              />
+            }
+          />
         </TabsContent>
         
         <TabsContent value="not-submitted" className="m-0">
-          {isLoadingChallenges || isLoadingSubmissions ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array(3).fill(0).map((_, index) => (
-                <ChallengeSkeleton key={index} />
-              ))}
-            </div>
-          ) : filteredChallenges?.filter(c => !submissionsByChallengeId[c.id])?.length ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredChallenges
-                .filter(challenge => !submissionsByChallengeId[challenge.id])
-                .map((challenge) => (
-                  <ChallengeCard
-                    key={challenge.id}
-                    challenge={challenge}
-                  />
-                ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto rounded-full bg-muted/20 flex items-center justify-center">
-                <Check className="h-8 w-8 text-muted" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">All caught up!</h3>
-              <p className="text-muted-foreground mt-2 mb-4">
-                You've submitted solutions to all available challenges.
-              </p>
-              <Button asChild>
-                <Link to="/challenges">
-                  Discover More Challenges
-                </Link>
-              </Button>
-            </div>
-          )}
+          <ChallengesList 
+            challenges={filteredChallenges?.filter(c => !submissionsByChallengeId[c.id])}
+            submissions={submissionsByChallengeId}
+            isLoading={isLoadingChallenges || isLoadingSubmissions}
+            emptyState={
+              <EmptyState 
+                icon="check"
+                title="All caught up!"
+                description="You've submitted solutions to all available challenges."
+                buttonText="Discover More Challenges"
+                onButtonClick={() => {}}
+                buttonLink="/challenges"
+              />
+            }
+          />
         </TabsContent>
       </Tabs>
     </div>
@@ -445,7 +234,7 @@ export default function DashboardChallengesPage() {
 }
 
 // Mock challenges data as fallback
-const mockChallenges: Challenge[] = [
+const mockChallenges = [
   {
     id: "1",
     title: "Remote Patient Monitoring Solutions",
