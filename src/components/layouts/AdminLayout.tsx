@@ -17,10 +17,26 @@ export default function AdminLayout({
   description = "Manage platform settings and users",
   actions
 }: AdminLayoutProps) {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isAuthenticated, isLoading } = useAuth();
 
+  // Show loading state if auth is still being determined
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-moh-green"></div>
+        <span className="ml-2 text-moh-green font-medium">Loading...</span>
+      </div>
+    );
+  }
+  
+  // Show access denied component if user is not admin
   if (!isAdmin) {
     return <AccessDenied />;
+  }
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" />;
   }
 
   return (

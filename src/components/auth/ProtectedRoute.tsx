@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
-  const { user, isLoading, isAdmin } = useAuth();
+  const { user, isLoading, isAdmin, isAuthenticated } = useAuth();
   const location = useLocation();
   
   if (isLoading) {
@@ -21,7 +21,7 @@ export default function ProtectedRoute({ children, adminOnly = false }: Protecte
     );
   }
 
-  if (!user) {
+  if (!isAuthenticated) {
     // Redirect to login page but save the location they were trying to access
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }

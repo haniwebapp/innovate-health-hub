@@ -1,12 +1,20 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
 import { BarChart3, Users, Settings, Plug, FileText, Lightbulb, DollarSign, ShieldCheck, BookOpen, Bell, Award } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SidebarAdminNavProps {
   isCollapsed: boolean;
 }
 
 export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
+  const { isAdmin } = useAuth();
+  
+  // Don't show admin nav if user is not admin
+  if (!isAdmin) {
+    return null;
+  }
+  
   return (
     <SidebarNavSection 
       title="Administration" 
