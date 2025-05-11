@@ -1,3 +1,4 @@
+
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
@@ -52,6 +53,11 @@ import DashboardKnowledgePage from '@/pages/dashboard/knowledge/index';
 import DashboardInvestmentPage from '@/pages/dashboard/investment/index';
 import DashboardRegulatoryPage from '@/pages/dashboard/regulatory/index';
 import DashboardCollaborationPage from '@/pages/dashboard/collaboration/index';
+
+// Import the dashboard investment pages
+import DashboardMarketAnalysisPage from '@/pages/dashboard/investment/market-analysis';
+import DashboardPortfolioPage from '@/pages/dashboard/investment/portfolio';
+import DashboardInvestmentTrendsPage from '@/pages/dashboard/investment/trends';
 
 // Regulatory Applications
 import NewRegulatoryApplicationPage from '@/pages/dashboard/regulatory/applications/new';
