@@ -1,4 +1,3 @@
-
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
@@ -87,8 +86,12 @@ export function AppRoutes() {
       <Route path="/innovations" element={<InnovationsPage />} />
       <Route path="/innovations/:id" element={<InnovationDetails />} />
       
-      {/* Innovation Submission Flow */}
-      <Route path="/innovations/submit" element={<InnovationSubmitPage />}>
+      {/* Innovation Submission Flow - Now Protected */}
+      <Route path="/innovations/submit" element={
+        <ProtectedRoute>
+          <InnovationSubmitPage />
+        </ProtectedRoute>
+      }>
         <Route index element={<div className="flex justify-center items-center p-8">
           <p className="text-gray-600">
             Select an option from the right to begin your innovation submission.
@@ -112,7 +115,7 @@ export function AppRoutes() {
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/auth/verify" element={<VerificationPage />} />
       
-      {/* Protected Dashboard Routes */}
+      {/* Protected Dashboard Routes - All these were already protected */}
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <DashboardLayout />
