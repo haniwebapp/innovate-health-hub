@@ -1,24 +1,15 @@
 
 import { useState } from "react";
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FileCheck, Clock, AlertTriangle, Upload, Plus, Download, FileText, Shield, CheckCircle, HelpCircle, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { RegulatoryFrameworkList } from "@/components/regulatory/frameworks/RegulatoryFrameworkList";
-import { ComplianceRequirementList } from "@/components/regulatory/compliance/ComplianceRequirementList";
-import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
-import { 
-  mockRegulatoryFrameworks,
-  mockComplianceRequirements 
-} from "@/components/regulatory/mockData";
+import { SandboxCallToAction } from "@/components/regulatory/dashboard/SandboxCallToAction";
+import { DocumentsTabContent } from "@/components/regulatory/dashboard/DocumentsTabContent";
+import { GuidanceTabContent } from "@/components/regulatory/dashboard/GuidanceTabContent";
+import { mockComplianceRequirements } from "@/components/regulatory/mockData";
 
 export default function DashboardRegulatoryPage() {
   const [activeTab, setActiveTab] = useState("documents");
-  const [selectedFramework, setSelectedFramework] = useState<string | null>("mdf");
   const { toast } = useToast();
   const [innovationDescription, setInnovationDescription] = useState("");
   const [innovationType, setInnovationType] = useState("digital health application");
@@ -73,25 +64,7 @@ export default function DashboardRegulatoryPage() {
       </div>
 
       {/* Apply for Sandbox Call-to-Action */}
-      <Card className="border-l-4 border-l-moh-green">
-        <CardContent className="pt-6 pb-4">
-          <div className="md:flex items-start justify-between">
-            <div className="space-y-2 mb-4 md:mb-0">
-              <h2 className="text-xl font-medium">Apply for the Regulatory Sandbox</h2>
-              <p className="text-muted-foreground max-w-xl">
-                Test your healthcare innovations in a controlled environment with reduced regulatory barriers.
-                Submit your application to get started.
-              </p>
-            </div>
-            <Button asChild className="bg-moh-green hover:bg-moh-darkGreen">
-              <Link to="/dashboard/regulatory/applications/new" className="flex items-center">
-                Apply for Sandbox
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <SandboxCallToAction />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
@@ -100,137 +73,20 @@ export default function DashboardRegulatoryPage() {
         </TabsList>
         
         <TabsContent value="documents">
-          <div className="space-y-4">
-            <AIComplianceAnalyzer
-              innovationDescription={innovationDescription}
-              innovationType={innovationType}
-              isAnalyzingCompliance={isAnalyzingCompliance}
-              onDescriptionChange={setInnovationDescription}
-              onTypeChange={setInnovationType}
-              onAnalyzeClick={handleAnalyzeCompliance}
-            />
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Compliance Requirements</CardTitle>
-                <CardDescription>
-                  Documents and assessments required for your innovation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ComplianceRequirementList
-                  requirements={mockComplianceRequirements}
-                  onMarkComplete={handleMarkComplete}
-                />
-                
-                <div className="mt-6 pt-4 border-t flex justify-between items-center">
-                  <div className="text-sm text-muted-foreground">
-                    <HelpCircle className="inline h-4 w-4 mr-1" />
-                    Need help with compliance? Contact our regulatory experts
-                  </div>
-                  <Button asChild>
-                    <Link to="/dashboard/regulatory/documents/upload">
-                      <Upload className="w-4 w-4 mr-1" />
-                      Upload Documents
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Document Library</CardTitle>
-                <CardDescription>
-                  Your uploaded compliance documents
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">
-                    You haven't uploaded any documents yet
-                  </p>
-                  <Button className="mt-4" asChild>
-                    <Link to="/dashboard/regulatory/documents/upload">
-                      <Upload className="w-4 w-4 mr-1" />
-                      Upload Documents
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <DocumentsTabContent
+            innovationDescription={innovationDescription}
+            innovationType={innovationType}
+            isAnalyzingCompliance={isAnalyzingCompliance}
+            onDescriptionChange={setInnovationDescription}
+            onTypeChange={setInnovationType}
+            onAnalyzeClick={handleAnalyzeCompliance}
+            onMarkComplete={handleMarkComplete}
+            requirements={mockComplianceRequirements}
+          />
         </TabsContent>
         
         <TabsContent value="feedback">
-          <Card>
-            <CardHeader>
-              <CardTitle>Ministry Guidance</CardTitle>
-              <CardDescription>
-                Feedback and guidance from regulatory experts
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Alert className="mb-6">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Important Notice</AlertTitle>
-                <AlertDescription>
-                  To expedite your testing approval, please ensure you've completed the data privacy impact assessment.
-                </AlertDescription>
-              </Alert>
-              
-              <div className="space-y-6">
-                <div className="border rounded-md p-4">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="bg-moh-green/10 p-2 rounded-full">
-                      <CheckCircle className="h-4 w-4 text-moh-green" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Patient Safety Requirements</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Updated guidance on patient safety requirements for medical software
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button variant="outline" size="sm">
-                      <Download className="h-3 w-3 mr-1" />
-                      Download Guidance
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="border rounded-md p-4">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="bg-moh-green/10 p-2 rounded-full">
-                      <Clock className="h-4 w-4 text-moh-green" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Testing Timeline Expectations</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Updated information about sandbox testing periods and milestone requirements
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button variant="outline" size="sm">
-                      <Download className="h-3 w-3 mr-1" />
-                      Download Guidance
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-4 border-t">
-                <Button variant="outline" className="w-full" asChild>
-                  <Link to="/dashboard/regulatory/guidance/schedule">
-                    Schedule Consultation with Regulatory Expert
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <GuidanceTabContent />
         </TabsContent>
       </Tabs>
     </div>
