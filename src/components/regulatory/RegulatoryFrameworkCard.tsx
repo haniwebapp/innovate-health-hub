@@ -18,14 +18,16 @@ export interface RegulatoryFramework {
 
 interface RegulatoryFrameworkCardProps {
   framework: RegulatoryFramework;
-  isSelected: boolean;
-  onSelect: (id: string) => void;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
+  compact?: boolean;
 }
 
 export function RegulatoryFrameworkCard({ 
   framework, 
-  isSelected, 
-  onSelect 
+  isSelected = false, 
+  onSelect = () => {}, 
+  compact = false
 }: RegulatoryFrameworkCardProps) {
   // Function to render the appropriate icon based on the framework's icon property
   const renderIcon = (iconName: string) => {
@@ -71,7 +73,7 @@ export function RegulatoryFrameworkCard({
         </div>
       </div>
       
-      {isSelected && (
+      {isSelected && !compact && (
         <div className="mt-4 pt-4 border-t border-gray-100">
           <h4 className="font-medium mb-2">Compliance Steps</h4>
           <div className="space-y-2">

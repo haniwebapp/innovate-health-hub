@@ -27,6 +27,19 @@ export interface SavedResource {
   resource?: KnowledgeResource;
 }
 
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  level: string;
+  estimated_hours: number;
+  featured: boolean;
+  prerequisite_path_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export async function fetchKnowledgeResources(
   category?: string,
   featured?: boolean
@@ -55,6 +68,32 @@ export async function fetchKnowledgeResources(
     return data || [];
   } catch (error) {
     console.error('Error fetching knowledge resources:', error);
+    return [];
+  }
+}
+
+export async function fetchFeaturedResources(): Promise<KnowledgeResource[]> {
+  return fetchKnowledgeResources(undefined, true);
+}
+
+export async function fetchResourcesByCategory(category: string): Promise<KnowledgeResource[]> {
+  return fetchKnowledgeResources(category);
+}
+
+export async function fetchLearningPaths(): Promise<LearningPath[]> {
+  try {
+    const { data, error } = await supabase
+      .from('learning_paths')
+      .select('*')
+      .order('featured', { ascending: false });
+    
+    if (error) {
+      throw error;
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching learning paths:', error);
     return [];
   }
 }
@@ -163,37 +202,25 @@ export async function fetchSavedResources(): Promise<SavedResource[]> {
 
 export async function incrementDownloadCount(resourceId: string): Promise<void> {
   try {
-    // Use RPC to atomically increment the download count
-    const { error } = await supabase.rpc(
-      'increment_download_count', // This function needs to be created in the database
-      { resource_id: resourceId }
-    );
+    // Since we can't use RPC with the current setup, use standard update
+    const { data } = await supabase
+      .from('knowledge_resources')
+      .select('downloads')
+      .eq('id', resourceId)
+      .single();
+      
+    const currentDownloads = data?.downloads || 0;
     
-    if (error) {
-      // Fallback to standard update if RPC fails or doesn't exist
-      console.warn('RPC failed, using standard update:', error);
-      
-      // Get current download count
-      const { data } = await supabase
-        .from('knowledge_resources')
-        .select('downloads')
-        .eq('id', resourceId)
-        .single();
-        
-      const currentDownloads = data?.downloads || 0;
-      
-      // Update download count
-      await supabase
-        .from('knowledge_resources')
-        .update({ downloads: currentDownloads + 1 })
-        .eq('id', resourceId);
-    }
+    // Update download count
+    await supabase
+      .from('knowledge_resources')
+      .update({ downloads: currentDownloads + 1 })
+      .eq('id', resourceId);
     
     // Record the download activity
     const resource = await fetchResourceById(resourceId);
     if (resource) {
-      // This will be handled separately so we don't need to import activityUtils
-      // and create circular dependencies
+      // Log the activity 
       console.log('Resource downloaded:', resource.title);
     }
   } catch (error) {

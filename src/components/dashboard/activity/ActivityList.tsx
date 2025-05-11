@@ -5,10 +5,10 @@ import { ActivityData } from "./activityTypes";
 
 interface ActivityListProps {
   activities: ActivityData[];
-  container: any; // Animation variants
+  container?: any; // Animation variants
 }
 
-export function ActivityList({ activities, container }: ActivityListProps) {
+export function ActivityList({ activities, container = {} }: ActivityListProps) {
   const item = {
     hidden: { opacity: 0, x: -10 },
     show: { opacity: 1, x: 0 }

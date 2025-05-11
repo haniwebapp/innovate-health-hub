@@ -9,10 +9,8 @@ import { Button } from "@/components/ui/button";
 import { ActivityLog, fetchUserActivity, getActivityCount } from "@/utils/activityUtils";
 import ActivityList from "@/components/activity/ActivityList";
 import ActivityDateFilter from "@/components/activity/ActivityDateFilter";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ActivityHistoryPage() {
-  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("all");
   const [activities, setActivities] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,17 +30,21 @@ export default function ActivityHistoryPage() {
   };
   
   const loadActivityCounts = async () => {
-    const allCount = await getActivityCount();
-    const innovationCount = await getActivityCount('innovation');
-    const challengeCount = await getActivityCount('challenge');
-    const investmentCount = await getActivityCount('investment');
-    
-    setCounts({
-      all: allCount,
-      innovation: innovationCount,
-      challenge: challengeCount, 
-      investment: investmentCount
-    });
+    try {
+      const allCount = await getActivityCount();
+      const innovationCount = await getActivityCount('innovation');
+      const challengeCount = await getActivityCount('challenge');
+      const investmentCount = await getActivityCount('investment');
+      
+      setCounts({
+        all: allCount,
+        innovation: innovationCount,
+        challenge: challengeCount, 
+        investment: investmentCount
+      });
+    } catch (err) {
+      console.error("Error loading activity counts:", err);
+    }
   };
   
   const loadActivities = async () => {

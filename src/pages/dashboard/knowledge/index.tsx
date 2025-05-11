@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -23,11 +22,10 @@ import { Badge } from "@/components/ui/badge";
 
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { 
-  fetchFeaturedResources, 
-  fetchLearningPaths,
-  fetchResourcesByCategory,
+  fetchKnowledgeResources,
   KnowledgeResource,
-  LearningPath
+  LearningPath,
+  fetchSavedResources
 } from "@/utils/knowledgeUtils";
 
 export default function DashboardKnowledgePage() {
@@ -44,17 +42,57 @@ export default function DashboardKnowledgePage() {
       setLoading(true);
       setError(null);
       try {
-        const [featured, practices, policy, paths] = await Promise.all([
-          fetchFeaturedResources(),
-          fetchResourcesByCategory('best-practices'),
-          fetchResourcesByCategory('policy'),
-          fetchLearningPaths()
-        ]);
+        // Get featured resources
+        const featured = await fetchKnowledgeResources(undefined, true);
+        
+        // Get resources by category
+        const practicesPromise = fetchKnowledgeResources('best-practices');
+        const policyPromise = fetchKnowledgeResources('policy');
+        
+        // Mock learning paths for now (API function to be implemented later)
+        const mockLearningPaths: LearningPath[] = [
+          {
+            id: '1',
+            title: 'Healthcare Innovation Fundamentals',
+            description: 'Learn the basics of healthcare innovation and digital health transformation',
+            category: 'Innovation',
+            level: 'Beginner',
+            estimated_hours: 8,
+            featured: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            title: 'Regulatory Compliance for Digital Health',
+            description: 'Understanding regulatory frameworks and compliance for digital health products',
+            category: 'Regulatory',
+            level: 'Intermediate',
+            estimated_hours: 12,
+            featured: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: '3',
+            title: 'Healthcare Data Privacy and Security',
+            description: 'Best practices for securing healthcare data and maintaining privacy compliance',
+            category: 'Security',
+            level: 'Advanced',
+            estimated_hours: 10,
+            featured: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ];
+        
+        // Wait for all promises to resolve
+        const [practices, policy] = await Promise.all([practicesPromise, policyPromise]);
         
         setFeaturedResources(featured);
         setBestPractices(practices);
         setPolicyGuidelines(policy);
-        setLearningPaths(paths);
+        setLearningPaths(mockLearningPaths);
       } catch (error: any) {
         console.error("Error loading knowledge resources:", error);
         setError(error.message || "Failed to load knowledge resources");

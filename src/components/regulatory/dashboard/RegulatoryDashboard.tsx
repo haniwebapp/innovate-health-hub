@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   Card, 
@@ -42,6 +43,7 @@ export function RegulatoryDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [error, setError] = useState<string | null>(null);
+  const [selectedFrameworkId, setSelectedFrameworkId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -55,6 +57,11 @@ export function RegulatoryDashboard() {
         
         setFrameworks(frameworksData);
         setApplications(applicationsData);
+        
+        // Select first framework by default if there are frameworks
+        if (frameworksData.length > 0) {
+          setSelectedFrameworkId(frameworksData[0].id);
+        }
       } catch (err: any) {
         console.error("Error loading regulatory data:", err);
         setError(err.message || "Failed to load data");
@@ -209,10 +216,12 @@ export function RegulatoryDashboard() {
                             key={framework.id}
                             framework={{
                               ...framework,
-                              completedSteps: 0, // This would come from user progress data
-                              steps: [] // This would come from framework steps data
+                              completedSteps: 0,
+                              steps: []
                             }}
-                            compact
+                            isSelected={selectedFrameworkId === framework.id}
+                            onSelect={setSelectedFrameworkId}
+                            compact={true}
                           />
                         ))}
                         
@@ -327,9 +336,11 @@ export function RegulatoryDashboard() {
                       key={framework.id}
                       framework={{
                         ...framework,
-                        completedSteps: 0, // This would come from user progress data
-                        steps: [] // This would come from framework steps data
+                        completedSteps: 0,
+                        steps: []
                       }}
+                      isSelected={selectedFrameworkId === framework.id}
+                      onSelect={setSelectedFrameworkId}
                     />
                   ))}
                   

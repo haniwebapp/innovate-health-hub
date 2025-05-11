@@ -26,7 +26,7 @@ const ActivityDateFilter = ({
   onDateChange 
 }: ActivityDateFilterProps) => {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<DateRange>({
+  const [date, setDate] = React.useState<DateRange | undefined>({
     from: startDate,
     to: endDate,
   });
@@ -35,12 +35,14 @@ const ActivityDateFilter = ({
   React.useEffect(() => {
     if (date?.from && date?.to) {
       onDateChange(date.from, date.to);
+    } else if (date?.from) {
+      onDateChange(date.from, undefined);
     }
   }, [date, onDateChange]);
   
   // Reset date filter
   const handleReset = () => {
-    setDate({ from: undefined, to: undefined });
+    setDate(undefined);
     onDateChange(undefined, undefined);
     setOpen(false);
   };

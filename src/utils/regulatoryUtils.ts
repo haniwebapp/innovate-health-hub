@@ -146,7 +146,7 @@ export async function fetchSandboxFeedback(applicationId: string): Promise<Sandb
       .from('sandbox_feedback')
       .select('*')
       .eq('application_id', applicationId)
-      .order('created_at', { descending: true });
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
     return data || [];
@@ -166,15 +166,13 @@ export async function addSandboxFeedback(
   try {
     const { error } = await supabase
       .from('sandbox_feedback')
-      .insert([
-        { 
-          application_id: applicationId, 
-          message, 
-          author,
-          author_role: authorRole,
-          is_official: isOfficial
-        }
-      ]);
+      .insert({
+        application_id: applicationId, 
+        message, 
+        author,
+        author_role: authorRole,
+        is_official: isOfficial
+      });
       
     if (error) throw error;
   } catch (error: any) {
@@ -265,10 +263,21 @@ export async function submitSandboxApplication(application: Partial<SandboxAppli
   try {
     const { data: session } = await supabase.auth.getSession();
     if (!session.session?.user?.id) throw new Error('User not authenticated');
+
+    // Ensure required fields are provided
+    const requiredFields = ['name', 'description', 'innovation_type', 'organization_type', 'innovator'];
+    for (const field of requiredFields) {
+      if (!application[field as keyof Partial<SandboxApplication>]) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
     
     const { data, error } = await supabase
       .from('sandbox_applications')
-      .insert([{ ...application, user_id: session.session.user.id }])
+      .insert({
+        ...application,
+        user_id: session.session.user.id
+      })
       .select('id')
       .single();
 

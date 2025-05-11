@@ -92,10 +92,67 @@ export function formatActivityDetails(activity: ActivityLog) {
   return { title, description, icon, color };
 }
 
+// Add the missing groupActivitiesByDate function
+interface GroupedActivities {
+  date: string;
+  activities: ActivityLog[];
+}
+
+export function groupActivitiesByDate(activities: ActivityLog[]): GroupedActivities[] {
+  const grouped: Record<string, ActivityLog[]> = {};
+  
+  activities.forEach(activity => {
+    const date = new Date(activity.created_at).toDateString();
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+    grouped[date].push(activity);
+  });
+  
+  // Convert to array format
+  return Object.keys(grouped).map(date => ({
+    date,
+    activities: grouped[date]
+  })).sort((a, b) => {
+    // Sort by date (newest first)
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+}
+
+// Add getActivityCount function
+export async function getActivityCount(resourceType?: string): Promise<number> {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session?.session?.user?.id) {
+      return 0;
+    }
+    
+    let query = supabase
+      .from('activity_logs')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', session.session.user.id);
+    
+    if (resourceType) {
+      query = query.eq('resource_type', resourceType);
+    }
+    
+    const { count, error } = await query;
+    
+    if (error) {
+      throw error;
+    }
+    
+    return count || 0;
+  } catch (error) {
+    console.error('Error getting activity count:', error);
+    return 0;
+  }
+}
+
 export async function fetchUserActivity(
+  resourceType?: string,
   startDate?: Date, 
-  endDate?: Date,
-  resourceType?: string
+  endDate?: Date
 ): Promise<ActivityLog[]> {
   try {
     const { data: session } = await supabase.auth.getSession();
@@ -128,8 +185,19 @@ export async function fetchUserActivity(
     if (error) {
       throw error;
     }
+
+    // Transform the data to match ActivityLog type
+    const formattedData: ActivityLog[] = data.map(item => ({
+      id: item.id,
+      user_id: item.user_id,
+      activity_type: item.activity_type,
+      resource_type: item.resource_type,
+      resource_id: item.resource_id,
+      created_at: item.created_at,
+      details: item.details ? { data: item.details.data || {} } : undefined
+    }));
     
-    return data || [];
+    return formattedData;
   } catch (error) {
     console.error('Error fetching user activity:', error);
     return [];
