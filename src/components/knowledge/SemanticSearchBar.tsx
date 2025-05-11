@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { Search, Filter, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,9 +31,11 @@ const filterOptions = {
   tags: ['AI', 'Cloud', 'Security', 'Privacy'],
 };
 
-export function SemanticSearchBar({ onSearch }: { onSearch: (params: any) => void }) {
+export function SemanticSearchBar({ onSearch, isSearching = false }: { 
+  onSearch: (params: SemanticSearchParams) => void;
+  isSearching?: boolean;
+}) {
   const [query, setQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
     categories: [] as string[],
     types: [] as string[],
@@ -43,7 +46,6 @@ export function SemanticSearchBar({ onSearch }: { onSearch: (params: any) => voi
   
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setIsSearching(true);
     
     const params: SemanticSearchParams = {
       query: query,
@@ -52,12 +54,11 @@ export function SemanticSearchBar({ onSearch }: { onSearch: (params: any) => voi
     };
     
     onSearch(params);
-    setIsSearching(false);
   };
   
   const handleFilterChange = (filterType: string, value: string, checked: boolean) => {
     setSelectedFilters(prevFilters => {
-      const filterArray = prevFilters[filterType] || [];
+      const filterArray = prevFilters[filterType as keyof typeof prevFilters] || [];
       
       if (checked) {
         return {

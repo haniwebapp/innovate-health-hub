@@ -15,18 +15,20 @@ export default function SearchResultsPage() {
   const rtlClasses = getRTLClasses(language);
   const { toast } = useToast();
   
-  const [searchResults, setSearchResults] = useState<SearchResults['results']>([]);
+  const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = async (params: SemanticSearchParams) => {
     if (!params.query.trim()) return;
     
     setIsSearching(true);
+    setSearchQuery(params.query);
     
     try {
       const results = await KnowledgeAIService.semanticSearch(params);
-      setSearchResults(results.results);
+      setSearchResults(results);
       setHasSearched(true);
     } catch (error: any) {
       console.error("Search error:", error);
@@ -57,10 +59,14 @@ export default function SearchResultsPage() {
         {t('knowledge.searchResults')}
       </h1>
 
-      <SemanticSearchBar onSearch={handleSearch} />
+      <SemanticSearchBar onSearch={handleSearch} isSearching={isSearching} />
 
       {hasSearched ? (
-        <SearchResultsList results={searchResults} loading={isSearching} />
+        <SearchResultsList 
+          results={searchResults?.results || []} 
+          loading={isSearching}
+          searchQuery={searchQuery}
+        />
       ) : (
         <div className={`${rtlClasses.text} text-center py-12`}>
           <p>

@@ -2,6 +2,7 @@
 import React from 'react';
 import { ResourceCard } from '@/components/knowledge/ResourceCard';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { SearchResults } from '@/services/ai/KnowledgeAIService';
 
 interface SearchResultsListProps {
   results: Array<{
@@ -11,11 +12,12 @@ interface SearchResultsListProps {
     type: string;
     category: string;
     relevanceScore: number;
-  }>;
+  }> | SearchResults;
   loading?: boolean;
+  searchQuery?: string;
 }
 
-export function SearchResultsList({ results, loading = false }: SearchResultsListProps) {
+export function SearchResultsList({ results, loading = false, searchQuery }: SearchResultsListProps) {
   const { t } = useLanguage();
   
   if (loading) {
@@ -28,12 +30,15 @@ export function SearchResultsList({ results, loading = false }: SearchResultsLis
     );
   }
   
-  if (results.length === 0) {
+  // Handle both array of results and SearchResults object
+  const resultsArray = Array.isArray(results) ? results : (results as SearchResults).results || [];
+  
+  if (resultsArray.length === 0) {
     return (
       <div className="text-center py-12">
         <h3 className="text-xl font-medium mb-2">{t('knowledge.noResultsFound')}</h3>
         <p className="text-muted-foreground">
-          {t('knowledge.tryDifferentSearch')}
+          {searchQuery ? t('knowledge.tryDifferentSearch') : t('knowledge.enterSearchQuery')}
         </p>
       </div>
     );
@@ -41,7 +46,7 @@ export function SearchResultsList({ results, loading = false }: SearchResultsLis
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {results.map((result) => (
+      {resultsArray.map((result) => (
         <ResourceCard
           key={result.id}
           resource={{
