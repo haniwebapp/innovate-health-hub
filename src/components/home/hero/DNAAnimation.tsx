@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { Dna, AtomIcon, TestTube, Microscope } from "lucide-react";
 
 interface DNAStrand {
   id: number;
@@ -33,6 +34,57 @@ export function DNAAnimation() {
     
     setDnaStrands(newStrands);
   }, []);
+  
+  // Icons with their properties for animation
+  const geneticIcons = [
+    { 
+      Icon: Dna, 
+      size: 24, 
+      color: "rgba(0, 129, 74, 0.7)", 
+      position: { x: 70, y: 20 },
+      animation: { 
+        rotate: [0, 5, -5, 0],
+        scale: [1, 1.1, 0.95, 1],
+        y: [0, -5, 5, 0]
+      }
+    },
+    { 
+      Icon: AtomIcon, 
+      size: 28, 
+      color: "rgba(195, 168, 107, 0.7)", 
+      position: { x: 30, y: 60 },
+      animation: { 
+        rotate: [0, -5, 5, 0],
+        scale: [1, 0.95, 1.1, 1],
+        y: [0, 5, -5, 0]
+      }
+    },
+    { 
+      Icon: TestTube, 
+      size: 20, 
+      color: "rgba(0, 129, 74, 0.6)", 
+      position: { x: 85, y: 70 },
+      animation: { 
+        rotate: [0, 10, -10, 0],
+        scale: [1, 1.05, 0.98, 1],
+        x: [0, -3, 3, 0]
+      }
+    },
+    { 
+      Icon: Microscope, 
+      size: 26, 
+      color: "rgba(195, 168, 107, 0.6)", 
+      position: { x: 20, y: 40 },
+      animation: { 
+        rotate: [0, -8, 8, 0],
+        scale: [1, 0.98, 1.05, 1],
+        x: [0, 3, -3, 0]
+      }
+    },
+  ];
+  
+  // Genetic code letters for floating animation
+  const geneticLetters = ['A', 'T', 'G', 'C'];
   
   return (
     <div 
@@ -136,36 +188,102 @@ export function DNAAnimation() {
           </motion.div>
         ))}
       </motion.div>
-      
-      {/* Floating genetic code particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
+
+      {/* Animated Genetic Icons */}
+      {geneticIcons.map((item, index) => (
         <motion.div
-          key={`particle-${i}`}
-          className="absolute rounded-full flex items-center justify-center"
+          key={`icon-${index}`}
+          className="absolute"
           style={{
-            left: `${Math.random() * 80 + 10}%`,
-            top: `${Math.random() * 80 + 10}%`,
-            opacity: 0,
+            left: `${item.position.x}%`,
+            top: `${item.position.y}%`,
+            opacity: 0
           }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={isInView ? {
-            opacity: [0, 0.3, 0],
-            scale: [0, 1, 0],
-            x: [0, Math.random() * 40 - 20, 0],
-            y: [0, Math.random() * 40 - 20, 0],
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={isInView ? { 
+            opacity: 1,
+            scale: 1,
+            rotate: item.animation.rotate,
+            y: item.animation.y,
+            x: item.animation?.x || [0, 0, 0, 0]
           } : { opacity: 0 }}
           transition={{
-            duration: Math.random() * 3 + 4,
-            delay: Math.random() * 5,
+            duration: 3 + index * 0.5,
             repeat: Infinity,
-            repeatDelay: Math.random() * 2,
+            repeatType: "reverse",
+            delay: index * 0.7,
           }}
         >
-          <div className={`text-xs font-mono ${i % 2 === 0 ? 'text-moh-green/40' : 'text-moh-gold/40'}`}>
-            {["A", "T", "G", "C"][Math.floor(Math.random() * 4)]}
-          </div>
+          <item.Icon size={item.size} color={item.color} strokeWidth={1.5} />
         </motion.div>
       ))}
+      
+      {/* Floating genetic code particles with enhanced animation */}
+      {Array.from({ length: 30 }).map((_, i) => {
+        const geneticCode = geneticLetters[i % geneticLetters.length];
+        const delay = Math.random() * 10;
+        const duration = Math.random() * 5 + 3;
+        const size = Math.random() * 8 + 10;
+        
+        return (
+          <motion.div
+            key={`particle-${i}`}
+            className="absolute rounded-full flex items-center justify-center font-mono font-bold"
+            style={{
+              left: `${Math.random() * 80 + 10}%`,
+              top: `${Math.random() * 80 + 10}%`,
+              fontSize: `${size}px`,
+              opacity: 0,
+            }}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={isInView ? {
+              opacity: [0, 0.4, 0],
+              scale: [0, 1, 0],
+              x: [0, Math.random() * 60 - 30, 0],
+              y: [0, Math.random() * 60 - 30, 0],
+            } : { opacity: 0 }}
+            transition={{
+              duration: duration,
+              delay: delay,
+              repeat: Infinity,
+              repeatDelay: Math.random() * 3,
+            }}
+          >
+            <div className={`${i % 2 === 0 ? 'text-moh-green/70' : 'text-moh-gold/70'}`}>
+              {geneticCode}
+            </div>
+          </motion.div>
+        );
+      })}
+      
+      {/* DNA helix circular pattern */}
+      <motion.div 
+        className="absolute right-[20%] bottom-[20%] w-32 h-32 rounded-full border border-moh-green/20 flex items-center justify-center"
+        initial={{ opacity: 0, scale: 0.8, rotate: -20 }}
+        animate={isInView ? { 
+          opacity: 0.4, 
+          scale: 1,
+          rotate: 340,
+        } : { opacity: 0 }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "linear"
+        }}
+      >
+        <div className="absolute w-full h-full">
+          <svg width="100%" height="100%" viewBox="0 0 100 100">
+            <path d="M20,50 C35,25 65,75 80,50" stroke="rgba(0, 129, 74, 0.3)" fill="none" strokeWidth="1" />
+            <path d="M20,40 C35,15 65,65 80,40" stroke="rgba(0, 129, 74, 0.2)" fill="none" strokeWidth="1" />
+            <path d="M20,60 C35,35 65,85 80,60" stroke="rgba(0, 129, 74, 0.2)" fill="none" strokeWidth="1" />
+            <circle cx="35" cy="30" r="2" fill="rgba(195, 168, 107, 0.5)" />
+            <circle cx="65" cy="70" r="2" fill="rgba(0, 129, 74, 0.5)" />
+            <circle cx="35" cy="70" r="2" fill="rgba(195, 168, 107, 0.5)" />
+            <circle cx="65" cy="30" r="2" fill="rgba(0, 129, 74, 0.5)" />
+          </svg>
+        </div>
+      </motion.div>
     </div>
   );
 }

@@ -43,7 +43,7 @@ export function HeroBackgroundEffect() {
           <img src="/dna-helix.svg" alt="" className="w-full h-full" />
         </div>
         <div className="absolute left-10 bottom-10 w-40 h-40 opacity-30">
-          <img src="/dna-helix.svg" alt="" className="w-full h-full" />
+          <img src="/dna-pattern-circle.svg" alt="" className="w-full h-full" />
         </div>
       </div>
     
@@ -152,7 +152,7 @@ export function HeroBackgroundEffect() {
               stroke="#C3A86B"
               strokeWidth="0.7"
             />
-            {/* DNA-like elements */}
+            {/* More DNA-like elements */}
             <path
               d="M85 50 Q 90 45, 95 50 Q 90 55, 85 50"
               fill="none"
@@ -169,6 +169,12 @@ export function HeroBackgroundEffect() {
             <circle cx="75" cy="25" r="2" fill="#C3A86B" opacity="0.5" />
             <circle cx="25" cy="75" r="2" fill="#C3A86B" opacity="0.5" />
             <circle cx="50" cy="75" r="2" fill="#00814A" opacity="0.5" />
+            
+            {/* Genetic code letters */}
+            <text x="23" y="23" font-family="monospace" font-size="6" fill="#00814A" opacity="0.6">A</text>
+            <text x="73" y="23" font-family="monospace" font-size="6" fill="#C3A86B" opacity="0.6">T</text>
+            <text x="23" y="73" font-family="monospace" font-size="6" fill="#C3A86B" opacity="0.6">G</text>
+            <text x="48" y="73" font-family="monospace" font-size="6" fill="#00814A" opacity="0.6">C</text>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#health-circuit-pattern)" />
