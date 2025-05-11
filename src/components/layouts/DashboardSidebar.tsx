@@ -7,7 +7,6 @@ import { SidebarHeader } from "@/components/sidebar/SidebarHeader";
 import { SidebarMainNav } from "@/components/sidebar/SidebarMainNav";
 import { SidebarInnovationNav } from "@/components/sidebar/SidebarInnovationNav";
 import { SidebarPlatformNav } from "@/components/sidebar/SidebarPlatformNav";
-import { SidebarPhasesNav } from "@/components/sidebar/SidebarPhasesNav";
 import { SidebarAdminNav } from "@/components/sidebar/SidebarAdminNav";
 import { SidebarFooter } from "@/components/sidebar/SidebarFooter";
 
@@ -29,7 +28,7 @@ export default function DashboardSidebar({
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "h-screen fixed left-0 top-0 z-40 flex flex-col transition-all duration-300 ease-in-out",
+          "h-screen fixed left-0 top-0 z-40 flex flex-col transition-all duration-300",
           "bg-white",
           "border-r border-slate-200/80",
           isCollapsed ? "w-[68px]" : "w-64"
@@ -42,9 +41,6 @@ export default function DashboardSidebar({
         <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent py-2 px-2 space-y-1">
           {/* Main Navigation */}
           <SidebarMainNav isCollapsed={isCollapsed} />
-          
-          {/* Phases Navigation */}
-          <SidebarPhasesNav isCollapsed={isCollapsed} />
           
           {/* Innovation Navigation */}
           <SidebarInnovationNav isCollapsed={isCollapsed} />

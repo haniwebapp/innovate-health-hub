@@ -2,6 +2,7 @@
 import { ReactNode } from 'react';
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from '@/contexts/LanguageContext';
@@ -19,8 +20,10 @@ export function AppProviders({ children, queryClient }: AppProvidersProps) {
         <AuthProvider>
           <LanguageProvider>
             <TooltipProvider>
-              {children}
-              <Toaster />
+              <BrowserRouter>
+                {children}
+                <Toaster />
+              </BrowserRouter>
             </TooltipProvider>
           </LanguageProvider>
         </AuthProvider>
