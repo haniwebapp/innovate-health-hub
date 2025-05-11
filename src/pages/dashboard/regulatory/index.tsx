@@ -5,21 +5,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FileCheck, Clock, AlertTriangle, Upload, Plus, Download, FileText, Shield, CheckCircle, HelpCircle } from "lucide-react";
+import { FileCheck, Clock, AlertTriangle, Upload, Plus, Download, FileText, Shield, CheckCircle, HelpCircle, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { RegulatoryFrameworkList } from "@/components/regulatory/frameworks/RegulatoryFrameworkList";
-import { ApplicationList } from "@/components/regulatory/applications/ApplicationList";
 import { ComplianceRequirementList } from "@/components/regulatory/compliance/ComplianceRequirementList";
 import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
 import { 
-  mockSandboxApplications, 
   mockRegulatoryFrameworks,
   mockComplianceRequirements 
 } from "@/components/regulatory/mockData";
 
 export default function DashboardRegulatoryPage() {
-  const [activeTab, setActiveTab] = useState("applications");
+  const [activeTab, setActiveTab] = useState("documents");
   const [selectedFramework, setSelectedFramework] = useState<string | null>("mdf");
   const { toast } = useToast();
   const [innovationDescription, setInnovationDescription] = useState("");
@@ -73,51 +71,33 @@ export default function DashboardRegulatoryPage() {
           Test your innovations in a controlled regulatory environment
         </p>
       </div>
+
+      {/* Apply for Sandbox Call-to-Action */}
+      <Card className="border-l-4 border-l-moh-green">
+        <CardContent className="pt-6 pb-4">
+          <div className="md:flex items-start justify-between">
+            <div className="space-y-2 mb-4 md:mb-0">
+              <h2 className="text-xl font-medium">Apply for the Regulatory Sandbox</h2>
+              <p className="text-muted-foreground max-w-xl">
+                Test your healthcare innovations in a controlled environment with reduced regulatory barriers.
+                Submit your application to get started.
+              </p>
+            </div>
+            <Button asChild className="bg-moh-green hover:bg-moh-darkGreen">
+              <Link to="/dashboard/regulatory/applications/new" className="flex items-center">
+                Apply for Sandbox
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="applications">My Applications</TabsTrigger>
           <TabsTrigger value="documents">Compliance Documents</TabsTrigger>
           <TabsTrigger value="feedback">MoH Guidance</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="applications">
-          <div className="space-y-4">
-            {mockSandboxApplications.length > 0 ? (
-              <ApplicationList applications={mockSandboxApplications} />
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sandbox Applications</CardTitle>
-                  <CardDescription>
-                    Apply for regulatory testing environments
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="text-center py-10">
-                  <FileCheck className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground mb-4">
-                    You don't have any sandbox applications yet. Start by applying for a regulatory testing environment.
-                  </p>
-                  <Button asChild>
-                    <Link to="/dashboard/regulatory/applications/new">
-                      <Plus className="w-4 h-4 mr-1" />
-                      New Application
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-            
-            <div className="mt-6">
-              <h2 className="text-lg font-medium mb-2">Available Frameworks</h2>
-              <RegulatoryFrameworkList
-                frameworks={mockRegulatoryFrameworks}
-                selectedFramework={selectedFramework}
-                onSelectFramework={setSelectedFramework}
-              />
-            </div>
-          </div>
-        </TabsContent>
         
         <TabsContent value="documents">
           <div className="space-y-4">
@@ -150,7 +130,7 @@ export default function DashboardRegulatoryPage() {
                   </div>
                   <Button asChild>
                     <Link to="/dashboard/regulatory/documents/upload">
-                      <Upload className="w-4 h-4 mr-1" />
+                      <Upload className="w-4 w-4 mr-1" />
                       Upload Documents
                     </Link>
                   </Button>
@@ -173,7 +153,7 @@ export default function DashboardRegulatoryPage() {
                   </p>
                   <Button className="mt-4" asChild>
                     <Link to="/dashboard/regulatory/documents/upload">
-                      <Upload className="w-4 h-4 mr-1" />
+                      <Upload className="w-4 w-4 mr-1" />
                       Upload Documents
                     </Link>
                   </Button>
