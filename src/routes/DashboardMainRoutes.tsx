@@ -10,6 +10,7 @@ import SubmissionsList from '@/pages/dashboard/submissions/index';
 import SubmitChallengePage from '@/pages/dashboard/submit/[challengeId]';
 import CreateChallengePage from '@/pages/dashboard/CreateChallengePage';
 import PolicyPage from '@/pages/policy/index';
+import DashboardChallengesPage from '@/pages/dashboard/challenges/index';
 import { DashboardInnovationRoutes } from './DashboardInnovationRoutes';
 import { DashboardInvestmentRoutes } from './DashboardInvestmentRoutes';
 import { DashboardRegulatoryRoutes } from './DashboardRegulatoryRoutes';
@@ -30,6 +31,7 @@ export const DashboardMainRoutes = (
     <Route path="submissions" element={<SubmissionsList />} />
     <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
     <Route path="create-challenge" element={<CreateChallengePage />} />
+    <Route path="challenges" element={<DashboardChallengesPage />} />
     <Route path="policy" element={<PolicyPage />} />
     
     {/* Nested route groups */}
