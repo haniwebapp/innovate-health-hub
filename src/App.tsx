@@ -1,16 +1,18 @@
 
 import { QueryClient } from '@tanstack/react-query';
 import { AppProviders } from './providers/AppProviders';
-import { appRoutes } from './routes/AppRoutes'; // Changed AppRoutes to appRoutes
+import { routes } from './routes/AppRoutes';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
 import './services/ai/AIServiceRegistry'; // Import the registry to ensure services get registered
 
 const queryClient = new QueryClient();
+const router = createBrowserRouter(routes);
 
 function App() {
   return (
     <AppProviders queryClient={queryClient}>
-      {appRoutes}
+      <RouterProvider router={router} />
     </AppProviders>
   );
 }

@@ -1,13 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Shield, Settings } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import IntegrationList from "@/components/admin/IntegrationList";
 import IntegrationForm from "@/components/admin/IntegrationForm";
-import { IntegrationSettingsTab } from "@/components/admin/IntegrationSettingsTab"; // Changed to named import
+import { IntegrationSettingsTab } from "@/components/admin/IntegrationSettingsTab";
 import { fetchIntegrations, Integration } from "@/utils/integrationUtils";
 import { AdminLoading, AdminError } from "@/components/admin/ui/AdminPageState";
 import { motion } from "framer-motion";
