@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
@@ -8,6 +7,8 @@ interface ExtendedUser extends User {
   first_name?: string;
   last_name?: string;
   avatar_url?: string;
+  userType?: string;  // Added userType property
+  user_type?: string; // Also add user_type for database consistency
 }
 
 interface AuthContextType {
@@ -82,7 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Use direct query instead of joining with user_type to avoid recursion
       const { data, error } = await supabase
         .from('profiles')
-        .select('first_name, last_name, avatar_url')
+        .select('first_name, last_name, avatar_url, user_type')
         .eq('id', userId)
         .single();
         
@@ -99,7 +100,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             ...currentUser,
             first_name: data.first_name,
             last_name: data.last_name,
-            avatar_url: data.avatar_url
+            avatar_url: data.avatar_url,
+            userType: data.user_type, // Set the userType property from user_type in DB
+            user_type: data.user_type
           };
         });
       }

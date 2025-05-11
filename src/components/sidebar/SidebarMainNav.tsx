@@ -25,11 +25,15 @@ interface SidebarNavItemProps {
   icon: LucideIcon;
 }
 
-export default function SidebarMainNav() {
-  const { t } = useLanguage();
-  const { user } = useAuth();
-  const isAdmin = user?.userType === "admin";
+interface SidebarMainNavProps {
+  isCollapsed?: boolean;
+}
 
+// Export as named export to match the import in DashboardSidebar
+export function SidebarMainNav({ isCollapsed = false }: SidebarMainNavProps) {
+  const { t } = useLanguage();
+  const { user, isAdmin } = useAuth();
+  
   const mainNavItems = [
     {
       href: "/dashboard",
@@ -110,3 +114,6 @@ function NavItem({ href, label, icon: Icon }: SidebarNavItemProps) {
     </Button>
   );
 }
+
+// Also export as default for backward compatibility
+export default SidebarMainNav;
