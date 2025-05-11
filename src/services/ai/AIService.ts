@@ -146,18 +146,3 @@ export class AIService {
     return enhancedError;
   }
 }
-
-// Import and register services AFTER defining AIService to avoid circular dependency
-// The order matters here - define class first, then import dependencies, then register services
-import { InvestmentAIService } from "./InvestmentAIService";
-import { RegulatoryAIService } from "./RegulatoryAIService";
-import { InnovationAIService } from "./InnovationAIService";
-import { KnowledgeAIService } from "./KnowledgeAIService";
-import { PolicyAIService } from "./PolicyAIService";
-
-// Register service references
-AIService.investment = InvestmentAIService;
-AIService.regulatory = RegulatoryAIService;
-AIService.innovation = InnovationAIService;
-AIService.knowledge = KnowledgeAIService;
-AIService.policy = PolicyAIService;
