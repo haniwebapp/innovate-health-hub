@@ -1,7 +1,7 @@
 
-import { formatDistanceToNow, format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ActivityLog, formatActivityDetails } from "@/utils/activityUtils";
-import { Activity, Lightbulb, TrendingUp, Trophy } from "lucide-react";
+import { Activity, Book, Calendar, Lightbulb, Shield, TrendingUp, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -10,9 +10,10 @@ interface ActivityItemProps {
   activity: ActivityLog;
   isLast?: boolean;
   showTimeOnly?: boolean;
+  variants?: any;
 }
 
-const ActivityItem = ({ activity, isLast = false, showTimeOnly = false }: ActivityItemProps) => {
+const ActivityItem = ({ activity, isLast = false, showTimeOnly = false, variants }: ActivityItemProps) => {
   const { title, description, icon, color } = formatActivityDetails(activity);
   const date = new Date(activity.created_at);
   
@@ -25,6 +26,12 @@ const ActivityItem = ({ activity, isLast = false, showTimeOnly = false }: Activi
         return <Trophy className={cn("h-4 w-4", color)} />;
       case 'trending-up':
         return <TrendingUp className={cn("h-4 w-4", color)} />;
+      case 'shield':
+        return <Shield className={cn("h-4 w-4", color)} />;
+      case 'book-open':
+        return <Book className={cn("h-4 w-4", color)} />;
+      case 'calendar':
+        return <Calendar className={cn("h-4 w-4", color)} />;
       default:
         return <Activity className={cn("h-4 w-4", color)} />;
     }
@@ -38,7 +45,11 @@ const ActivityItem = ({ activity, isLast = false, showTimeOnly = false }: Activi
       case 'challenge':
         return `/challenges/${activity.resource_id}`;
       case 'investment':
-        return `/dashboard/investment`;
+        return `/dashboard/investment/opportunities/${activity.resource_id}`;
+      case 'regulatory':
+        return `/dashboard/regulatory/applications/${activity.resource_id}`;
+      case 'knowledge':
+        return `/dashboard/knowledge/resources/${activity.resource_id}`;
       default:
         return '#';
     }
@@ -47,11 +58,12 @@ const ActivityItem = ({ activity, isLast = false, showTimeOnly = false }: Activi
   return (
     <motion.div 
       className={cn(
-        "flex gap-4 py-3 px-2 rounded-lg hover:bg-muted/50 transition-colors",
+        "flex gap-4 py-3 px-4 rounded-lg hover:bg-muted/50 transition-colors",
         !isLast && "border-b border-dashed border-muted"
       )}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={variants}
+      initial={variants ? "hidden" : { opacity: 0, y: 10 }}
+      animate={variants ? "show" : { opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <div className="mt-1">
@@ -59,6 +71,8 @@ const ActivityItem = ({ activity, isLast = false, showTimeOnly = false }: Activi
           activity.resource_type === 'innovation' && "bg-moh-lightGreen",
           activity.resource_type === 'challenge' && "bg-amber-100",
           activity.resource_type === 'investment' && "bg-blue-100",
+          activity.resource_type === 'regulatory' && "bg-purple-100",
+          activity.resource_type === 'knowledge' && "bg-indigo-100",
           activity.resource_type === 'other' && "bg-gray-100"
         )}>
           {getIcon()}

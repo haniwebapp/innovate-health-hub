@@ -1,238 +1,244 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.0";
 
-// Define compliance requirement type
-interface ComplianceRequirement {
-  title: string;
-  description: string;
-  status: "required" | "recommended" | "optional";
-}
+const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+const openaiApiKey = Deno.env.get('OPENAI_API_KEY') ?? '';
 
-// Define the CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 serve(async (req) => {
-  // Handle CORS preflight request
+  // Handle OPTIONS request for CORS
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
-  
+
   try {
-    // Get request body
-    const { applicationId, description, innovationType } = await req.json();
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Validate required fields
-    if (!applicationId || !description || !innovationType) {
+    // Get the application data from the request
+    const { applicationId } = await req.json();
+    
+    if (!applicationId) {
       return new Response(
-        JSON.stringify({ 
-          error: "Missing required fields: applicationId, description, and innovationType are required" 
-        }),
+        JSON.stringify({ error: 'Application ID is required' }),
         { 
           status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
         }
       );
     }
     
-    // Create a Supabase client with the Deno runtime
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-    );
-    
-    // Generate requirements based on application type and description
-    const requirements = generateRequirements(description, innovationType);
-    
-    // Insert requirements into the database
-    for (const requirement of requirements) {
-      await supabaseClient
-        .from('sandbox_compliance_requirements')
-        .insert({
-          application_id: applicationId,
-          title: requirement.title,
-          description: requirement.description,
-          status: requirement.status
-        });
+    // Get the application data
+    const { data: application, error: applicationError } = await supabase
+      .from('sandbox_applications')
+      .select('*')
+      .eq('id', applicationId)
+      .single();
+      
+    if (applicationError || !application) {
+      return new Response(
+        JSON.stringify({ error: 'Application not found' }),
+        { 
+          status: 404, 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
     }
     
-    // Return success response with generated requirements
+    // Call OpenAI to analyze the application and determine compliance requirements
+    const requirements = await analyzeApplicationForCompliance(application);
+    
+    // Store the requirements in the database
+    const insertPromises = requirements.map(requirement => {
+      return supabase.from('sandbox_compliance_requirements').insert([{
+        application_id: applicationId,
+        title: requirement.title,
+        description: requirement.description,
+        status: requirement.status,
+        completed: false
+      }]);
+    });
+    
+    await Promise.all(insertPromises);
+    
+    // Get the inserted requirements
+    const { data: insertedRequirements, error: requirementsError } = await supabase
+      .from('sandbox_compliance_requirements')
+      .select('*')
+      .eq('application_id', applicationId);
+      
+    if (requirementsError) {
+      throw requirementsError;
+    }
+    
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Generated ${requirements.length} compliance requirements`, 
-        requirements 
+        requirements: insertedRequirements 
       }),
       { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json' 
+        } 
       }
     );
   } catch (error) {
-    // Return error response
+    console.error('Error in analyze-sandbox-application:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
         status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json' 
+        } 
       }
     );
   }
 });
 
-// Function to generate compliance requirements based on description and type
-// In a real implementation, this would use an AI model or more complex rule engine
-function generateRequirements(description: string, innovationType: string): ComplianceRequirement[] {
-  const commonRequirements: ComplianceRequirement[] = [
+// Function to analyze the application and determine compliance requirements
+async function analyzeApplicationForCompliance(application: any) {
+  try {
+    // If OpenAI API key is available, use it for analysis
+    if (openaiApiKey) {
+      const prompt = `
+        I need to determine the regulatory compliance requirements for a healthcare innovation in a sandbox environment.
+        
+        Application details:
+        - Name: ${application.name}
+        - Description: ${application.description}
+        - Innovation type: ${application.innovation_type}
+        - Risk level: ${application.risk_level}
+        - Organization type: ${application.organization_type}
+        ${application.regulatory_challenges ? `- Regulatory challenges: ${application.regulatory_challenges}` : ''}
+        
+        Based on this information, generate 3-6 specific compliance requirements that this application should meet.
+        For each requirement, provide a title, detailed description, and status (required, recommended, or optional).
+        
+        Format the output as a JSON array of objects with the following structure:
+        [
+          {
+            "title": "Short title of requirement",
+            "description": "Detailed description of what needs to be done",
+            "status": "required/recommended/optional"
+          }
+        ]
+        
+        Focus on requirements relevant to healthcare regulations, data privacy, security, safety standards, and documentation needs.
+      `;
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'You are a healthcare regulatory compliance expert.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7,
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        console.error('OpenAI API error:', data.error);
+        // Fall back to default requirements
+        return getDefaultRequirements(application);
+      }
+      
+      try {
+        const content = data.choices[0].message.content;
+        const parsedRequirements = JSON.parse(content);
+        if (Array.isArray(parsedRequirements) && parsedRequirements.length > 0) {
+          return parsedRequirements;
+        } else {
+          return getDefaultRequirements(application);
+        }
+      } catch (parseError) {
+        console.error('Error parsing OpenAI response:', parseError);
+        return getDefaultRequirements(application);
+      }
+    } else {
+      // If no OpenAI API key, use default requirements
+      return getDefaultRequirements(application);
+    }
+  } catch (error) {
+    console.error('Error in analyzeApplicationForCompliance:', error);
+    return getDefaultRequirements(application);
+  }
+}
+
+// Fallback function to get default requirements based on application type
+function getDefaultRequirements(application: any) {
+  const baseRequirements = [
     {
-      title: "Data Privacy Assessment",
-      description: "Complete assessment of how data is collected, processed, stored, and protected.",
+      title: "Data Privacy Impact Assessment",
+      description: "Complete a detailed assessment of how patient data is collected, stored, and processed in your innovation.",
       status: "required"
     },
     {
       title: "Risk Management Plan",
-      description: "Document identifying risks and mitigation strategies.",
-      status: "required"
-    },
-    {
-      title: "User Documentation",
-      description: "Provide comprehensive user guides and documentation.",
+      description: "Create a comprehensive plan identifying potential risks and mitigation strategies for your innovation.",
       status: "required"
     }
   ];
   
-  let specificRequirements: ComplianceRequirement[] = [];
-  
-  // Check for device-related innovations
-  if (innovationType.includes('device') || 
-      description.toLowerCase().includes('device') ||
-      description.toLowerCase().includes('hardware')) {
-    specificRequirements = specificRequirements.concat([
-      {
-        title: "Medical Device Classification",
-        description: "Confirm the classification of your device according to risk level and intended use.",
-        status: "required"
-      },
-      {
-        title: "Clinical Validation Plan",
-        description: "Submit a plan for clinical testing and validation.",
-        status: "required"
-      },
-      {
-        title: "Hardware Safety Assessment",
-        description: "Provide documentation on the safety testing of any hardware components.",
-        status: "required"
-      }
-    ]);
+  // Add requirements based on innovation type
+  if (application.innovation_type?.toLowerCase().includes('device') || 
+      application.innovation_type?.toLowerCase().includes('hardware')) {
+    baseRequirements.push({
+      title: "Medical Device Classification",
+      description: "Confirm the classification of your device according to risk level and intended use.",
+      status: "required"
+    });
+    baseRequirements.push({
+      title: "Clinical Validation Plan",
+      description: "Submit a plan for clinical testing and validation of your device.",
+      status: "required"
+    });
   }
   
-  // Check for digital health solutions
-  if (innovationType.includes('digital') || 
-      innovationType.includes('app') || 
-      description.toLowerCase().includes('software') ||
-      description.toLowerCase().includes('app') ||
-      description.toLowerCase().includes('digital')) {
-    specificRequirements = specificRequirements.concat([
-      {
-        title: "Security Testing Results",
-        description: "Provide results from security vulnerability assessments.",
-        status: "required"
-      },
-      {
-        title: "Interoperability Documentation",
-        description: "Document how your solution integrates with existing systems.",
-        status: "recommended"
-      },
-      {
-        title: "User Authentication Methods",
-        description: "Detail the methods used for user authentication and authorization.",
-        status: "recommended"
-      }
-    ]);
-  }
-  
-  // Check for AI/ML solutions
-  if (description.toLowerCase().includes('ai') ||
-      description.toLowerCase().includes('machine learning') ||
-      description.toLowerCase().includes('artificial intelligence') ||
-      description.toLowerCase().includes('neural network') ||
-      description.toLowerCase().includes('algorithm')) {
-    specificRequirements = specificRequirements.concat([
-      {
-        title: "AI Model Validation Report",
-        description: "Document validation methodology and results for AI/ML models.",
-        status: "required"
-      },
-      {
-        title: "Algorithm Bias Assessment",
-        description: "Provide analysis of potential biases in algorithms and mitigation strategies.",
-        status: "required"
-      },
-      {
-        title: "Training Data Documentation",
-        description: "Document sources and characteristics of data used for model training.",
-        status: "recommended"
-      }
-    ]);
-  }
-  
-  // Check for diagnostic tools
-  if (innovationType.includes('diagnostic') || 
-      description.toLowerCase().includes('diagnos') ||
-      description.toLowerCase().includes('test') ||
-      description.toLowerCase().includes('screening')) {
-    specificRequirements = specificRequirements.concat([
-      {
-        title: "Diagnostic Accuracy Report",
-        description: "Provide documentation on sensitivity, specificity, and accuracy metrics.",
-        status: "required"
-      },
-      {
-        title: "False Result Mitigation Strategy",
-        description: "Detail strategies for handling false positives/negatives.",
-        status: "required"
-      }
-    ]);
-  }
-  
-  // Check for therapeutic solutions
-  if (innovationType.includes('therapeutic') || 
-      description.toLowerCase().includes('therapy') ||
-      description.toLowerCase().includes('treatment') ||
-      description.toLowerCase().includes('therapeutic')) {
-    specificRequirements = specificRequirements.concat([
-      {
-        title: "Treatment Efficacy Documentation",
-        description: "Provide evidence of efficacy for the therapeutic solution.",
-        status: "required"
-      },
-      {
-        title: "Side Effects Documentation",
-        description: "Document potential side effects and mitigation strategies.",
-        status: "required"
-      },
-      {
-        title: "Patient Monitoring Protocol",
-        description: "Detail how patients will be monitored during and after treatment.",
-        status: "recommended"
-      }
-    ]);
-  }
-  
-  // Generate accessible documentation requirement if needed
-  if (description.toLowerCase().includes('patient') ||
-      description.toLowerCase().includes('user') ||
-      description.toLowerCase().includes('accessibility')) {
-    specificRequirements.push({
-      title: "Accessibility Documentation",
-      description: "Provide documentation on how the solution meets accessibility standards.",
+  if (application.innovation_type?.toLowerCase().includes('software') || 
+      application.innovation_type?.toLowerCase().includes('digital') || 
+      application.innovation_type?.toLowerCase().includes('app')) {
+    baseRequirements.push({
+      title: "Security Testing Results",
+      description: "Provide results from security vulnerability assessments and penetration testing of your software.",
+      status: "required"
+    });
+    baseRequirements.push({
+      title: "Interoperability Documentation",
+      description: "Document how your solution integrates with existing healthcare systems and standards.",
       status: "recommended"
     });
   }
-
-  return [...commonRequirements, ...specificRequirements];
+  
+  if (application.risk_level?.toLowerCase().includes('high')) {
+    baseRequirements.push({
+      title: "Expert Clinical Review",
+      description: "Obtain reviews from independent clinical experts on the safety and efficacy of your innovation.",
+      status: "required"
+    });
+  }
+  
+  return baseRequirements;
 }

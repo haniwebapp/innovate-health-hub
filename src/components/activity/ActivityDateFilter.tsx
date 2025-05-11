@@ -1,110 +1,111 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarIcon, Check, X } from "lucide-react";
+import React from "react";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
+
 interface ActivityDateFilterProps {
-  startDate: Date | undefined;
-  endDate: Date | undefined;
+  startDate?: Date;
+  endDate?: Date;
   onDateChange: (start: Date | undefined, end: Date | undefined) => void;
 }
 
-export function ActivityDateFilter({ startDate, endDate, onDateChange }: ActivityDateFilterProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [localStartDate, setLocalStartDate] = useState<Date | undefined>(startDate);
-  const [localEndDate, setLocalEndDate] = useState<Date | undefined>(endDate);
+const ActivityDateFilter = ({ 
+  startDate, 
+  endDate, 
+  onDateChange 
+}: ActivityDateFilterProps) => {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: startDate,
+    to: endDate,
+  });
+
+  // Handle date selection and close when both dates are selected
+  React.useEffect(() => {
+    if (date.from && date.to) {
+      onDateChange(date.from, date.to);
+    }
+  }, [date, onDateChange]);
   
-  const hasActiveFilter = !!startDate || !!endDate;
-  
-  const handleApply = () => {
-    onDateChange(localStartDate, localEndDate);
-    setIsOpen(false);
-  };
-  
-  const handleClear = () => {
-    setLocalStartDate(undefined);
-    setLocalEndDate(undefined);
+  // Reset date filter
+  const handleReset = () => {
+    setDate({ from: undefined, to: undefined });
     onDateChange(undefined, undefined);
-    setIsOpen(false);
+    setOpen(false);
   };
-  
-  const formatDateDisplay = () => {
-    if (startDate && endDate) {
-      return `${format(startDate, 'MMM d, yyyy')} - ${format(endDate, 'MMM d, yyyy')}`;
+
+  // Format date range string for display
+  const formatDateRange = (): string => {
+    if (!date.from) return "Filter by date range";
+    
+    if (!date.to) {
+      return `From ${format(date.from, "PP")}`;
     }
-    if (startDate) {
-      return `From ${format(startDate, 'MMM d, yyyy')}`;
-    }
-    if (endDate) {
-      return `Until ${format(endDate, 'MMM d, yyyy')}`;
-    }
-    return "Filter by date";
+    
+    return `${format(date.from, "PP")} - ${format(date.to, "PP")}`;
   };
   
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button 
           variant="outline" 
+          size="sm"
           className={cn(
-            "gap-2 text-sm",
-            hasActiveFilter && "bg-moh-lightGreen text-moh-darkGreen border-moh-green"
+            "flex items-center gap-1 border-moh-green/20 text-sm h-8",
+            date.from && "bg-moh-lightGreen border-moh-green/40 text-moh-darkGreen"
           )}
-          onClick={() => setIsOpen(true)}
         >
-          <CalendarIcon className="h-4 w-4" />
-          {formatDateDisplay()}
-          {hasActiveFilter && (
-            <X 
-              className="h-3 w-3 opacity-50 hover:opacity-100" 
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClear();
-              }}
-            />
-          )}
+          <CalendarIcon className="h-3.5 w-3.5" />
+          <span>{formatDateRange()}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-3 space-y-3">
-          <div className="grid gap-2">
-            <h4 className="text-sm font-medium">Start date</h4>
-            <Calendar
-              mode="single"
-              selected={localStartDate}
-              onSelect={setLocalStartDate}
-              initialFocus
-            />
-          </div>
-          <div className="grid gap-2">
-            <h4 className="text-sm font-medium">End date</h4>
-            <Calendar
-              mode="single"
-              selected={localEndDate}
-              onSelect={setLocalEndDate}
-              initialFocus
-              disabled={(date) => localStartDate ? date < localStartDate : false}
-            />
-          </div>
-          <div className="flex justify-between">
-            <Button variant="outline" size="sm" onClick={handleClear}>Clear</Button>
+        <div className="p-3 border-b">
+          <Label className="text-sm font-medium">Select Date Range</Label>
+        </div>
+        <Calendar
+          mode="range"
+          selected={date}
+          onSelect={setDate}
+          initialFocus
+          numberOfMonths={1}
+        />
+        <div className="flex items-center justify-between p-3 border-t">
+          {date.from && (
             <Button 
-              className="bg-moh-green hover:bg-moh-darkGreen"
+              variant="ghost" 
               size="sm"
-              onClick={handleApply}
+              onClick={handleReset}
             >
-              <Check className="mr-2 h-4 w-4" />
-              Apply
+              Reset
             </Button>
-          </div>
+          )}
+          <Button 
+            size="sm"
+            onClick={() => setOpen(false)}
+            disabled={!date.from}
+            className="ml-auto"
+          >
+            Apply
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
   );
-}
+};
 
 export default ActivityDateFilter;
