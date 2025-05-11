@@ -1,5 +1,6 @@
 
 import { QueryClient } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './providers/AppProviders';
 import { AppRoutes } from './routes/AppRoutes';
 import './App.css';
@@ -10,7 +11,9 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <AppProviders queryClient={queryClient}>
-      <AppRoutes />
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
     </AppProviders>
   );
 }
