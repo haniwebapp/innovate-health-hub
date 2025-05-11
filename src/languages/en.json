@@ -1,0 +1,118 @@
+
+{
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "loading": "Loading...",
+    "search": "Search",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "invalidEmail": "Invalid email address",
+    "passwordMismatch": "Passwords do not match",
+    "passwordRequirements": "Password must be at least 8 characters"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "innovations": "Innovations",
+    "investment": "Investment",
+    "regulatory": "Regulatory",
+    "knowledge": "Knowledge Hub",
+    "challenges": "Challenges",
+    "profile": "Profile",
+    "settings": "Settings",
+    "admin": "Admin",
+    "collaboration": "Collaboration",
+    "strategy": "Strategy"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "recentActivity": "Recent Activity",
+    "quickLinks": "Quick Links",
+    "metrics": "Metrics",
+    "suggestions": "Suggestions for you"
+  },
+  "innovations": {
+    "title": "Innovations",
+    "submit": "Submit Innovation",
+    "filter": "Filter Innovations",
+    "search": "Search Innovations",
+    "noResults": "No innovations found",
+    "categories": {
+      "all": "All Categories",
+      "digital": "Digital Health",
+      "medical": "Medical Devices",
+      "pharmaceutical": "Pharmaceuticals",
+      "service": "Healthcare Services",
+      "wearable": "Wearable Technology"
+    }
+  },
+  "challenges": {
+    "title": "Challenges",
+    "active": "Active Challenges",
+    "past": "Past Challenges",
+    "upcoming": "Upcoming Challenges",
+    "submit": "Submit Solution",
+    "create": "Create Challenge",
+    "filter": "Filter Challenges",
+    "search": "Search Challenges",
+    "noResults": "No challenges found"
+  },
+  "profile": {
+    "personalInfo": "Personal Information",
+    "changePassword": "Change Password",
+    "notifications": "Notifications",
+    "preferences": "Preferences"
+  },
+  "knowledge": {
+    "title": "Knowledge Hub",
+    "search": "Search Knowledge Hub",
+    "topics": "Browse Topics",
+    "resources": "Resources",
+    "courses": "Courses",
+    "events": "Events",
+    "noResultsFound": "No results found",
+    "tryDifferentSearch": "Try different search terms",
+    "enterSearchQuery": "Enter a search query to find resources",
+    "searchError": "An error occurred during search",
+    "learningPath": "Learning Path",
+    "learningPathDetails": "Learning Path Details",
+    "learningPathIdParam": "Learning Path ID:",
+    "learningPathImplementation": "This page will display the content and progress for the selected learning path."
+  },
+  "strategy": {
+    "title": "Strategy Dashboard",
+    "vision2030": "Vision 2030 Alignment",
+    "impactSimulator": "Policy Impact Simulator",
+    "analytics": "Strategy Analytics",
+    "resources": "Policy Resources",
+    "policyName": "Policy Name",
+    "policyDescription": "Policy Description",
+    "policySector": "Sector",
+    "policyGoals": "Key Goals",
+    "policyAnalyzing": "Analyzing policy...",
+    "alignmentScore": "Alignment Score",
+    "implementationComplexity": "Implementation Complexity",
+    "stakeholderImpact": "Stakeholder Impact",
+    "overallAssessment": "Overall Assessment",
+    "recommendations": "Recommendations",
+    "simulationResults": "Simulation Results",
+    "simulationDisclaimer": "This simulation is based on general models and assumptions. Actual results may vary."
+  }
+}

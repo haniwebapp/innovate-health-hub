@@ -31,7 +31,6 @@ export default function LearningPathPage() {
 
       <div className={`${rtlClasses.text}`}>
         <p>
-          {/* The error was here - we're passing id without proper interpolation key */}
           {t('knowledge.learningPathIdParam')} {id}
         </p>
         <p className="mt-4">

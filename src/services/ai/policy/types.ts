@@ -12,6 +12,7 @@ export interface PolicyData {
   sector: string;
   goals?: string[];
   stakeholders?: string[];
+  metrics?: string[];
 }
 
 /**
@@ -70,5 +71,57 @@ export interface PolicyImpactSimulation {
   risks: string[];
   opportunities: string[];
   overallAssessment: string;
+  error?: string;
+}
+
+/**
+ * Interface for policy best practices analysis results
+ */
+export interface PolicyBestPracticesResult {
+  overallScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+  recommendations: string[];
+  error?: string;
+}
+
+/**
+ * Interface for policy implementation feasibility analysis
+ */
+export interface PolicyFeasibilityResult {
+  feasibilityScore: number;
+  technicalFeasibility: {
+    score: number;
+    description: string;
+  };
+  financialFeasibility: {
+    score: number;
+    description: string;
+  };
+  timelineFeasibility: {
+    score: number;
+    description: string;
+  };
+  barriers: string[];
+  enablers: string[];
+  recommendations: string[];
+  error?: string;
+}
+
+/**
+ * Interface for policy stakeholder impact analysis
+ */
+export interface StakeholderImpactResult {
+  stakeholderImpacts: {
+    patients: { score: number; description: string };
+    providers: { score: number; description: string };
+    payers: { score: number; description: string };
+    government: { score: number; description: string };
+    industry: { score: number; description: string };
+  };
+  overallAnalysis: string;
+  recommendations: string[];
   error?: string;
 }
