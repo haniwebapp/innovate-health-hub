@@ -67,7 +67,7 @@ export function DuplicateChallengeDetector() {
         toast({
           title: "Potential duplicates found",
           description: "We've detected challenges with similar content.",
-          variant: "warning",
+          variant: "destructive", // Changed from "warning" to "destructive" to match allowed types
         });
       }
     } catch (error: any) {
@@ -180,7 +180,7 @@ export function DuplicateChallengeDetector() {
 
         {result && (
           <div className="mt-6 space-y-4">
-            <Alert variant={result.isDuplicate ? "warning" : "default"}>
+            <Alert variant={result.isDuplicate ? "destructive" : "default"}>
               <div className="flex items-start">
                 {result.isDuplicate ? (
                   <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 mr-2" />

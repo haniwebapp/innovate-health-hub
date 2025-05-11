@@ -276,6 +276,28 @@ function ChallengeCard({ challenge, showMatchScore = false, highlightEndDate = f
     return diffDays;
   };
 
+  // Format date function (was missing)
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  // Get category color function (was missing)
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
+      'Digital Health': 'bg-blue-100 text-blue-800',
+      'Telehealth': 'bg-green-100 text-green-800',
+      'Healthcare IT': 'bg-purple-100 text-purple-800',
+      'Mental Health': 'bg-pink-100 text-pink-800',
+      'Medical Devices': 'bg-amber-100 text-amber-800',
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800';
+  };
+
   return (
     <div className="border rounded-lg p-4 hover:border-moh-green/40 hover:shadow-sm transition-all">
       <div className="flex items-start justify-between">
