@@ -732,16 +732,53 @@ export type Database = {
         }
         Relationships: []
       }
+      knowledge_embeddings: {
+        Row: {
+          created_at: string | null
+          embedding: string | null
+          id: string
+          resource_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          resource_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          resource_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_embeddings_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       knowledge_resources: {
         Row: {
           author: string | null
           category: string
+          content: string | null
           created_at: string
           description: string
           downloads: number
           featured: boolean
           file_path: string | null
+          file_url: string | null
           id: string
+          key_points: string[] | null
+          relevant_topics: string[] | null
+          summary: string | null
           tags: string[] | null
           thumbnail_url: string | null
           title: string
@@ -752,12 +789,17 @@ export type Database = {
         Insert: {
           author?: string | null
           category: string
+          content?: string | null
           created_at?: string
           description: string
           downloads?: number
           featured?: boolean
           file_path?: string | null
+          file_url?: string | null
           id?: string
+          key_points?: string[] | null
+          relevant_topics?: string[] | null
+          summary?: string | null
           tags?: string[] | null
           thumbnail_url?: string | null
           title: string
@@ -768,12 +810,17 @@ export type Database = {
         Update: {
           author?: string | null
           category?: string
+          content?: string | null
           created_at?: string
           description?: string
           downloads?: number
           featured?: boolean
           file_path?: string | null
+          file_url?: string | null
           id?: string
+          key_points?: string[] | null
+          relevant_topics?: string[] | null
+          summary?: string | null
           tags?: string[] | null
           thumbnail_url?: string | null
           title?: string
@@ -1840,6 +1887,10 @@ export type Database = {
           updated_at: string
         }[]
       }
+      binary_quantize: {
+        Args: { "": string } | { "": unknown }
+        Returns: unknown
+      }
       get_challenge_submissions: {
         Args: { input_challenge_id: string }
         Returns: {
@@ -1860,6 +1911,38 @@ export type Database = {
           user_organization: string
         }[]
       }
+      halfvec_avg: {
+        Args: { "": number[] }
+        Returns: unknown
+      }
+      halfvec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      halfvec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      hnsw_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -1867,6 +1950,76 @@ export type Database = {
       is_admin_user: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      ivfflat_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      l2_norm: {
+        Args: { "": unknown } | { "": unknown }
+        Returns: number
+      }
+      l2_normalize: {
+        Args: { "": string } | { "": unknown } | { "": unknown }
+        Returns: string
+      }
+      match_documents: {
+        Args: {
+          query_embedding: string
+          match_threshold: number
+          match_count: number
+        }
+        Returns: {
+          id: string
+          title: string
+          description: string
+          category: string
+          similarity: number
+        }[]
+      }
+      sparsevec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      vector_avg: {
+        Args: { "": number[] }
+        Returns: string
+      }
+      vector_dims: {
+        Args: { "": string } | { "": unknown }
+        Returns: number
+      }
+      vector_norm: {
+        Args: { "": string }
+        Returns: number
+      }
+      vector_out: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: { "": string }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
       }
     }
     Enums: {

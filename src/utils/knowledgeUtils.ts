@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface KnowledgeResource {
@@ -9,11 +8,16 @@ export interface KnowledgeResource {
   type: string;
   url?: string;
   file_path?: string;
+  file_url?: string;
   thumbnail_url?: string;
   author?: string;
   featured: boolean;
   downloads: number;
   tags?: string[];
+  content?: string;
+  summary?: string;
+  key_points?: string[];
+  relevant_topics?: string[];
   created_at: string;
   updated_at: string;
 }

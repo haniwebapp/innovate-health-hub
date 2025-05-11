@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -291,7 +290,7 @@ export default function ResourceViewPage() {
                 </TabsList>
                 
                 <TabsContent value="content" className="mt-4">
-                  {resource.content ? (
+                  {resource?.content ? (
                     <div className={`prose max-w-none ${rtlClasses.text}`}>
                       {resource.content.split('\n').map((paragraph, i) => (
                         <p key={i} className="mb-4">{paragraph}</p>
@@ -371,7 +370,7 @@ export default function ResourceViewPage() {
               </Button>
               
               <div className={`flex gap-2 ${rtlClasses.flex}`}>
-                {resource.content && !isTranslating ? (
+                {resource?.content && !isTranslating ? (
                   <Button 
                     variant="outline"
                     onClick={handleTranslate}
