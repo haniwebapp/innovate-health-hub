@@ -1,29 +1,30 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, TrendingUp, ArrowUpRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { AIInsightsCard } from "@/components/investment/AIInsightsCard";
-import { Line, LineChart as RechartsLineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AIInsightsCard } from '@/components/investment/AIInsightsCard';
 
-// Mock data for investment trends
-const investmentTrendsData = [
-  { month: 'Jan', funding: 120, deals: 18 },
-  { month: 'Feb', funding: 145, deals: 20 },
-  { month: 'Mar', funding: 190, deals: 25 },
-  { month: 'Apr', funding: 210, deals: 28 },
-  { month: 'May', funding: 230, deals: 30 },
-  { month: 'Jun', funding: 250, deals: 32 },
-  { month: 'Jul', funding: 270, deals: 35 },
-  { month: 'Aug', funding: 290, deals: 38 },
+// Mock data for the trends chart
+const trendData = [
+  { month: 'Jan', healthtech: 32, biotech: 45, meddevice: 28, pharma: 50 },
+  { month: 'Feb', healthtech: 38, biotech: 42, meddevice: 29, pharma: 48 },
+  { month: 'Mar', healthtech: 45, biotech: 46, meddevice: 32, pharma: 51 },
+  { month: 'Apr', healthtech: 50, biotech: 49, meddevice: 35, pharma: 55 },
+  { month: 'May', healthtech: 48, biotech: 52, meddevice: 37, pharma: 58 },
+  { month: 'Jun', healthtech: 55, biotech: 58, meddevice: 40, pharma: 60 },
+  { month: 'Jul', healthtech: 62, biotech: 55, meddevice: 45, pharma: 59 },
+  { month: 'Aug', healthtech: 68, biotech: 61, meddevice: 48, pharma: 62 },
+  { month: 'Sep', healthtech: 72, biotech: 65, meddevice: 52, pharma: 66 },
 ];
 
-// AI insights
-const aiInsights = [
-  "Healthcare AI startups saw a 45% increase in funding compared to the previous quarter.",
-  "Early-stage investments (Seed & Series A) have grown by 23% year-over-year in digital health.",
-  "Telehealth services continue to attract the most investment, with a 32% share of total healthcare funding."
+// Mock AI insights for investment trends
+const trendInsights = [
+  "Health technology investments are showing the strongest growth trajectory, with a 125% increase since January.",
+  "Medical device investments have been more stable but are now showing signs of acceleration.",
+  "Biotechnology investments typically follow a seasonal pattern, with Q3 showing the highest activity.",
+  "Regulatory changes in May directly correlated with increased pharmaceutical investment.",
+  "Early-stage funding rounds are becoming more prevalent across all healthcare sectors."
 ];
 
 export default function DashboardInvestmentTrendsPage() {
@@ -36,85 +37,60 @@ export default function DashboardInvestmentTrendsPage() {
           { label: "Investment", href: "/dashboard/investment" },
         ]}
       />
-    
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Investment Trends</h1>
-        <p className="text-muted-foreground">
-          Track healthcare investment trends and patterns over time
-        </p>
+      
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900">Investment Trends</h2>
+          <p className="text-gray-500 mt-1">Analysis of healthcare investment trends and forecasts</p>
+        </div>
       </div>
-
-      <AIInsightsCard 
-        insights={aiInsights} 
-        title="AI Market Insights"
-        icon={<TrendingUp className="h-5 w-5 text-moh-green" />}
-        bgColor="bg-moh-lightGreen/20"
-        borderColor="border-moh-green"
-        textColor="text-moh-darkGreen"
-      />
-
-      <div className="grid grid-cols-1 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Card className="border-moh-green/10 overflow-hidden shadow-md">
-            <CardHeader className="bg-gradient-to-r from-moh-lightGreen/30 to-white pb-2">
-              <CardTitle className="text-xl font-playfair text-moh-darkGreen flex items-center">
-                <LineChart className="h-5 w-5 mr-2 text-moh-green" />
-                Healthcare Investment Trends (2023)
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="h-80 mt-4">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsLineChart data={investmentTrendsData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                    <XAxis dataKey="month" />
-                    <YAxis yAxisId="left" orientation="left" stroke="#00814A" />
-                    <YAxis yAxisId="right" orientation="right" stroke="#C3A86B" />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: "white", borderColor: "#00814A20" }}
-                    />
-                    <Legend />
-                    <Line yAxisId="left" type="monotone" dataKey="funding" stroke="#00814A" activeDot={{ r: 8 }} name="Funding (in $M)" />
-                    <Line yAxisId="right" type="monotone" dataKey="deals" stroke="#C3A86B" name="Number of Deals" />
-                  </RechartsLineChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                <div className="bg-moh-lightGreen/20 p-4 rounded-lg border border-moh-green/10">
-                  <div className="text-sm text-muted-foreground">Total Funding</div>
-                  <div className="text-2xl font-bold text-moh-darkGreen mt-1">$1.71B</div>
-                  <div className="flex items-center mt-2 text-green-600 text-sm">
-                    <ArrowUpRight size={16} className="mr-1" />
-                    <span>22% vs last year</span>
-                  </div>
-                </div>
-                
-                <div className="bg-moh-lightGold/20 p-4 rounded-lg border border-moh-gold/10">
-                  <div className="text-sm text-muted-foreground">Number of Deals</div>
-                  <div className="text-2xl font-bold text-moh-darkGreen mt-1">226</div>
-                  <div className="flex items-center mt-2 text-green-600 text-sm">
-                    <ArrowUpRight size={16} className="mr-1" />
-                    <span>15% vs last year</span>
-                  </div>
-                </div>
-
-                <div className="bg-moh-lightGreen/20 p-4 rounded-lg border border-moh-green/10">
-                  <div className="text-sm text-muted-foreground">Avg. Deal Size</div>
-                  <div className="text-2xl font-bold text-moh-darkGreen mt-1">$7.5M</div>
-                  <div className="flex items-center mt-2 text-green-600 text-sm">
-                    <ArrowUpRight size={16} className="mr-1" />
-                    <span>8% vs last year</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Healthcare Sector Investment Trends</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart
+                data={trendData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="healthtech" stroke="#00814A" name="Health Tech" />
+                <Line type="monotone" dataKey="biotech" stroke="#C3A86B" name="Biotech" />
+                <Line type="monotone" dataKey="meddevice" stroke="#006B3E" name="Medical Devices" />
+                <Line type="monotone" dataKey="pharma" stroke="#A38A56" name="Pharma" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+        
+        <AIInsightsCard insights={trendInsights} title="Investment Trend Insights" />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Geographic Distribution</CardTitle>
+          </CardHeader>
+          <CardContent className="h-96 flex items-center justify-center">
+            <p className="text-gray-500">Geographic distribution visualization will be implemented in the next phase.</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Investor Type Analysis</CardTitle>
+          </CardHeader>
+          <CardContent className="h-96 flex items-center justify-center">
+            <p className="text-gray-500">Investor type breakdown will be implemented in the next phase.</p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
