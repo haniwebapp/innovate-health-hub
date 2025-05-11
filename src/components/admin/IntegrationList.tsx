@@ -5,7 +5,6 @@ import IntegrationItem from "./IntegrationItem";
 import { useToast } from "@/hooks/use-toast";
 import { fetchIntegrationsByType, Integration, toggleIntegration } from "@/utils/integrationUtils";
 import { AdminLoading, AdminError, AdminEmpty } from "@/components/admin/ui/AdminPageState";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface IntegrationListProps {
   category: string;
@@ -15,92 +14,35 @@ interface IntegrationListProps {
 
 export default function IntegrationList({ category, title, description }: IntegrationListProps) {
   const { toast } = useToast();
-  const { isAdmin, isAuthenticated } = useAuth();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
   useEffect(() => {
-    // Only load integrations if the component is mounted
-    const controller = new AbortController();
-    loadIntegrations(controller.signal);
-    
-    return () => {
-      controller.abort();
+    const loadIntegrations = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchIntegrationsByType(category);
+        setIntegrations(data);
+      } catch (error) {
+        console.error("Error loading integrations:", error);
+        setError(error instanceof Error ? error : new Error("Failed to load integrations"));
+        toast({
+          title: "Error loading integrations",
+          description: "There was a problem loading the integration list",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
     };
-  }, [category, isAdmin, isAuthenticated]); // Reload when auth state changes
 
-  const loadIntegrations = async (signal?: AbortSignal) => {
-    setLoading(true);
-    setError(null);
-    setErrorDetails(null);
-    
-    try {
-      // Debug authentication state
-      console.log(`Auth state: isAuthenticated=${isAuthenticated}, isAdmin=${isAdmin}`);
-      
-      // Check for authentication before proceeding
-      if (!isAuthenticated) {
-        console.warn("User is not authenticated");
-        setError(new Error("Authentication required"));
-        setErrorDetails("You must be logged in to view integrations.");
-        setLoading(false);
-        return;
-      }
-      
-      // Check for admin privileges
-      if (!isAdmin) {
-        console.warn("User is not an admin");
-        setError(new Error("Access denied"));
-        setErrorDetails("You must have admin privileges to view integrations.");
-        setLoading(false);
-        return;
-      }
-      
-      console.log(`Fetching integrations for category: ${category}`);
-      const data = await fetchIntegrationsByType(category, signal);
-      console.log(`Received ${data.length} integrations for ${category}`);
-      setIntegrations(data);
-    } catch (error) {
-      console.error("Error loading integrations:", error);
-      
-      // Enhanced error logging
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const stack = error instanceof Error && error.stack ? error.stack : "";
-      
-      console.error(`Detailed error info: ${errorMessage}`);
-      console.error(`Stack: ${stack}`);
-      
-      // Provide user-friendly error message
-      let detailedError = "Failed to load integrations.";
-      
-      if (errorMessage.includes("recursion")) {
-        detailedError = "A database policy issue was detected. This is likely due to a permissions configuration. Please contact the administrator.";
-      } else if (errorMessage.includes("permission")) {
-        detailedError = "Access denied. Please verify you have admin access and are properly authenticated.";
-      } else if (errorMessage.includes("Database access error")) {
-        detailedError = errorMessage;
-      }
-      
-      setError(error instanceof Error ? error : new Error(errorMessage));
-      setErrorDetails(detailedError);
-      
-      toast({
-        title: "Error loading integrations",
-        description: detailedError,
-        variant: "destructive",
-      });
-    } finally {
-      if (!signal?.aborted) {
-        setLoading(false);
-      }
-    }
-  };
+    loadIntegrations();
+  }, [category, toast]);
 
   const handleToggleIntegration = async (id: string, isActive: boolean) => {
     try {
-      console.log(`Toggling integration ${id} to ${isActive ? 'active' : 'inactive'}`);
       const updatedIntegration = await toggleIntegration(id, isActive);
       
       // Update the integration in the state
@@ -116,22 +58,33 @@ export default function IntegrationList({ category, title, description }: Integr
       });
     } catch (error) {
       console.error("Error toggling integration:", error);
-      
-      // Enhanced error handling
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      
       toast({
         title: "Error updating integration",
-        description: errorMessage.includes("recursion") 
-          ? "Database permission error. Please contact the administrator." 
-          : `There was a problem updating the integration status: ${errorMessage}`,
+        description: "There was a problem updating the integration status",
         variant: "destructive",
       });
     }
   };
 
   const handleRetry = () => {
-    loadIntegrations();
+    // Simple retry function
+    setIntegrations([]);
+    setError(null);
+    setLoading(true);
+    fetchIntegrationsByType(category)
+      .then(data => {
+        setIntegrations(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err instanceof Error ? err : new Error("Failed to load integrations"));
+        setLoading(false);
+        toast({
+          title: "Error loading integrations",
+          description: "Failed to reload integrations. Please try again later.",
+          variant: "destructive",
+        });
+      });
   };
 
   return (
@@ -146,7 +99,7 @@ export default function IntegrationList({ category, title, description }: Integr
         ) : error ? (
           <AdminError 
             title="Failed to load integrations" 
-            description={errorDetails || error.message}
+            description={error.message}
             onRetry={handleRetry}
           />
         ) : integrations.length === 0 ? (

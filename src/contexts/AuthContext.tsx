@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
@@ -47,32 +46,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Set up the auth state listener
+    // First set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", _event, "Session:", !!session);
       setSession(session);
       setUser(session?.user ? session.user as ExtendedUser : null);
       
-      // Only check admin status if we have a session
       if (session?.user) {
-        // Use setTimeout to prevent potential recursion
-        setTimeout(() => {
-          checkIfUserIsAdmin();
-        }, 0);
+        checkIfUserIsAdmin(session.user.id);
+        fetchUserProfile(session.user.id);
       } else {
         setIsAdmin(false);
       }
     });
 
-    // Initial session check
+    // Then get the current session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session check:", !!session);
       setSession(session);
       setUser(session?.user ? session.user as ExtendedUser : null);
       
-      // Only check admin status if we have a session
       if (session?.user) {
-        checkIfUserIsAdmin();
+        checkIfUserIsAdmin(session.user.id);
+        fetchUserProfile(session.user.id);
       }
       setIsLoading(false);
     });
@@ -82,74 +76,83 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  const checkIfUserIsAdmin = async () => {
+  const fetchUserProfile = async (userId: string) => {
     try {
-      if (!session?.user?.id) {
-        console.log("No user ID to check admin status");
+      // Use direct query instead of joining with user_type to avoid recursion
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, avatar_url')
+        .eq('id', userId)
+        .single();
+        
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        return;
+      }
+      
+      if (data && user) {
+        // Update the user object with profile data
+        setUser(currentUser => {
+          if (!currentUser) return null;
+          return {
+            ...currentUser,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            avatar_url: data.avatar_url
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+
+  const checkIfUserIsAdmin = async (userId: string) => {
+    try {
+      // First try to use the RPC function if it exists
+      const { data: isAdminResult, error: rpcError } = await supabase
+        .rpc('is_admin_user');
+
+      if (!rpcError && isAdminResult !== null) {
+        setIsAdmin(isAdminResult);
+        return;
+      }
+      
+      // Fallback to direct query if RPC fails
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_type')
+        .eq('id', userId)
+        .single();
+      
+      if (error) {
+        console.error("Error checking admin status:", error);
         setIsAdmin(false);
         return;
       }
       
-      console.log("Checking admin status for user ID:", session.user.id);
+      setIsAdmin(data?.user_type === 'admin');
       
-      // Use the RPC function to check admin status
-      // This avoids the recursion issues with direct queries
-      const { data: isAdminResult, error: rpcError } = await supabase
-        .rpc('is_admin_user');
-      
-      console.log("RPC admin check result:", isAdminResult, "Error:", rpcError);
-
-      if (!rpcError) {
-        setIsAdmin(!!isAdminResult); // Convert to boolean in case it's null
-      } else {
-        console.error("Error calling is_admin_user RPC:", rpcError);
-        
-        // Fall back to direct profile check if RPC fails
-        try {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('user_type')
-            .eq('id', session.user.id)
-            .single();
-            
-          if (!profileError && profileData) {
-            console.log("Fallback profile check:", profileData);
-            setIsAdmin(profileData.user_type === 'admin');
-          } else {
-            console.error("Error in fallback profile check:", profileError);
-            setIsAdmin(false);
-          }
-        } catch (fallbackError) {
-          console.error("Exception in fallback admin check:", fallbackError);
-          setIsAdmin(false);
-        }
-      }
     } catch (error) {
-      console.error("Exception checking admin status:", error);
+      console.error("Error checking admin status:", error);
       setIsAdmin(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      console.log("Attempting sign in for:", email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) {
-        console.error("Sign in error:", error);
-      }
       return { error };
     } catch (error) {
-      console.error("Exception during sign in:", error);
       return { error };
     }
   };
 
   const signUp = async (email: string, password: string, userData?: any) => {
     try {
-      console.log("Attempting sign up for:", email);
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -157,18 +160,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           data: userData,
         },
       });
-      if (error) {
-        console.error("Sign up error:", error);
-      }
       return { error };
     } catch (error) {
-      console.error("Exception during sign up:", error);
       return { error };
     }
   };
 
   const signOut = async () => {
-    console.log("Signing out");
     await supabase.auth.signOut();
   };
 

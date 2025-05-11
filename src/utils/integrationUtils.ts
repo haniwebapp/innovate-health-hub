@@ -22,38 +22,14 @@ export interface IntegrationLog {
   created_at: string;
 }
 
-export async function fetchIntegrations(signal?: AbortSignal) {
+export async function fetchIntegrations() {
   try {
-    console.log("Fetching all integrations...");
-    
-    // First check if the user is admin to avoid permission issues
-    const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin_user');
-    
-    if (isAdminError) {
-      console.error("Error checking admin status:", isAdminError);
-      throw new Error(`Permission check failed: You may not have permission to view integrations. Please verify your account has admin privileges.`);
-    }
-    
-    if (!isAdminData) {
-      throw new Error(`Access denied: Only administrators can view integrations.`);
-    }
-    
     const { data, error } = await supabase
       .from('integrations')
       .select('*')
-      .order('name', { ascending: true })
-      .abortSignal(signal);
+      .order('name', { ascending: true });
 
-    if (error) {
-      console.error("Supabase error in fetchIntegrations:", error);
-      
-      if (error.message.includes("recursion") || error.message.includes("permission")) {
-        throw new Error(`Database access error: You may not have the correct permissions to view integrations. Please make sure you're logged in with an admin account.`);
-      } else {
-        throw new Error(`Failed to fetch integrations: ${error.message}`);
-      }
-    }
-    
+    if (error) throw new Error(`Failed to fetch integrations: ${error.message}`);
     return data as Integration[];
   } catch (error) {
     console.error("Error in fetchIntegrations:", error);
@@ -61,39 +37,15 @@ export async function fetchIntegrations(signal?: AbortSignal) {
   }
 }
 
-export async function fetchIntegrationsByType(type: string, signal?: AbortSignal) {
+export async function fetchIntegrationsByType(type: string) {
   try {
-    console.log(`Fetching integrations with type: ${type}`);
-    
-    // First check if the user is admin to avoid permission issues
-    const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin_user');
-    
-    if (isAdminError) {
-      console.error("Error checking admin status:", isAdminError);
-      throw new Error(`Permission check failed: You may not have permission to view integrations. Please verify your account has admin privileges.`);
-    }
-    
-    if (!isAdminData) {
-      throw new Error(`Access denied: Only administrators can view integrations.`);
-    }
-    
     const { data, error } = await supabase
       .from('integrations')
       .select('*')
       .eq('type', type)
-      .order('name', { ascending: true })
-      .abortSignal(signal);
+      .order('name', { ascending: true });
 
-    if (error) {
-      console.error("Supabase error in fetchIntegrationsByType:", error);
-      
-      if (error.message.includes("recursion") || error.message.includes("permission")) {
-        throw new Error(`Database access error: You may not have the correct permissions to view ${type} integrations. Please make sure you're logged in with an admin account.`);
-      } else {
-        throw new Error(`Failed to fetch ${type} integrations: ${error.message}`);
-      }
-    }
-    
+    if (error) throw new Error(`Failed to fetch integrations by type: ${error.message}`);
     return data as Integration[];
   } catch (error) {
     console.error("Error in fetchIntegrationsByType:", error);
@@ -109,11 +61,7 @@ export async function fetchIntegrationLogs(integrationId: string) {
       .eq('integration_id', integrationId)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error("Supabase error in fetchIntegrationLogs:", error);
-      throw new Error(`Failed to fetch integration logs: ${error.message}`);
-    }
-    
+    if (error) throw new Error(`Failed to fetch integration logs: ${error.message}`);
     return data as IntegrationLog[];
   } catch (error) {
     console.error("Error in fetchIntegrationLogs:", error);
@@ -129,11 +77,7 @@ export async function createIntegration(integration: Omit<Integration, 'id' | 'c
       .select()
       .single();
 
-    if (error) {
-      console.error("Supabase error in createIntegration:", error);
-      throw new Error(`Failed to create integration: ${error.message}`);
-    }
-    
+    if (error) throw new Error(`Failed to create integration: ${error.message}`);
     return data as Integration;
   } catch (error) {
     console.error("Error in createIntegration:", error);
@@ -150,11 +94,7 @@ export async function updateIntegration(id: string, updates: Partial<Integration
       .select()
       .single();
 
-    if (error) {
-      console.error("Supabase error in updateIntegration:", error);
-      throw new Error(`Failed to update integration: ${error.message}`);
-    }
-    
+    if (error) throw new Error(`Failed to update integration: ${error.message}`);
     return data as Integration;
   } catch (error) {
     console.error("Error in updateIntegration:", error);
@@ -173,11 +113,7 @@ export async function logIntegrationEvent(integrationId: string, eventType: stri
         details: details || {}
       });
 
-    if (error) {
-      console.error("Supabase error in logIntegrationEvent:", error);
-      throw new Error(`Failed to log integration event: ${error.message}`);
-    }
-    
+    if (error) throw new Error(`Failed to log integration event: ${error.message}`);
     return true;
   } catch (error) {
     console.error("Error in logIntegrationEvent:", error);
@@ -187,16 +123,6 @@ export async function logIntegrationEvent(integrationId: string, eventType: stri
 
 export async function toggleIntegration(id: string, isActive: boolean) {
   try {
-    console.log(`Toggling integration ${id} to ${isActive ? 'active' : 'inactive'}`);
-    
-    // First check if the user is admin to avoid permission issues
-    const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin_user');
-    
-    if (isAdminError || !isAdminData) {
-      console.error("Error checking admin status:", isAdminError);
-      throw new Error(`Access denied: Only administrators can update integrations.`);
-    }
-    
     const { data, error } = await supabase
       .from('integrations')
       .update({ 
@@ -207,28 +133,15 @@ export async function toggleIntegration(id: string, isActive: boolean) {
       .select()
       .single();
 
-    if (error) {
-      console.error("Supabase error in toggleIntegration:", error);
-      
-      if (error.message.includes("recursion") || error.message.includes("permission")) {
-        throw new Error(`Database access error: You may not have the correct permissions to update integrations. Please make sure you're logged in with an admin account.`);
-      } else {
-        throw new Error(`Failed to toggle integration: ${error.message}`);
-      }
-    }
+    if (error) throw new Error(`Failed to toggle integration: ${error.message}`);
     
     // Log the state change
-    try {
-      await logIntegrationEvent(
-        id, 
-        isActive ? 'activation' : 'deactivation',
-        'success',
-        { is_active: isActive }
-      );
-    } catch (logError) {
-      // Log but don't fail if logging fails
-      console.warn("Failed to log integration toggle event:", logError);
-    }
+    await logIntegrationEvent(
+      id, 
+      isActive ? 'activation' : 'deactivation',
+      'success',
+      { is_active: isActive }
+    );
     
     return data as Integration;
   } catch (error) {
