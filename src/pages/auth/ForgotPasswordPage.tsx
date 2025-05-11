@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Login</h1>
+        <h1 className="text-2xl font-bold">Reset Password</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Enter your credentials to access your account
+          Enter your email to receive a password reset link
         </p>
       </div>
       
@@ -20,23 +20,14 @@ export default function LoginPage() {
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" placeholder="name@example.com" />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" />
-        </div>
-        <Button type="submit" className="w-full">Login</Button>
+        <Button type="submit" className="w-full">Send Reset Link</Button>
       </div>
       
       <div className="text-center text-sm">
-        <Link to="/auth/forgot-password" className="text-blue-600 hover:underline">
-          Forgot password?
+        Remember your password?{" "}
+        <Link to="/auth/login" className="text-blue-600 hover:underline">
+          Back to login
         </Link>
-        <div className="mt-2">
-          Don't have an account?{" "}
-          <Link to="/auth/register" className="text-blue-600 hover:underline">
-            Register
-          </Link>
-        </div>
       </div>
     </div>
   );
