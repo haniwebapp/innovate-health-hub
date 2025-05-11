@@ -50,7 +50,7 @@ export function AppRoutes() {
       </Route>
 
       {/* Admin routes */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={<AdminLayout><Outlet /></AdminLayout>}>
         <Route index element={<AdminOverview />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="settings" element={<AdminSettings />} />
