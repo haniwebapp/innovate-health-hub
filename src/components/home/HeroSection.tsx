@@ -6,8 +6,7 @@ import { HeroButtons } from "./hero/HeroButtons";
 import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 import { HeroBackgroundEffect } from "./hero/HeroBackgroundEffect";
-import { DNAAnimation } from "./hero/DNAAnimation";
-import { ChevronDown, Dna, TestTube } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useRef } from "react";
 
 export default function HeroSection() {
@@ -57,7 +56,6 @@ export default function HeroSection() {
       variants={containerVariant}
     >
       <HeroBackgroundEffect />
-      <DNAAnimation />
       
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -84,7 +82,7 @@ export default function HeroSection() {
           
           <HeroStats />
           
-          {/* Vision 2030 alignment note with DNA icon */}
+          {/* Vision 2030 alignment note */}
           <motion.div
             className="mt-12 mb-8 max-w-2xl mx-auto bg-white/30 backdrop-blur-sm rounded-xl p-4 border border-white/20"
             variants={itemVariant}
@@ -93,11 +91,6 @@ export default function HeroSection() {
             viewport={{ once: true }}
             transition={{ delay: 1, duration: 0.6 }}
           >
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Dna className="text-moh-green h-5 w-5" />
-              <span className="font-semibold text-moh-darkGreen">Innovation in Healthcare</span>
-              <TestTube className="text-moh-gold h-5 w-5" />
-            </div>
             <p className="text-sm text-gray-700">
               <span className="font-semibold text-moh-darkGreen">Ministry of Health Innovation Platform</span> is aligned with Saudi Vision 2030's healthcare transformation goals, empowering digital health initiatives and fostering innovation across the healthcare ecosystem.
             </p>
