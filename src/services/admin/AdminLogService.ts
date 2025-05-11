@@ -2,7 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AdminLog } from "@/types/adminTypes";
 
-export class AdminLogService {
+class AdminLogService {
   /**
    * Add a new log entry
    */
@@ -164,3 +164,5 @@ export class AdminLogService {
     }
   }
 }
+
+export { AdminLogService as adminLogService };
