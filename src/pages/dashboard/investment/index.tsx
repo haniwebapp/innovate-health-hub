@@ -266,16 +266,16 @@ export default function DashboardInvestmentPage() {
       <AIInsightsCard 
         insights={aiInsights} 
         title="Investment Intelligence" 
-        icon={<Brain className="h-5 w-5 text-purple-500" />}
-        bgColor="bg-purple-50"
-        borderColor="border-purple-300" 
+        icon={<Brain className="h-5 w-5 text-moh-green" />}
+        bgColor="bg-moh-lightGreen"
+        borderColor="border-moh-green/30" 
       />
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="md:col-span-2">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center">
-              <Users className="h-5 w-5 mr-2 text-purple-500" />
+              <Users className="h-5 w-5 mr-2 text-moh-green" />
               Investor Matches
             </CardTitle>
             <CardDescription>AI-matched investors for your healthcare innovations</CardDescription>
@@ -296,14 +296,14 @@ export default function DashboardInvestmentPage() {
             
             <div className="space-y-4">
               {investorMatches.map((investor) => (
-                <div key={investor.id} className="border rounded-md p-4 hover:border-purple-200 transition-colors">
+                <div key={investor.id} className="border rounded-md p-4 hover:border-moh-green/20 transition-colors">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="font-medium">{investor.name}</h3>
                       <p className="text-sm text-muted-foreground">{investor.focus}</p>
                     </div>
                     <div className="flex flex-col items-end">
-                      <Badge className="bg-purple-600 mb-1">Match: {investor.matchScore}%</Badge>
+                      <Badge className="bg-moh-green mb-1">Match: {investor.matchScore}%</Badge>
                       {investor.status === "interested" && (
                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                           <BadgeCheck className="w-3 h-3 mr-1" />
@@ -316,6 +316,7 @@ export default function DashboardInvestmentPage() {
                   <Progress
                     value={investor.matchScore}
                     className="h-2 mt-2"
+                    indicatorClassName="bg-moh-green"
                   />
                   
                   <div className="mt-4 flex justify-end">
@@ -324,7 +325,7 @@ export default function DashboardInvestmentPage() {
                       variant={investor.status === "interested" ? "outline" : "default"}
                       onClick={() => handleConnectionRequest(investor.id)}
                       disabled={investor.status === "interested"}
-                      className="bg-purple-600 hover:bg-purple-700"
+                      className="bg-moh-green hover:bg-moh-darkGreen"
                     >
                       {investor.status === "interested" ? (
                         <>
@@ -349,20 +350,20 @@ export default function DashboardInvestmentPage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center">
-              <PieChart className="h-5 w-5 mr-2 text-purple-500" />
+              <PieChart className="h-5 w-5 mr-2 text-moh-green" />
               Match Statistics
             </CardTitle>
             <CardDescription>Your investor matching summary</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="bg-purple-50 p-4 rounded-lg">
+              <div className="bg-moh-lightGreen p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-sm font-medium">Match Quality</h4>
-                  <span className="text-sm text-purple-700">Excellent</span>
+                  <span className="text-sm text-moh-darkGreen">Excellent</span>
                 </div>
-                <div className="w-full bg-purple-100 rounded-full h-2.5">
-                  <div className="bg-purple-600 h-2.5 rounded-full" style={{ width: '85%' }}></div>
+                <div className="w-full bg-moh-green/20 rounded-full h-2.5">
+                  <div className="bg-moh-green h-2.5 rounded-full" style={{ width: '85%' }}></div>
                 </div>
               </div>
               
@@ -409,13 +410,13 @@ export default function DashboardInvestmentPage() {
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="bg-muted grid w-full grid-cols-3 h-11 items-stretch">
-          <TabsTrigger value="funding" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+          <TabsTrigger value="funding" className="data-[state=active]:bg-moh-green data-[state=active]:text-white">
             Funding Rounds
           </TabsTrigger>
-          <TabsTrigger value="pitches" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+          <TabsTrigger value="pitches" className="data-[state=active]:bg-moh-green data-[state=active]:text-white">
             Pitch Events
           </TabsTrigger>
-          <TabsTrigger value="analysis" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+          <TabsTrigger value="analysis" className="data-[state=active]:bg-moh-green data-[state=active]:text-white">
             AI Analysis
           </TabsTrigger>
         </TabsList>
@@ -460,7 +461,7 @@ export default function DashboardInvestmentPage() {
                   variants={fadeInUp}
                   initial="hidden"
                   animate="visible"
-                  className="border rounded-md p-4 mb-4 last:mb-0 hover:border-purple-200 transition-colors"
+                  className="border rounded-md p-4 mb-4 last:mb-0 hover:border-moh-green/20 transition-colors"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -497,7 +498,7 @@ export default function DashboardInvestmentPage() {
                       <Button 
                         size="sm"
                         onClick={() => handleApplyFunding(funding.id)}
-                        className="bg-purple-600 hover:bg-purple-700"
+                        className="bg-moh-green hover:bg-moh-darkGreen"
                       >
                         Apply Now
                       </Button>
@@ -558,7 +559,7 @@ export default function DashboardInvestmentPage() {
                   variants={fadeInUp}
                   initial="hidden"
                   animate="visible"
-                  className="border rounded-md p-4 mb-4 last:mb-0 hover:border-purple-200 transition-colors"
+                  className="border rounded-md p-4 mb-4 last:mb-0 hover:border-moh-green/20 transition-colors"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -595,7 +596,7 @@ export default function DashboardInvestmentPage() {
                       <Button 
                         size="sm"
                         onClick={() => handleRegisterEvent(event.id)}
-                        className="bg-purple-600 hover:bg-purple-700"
+                        className="bg-moh-green hover:bg-moh-darkGreen"
                       >
                         Register
                       </Button>
@@ -631,7 +632,7 @@ export default function DashboardInvestmentPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <FileText className="h-5 w-5 mr-2 text-purple-500" />
+            <FileText className="h-5 w-5 mr-2 text-moh-green" />
             Investment Resources
           </CardTitle>
           <CardDescription>Tools and guidance to support your investment journey</CardDescription>
@@ -642,10 +643,10 @@ export default function DashboardInvestmentPage() {
               variants={fadeInUp}
               initial="hidden"
               animate="visible"
-              className="border rounded-md p-4 hover:border-purple-200 transition-colors"
+              className="border rounded-md p-4 hover:border-moh-green/20 transition-colors"
             >
-              <div className="bg-purple-100 w-10 h-10 rounded flex items-center justify-center mb-3">
-                <FileText className="h-5 w-5 text-purple-600" />
+              <div className="bg-moh-lightGreen w-10 h-10 rounded flex items-center justify-center mb-3">
+                <FileText className="h-5 w-5 text-moh-green" />
               </div>
               <h3 className="font-medium mb-1">Pitch Deck Templates</h3>
               <p className="text-sm text-muted-foreground mb-3">
@@ -661,10 +662,10 @@ export default function DashboardInvestmentPage() {
               initial="hidden"
               animate="visible"
               transition={{ delay: 0.1 }}
-              className="border rounded-md p-4 hover:border-purple-200 transition-colors"
+              className="border rounded-md p-4 hover:border-moh-green/20 transition-colors"
             >
-              <div className="bg-purple-100 w-10 h-10 rounded flex items-center justify-center mb-3">
-                <Users className="h-5 w-5 text-purple-600" />
+              <div className="bg-moh-lightGreen w-10 h-10 rounded flex items-center justify-center mb-3">
+                <Users className="h-5 w-5 text-moh-green" />
               </div>
               <h3 className="font-medium mb-1">Investor Database</h3>
               <p className="text-sm text-muted-foreground mb-3">
@@ -680,10 +681,10 @@ export default function DashboardInvestmentPage() {
               initial="hidden"
               animate="visible"
               transition={{ delay: 0.2 }}
-              className="border rounded-md p-4 hover:border-purple-200 transition-colors"
+              className="border rounded-md p-4 hover:border-moh-green/20 transition-colors"
             >
-              <div className="bg-purple-100 w-10 h-10 rounded flex items-center justify-center mb-3">
-                <BarChart3 className="h-5 w-5 text-purple-600" />
+              <div className="bg-moh-lightGreen w-10 h-10 rounded flex items-center justify-center mb-3">
+                <BarChart3 className="h-5 w-5 text-moh-green" />
               </div>
               <h3 className="font-medium mb-1">Market Reports</h3>
               <p className="text-sm text-muted-foreground mb-3">
