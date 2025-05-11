@@ -10,6 +10,13 @@ export enum AIServiceType {
 }
 
 export class AIService {
+  // Declare static properties for service references
+  static investment: any;
+  static regulatory: any;
+  static innovation: any;
+  static knowledge: any;
+  static policy: any;
+
   /**
    * Creates a standardized trace object for AI operation tracking
    */
