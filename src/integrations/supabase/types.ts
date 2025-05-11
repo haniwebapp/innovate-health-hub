@@ -1549,6 +1549,95 @@ export type Database = {
           },
         ]
       }
+      support_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          query: string | null
+          response: string | null
+          ticket_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          query?: string | null
+          response?: string | null
+          ticket_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          query?: string | null
+          response?: string | null
+          ticket_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_interactions_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          assigned_team: string | null
+          assigned_to: string | null
+          category: string
+          created_at: string
+          description: string
+          id: string
+          initial_response: string | null
+          priority: string
+          resolved_at: string | null
+          sentiment: string | null
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_team?: string | null
+          assigned_to?: string | null
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          initial_response?: string | null
+          priority: string
+          resolved_at?: string | null
+          sentiment?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_team?: string | null
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          initial_response?: string | null
+          priority?: string
+          resolved_at?: string | null
+          sentiment?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           id: string

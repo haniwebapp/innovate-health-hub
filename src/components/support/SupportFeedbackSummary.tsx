@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +6,7 @@ import { Loader2, MessageSquare, AlertTriangle, TrendingUp, ListChecks } from "l
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { FeedbackSummary, SupportTicket } from "@/types/supportTypes";
 import {
   BarChart,
   Bar,
@@ -58,7 +58,7 @@ export default function SupportFeedbackSummary() {
       
       if (data && data.length > 0) {
         // Extract feedback items from tickets
-        const items = data.map(ticket => 
+        const items = (data as SupportTicket[]).map(ticket => 
           `Subject: ${ticket.subject}\nDescription: ${ticket.description}\nCategory: ${ticket.category}\nPriority: ${ticket.priority}\nStatus: ${ticket.status}`
         );
         

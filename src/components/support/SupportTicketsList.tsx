@@ -8,23 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, MessageSquare, AlertTriangle, Clock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Ticket {
-  id: string;
-  subject: string;
-  category: string;
-  description: string;
-  priority: "low" | "medium" | "high" | "critical";
-  status: "open" | "in-progress" | "resolved" | "closed";
-  created_at: string;
-  updated_at: string;
-  initial_response?: string;
-  assigned_team?: string;
-  sentiment?: string;
-}
+import { SupportTicket } from "@/types/supportTypes";
 
 export default function SupportTicketsList() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<"open" | "resolved" | "all">("open");
   const { toast } = useToast();
@@ -189,4 +176,34 @@ export default function SupportTicketsList() {
       )}
     </div>
   );
+
+  function getPriorityColor(priority: string) {
+    switch (priority) {
+      case "low": return "bg-slate-200 text-slate-700";
+      case "medium": return "bg-blue-100 text-blue-700";
+      case "high": return "bg-amber-100 text-amber-700";
+      case "critical": return "bg-red-100 text-red-700";
+      default: return "bg-slate-200 text-slate-700";
+    }
+  };
+
+  function getStatusColor(status: string) {
+    switch (status) {
+      case "open": return "bg-green-100 text-green-700";
+      case "in-progress": return "bg-blue-100 text-blue-700";
+      case "resolved": return "bg-purple-100 text-purple-700";
+      case "closed": return "bg-slate-200 text-slate-700";
+      default: return "bg-slate-200 text-slate-700";
+    }
+  };
+
+  function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 }

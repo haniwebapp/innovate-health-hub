@@ -1,47 +1,23 @@
 
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { SidebarNavItem } from "./SidebarNavItem";
 
-interface NavItem {
-  to: string;
-  icon: ReactNode;
-  text: string;
-  onClick?: () => void;
+export interface SidebarNavSectionProps {
+  children: ReactNode;
+  title?: string;
+  isCollapsed?: boolean;
 }
 
-interface SidebarNavSectionProps {
-  title: string;
-  isCollapsed: boolean;
-  items: NavItem[];
-}
-
-export function SidebarNavSection({ title, isCollapsed, items }: SidebarNavSectionProps) {
+export function SidebarNavSection({ children, title, isCollapsed }: SidebarNavSectionProps) {
   return (
-    <div className="py-2">
-      {!isCollapsed && (
-        <h3 className={cn(
-          "mb-2 px-4 text-xs font-semibold tracking-wider",
-          "text-moh-gold uppercase"
-        )}>
-          {title}
-        </h3>
+    <div className="px-2 py-2">
+      {title && (
+        <h2 className={cn("mb-2 px-4 text-xs font-semibold tracking-tight text-muted-foreground", 
+          isCollapsed && "text-center")}>
+          {isCollapsed ? title.charAt(0) : title}
+        </h2>
       )}
-      <div className={cn(
-        "space-y-1",
-        isCollapsed ? "px-2" : "px-3"
-      )}>
-        {items.map((item) => (
-          <SidebarNavItem
-            key={item.to}
-            to={item.to}
-            icon={item.icon}
-            text={item.text}
-            isCollapsed={isCollapsed}
-            onClick={item.onClick}
-          />
-        ))}
-      </div>
+      <nav className="space-y-1">{children}</nav>
     </div>
   );
 }
