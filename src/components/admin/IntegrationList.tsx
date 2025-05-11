@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import IntegrationItem from "./IntegrationItem";
 import { useToast } from "@/hooks/use-toast";
-import { fetchIntegrationsByType, Integration } from "@/utils/integrationUtils";
+import { fetchIntegrationsByType, Integration, toggleIntegration } from "@/utils/integrationUtils";
 import { AdminLoading, AdminError, AdminEmpty } from "@/components/admin/ui/AdminPageState";
 import { useAuth } from "@/contexts/AuthContext"; // Import auth context
 
