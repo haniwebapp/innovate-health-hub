@@ -3,8 +3,12 @@ import { Sparkles, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext"; 
 
 export default function InnovationCallToAction() {
+  const { user } = useAuth();
+  const submitUrl = user ? "/dashboard" : "/innovations/submit";
+  
   return (
     <section className="py-16 bg-gradient-to-r from-moh-lightGreen to-moh-lightGold">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,8 +70,8 @@ export default function InnovationCallToAction() {
                   className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md hover:shadow-lg transition-all"
                   asChild
                 >
-                  <Link to="/innovations/submit">
-                    Submit Your Innovation
+                  <Link to={submitUrl}>
+                    {user ? "Go to Dashboard" : "Submit Your Innovation"}
                   </Link>
                 </Button>
                 
