@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { QueryClient } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './providers/AppProviders';
