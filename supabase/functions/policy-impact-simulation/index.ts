@@ -14,7 +14,8 @@ serve(async (req) => {
   }
 
   try {
-    const { policyData, simulationParams } = await req.json();
+    const requestBody = await req.json();
+    const { policyData, simulationParams, trace } = requestBody;
     
     if (!policyData) {
       throw new Error("Policy data is required");
@@ -29,6 +30,15 @@ serve(async (req) => {
     // Default simulation parameters if not provided
     const timeframe = simulationParams?.timeframe || "5 years";
     const region = simulationParams?.region || "Saudi Arabia";
+    
+    console.log("Processing policy impact simulation request:", JSON.stringify({
+      policyName: policyData.name,
+      sector: policyData.sector,
+      timeframe,
+      region,
+      traceId: trace?.traceId,
+      operation: trace?.operation
+    }));
 
     // Call OpenAI API for policy impact simulation
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -92,6 +102,13 @@ serve(async (req) => {
 
     const data = await openaiResponse.json();
     const impactResult = JSON.parse(data.choices[0].message.content);
+    
+    console.log("Policy impact simulation completed:", JSON.stringify({
+      policyName: policyData.name,
+      impactScore: impactResult.impactScore,
+      traceId: trace?.traceId,
+      processingTime: `${Date.now() - (trace ? new Date(trace.timestamp).getTime() : Date.now())}ms`
+    }));
 
     // Return the policy impact simulation results
     return new Response(
@@ -105,10 +122,10 @@ serve(async (req) => {
         error: error.message,
         impactScore: 0,
         stakeholderImpact: {},
-        economicImpact: "",
-        healthcareOutcomeImpact: "",
-        implementationComplexity: "",
-        recommendations: []
+        economicImpact: "Unable to analyze due to an error.",
+        healthcareOutcomeImpact: "Unable to analyze due to an error.",
+        implementationComplexity: "Unable to analyze due to an error.",
+        recommendations: ["Analysis failed due to technical error."]
       }),
       { 
         status: 500, 

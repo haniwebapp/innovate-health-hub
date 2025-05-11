@@ -30,7 +30,7 @@ serve(async (req) => {
   }
 
   try {
-    const { policyData } = await req.json();
+    const { policyData, trace } = await req.json();
     
     if (!policyData) {
       throw new Error("Policy data is required");
@@ -41,6 +41,13 @@ serve(async (req) => {
     if (!openAIApiKey) {
       throw new Error("OpenAI API key not found");
     }
+
+    console.log("Processing Vision 2030 alignment request:", JSON.stringify({
+      name: policyData.name,
+      sector: policyData.sector,
+      traceId: trace?.traceId,
+      operation: trace?.operation
+    }));
 
     // Call OpenAI API for Vision 2030 alignment analysis
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -60,7 +67,7 @@ serve(async (req) => {
               Your response MUST be in valid JSON format with these fields:
               {
                 "overallScore": number between 0-100 representing overall alignment,
-                "alignmentDetails": [
+                "alignmentAreas": [
                   {
                     "pillar": "Pillar name (Vibrant Society, Thriving Economy, or Ambitious Nation)",
                     "score": number between 0-100 for this pillar,
@@ -68,7 +75,8 @@ serve(async (req) => {
                     "opportunities": ["Opportunity 1 to strengthen alignment", "Opportunity 2", "Opportunity 3"]
                   }
                 ],
-                "recommendations": ["Recommendation 1 to improve alignment", "Recommendation 2", "Recommendation 3"]
+                "recommendations": ["Recommendation 1 to improve alignment", "Recommendation 2", "Recommendation 3"],
+                "overallAssessment": "Summary assessment of the overall policy alignment with Vision 2030"
               }
               Remember: Only return valid JSON - do not include any other text or explanation.
             `
@@ -101,6 +109,13 @@ serve(async (req) => {
 
     const data = await openaiResponse.json();
     const alignmentResult = JSON.parse(data.choices[0].message.content);
+    
+    console.log("Vision 2030 alignment analysis completed:", JSON.stringify({
+      policyName: policyData.name,
+      overallScore: alignmentResult.overallScore,
+      traceId: trace?.traceId,
+      processingTime: `${Date.now() - (trace ? new Date(trace.timestamp).getTime() : Date.now())}ms`
+    }));
 
     // Return the alignment analysis results
     return new Response(
@@ -113,8 +128,9 @@ serve(async (req) => {
       JSON.stringify({ 
         error: error.message,
         overallScore: 0,
-        alignmentDetails: [],
-        recommendations: []
+        alignmentAreas: [],
+        recommendations: [],
+        overallAssessment: "Error performing alignment assessment."
       }),
       { 
         status: 500, 
