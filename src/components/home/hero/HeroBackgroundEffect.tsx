@@ -37,6 +37,16 @@ export function HeroBackgroundEffect() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* DNA background pattern */}
+      <div className="absolute opacity-5 w-full h-full">
+        <div className="absolute right-0 top-0 w-64 h-64">
+          <img src="/dna-helix.svg" alt="" className="w-full h-full" />
+        </div>
+        <div className="absolute left-10 bottom-10 w-40 h-40 opacity-30">
+          <img src="/dna-helix.svg" alt="" className="w-full h-full" />
+        </div>
+      </div>
+    
       {/* Floating particles with improved effects */}
       {particles.map((particle) => (
         <motion.div
@@ -107,7 +117,7 @@ export function HeroBackgroundEffect() {
         }}
       />
       
-      {/* Digital health circuit pattern */}
+      {/* Digital health circuit pattern with DNA-like patterns */}
       <svg width="100%" height="100%" className="absolute inset-0 opacity-[0.05]">
         <defs>
           <pattern
@@ -141,6 +151,19 @@ export function HeroBackgroundEffect() {
               fill="none"
               stroke="#C3A86B"
               strokeWidth="0.7"
+            />
+            {/* DNA-like elements */}
+            <path
+              d="M85 50 Q 90 45, 95 50 Q 90 55, 85 50"
+              fill="none"
+              stroke="#00814A"
+              strokeWidth="0.5"
+            />
+            <path
+              d="M10 30 Q 15 25, 20 30 Q 15 35, 10 30"
+              fill="none"
+              stroke="#C3A86B"
+              strokeWidth="0.5"
             />
             <circle cx="25" cy="25" r="2" fill="#00814A" opacity="0.5" />
             <circle cx="75" cy="25" r="2" fill="#C3A86B" opacity="0.5" />

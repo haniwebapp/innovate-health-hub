@@ -6,6 +6,7 @@ import { HeroButtons } from "./hero/HeroButtons";
 import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 import { HeroBackgroundEffect } from "./hero/HeroBackgroundEffect";
+import { DNAAnimation } from "./hero/DNAAnimation";
 import { ChevronDown } from "lucide-react";
 import { useRef } from "react";
 
@@ -56,6 +57,7 @@ export default function HeroSection() {
       variants={containerVariant}
     >
       <HeroBackgroundEffect />
+      <DNAAnimation />
       
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
