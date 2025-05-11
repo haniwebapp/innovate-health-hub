@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -16,17 +17,23 @@ import {
   Loader2, 
   Search
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 
 import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { 
-  fetchKnowledgeResources,
   KnowledgeResource,
   LearningPath,
+  fetchKnowledgeResources,
   fetchSavedResources
 } from "@/utils/knowledgeUtils";
+import { SemanticSearchBar } from "@/components/knowledge/SemanticSearchBar";
+import { DocumentSummaryCard } from "@/components/knowledge/DocumentSummary";
+import { SearchResultsList } from "@/components/knowledge/SearchResultsList";
+import { LanguageSwitcher } from "@/components/knowledge/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getRTLClasses } from "@/utils/rtlUtils";
+import { SemanticSearchParams, KnowledgeAIService, SearchResults } from "@/services/ai/KnowledgeAIService";
 
 export default function DashboardKnowledgePage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -36,6 +43,15 @@ export default function DashboardKnowledgePage() {
   const [bestPractices, setBestPractices] = useState<KnowledgeResource[]>([]);
   const [policyGuidelines, setPolicyGuidelines] = useState<KnowledgeResource[]>([]);
   const [learningPaths, setLearningPaths] = useState<LearningPath[]>([]);
+  
+  // Search related states
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
+  
+  // Language and RTL support
+  const { language, t } = useLanguage();
+  const rtlClasses = getRTLClasses(language);
 
   useEffect(() => {
     async function loadData() {
@@ -104,6 +120,21 @@ export default function DashboardKnowledgePage() {
     loadData();
   }, []);
 
+  const handleSearch = async (params: SemanticSearchParams) => {
+    setIsSearching(true);
+    setSearchQuery(params.query);
+    try {
+      const results = await KnowledgeAIService.semanticSearch(params);
+      setSearchResults(results);
+      setActiveTab("search");
+    } catch (error: any) {
+      console.error("Search error:", error);
+      setError(`Search failed: ${error.message}`);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   // Helper function to get icon for resource type
   const getResourceIcon = (type: string) => {
     switch (type) {
@@ -119,49 +150,50 @@ export default function DashboardKnowledgePage() {
   };
 
   return (
-    <div className="space-y-6">
-      <BreadcrumbNav 
-        items={[{ label: "Dashboard", href: "/dashboard" }]} 
-        currentPage="Knowledge Hub" 
-      />
+    <div className={`space-y-6 ${language === 'ar' ? 'rtl-mode' : ''}`}>
+      <div className={`flex items-center justify-between ${rtlClasses.flex}`}>
+        <BreadcrumbNav 
+          items={[{ label: t('nav.dashboard'), href: "/dashboard" }]} 
+          currentPage={t('nav.knowledge')} 
+        />
+        <LanguageSwitcher />
+      </div>
       
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Knowledge Hub</h1>
-        <p className="text-muted-foreground">
-          Access resources, guidelines, and learning materials to support your healthcare innovation journey.
+        <h1 className={`text-3xl font-bold tracking-tight mb-2 ${rtlClasses.text}`}>
+          {t('knowledge.hub')}
+        </h1>
+        <p className={`text-muted-foreground ${rtlClasses.text}`}>
+          {t('knowledge.hubDescription')}
         </p>
       </div>
       
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-        <Input 
-          placeholder="Search for resources, guidelines, or topics..." 
-          className="pl-10 bg-background" 
-        />
-      </div>
+      <SemanticSearchBar onSearch={handleSearch} isSearching={isSearching} />
       
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-moh-green mr-2" />
-          <p>Loading knowledge resources...</p>
+          <p>{t('knowledge.loading')}</p>
         </div>
       ) : error ? (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>{t('common.error')}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : (
         <Tabs 
           defaultValue={activeTab} 
           onValueChange={setActiveTab}
+          value={activeTab}
           className="space-y-6"
         >
-          <TabsList className="bg-muted/50">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
-            <TabsTrigger value="learning">Learning Paths</TabsTrigger>
-            <TabsTrigger value="saved">Saved Items</TabsTrigger>
+          <TabsList className={`bg-muted/50 ${rtlClasses.flex}`}>
+            <TabsTrigger value="overview">{t('knowledge.overview')}</TabsTrigger>
+            <TabsTrigger value="resources">{t('knowledge.resources')}</TabsTrigger>
+            <TabsTrigger value="learning">{t('knowledge.learningPaths')}</TabsTrigger>
+            <TabsTrigger value="search">{t('knowledge.searchResults')}</TabsTrigger>
+            <TabsTrigger value="saved">{t('knowledge.saved')}</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview" className="space-y-6">
@@ -169,12 +201,12 @@ export default function DashboardKnowledgePage() {
               <>
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Lightbulb className="h-5 w-5 mr-2 text-moh-gold" />
-                      Featured Resources
+                    <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
+                      <Lightbulb className={`h-5 w-5 ${rtlClasses.iconMargin} text-moh-gold`} />
+                      {t('knowledge.featuredResources')}
                     </CardTitle>
-                    <CardDescription>
-                      Highlighted resources curated for healthcare innovators
+                    <CardDescription className={rtlClasses.text}>
+                      {t('knowledge.featuredResourcesDescription')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -206,14 +238,16 @@ export default function DashboardKnowledgePage() {
                               >
                                 {resource.category}
                               </Badge>
-                              <h3 className="font-medium mb-2 line-clamp-2">{resource.title}</h3>
-                              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                              <h3 className={`font-medium mb-2 line-clamp-2 ${rtlClasses.text}`}>
+                                {resource.title}
+                              </h3>
+                              <p className={`text-sm text-muted-foreground line-clamp-2 mb-2 ${rtlClasses.text}`}>
                                 {resource.description}
                               </p>
-                              <div className="flex items-center text-xs text-muted-foreground mt-auto">
-                                <span>{resource.downloads} downloads</span>
+                              <div className={`flex items-center text-xs text-muted-foreground mt-auto ${rtlClasses.text}`}>
+                                <span>{resource.downloads} {t('knowledge.downloads')}</span>
                                 <span className="mx-1">•</span>
-                                <span>{new Date(resource.updated_at).toLocaleDateString()}</span>
+                                <span>{new Date(resource.created_at).toLocaleDateString()}</span>
                               </div>
                             </CardContent>
                             <CardFooter className="p-4 pt-0">
@@ -224,8 +258,8 @@ export default function DashboardKnowledgePage() {
                                 className="w-full"
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                  View Resource
-                                  <ArrowRight className="h-3 w-3 ml-1" />
+                                  {t('knowledge.viewResource')}
+                                  <ArrowRight className={`h-3 w-3 ${language === 'ar' ? 'mr-1 transform rotate-180' : 'ml-1'}`} />
                                 </Link>
                               </Button>
                             </CardFooter>
@@ -242,8 +276,8 @@ export default function DashboardKnowledgePage() {
                         asChild
                       >
                         <Link to="/dashboard/knowledge/resources">
-                          View all resources
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          {t('knowledge.viewAllResources')}
+                          <ArrowRight className={`h-4 w-4 ${language === 'ar' ? 'mr-2 transform rotate-180' : 'ml-2'}`} />
                         </Link>
                       </Button>
                     </CardFooter>
@@ -253,12 +287,12 @@ export default function DashboardKnowledgePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <BookOpen className="h-5 w-5 mr-2 text-purple-500" />
-                        Best Practices
+                      <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
+                        <BookOpen className={`h-5 w-5 ${rtlClasses.iconMargin} text-purple-500`} />
+                        {t('knowledge.bestPractices')}
                       </CardTitle>
-                      <CardDescription>
-                        Expert-reviewed healthcare innovation guidelines
+                      <CardDescription className={rtlClasses.text}>
+                        {t('knowledge.bestPracticesDescription')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -266,14 +300,14 @@ export default function DashboardKnowledgePage() {
                         {bestPractices.slice(0, 3).map(resource => (
                           <div 
                             key={resource.id}
-                            className="flex items-start p-3 border rounded-lg"
+                            className={`flex items-start p-3 border rounded-lg ${rtlClasses.flex}`}
                           >
                             <div className="bg-muted/80 p-2 rounded mr-3">
                               {getResourceIcon(resource.type)}
                             </div>
                             <div className="flex-1">
-                              <h3 className="font-medium mb-1 line-clamp-1">{resource.title}</h3>
-                              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                              <h3 className={`font-medium mb-1 line-clamp-1 ${rtlClasses.text}`}>{resource.title}</h3>
+                              <p className={`text-xs text-muted-foreground line-clamp-2 mb-2 ${rtlClasses.text}`}>
                                 {resource.description}
                               </p>
                               <Button 
@@ -283,7 +317,7 @@ export default function DashboardKnowledgePage() {
                                 asChild
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                  Read More
+                                  {t('knowledge.readMore')}
                                 </Link>
                               </Button>
                             </div>
@@ -295,12 +329,12 @@ export default function DashboardKnowledgePage() {
                   
                   <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <FileText className="h-5 w-5 mr-2 text-blue-500" />
-                        Policy Guidelines
+                      <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
+                        <FileText className={`h-5 w-5 ${rtlClasses.iconMargin} text-blue-500`} />
+                        {t('knowledge.policyGuidelines')}
                       </CardTitle>
-                      <CardDescription>
-                        Essential regulatory and policy information
+                      <CardDescription className={rtlClasses.text}>
+                        {t('knowledge.policyGuidelinesDescription')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -308,14 +342,14 @@ export default function DashboardKnowledgePage() {
                         {policyGuidelines.slice(0, 3).map(resource => (
                           <div 
                             key={resource.id}
-                            className="flex items-start p-3 border rounded-lg"
+                            className={`flex items-start p-3 border rounded-lg ${rtlClasses.flex}`}
                           >
                             <div className="bg-muted/80 p-2 rounded mr-3">
                               {getResourceIcon(resource.type)}
                             </div>
                             <div className="flex-1">
-                              <h3 className="font-medium mb-1 line-clamp-1">{resource.title}</h3>
-                              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                              <h3 className={`font-medium mb-1 line-clamp-1 ${rtlClasses.text}`}>{resource.title}</h3>
+                              <p className={`text-xs text-muted-foreground line-clamp-2 mb-2 ${rtlClasses.text}`}>
                                 {resource.description}
                               </p>
                               <Button 
@@ -325,7 +359,7 @@ export default function DashboardKnowledgePage() {
                                 asChild
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                  Read More
+                                  {t('knowledge.readMore')}
                                 </Link>
                               </Button>
                             </div>
@@ -338,12 +372,12 @@ export default function DashboardKnowledgePage() {
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <GraduationCap className="h-5 w-5 mr-2 text-moh-green" />
-                      Learning Paths
+                    <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
+                      <GraduationCap className={`h-5 w-5 ${rtlClasses.iconMargin} text-moh-green`} />
+                      {t('knowledge.learningPaths')}
                     </CardTitle>
-                    <CardDescription>
-                      Guided courses to develop your healthcare innovation skills
+                    <CardDescription className={rtlClasses.text}>
+                      {t('knowledge.learningPathsDescription')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -357,10 +391,12 @@ export default function DashboardKnowledgePage() {
                         >
                           <CardHeader className="pb-2">
                             {path.featured && (
-                              <Badge className="w-fit mb-1 bg-moh-green text-white">Featured</Badge>
+                              <Badge className="w-fit mb-1 bg-moh-green text-white">
+                                {t('common.featured')}
+                              </Badge>
                             )}
-                            <CardTitle className="text-lg">{path.title}</CardTitle>
-                            <CardDescription className="line-clamp-2">
+                            <CardTitle className={`text-lg ${rtlClasses.text}`}>{path.title}</CardTitle>
+                            <CardDescription className={`line-clamp-2 ${rtlClasses.text}`}>
                               {path.description}
                             </CardDescription>
                           </CardHeader>
@@ -373,7 +409,7 @@ export default function DashboardKnowledgePage() {
                                 {path.level}
                               </Badge>
                               <Badge variant="outline" className="text-xs font-normal">
-                                {path.estimated_hours} hours
+                                {path.estimated_hours} {t('knowledge.hours')}
                               </Badge>
                             </div>
                           </CardContent>
@@ -385,8 +421,8 @@ export default function DashboardKnowledgePage() {
                               asChild
                             >
                               <Link to={`/dashboard/knowledge/learning/${path.id}`}>
-                                View Path
-                                <ArrowRight className="ml-1 h-3 w-3" />
+                                {t('knowledge.viewPath')}
+                                <ArrowRight className={`h-3 w-3 ${language === 'ar' ? 'mr-1 transform rotate-180' : 'ml-1'}`} />
                               </Link>
                             </Button>
                           </CardFooter>
@@ -402,8 +438,8 @@ export default function DashboardKnowledgePage() {
                         asChild
                       >
                         <Link to="/dashboard/knowledge/learning">
-                          View all learning paths
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          {t('knowledge.viewAllLearningPaths')}
+                          <ArrowRight className={`h-4 w-4 ${language === 'ar' ? 'mr-2 transform rotate-180' : 'ml-2'}`} />
                         </Link>
                       </Button>
                     </CardFooter>
@@ -413,191 +449,50 @@ export default function DashboardKnowledgePage() {
             ) : (
               <div className="text-center py-12 bg-muted/20 rounded-lg border border-dashed">
                 <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No Resources Available</h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  We're working on adding knowledge resources to help with your healthcare innovation journey.
+                <h3 className={`text-lg font-medium mb-2 ${rtlClasses.text}`}>
+                  {t('knowledge.noResourcesAvailable')}
+                </h3>
+                <p className={`text-muted-foreground mb-6 max-w-md mx-auto ${rtlClasses.text}`}>
+                  {t('knowledge.noResourcesDescription')}
                 </p>
                 <Button asChild>
-                  <Link to="/dashboard">Return to Dashboard</Link>
+                  <Link to="/dashboard">
+                    {t('common.returnToDashboard')}
+                  </Link>
                 </Button>
               </div>
             )}
           </TabsContent>
           
           <TabsContent value="resources" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">All Resources</CardTitle>
-                <CardDescription>
-                  Browse all knowledge resources available in the hub
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex mb-4 overflow-x-auto pb-2">
-                  <Button variant="outline" className="mr-2 whitespace-nowrap">
-                    All Categories
-                  </Button>
-                  {['Policy', 'Best Practices', 'Research', 'Case Studies', 'Guides'].map(cat => (
-                    <Button key={cat} variant="ghost" className="mr-2 whitespace-nowrap">
-                      {cat}
-                    </Button>
-                  ))}
-                </div>
-                <Separator className="mb-4" />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[...featuredResources, ...bestPractices, ...policyGuidelines]
-                    .filter((resource, index, self) => 
-                      index === self.findIndex((r) => r.id === resource.id)
-                    )
-                    .map(resource => (
-                      <motion.div 
-                        key={resource.id}
-                        whileHover={{ y: -5 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <Card className="h-full flex flex-col overflow-hidden">
-                          <div className="aspect-video bg-muted relative">
-                            {resource.thumbnail_url ? (
-                              <img 
-                                src={resource.thumbnail_url} 
-                                alt={resource.title} 
-                                className="object-cover w-full h-full"
-                              />
-                            ) : (
-                              <div className="flex items-center justify-center h-full bg-muted">
-                                {getResourceIcon(resource.type)}
-                              </div>
-                            )}
-                          </div>
-                          <CardContent className="flex-1 flex flex-col p-4">
-                            <Badge 
-                              variant="outline" 
-                              className="self-start mb-2 bg-muted/50"
-                            >
-                              {resource.category}
-                            </Badge>
-                            <h3 className="font-medium mb-2 line-clamp-2">{resource.title}</h3>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                              {resource.description}
-                            </p>
-                            <div className="flex items-center text-xs text-muted-foreground mt-auto">
-                              <span>{resource.downloads} downloads</span>
-                              <span className="mx-1">•</span>
-                              <span>{new Date(resource.updated_at).toLocaleDateString()}</span>
-                            </div>
-                          </CardContent>
-                          <CardFooter className="p-4 pt-0">
-                            <Button 
-                              asChild
-                              variant="outline" 
-                              size="sm" 
-                              className="w-full"
-                            >
-                              <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                View Resource
-                                <ArrowRight className="h-3 w-3 ml-1" />
-                              </Link>
-                            </Button>
-                          </CardFooter>
-                        </Card>
-                      </motion.div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Resources tab content would go here */}
+            <p>{t('knowledge.resourcesListComingSoon')}</p>
           </TabsContent>
-          
+
           <TabsContent value="learning" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">Learning Paths</CardTitle>
-                <CardDescription>
-                  Explore guided learning paths for healthcare innovation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {learningPaths.map(path => (
-                    <Card 
-                      key={path.id}
-                      className={`${
-                        path.featured ? 'border-moh-green bg-moh-lightGreen/10' : ''
-                      }`}
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex flex-col md:flex-row gap-4 md:items-center">
-                          <div className="md:w-2/3">
-                            <div className="flex items-center mb-2">
-                              {path.featured && (
-                                <Badge className="mr-2 bg-moh-green text-white">
-                                  Featured
-                                </Badge>
-                              )}
-                              <Badge variant="outline">
-                                {path.level}
-                              </Badge>
-                            </div>
-                            <h3 className="text-xl font-medium mb-2">{path.title}</h3>
-                            <p className="text-muted-foreground mb-4 line-clamp-2">
-                              {path.description}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              <Badge variant="secondary">
-                                {path.category}
-                              </Badge>
-                              <Badge variant="outline">
-                                {path.estimated_hours} hours
-                              </Badge>
-                            </div>
-                          </div>
-                          <div className="md:w-1/3 flex justify-end">
-                            <Button 
-                              asChild
-                              className="w-full md:w-auto"
-                            >
-                              <Link to={`/dashboard/knowledge/learning/${path.id}`}>
-                                Start Learning
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                              </Link>
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                  
-                  {learningPaths.length === 0 && (
-                    <div className="text-center py-8">
-                      <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">No Learning Paths Available</h3>
-                      <p className="text-muted-foreground mb-6">
-                        We're working on creating learning paths for healthcare innovation.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Learning paths tab content would go here */}
+            <p>{t('knowledge.learningPathsComingSoon')}</p>
           </TabsContent>
-          
+
+          <TabsContent value="search" className="space-y-6">
+            {searchResults ? (
+              <SearchResultsList results={searchResults} searchQuery={searchQuery} />
+            ) : (
+              <div className="text-center py-12">
+                <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className={`text-lg font-medium mb-2 ${rtlClasses.text}`}>
+                  {t('knowledge.noSearchPerformed')}
+                </h3>
+                <p className={`text-muted-foreground ${rtlClasses.text}`}>
+                  {t('knowledge.useSearchBar')}
+                </p>
+              </div>
+            )}
+          </TabsContent>
+
           <TabsContent value="saved" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">Saved Items</CardTitle>
-                <CardDescription>
-                  Resources and learning materials you've saved for later
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No Saved Items Yet</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Save resources and learning paths to access them easily later.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Saved resources tab content would go here */}
+            <p>{t('knowledge.savedResourcesComingSoon')}</p>
           </TabsContent>
         </Tabs>
       )}

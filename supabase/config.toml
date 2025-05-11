@@ -5,52 +5,48 @@ project_id = "ntgrokpnwizohtfkcfec"
 enabled = true
 port = 54321
 schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
 
 [db]
 port = 54322
+shadow_port = 54320
+major_version = 15
 
 [studio]
 enabled = true
 port = 54323
-api_url = "http://localhost:54321"
+api_url = "http://localhost"
 
 [inbucket]
 enabled = true
 port = 54324
 
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
-
-[storage]
-enabled = true
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+enable_signup = true
 
 [analytics]
 enabled = false
+port = 54327
+vector_port = 54328
 
-[vector]
-enabled = true
+# Configure edge functions for the knowledge hub
+[functions.document-summarization]
+verify_jwt = true
 
-[functions.challenge-ideas-generator]
-verify_jwt = false
-  
-[functions.investment-match]
-verify_jwt = false
+[functions.semantic-search]
+verify_jwt = true
 
-[functions.market-analysis]
-verify_jwt = false
+[functions.document-metadata]
+verify_jwt = true
 
-[functions.vision-2030-alignment]
-verify_jwt = false
-
-[functions.proposal-scoring]
-verify_jwt = false
-
-[functions.duplicate-challenge-detection]
-verify_jwt = false
-
-[functions.reviewer-matching]
-verify_jwt = false
-
-[functions.submission-enhancement]
-verify_jwt = false
+[functions.learning-recommendations]
+verify_jwt = true
