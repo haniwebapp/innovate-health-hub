@@ -44,7 +44,15 @@ export default function SupportTicketsList() {
       
       if (error) throw error;
       
-      setTickets(data || []);
+      if (data) {
+        // Cast and transform the data to ensure it matches the SupportTicket type
+        const typedTickets: SupportTicket[] = data.map(ticket => ({
+          ...ticket,
+          priority: ticket.priority as 'low' | 'medium' | 'high' | 'critical',
+          status: ticket.status as 'open' | 'in-progress' | 'resolved' | 'closed',
+        }));
+        setTickets(typedTickets);
+      }
     } catch (error: any) {
       console.error("Error fetching tickets:", error);
       toast({
@@ -176,34 +184,4 @@ export default function SupportTicketsList() {
       )}
     </div>
   );
-
-  function getPriorityColor(priority: string) {
-    switch (priority) {
-      case "low": return "bg-slate-200 text-slate-700";
-      case "medium": return "bg-blue-100 text-blue-700";
-      case "high": return "bg-amber-100 text-amber-700";
-      case "critical": return "bg-red-100 text-red-700";
-      default: return "bg-slate-200 text-slate-700";
-    }
-  };
-
-  function getStatusColor(status: string) {
-    switch (status) {
-      case "open": return "bg-green-100 text-green-700";
-      case "in-progress": return "bg-blue-100 text-blue-700";
-      case "resolved": return "bg-purple-100 text-purple-700";
-      case "closed": return "bg-slate-200 text-slate-700";
-      default: return "bg-slate-200 text-slate-700";
-    }
-  };
-
-  function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 }

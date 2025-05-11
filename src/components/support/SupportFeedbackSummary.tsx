@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +7,7 @@ import { Loader2, MessageSquare, AlertTriangle, TrendingUp, ListChecks } from "l
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { FeedbackSummary, SupportTicket } from "@/types/supportTypes";
+import { FeedbackSummary as AIFeedbackSummary, SupportTicket } from "@/types/supportTypes";
 import {
   BarChart,
   Bar,
@@ -17,7 +18,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-interface FeedbackSummary {
+interface FeedbackData {
   summary: string;
   sentimentBreakdown: Record<string, number>;
   commonThemes: string[];
@@ -27,7 +28,7 @@ interface FeedbackSummary {
 export default function SupportFeedbackSummary() {
   const [isLoading, setIsLoading] = useState(true);
   const [feedbackItems, setFeedbackItems] = useState<string[]>([]);
-  const [summary, setSummary] = useState<FeedbackSummary | null>(null);
+  const [summary, setSummary] = useState<FeedbackData | null>(null);
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
 
