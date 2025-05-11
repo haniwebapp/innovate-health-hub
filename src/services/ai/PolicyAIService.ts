@@ -182,8 +182,9 @@ export class PolicyAIService {
 
   /**
    * Simulates the potential impact of a policy using the policy data object
+   * This overloaded version is used in the PolicyImpactSimulator component
    */
-  static async simulatePolicyImpact(
+  static async simulateImpact(
     policy: PolicyData,
     params: { timeframe: string; region: string }
   ): Promise<PolicyImpactResult> {

@@ -224,7 +224,7 @@ export function Vision2030AlignmentChecker() {
               <div className="space-y-6">
                 <h3 className="text-md font-medium border-b pb-2">Pillar Alignment</h3>
                 
-                {result.alignmentDetails.map((detail, index) => (
+                {result.alignmentAreas.map((detail, index) => (
                   <div key={index} className="space-y-2">
                     <div className="flex justify-between items-center">
                       <h4 className="font-medium">{detail.pillar}</h4>

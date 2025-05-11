@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,7 +65,7 @@ export function PolicyImpactSimulator() {
 
     setIsSimulating(true);
     try {
-      const impactResult = await PolicyAIService.simulatePolicyImpact(policyData, simulationParams);
+      const impactResult = await PolicyAIService.simulateImpact(policyData, simulationParams);
       setResult(impactResult);
       
       toast({
