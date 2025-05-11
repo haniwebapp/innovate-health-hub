@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -13,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   Loader2, Lightbulb, CheckCircle, Clock, CheckSquare,
   Clipboard, FileText, ClipboardCheck, Scale, Shield, Search,
-  BookText, FileSearch, Building, Landmark
+  BookText, FileSearch, Building, Landmark, ArrowRight
 } from "lucide-react";
 import { 
   Accordion,
@@ -27,6 +26,7 @@ import { ComplianceResults, AIComplianceAnalysis } from "@/components/regulatory
 import { RegulatoryFrameworks } from "@/components/regulatory/RegulatoryFrameworks";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
+import { Link } from "react-router-dom";
 
 export default function RegulatoryPage() {
   const { t, language } = useLanguage();
@@ -276,11 +276,14 @@ export default function RegulatoryPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mb-8">
                   <Button 
-                    onClick={() => setActiveTab("sandbox")} 
                     className="bg-moh-green hover:bg-moh-darkGreen text-white"
                     size="lg"
+                    asChild
                   >
-                    Apply for Sandbox
+                    <Link to="/dashboard/regulatory/applications/new">
+                      Apply for Sandbox
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
                   </Button>
                   <Button 
                     onClick={generateRecommendations} 
@@ -363,13 +366,33 @@ export default function RegulatoryPage() {
             <div className="flex justify-center">
               <TabsList className="bg-gray-100">
                 <TabsTrigger value="overview" className="px-6">Overview</TabsTrigger>
-                <TabsTrigger value="sandbox" className="px-6">Sandbox Application</TabsTrigger>
                 <TabsTrigger value="frameworks" className="px-6">Frameworks</TabsTrigger>
                 <TabsTrigger value="support" className="px-6">Support</TabsTrigger>
               </TabsList>
             </div>
             
             <TabsContent value="overview" className="space-y-8">
+              {/* Apply for Sandbox Call-to-Action */}
+              <Card className="border-l-4 border-l-moh-green">
+                <CardContent className="pt-6 pb-4">
+                  <div className="md:flex items-start justify-between">
+                    <div className="space-y-2 mb-4 md:mb-0">
+                      <h2 className="text-xl font-medium">Apply for the Regulatory Sandbox</h2>
+                      <p className="text-muted-foreground max-w-xl">
+                        Test your healthcare innovations in a controlled environment with reduced regulatory barriers.
+                        Submit your application to get started.
+                      </p>
+                    </div>
+                    <Button asChild className="bg-moh-green hover:bg-moh-darkGreen">
+                      <Link to="/dashboard/regulatory/applications/new" className="flex items-center">
+                        Apply for Sandbox
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Benefits Grid */}
               <div className="grid md:grid-cols-2 gap-6 mb-10">
                 {benefits.map((benefit, index) => (
@@ -430,8 +453,10 @@ export default function RegulatoryPage() {
                   </div>
                 </CardContent>
                 <CardFooter className="pt-2 pb-6 flex justify-center">
-                  <Button className="bg-moh-green hover:bg-moh-darkGreen" size="lg" onClick={() => setActiveTab("sandbox")}>
-                    Apply to the Sandbox Program
+                  <Button className="bg-moh-green hover:bg-moh-darkGreen" size="lg" asChild>
+                    <Link to="/dashboard/regulatory/applications/new">
+                      Apply to the Sandbox Program
+                    </Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -471,132 +496,6 @@ export default function RegulatoryPage() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </TabsContent>
-            
-            <TabsContent value="sandbox">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-2xl font-semibold text-moh-darkGreen">Sandbox Application</CardTitle>
-                  <CardDescription>Submit your innovation for testing in our regulatory sandbox environment</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 block mb-1">
-                        Innovation Name
-                      </label>
-                      <Input placeholder="Enter the name of your innovation" />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 block mb-1">
-                        Innovation Category
-                      </label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="medical-device">Medical Device</SelectItem>
-                          <SelectItem value="digital-health">Digital Health Solution</SelectItem>
-                          <SelectItem value="diagnostic">Diagnostic Tool</SelectItem>
-                          <SelectItem value="therapeutic">Therapeutic Solution</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-1">
-                      Innovation Description
-                    </label>
-                    <Textarea 
-                      placeholder="Provide a detailed description of your innovation..." 
-                      rows={5}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-1">
-                      Current Regulatory Status
-                    </label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="not-started">Not Started</SelectItem>
-                        <SelectItem value="in-progress">In Progress</SelectItem>
-                        <SelectItem value="submitted">Submitted for Approval</SelectItem>
-                        <SelectItem value="approved">Partially Approved</SelectItem>
-                        <SelectItem value="rejected">Previously Rejected</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-1">
-                      Regulatory Challenges
-                    </label>
-                    <Textarea 
-                      placeholder="Describe any specific regulatory challenges or questions..." 
-                      rows={3}
-                    />
-                  </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 block mb-1">
-                        Preferred Testing Duration
-                      </label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1-month">1 Month</SelectItem>
-                          <SelectItem value="3-months">3 Months</SelectItem>
-                          <SelectItem value="6-months">6 Months</SelectItem>
-                          <SelectItem value="custom">Custom Duration</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 block mb-1">
-                        Organization Type
-                      </label>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select organization type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="startup">Startup</SelectItem>
-                          <SelectItem value="sme">Small/Medium Enterprise</SelectItem>
-                          <SelectItem value="large">Large Corporation</SelectItem>
-                          <SelectItem value="academic">Academic Institution</SelectItem>
-                          <SelectItem value="nonprofit">Nonprofit Organization</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-blue-50 p-4 rounded-md border border-blue-100 flex gap-3">
-                    <div className="shrink-0">
-                      <Lightbulb className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <p className="text-sm text-blue-800">
-                      Applications are reviewed within 10 business days. Priority access is given to innovations 
-                      addressing critical healthcare challenges or aligned with Ministry of Health strategic priorities.
-                    </p>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-end gap-3">
-                  <Button variant="outline">Save Draft</Button>
-                  <Button className="bg-moh-green hover:bg-moh-darkGreen">
-                    Submit Application
-                  </Button>
-                </CardFooter>
-              </Card>
             </TabsContent>
             
             <TabsContent value="frameworks">
