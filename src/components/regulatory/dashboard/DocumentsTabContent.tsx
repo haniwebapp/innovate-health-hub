@@ -1,4 +1,3 @@
-
 import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
 import { ComplianceRequirementList } from "@/components/regulatory/compliance/ComplianceRequirementList";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 interface DocumentsTabContentProps {
   innovationDescription: string;
