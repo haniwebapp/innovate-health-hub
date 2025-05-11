@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import { AIChallengeGenerator } from "@/components/innovation/AIChallengeGenerator";
 import { ProposalScoringTool } from "@/components/innovation/ProposalScoringTool";
 import { DuplicateChallengeDetector } from "@/components/innovation/DuplicateChallengeDetector";
+import { ReviewerMatchingTool } from "@/components/innovation/ReviewerMatchingTool";
+import { SubmissionEnhancementTool } from "@/components/innovation/SubmissionEnhancementTool";
+import { PersonalizedChallengeFeed } from "@/components/innovation/PersonalizedChallengeFeed";
 
 export default function DashboardInnovationsPage() {
   const [activeTab, setActiveTab] = useState("my-innovations");
@@ -29,6 +32,7 @@ export default function DashboardInnovationsPage() {
         <TabsList className="mb-8">
           <TabsTrigger value="my-innovations">My Innovations</TabsTrigger>
           <TabsTrigger value="all-innovations">All Innovations</TabsTrigger>
+          <TabsTrigger value="personalized-feed">Personalized Feed</TabsTrigger>
           <TabsTrigger value="ai-tools">AI Tools</TabsTrigger>
         </TabsList>
         
@@ -49,11 +53,27 @@ export default function DashboardInnovationsPage() {
           </div>
         </TabsContent>
         
+        <TabsContent value="personalized-feed">
+          <PersonalizedChallengeFeed />
+        </TabsContent>
+        
         <TabsContent value="ai-tools">
-          <div className="space-y-8">
-            <AIChallengeGenerator />
-            <ProposalScoringTool />
-            <DuplicateChallengeDetector />
+          <div className="space-y-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <AIChallengeGenerator />
+            </div>
+            <div>
+              <ProposalScoringTool />
+            </div>
+            <div>
+              <DuplicateChallengeDetector />
+            </div>
+            <div>
+              <ReviewerMatchingTool />
+            </div>
+            <div className="md:col-span-2">
+              <SubmissionEnhancementTool />
+            </div>
           </div>
         </TabsContent>
       </Tabs>

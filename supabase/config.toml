@@ -48,3 +48,9 @@ verify_jwt = false
 
 [functions.duplicate-challenge-detection]
 verify_jwt = false
+
+[functions.reviewer-matching]
+verify_jwt = false
+
+[functions.submission-enhancement]
+verify_jwt = false
