@@ -59,7 +59,8 @@ export async function fetchIntegrationLogs(integrationId: string) {
       .from('integration_logs')
       .select('*')
       .eq('integration_id', integrationId)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(20);
 
     if (error) throw new Error(`Failed to fetch integration logs: ${error.message}`);
     return data as IntegrationLog[];
@@ -78,6 +79,15 @@ export async function createIntegration(integration: Omit<Integration, 'id' | 'c
       .single();
 
     if (error) throw new Error(`Failed to create integration: ${error.message}`);
+    
+    // Log the creation event
+    await logIntegrationEvent(
+      data.id,
+      'integration_created',
+      'success',
+      { timestamp: new Date().toISOString() }
+    );
+    
     return data as Integration;
   } catch (error) {
     console.error("Error in createIntegration:", error);
@@ -95,6 +105,18 @@ export async function updateIntegration(id: string, updates: Partial<Integration
       .single();
 
     if (error) throw new Error(`Failed to update integration: ${error.message}`);
+    
+    // Log the update event
+    await logIntegrationEvent(
+      id,
+      'integration_updated',
+      'success',
+      { 
+        timestamp: new Date().toISOString(),
+        updated_fields: Object.keys(updates)
+      }
+    );
+    
     return data as Integration;
   } catch (error) {
     console.error("Error in updateIntegration:", error);
@@ -138,14 +160,41 @@ export async function toggleIntegration(id: string, isActive: boolean) {
     // Log the state change
     await logIntegrationEvent(
       id, 
-      isActive ? 'activation' : 'deactivation',
+      isActive ? 'integration_activated' : 'integration_deactivated',
       'success',
-      { is_active: isActive }
+      { 
+        timestamp: new Date().toISOString(),
+        is_active: isActive 
+      }
     );
     
     return data as Integration;
   } catch (error) {
     console.error("Error in toggleIntegration:", error);
+    throw error;
+  }
+}
+
+export async function deleteIntegration(id: string) {
+  try {
+    // First, log that we're about to delete the integration
+    await logIntegrationEvent(
+      id,
+      'integration_deleted',
+      'success',
+      { timestamp: new Date().toISOString() }
+    );
+    
+    // Then perform the delete operation
+    const { error } = await supabase
+      .from('integrations')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw new Error(`Failed to delete integration: ${error.message}`);
+    return true;
+  } catch (error) {
+    console.error("Error in deleteIntegration:", error);
     throw error;
   }
 }

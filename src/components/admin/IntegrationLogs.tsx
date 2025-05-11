@@ -1,9 +1,12 @@
 
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { fetchIntegrationLogs, IntegrationLog } from "@/utils/integrationUtils";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { RefreshCw, Info, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 interface IntegrationLogsProps {
   integrationId: string;
@@ -12,82 +15,167 @@ interface IntegrationLogsProps {
 export default function IntegrationLogs({ integrationId }: IntegrationLogsProps) {
   const [logs, setLogs] = useState<IntegrationLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    const loadLogs = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchIntegrationLogs(integrationId);
-        setLogs(data);
-      } catch (error) {
-        console.error("Error loading integration logs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadLogs();
   }, [integrationId]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString();
-  };
+  const loadLogs = async () => {
+    setLoading(true);
+    setError(null);
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'success':
-        return 'bg-green-500';
-      case 'error':
-        return 'bg-red-500';
-      case 'warning':
-        return 'bg-yellow-500';
-      case 'pending':
-        return 'bg-blue-500';
-      default:
-        return 'bg-gray-500';
+    try {
+      const data = await fetchIntegrationLogs(integrationId);
+      setLogs(data);
+    } catch (error) {
+      console.error("Error loading integration logs:", error);
+      setError(error instanceof Error ? error : new Error("Failed to load integration logs"));
+      toast({
+        title: "Error loading logs",
+        description: "There was a problem loading the integration logs",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <Card className="mt-2">
-      <CardContent className="p-4">
-        <h4 className="text-sm font-semibold mb-2">Integration Logs</h4>
-        {loading ? (
-          <div className="text-center py-2 text-sm">Loading logs...</div>
-        ) : logs.length === 0 ? (
-          <div className="text-center py-2 text-sm text-muted-foreground">No logs available</div>
-        ) : (
-          <ScrollArea className="h-48">
-            <div className="space-y-2">
-              {logs.map((log) => (
-                <div 
-                  key={log.id} 
-                  className="text-xs border rounded p-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="font-medium">{log.event_type}</div>
-                    <Badge 
-                      variant="outline" 
-                      className={`text-white ${getStatusColor(log.status)}`}
-                    >
-                      {log.status}
-                    </Badge>
-                  </div>
-                  <div className="text-muted-foreground mt-1">
-                    {formatDate(log.created_at)}
-                  </div>
-                  {log.details && (
-                    <div className="mt-1 text-muted-foreground">
-                      {log.details.message || JSON.stringify(log.details)}
-                    </div>
-                  )}
-                </div>
-              ))}
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), 'MMM d, yyyy HH:mm:ss');
+    } catch (error) {
+      return dateString || "Unknown date";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "success":
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "error":
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      case "pending":
+        return <Clock className="h-4 w-4 text-amber-500" />;
+      default:
+        return <Info className="h-4 w-4 text-blue-500" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "success":
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Success</Badge>;
+      case "error":
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Error</Badge>;
+      case "pending":
+        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Pending</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-medium">Integration Logs</h3>
+          <Skeleton className="h-8 w-20" />
+        </div>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="rounded-md border p-3">
+            <div className="flex items-center justify-between mb-1">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-16" />
             </div>
-          </ScrollArea>
-        )}
-      </CardContent>
-    </Card>
+            <Skeleton className="h-3 w-full mt-2" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-md border border-red-200 bg-red-50 p-4 text-center">
+        <AlertCircle className="h-6 w-6 text-red-500 mx-auto mb-2" />
+        <p className="text-red-800 font-medium">Failed to load logs</p>
+        <p className="text-red-600 text-sm mb-2">{error.message}</p>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={loadLogs} 
+          className="mt-2"
+        >
+          <RefreshCw className="h-4 w-4 mr-2" /> Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  if (logs.length === 0) {
+    return (
+      <div className="text-center p-4 border rounded-md bg-muted/20">
+        <Info className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
+        <p className="text-muted-foreground">No logs found for this integration</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-medium flex items-center">
+          <Info className="h-4 w-4 mr-1 text-muted-foreground" />
+          Integration Logs
+        </h3>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={loadLogs}
+          className="h-8 px-2 text-xs"
+        >
+          <RefreshCw className="h-3 w-3 mr-1" /> Refresh
+        </Button>
+      </div>
+
+      <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+        {logs.map((log) => (
+          <div 
+            key={log.id} 
+            className={`rounded-md border p-3 ${
+              log.status.toLowerCase() === "error" 
+                ? "border-red-200 bg-red-50" 
+                : log.status.toLowerCase() === "success"
+                ? "border-green-100 bg-green-50"
+                : "border-slate-200 bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                {getStatusIcon(log.status)}
+                <span className="font-medium text-sm">{log.event_type.replace(/_/g, " ")}</span>
+              </div>
+              {getStatusBadge(log.status)}
+            </div>
+            <div className="mt-2 text-xs text-muted-foreground">
+              {log.details?.timestamp && (
+                <div className="flex items-center gap-1.5">
+                  <Clock className="h-3 w-3" />
+                  <span>{formatDate(log.details.timestamp)}</span>
+                </div>
+              )}
+              {log.details?.message && (
+                <p className="mt-1 text-sm">{log.details.message}</p>
+              )}
+              {log.details?.error && (
+                <p className="mt-1 text-red-600">{log.details.error}</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

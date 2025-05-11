@@ -3,10 +3,30 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Settings, AlertCircle, ExternalLink, Key, Loader2 } from "lucide-react";
+import { 
+  Settings, 
+  AlertCircle, 
+  ExternalLink, 
+  Key, 
+  Loader2, 
+  CheckCircle2, 
+  Copy, 
+  Eye, 
+  EyeOff 
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import IntegrationLogs from "./IntegrationLogs";
 import { Integration, logIntegrationEvent } from "@/utils/integrationUtils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface IntegrationItemProps {
   integration: Integration;
@@ -17,6 +37,12 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
   const { toast } = useToast();
   const [showLogs, setShowLogs] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
+  const [showKeysModal, setShowKeysModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showKey, setShowKey] = useState(false);
+  
+  // Sample API key for demo purposes - in real app this would be from integration.config
+  const apiKey = integration.config?.api_key || "sk_test_51O2JGtCx0vN9YKmE9TZN2mQeYzg1ZFPSkIiMoHqi";
 
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -51,6 +77,7 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
       toast({
         title: "Connection Successful",
         description: `Successfully connected to ${integration.name}.`,
+        variant: "default",
       });
     } catch (error) {
       console.error("Error during connection test:", error);
@@ -77,25 +104,27 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
   };
 
   const handleManageKeys = () => {
-    toast({
-      title: "API Keys",
-      description: `Manage API keys for ${integration.name}`,
-    });
+    setShowKeysModal(true);
   };
 
   const handleManageSettings = () => {
+    setShowSettingsModal(true);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
     toast({
-      title: "Settings",
-      description: `Configure settings for ${integration.name}`,
+      title: "API Key Copied",
+      description: "The API key has been copied to your clipboard.",
     });
   };
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-card transition-all duration-200">
+    <div className="border rounded-lg overflow-hidden bg-card transition-all duration-200 hover:shadow-sm">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="font-medium">{integration.name}</span>
+            <span className="font-medium text-base">{integration.name}</span>
             <Badge variant={integration.is_active ? "default" : "outline"} className="ml-1">
               {integration.is_active ? "Active" : "Inactive"}
             </Badge>
@@ -123,11 +152,14 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
             size="sm" 
             onClick={handleTestConnection}
             disabled={isTesting}
+            className="relative"
           >
             {isTesting ? (
               <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-            ) : null}
-            Test
+            ) : (
+              <CheckCircle2 className="h-4 w-4 mr-1 text-green-500" />
+            )}
+            Test Connection
           </Button>
           <Button 
             variant="outline" 
@@ -159,6 +191,93 @@ export default function IntegrationItem({ integration, onToggle }: IntegrationIt
           <IntegrationLogs integrationId={integration.id} />
         </div>
       )}
+
+      {/* API Keys Dialog */}
+      <Dialog open={showKeysModal} onOpenChange={setShowKeysModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>API Keys for {integration.name}</DialogTitle>
+            <DialogDescription>
+              View and manage API keys for this integration. Keep these secure.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="api-key">API Key</Label>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <div className="flex items-center">
+                    <Input
+                      id="api-key"
+                      type={showKey ? "text" : "password"}
+                      value={apiKey}
+                      readOnly
+                      className="font-mono"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowKey(!showKey)}
+                      className="ml-2"
+                    >
+                      {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      <span className="sr-only">{showKey ? "Hide" : "Show"} API key</span>
+                    </Button>
+                  </div>
+                </div>
+                <Button 
+                  type="button" 
+                  size="icon" 
+                  variant="outline"
+                  onClick={() => copyToClipboard(apiKey)}
+                >
+                  <Copy className="h-4 w-4" />
+                  <span className="sr-only">Copy API key</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-between">
+            <Button variant="secondary" onClick={() => setShowKeysModal(false)}>Close</Button>
+            <Button type="button">Regenerate API Key</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Settings Dialog */}
+      <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{integration.name} Settings</DialogTitle>
+            <DialogDescription>
+              Configure settings for this integration.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="endpoint">Endpoint URL</Label>
+              <Input
+                id="endpoint"
+                defaultValue={integration.endpoint || ''}
+                placeholder="https://api.example.com/webhook"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                defaultValue={integration.description || ''}
+                placeholder="Description of this integration"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setShowSettingsModal(false)}>Cancel</Button>
+            <Button type="button">Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
