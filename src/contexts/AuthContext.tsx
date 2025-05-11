@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
@@ -119,10 +118,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      // Fallback to direct query if RPC fails, avoiding recursion
+      // Fallback to direct query if RPC fails
       const { data, error } = await supabase
         .from('profiles')
-        .select('user_type, roles')
+        .select('user_type')
         .eq('id', userId)
         .single();
       
@@ -132,10 +131,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      // Check both user_type and roles for admin status
-      const isAdminByType = data?.user_type === 'admin';
-      const isAdminByRole = Array.isArray(data?.roles) && data.roles.includes('admin');
-      setIsAdmin(isAdminByType || isAdminByRole);
+      setIsAdmin(data?.user_type === 'admin');
       
     } catch (error) {
       console.error("Error checking admin status:", error);

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import IntegrationItem from "./IntegrationItem";
 import { useToast } from "@/hooks/use-toast";
 import { fetchIntegrationsByType, Integration, toggleIntegration } from "@/utils/integrationUtils";
+import { AdminLoading, AdminError, AdminEmpty } from "@/components/admin/ui/AdminPageState";
 
 interface IntegrationListProps {
   category: string;
@@ -15,15 +16,18 @@ export default function IntegrationList({ category, title, description }: Integr
   const { toast } = useToast();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const loadIntegrations = async () => {
       setLoading(true);
+      setError(null);
       try {
         const data = await fetchIntegrationsByType(category);
         setIntegrations(data);
       } catch (error) {
         console.error("Error loading integrations:", error);
+        setError(error instanceof Error ? error : new Error("Failed to load integrations"));
         toast({
           title: "Error loading integrations",
           description: "There was a problem loading the integration list",
@@ -62,6 +66,27 @@ export default function IntegrationList({ category, title, description }: Integr
     }
   };
 
+  const handleRetry = () => {
+    // Simple retry function
+    setIntegrations([]);
+    setError(null);
+    setLoading(true);
+    fetchIntegrationsByType(category)
+      .then(data => {
+        setIntegrations(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err instanceof Error ? err : new Error("Failed to load integrations"));
+        setLoading(false);
+        toast({
+          title: "Error loading integrations",
+          description: "Failed to reload integrations. Please try again later.",
+          variant: "destructive",
+        });
+      });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -70,11 +95,15 @@ export default function IntegrationList({ category, title, description }: Integr
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="text-center py-4">Loading integrations...</div>
+          <AdminLoading message="Loading integrations..." />
+        ) : error ? (
+          <AdminError 
+            title="Failed to load integrations" 
+            description={error.message}
+            onRetry={handleRetry}
+          />
         ) : integrations.length === 0 ? (
-          <div className="text-center py-4 text-muted-foreground">
-            No integrations available for this category. Add a new integration to get started.
-          </div>
+          <AdminEmpty message={`No integrations available for ${category}. Add a new integration to get started.`} />
         ) : (
           integrations.map(integration => (
             <IntegrationItem 

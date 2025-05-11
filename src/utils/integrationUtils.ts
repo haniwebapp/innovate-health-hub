@@ -23,94 +23,129 @@ export interface IntegrationLog {
 }
 
 export async function fetchIntegrations() {
-  const { data, error } = await supabase
-    .from('integrations')
-    .select('*')
-    .order('name', { ascending: true });
+  try {
+    const { data, error } = await supabase
+      .from('integrations')
+      .select('*')
+      .order('name', { ascending: true });
 
-  if (error) throw error;
-  return data as Integration[];
+    if (error) throw new Error(`Failed to fetch integrations: ${error.message}`);
+    return data as Integration[];
+  } catch (error) {
+    console.error("Error in fetchIntegrations:", error);
+    throw error;
+  }
 }
 
 export async function fetchIntegrationsByType(type: string) {
-  const { data, error } = await supabase
-    .from('integrations')
-    .select('*')
-    .eq('type', type)
-    .order('name', { ascending: true });
+  try {
+    const { data, error } = await supabase
+      .from('integrations')
+      .select('*')
+      .eq('type', type)
+      .order('name', { ascending: true });
 
-  if (error) throw error;
-  return data as Integration[];
+    if (error) throw new Error(`Failed to fetch integrations by type: ${error.message}`);
+    return data as Integration[];
+  } catch (error) {
+    console.error("Error in fetchIntegrationsByType:", error);
+    throw error;
+  }
 }
 
 export async function fetchIntegrationLogs(integrationId: string) {
-  const { data, error } = await supabase
-    .from('integration_logs')
-    .select('*')
-    .eq('integration_id', integrationId)
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('integration_logs')
+      .select('*')
+      .eq('integration_id', integrationId)
+      .order('created_at', { ascending: false });
 
-  if (error) throw error;
-  return data as IntegrationLog[];
+    if (error) throw new Error(`Failed to fetch integration logs: ${error.message}`);
+    return data as IntegrationLog[];
+  } catch (error) {
+    console.error("Error in fetchIntegrationLogs:", error);
+    throw error;
+  }
 }
 
 export async function createIntegration(integration: Omit<Integration, 'id' | 'created_at' | 'updated_at'>) {
-  const { data, error } = await supabase
-    .from('integrations')
-    .insert(integration)
-    .select()
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('integrations')
+      .insert(integration)
+      .select()
+      .single();
 
-  if (error) throw error;
-  return data as Integration;
+    if (error) throw new Error(`Failed to create integration: ${error.message}`);
+    return data as Integration;
+  } catch (error) {
+    console.error("Error in createIntegration:", error);
+    throw error;
+  }
 }
 
 export async function updateIntegration(id: string, updates: Partial<Integration>) {
-  const { data, error } = await supabase
-    .from('integrations')
-    .update({ ...updates, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('integrations')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
 
-  if (error) throw error;
-  return data as Integration;
+    if (error) throw new Error(`Failed to update integration: ${error.message}`);
+    return data as Integration;
+  } catch (error) {
+    console.error("Error in updateIntegration:", error);
+    throw error;
+  }
 }
 
 export async function logIntegrationEvent(integrationId: string, eventType: string, status: string, details?: any) {
-  const { error } = await supabase
-    .from('integration_logs')
-    .insert({
-      integration_id: integrationId,
-      event_type: eventType,
-      status,
-      details: details || {}
-    });
+  try {
+    const { error } = await supabase
+      .from('integration_logs')
+      .insert({
+        integration_id: integrationId,
+        event_type: eventType,
+        status,
+        details: details || {}
+      });
 
-  if (error) throw error;
-  return true;
+    if (error) throw new Error(`Failed to log integration event: ${error.message}`);
+    return true;
+  } catch (error) {
+    console.error("Error in logIntegrationEvent:", error);
+    throw error;
+  }
 }
 
 export async function toggleIntegration(id: string, isActive: boolean) {
-  const { data, error } = await supabase
-    .from('integrations')
-    .update({ 
-      is_active: isActive,
-      updated_at: new Date().toISOString() 
-    })
-    .eq('id', id)
-    .select()
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('integrations')
+      .update({ 
+        is_active: isActive,
+        updated_at: new Date().toISOString() 
+      })
+      .eq('id', id)
+      .select()
+      .single();
 
-  if (error) throw error;
-  
-  // Log the state change
-  await logIntegrationEvent(
-    id, 
-    isActive ? 'activation' : 'deactivation',
-    'success',
-    { is_active: isActive }
-  );
-  
-  return data as Integration;
+    if (error) throw new Error(`Failed to toggle integration: ${error.message}`);
+    
+    // Log the state change
+    await logIntegrationEvent(
+      id, 
+      isActive ? 'activation' : 'deactivation',
+      'success',
+      { is_active: isActive }
+    );
+    
+    return data as Integration;
+  } catch (error) {
+    console.error("Error in toggleIntegration:", error);
+    throw error;
+  }
 }
