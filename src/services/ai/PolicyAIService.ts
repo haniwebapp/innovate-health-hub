@@ -4,14 +4,26 @@ import { AIService } from "./AIService";
 import { CallTrace } from "@/types/ai";
 
 /**
+ * Interface for policy data
+ */
+export interface PolicyData {
+  name: string;
+  description: string;
+  sector: string;
+  goals?: string[];
+  stakeholders?: string[];
+}
+
+/**
  * Interface for Vision 2030 alignment check results
  */
 export interface Vision2030AlignmentResult {
-  score: number;
+  overallScore: number;
   alignmentAreas: {
-    area: string;
+    pillar: string;
     score: number;
-    rationale: string;
+    relevance: string;
+    opportunities: string[];
   }[];
   recommendations: string[];
   overallAssessment: string;
@@ -20,6 +32,24 @@ export interface Vision2030AlignmentResult {
 
 /**
  * Interface for policy impact simulation results
+ */
+export interface PolicyImpactResult {
+  impactScore: number;
+  stakeholderImpact: {
+    [key: string]: {
+      score: number;
+      description: string;
+    };
+  };
+  economicImpact: string;
+  healthcareOutcomeImpact: string;
+  implementationComplexity: string;
+  recommendations: string[];
+  error?: string;
+}
+
+/**
+ * Interface for policy impact simulation results (legacy)
  */
 export interface PolicyImpactSimulation {
   sectors: {
@@ -77,13 +107,26 @@ export class PolicyAIService {
     } catch (error: any) {
       console.error("Error in Vision 2030 alignment check:", error);
       return {
-        score: 0,
+        overallScore: 0,
         alignmentAreas: [],
         recommendations: ["Unable to perform alignment check due to an error."],
         overallAssessment: "Error performing alignment assessment.",
         error: error.message
       };
     }
+  }
+
+  /**
+   * Analyzes a policy's alignment with Vision 2030
+   */
+  static async analyzeVision2030Alignment(
+    policy: PolicyData
+  ): Promise<Vision2030AlignmentResult> {
+    return this.checkVision2030Alignment(
+      policy.description,
+      policy.sector,
+      policy.name
+    );
   }
 
   /**
@@ -132,6 +175,55 @@ export class PolicyAIService {
         risks: ["Analysis failed due to technical error."],
         opportunities: [],
         overallAssessment: "Error performing policy impact analysis.",
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Simulates the potential impact of a policy using the policy data object
+   */
+  static async simulatePolicyImpact(
+    policy: PolicyData,
+    params: { timeframe: string; region: string }
+  ): Promise<PolicyImpactResult> {
+    try {
+      // This would connect to the policy-impact-simulation edge function in a full implementation
+      // For now, return mock data that matches the expected interface
+      return {
+        impactScore: 75,
+        stakeholderImpact: {
+          "patients": {
+            score: 85,
+            description: "Significant positive impact on patient care quality and accessibility."
+          },
+          "healthcare providers": {
+            score: 70,
+            description: "Moderate positive impact on workflow efficiency and resource optimization."
+          },
+          "payers": {
+            score: 60,
+            description: "Some cost benefits in the long term, though initial investment required."
+          }
+        },
+        economicImpact: "The policy is expected to generate moderate economic benefits through reduced healthcare costs and improved workforce productivity.",
+        healthcareOutcomeImpact: "Patient outcomes are projected to improve by 15-20% in targeted condition areas.",
+        implementationComplexity: "Medium complexity implementation requiring coordination across multiple healthcare entities.",
+        recommendations: [
+          "Develop a phased implementation plan to manage change effectively",
+          "Establish clear metrics for measuring success and impact",
+          "Create stakeholder engagement channels for feedback during implementation"
+        ]
+      };
+    } catch (error: any) {
+      console.error("Error in policy impact simulation:", error);
+      return {
+        impactScore: 0,
+        stakeholderImpact: {},
+        economicImpact: "Unable to analyze due to an error.",
+        healthcareOutcomeImpact: "Unable to analyze due to an error.",
+        implementationComplexity: "Unable to analyze due to an error.",
+        recommendations: ["Analysis failed due to technical error."],
         error: error.message
       };
     }
