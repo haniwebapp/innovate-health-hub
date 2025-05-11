@@ -1,5 +1,5 @@
 
-import { AlertCircle, Check, Loader2, RefreshCw, Search, ServerOff } from "lucide-react";
+import { AlertCircle, Check, Clock, Loader2, RefreshCw, Search, ServerOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AdminLoadingProps {
@@ -113,6 +113,22 @@ export function AdminOffline({
           Reconnect
         </Button>
       )}
+    </div>
+  );
+}
+
+interface AdminPendingProps {
+  message?: string;
+}
+
+export function AdminPending({ message = "Processing request..." }: AdminPendingProps) {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+      <div className="rounded-full bg-blue-100 p-3 mb-4">
+        <Clock className="h-8 w-8 text-blue-600" />
+      </div>
+      <h3 className="text-lg font-medium mb-1">Processing</h3>
+      <p className="text-muted-foreground max-w-md">{message}</p>
     </div>
   );
 }

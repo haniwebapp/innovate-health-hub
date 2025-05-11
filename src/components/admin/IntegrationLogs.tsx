@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { fetchIntegrationLogs, IntegrationLog } from "@/utils/integrationUtils";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { RefreshCw, Info, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
