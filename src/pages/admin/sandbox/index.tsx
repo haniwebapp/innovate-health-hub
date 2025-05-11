@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Beaker, Edit, Eye, FileCode, FileText, Shield, Table2 } from 'lucide-react';
 import { ApplicationCard } from '@/components/regulatory/applications/ApplicationCard';
+import { Application } from '@/components/regulatory/applications/types';
 
 // Mock sandbox projects data
 const sandboxProjects = [
@@ -80,14 +81,22 @@ export default function AdminSandboxPage() {
   };
 
   // Convert sandbox projects to application format for reusing application card
-  const convertedProjects = sandboxProjects.map(project => ({
+  // Updated to map status values to match the expected Application type
+  const convertedProjects: Application[] = sandboxProjects.map(project => ({
     id: project.id,
     name: project.name,
-    status: project.status === 'active' ? 'approved' : project.status === 'pending' ? 'in-review' : 'draft',
+    // Map the status values to match the Application type union
+    status: project.status === 'active' ? 'approved' : 
+            project.status === 'pending' ? 'in-review' : 
+            project.status === 'completed' ? 'draft' : 'rejected',
     submittedDate: project.submittedDate,
     framework: project.framework,
     progress: project.progress,
-    testingPeriod: project.testingPeriod
+    testingPeriod: project.testingPeriod,
+    // Optional fields that might be useful
+    description: project.innovator ? `Developed by ${project.innovator}` : undefined,
+    innovationType: project.innovator ? `Healthcare Solution` : undefined,
+    riskLevel: project.riskLevel
   }));
 
   return (
