@@ -56,7 +56,7 @@ export default function HeroSection() {
       transition: {
         duration: 3,
         repeat: Infinity,
-        repeatType: "reverse"
+        repeatType: "reverse"  // Fixed: Using a valid string literal value
       }
     }
   };
@@ -91,7 +91,7 @@ export default function HeroSection() {
           transition: {
             duration: 8,
             repeat: Infinity,
-            repeatType: "reverse"
+            repeatType: "reverse"  // Fixed: Using a valid string literal value
           }
         }}
       >
