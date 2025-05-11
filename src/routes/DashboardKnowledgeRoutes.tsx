@@ -1,13 +1,13 @@
 
 import { Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import DashboardRegulatoryPage from '@/pages/dashboard/regulatory/index';
+import DashboardKnowledgePage from '@/pages/dashboard/knowledge/index';
 
-export const DashboardRegulatoryRoutes = (
-  <Route path="regulatory">
+export const DashboardKnowledgeRoutes = (
+  <Route path="knowledge">
     <Route index element={
       <ProtectedRoute>
-        <DashboardRegulatoryPage />
+        <DashboardKnowledgePage />
       </ProtectedRoute>
     } />
   </Route>

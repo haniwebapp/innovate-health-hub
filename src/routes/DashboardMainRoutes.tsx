@@ -13,6 +13,8 @@ import PolicyPage from '@/pages/policy/index';
 import { DashboardInnovationRoutes } from './DashboardInnovationRoutes';
 import { DashboardInvestmentRoutes } from './DashboardInvestmentRoutes';
 import { DashboardRegulatoryRoutes } from './DashboardRegulatoryRoutes';
+import { DashboardKnowledgeRoutes } from './DashboardKnowledgeRoutes';
+import { DashboardCollaborationRoutes } from './DashboardCollaborationRoutes';
 import { AdminRoutes } from './AdminRoutes';
 
 export const DashboardMainRoutes = (
@@ -34,6 +36,8 @@ export const DashboardMainRoutes = (
     {DashboardInnovationRoutes}
     {DashboardInvestmentRoutes}
     {DashboardRegulatoryRoutes}
+    {DashboardKnowledgeRoutes}
+    {DashboardCollaborationRoutes}
     {AdminRoutes}
   </Route>
 );

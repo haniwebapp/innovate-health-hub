@@ -1,376 +1,382 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Users, Calendar, Video, Search, Plus, UserPlus, CalendarPlus, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CalendarDays, MessageSquare, Users, Video, UserPlus, Globe, Calendar, Star, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-
-interface Message {
-  id: string;
-  sender: {
-    name: string;
-    avatar?: string;
-  };
-  preview: string;
-  timestamp: string;
-  unread: boolean;
-}
-
-interface Meeting {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  attendees: number;
-  status: "upcoming" | "completed" | "cancelled";
-}
-
-interface ForumTopic {
-  id: string;
-  title: string;
-  category: string;
-  replies: number;
-  lastActivity: string;
-}
 
 export function CollaborationDashboard() {
   const [activeTab, setActiveTab] = useState("messages");
-  
-  // Mock data for demonstration
-  const recentMessages: Message[] = [
-    {
-      id: "msg1",
-      sender: { name: "Sarah Johnson" },
-      preview: "I'd be interested in discussing your approach to clinical validation...",
-      timestamp: "2h ago",
-      unread: true
-    },
-    {
-      id: "msg2",
-      sender: { name: "Dr. Ahmed Al-Farsi" },
-      preview: "Thanks for sharing your research. Have you considered applying for...",
-      timestamp: "Yesterday",
-      unread: false
-    }
-  ];
-  
-  const upcomingMeetings: Meeting[] = [
-    {
-      id: "meet1",
-      title: "Innovation Review Session",
-      date: "May 15, 2025",
-      time: "10:30 AM",
-      attendees: 3,
-      status: "upcoming"
-    },
-    {
-      id: "meet2",
-      title: "Regulatory Compliance Discussion",
-      date: "May 18, 2025",
-      time: "2:00 PM",
-      attendees: 4,
-      status: "upcoming"
-    }
-  ];
-  
-  const forumTopics: ForumTopic[] = [
-    {
-      id: "topic1",
-      title: "Challenges in Medical Device Regulatory Approval",
-      category: "Regulatory",
-      replies: 24,
-      lastActivity: "3h ago"
-    },
-    {
-      id: "topic2",
-      title: "AI in Healthcare: Opportunities and Limitations",
-      category: "Technology",
-      replies: 32,
-      lastActivity: "Yesterday"
-    }
-  ];
-  
-  const getStatusColor = (status: string) => {
-    switch(status) {
-      case "upcoming": return "bg-green-50 border-green-200 text-green-700";
-      case "completed": return "bg-blue-50 border-blue-200 text-blue-700";
-      case "cancelled": return "bg-red-50 border-red-200 text-red-700";
-      default: return "";
-    }
-  };
-  
+
   return (
     <div className="space-y-6">
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="flex justify-between items-center"
-      >
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Collaboration Hub</h1>
-          <p className="text-muted-foreground">
-            Connect, communicate, and collaborate with healthcare innovators
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" asChild>
-            <Link to="/dashboard/collaboration/find">
-              <Search className="h-4 w-4 mr-2" />
-              Find Collaborators
-            </Link>
-          </Button>
-          <Button variant="default" className="bg-moh-green hover:bg-moh-darkGreen" asChild>
-            <Link to="/dashboard/collaboration/messages/new">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              New Message
-            </Link>
-          </Button>
-        </div>
-      </motion.div>
-      
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Active Conversations</CardTitle>
+            <CardDescription>Your ongoing discussions</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Badge className="h-2 w-2 rounded-full bg-green-500 p-0" />
+                  <span>Direct Messages</span>
+                </div>
+                <Badge>4</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Badge className="h-2 w-2 rounded-full bg-blue-500 p-0" />
+                  <span>Group Discussions</span>
+                </div>
+                <Badge>2</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Badge className="h-2 w-2 rounded-full bg-amber-500 p-0" />
+                  <span>Unread Messages</span>
+                </div>
+                <Badge>3</Badge>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" asChild>
+              <Link to="/dashboard/collaboration/messages">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Open Messages
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Upcoming Meetings</CardTitle>
+            <CardDescription>Scheduled video calls and meetings</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <div className="space-y-3">
+              <div className="border rounded-md p-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">Today, 3:00 PM</span>
+                </div>
+                <h4 className="font-medium text-sm">Innovation Review Meeting</h4>
+                <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                  <Users className="h-3 w-3" />
+                  <span>5 participants</span>
+                </div>
+              </div>
+              <div className="border rounded-md p-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">Tomorrow, 10:00 AM</span>
+                </div>
+                <h4 className="font-medium text-sm">Regulatory Consultation</h4>
+                <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                  <Users className="h-3 w-3" />
+                  <span>3 participants</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" variant="outline" asChild>
+              <Link to="/dashboard/collaboration/meetings">
+                <Video className="mr-2 h-4 w-4" />
+                Schedule Meeting
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Connection Requests</CardTitle>
+            <CardDescription>Connect with healthcare innovators</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>SA</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">Dr. Sarah Ahmed</p>
+                    <p className="text-xs text-muted-foreground">Healthcare Researcher</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline">
+                  <UserPlus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>MK</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">Mohammed Khalid</p>
+                    <p className="text-xs text-muted-foreground">Health Tech Investor</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline">
+                  <UserPlus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" variant="outline" asChild>
+              <Link to="/dashboard/collaboration/connections">
+                <Users className="mr-2 h-4 w-4" />
+                View All Connections
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="messages">Messages</TabsTrigger>
-          <TabsTrigger value="meetings">Meetings</TabsTrigger>
           <TabsTrigger value="forums">Forums</TabsTrigger>
-          <TabsTrigger value="teams">Teams</TabsTrigger>
+          <TabsTrigger value="events">Events</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="messages">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Messages</CardTitle>
-                  <CardDescription>Your latest conversations with others</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {recentMessages.length > 0 ? (
-                    <div className="space-y-4">
-                      {recentMessages.map((message) => (
-                        <div 
-                          key={message.id} 
-                          className={`p-4 border rounded-md flex justify-between ${message.unread ? "bg-blue-50 border-blue-100" : ""}`}
-                        >
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                                {message.sender.avatar ? (
-                                  <img src={message.sender.avatar} alt={message.sender.name} className="w-full h-full rounded-full" />
-                                ) : (
-                                  <Users className="h-4 w-4 text-muted-foreground" />
-                                )}
-                              </div>
-                              <h3 className="font-medium">{message.sender.name}</h3>
-                              {message.unread && (
-                                <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                              )}
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">{message.preview}</p>
-                          </div>
-                          <div className="text-xs text-muted-foreground">{message.timestamp}</div>
+
+        <TabsContent value="messages" className="mt-4 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Messages</CardTitle>
+              <CardDescription>Your latest conversations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>AA</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">Abdullah Al-Otaibi</p>
+                        <p className="text-xs text-muted-foreground">30 minutes ago</p>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      Direct
+                    </Badge>
+                  </div>
+                  <p className="text-sm">
+                    Thanks for sharing those regulatory documents. I've reviewed them and added my feedback. Let's discuss during our meeting tomorrow.
+                  </p>
+                  <div className="flex justify-end mt-2">
+                    <Button size="sm" variant="outline">
+                      <MessageSquare className="h-3 w-3 mr-1" />
+                      Reply
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-start gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>TG</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="flex items-center gap-1">
+                          <p className="text-sm font-medium">Healthcare Innovators</p>
+                          <Badge>6 members</Badge>
                         </div>
-                      ))}
+                        <p className="text-xs text-muted-foreground">2 hours ago</p>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="text-center py-10">
-                      <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">No messages yet</p>
+                    <Badge variant="outline" className="bg-moh-green/10 text-moh-green">
+                      Group
+                    </Badge>
+                  </div>
+                  <p className="text-sm">
+                    <span className="font-medium">Layla:</span> Has anyone implemented the new patient data exchange standard? We're looking at integrating it in our platform.
+                  </p>
+                  <div className="flex justify-end mt-2">
+                    <Button size="sm" variant="outline">
+                      <MessageSquare className="h-3 w-3 mr-1" />
+                      Reply
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button asChild>
+                <Link to="/dashboard/collaboration/messages">
+                  View All Messages
+                </Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="forums" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Discussion Forums</CardTitle>
+              <CardDescription>Engage in healthcare innovation discussions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium">Digital Health Innovations</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline">56 topics</Badge>
+                        <Badge variant="outline">238 posts</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Discussions about digital health technologies, solutions, and implementations.
+                      </p>
                     </div>
-                  )}
-                  
-                  <div className="mt-4 flex justify-center">
-                    <Button variant="outline" asChild>
-                      <Link to="/dashboard/collaboration/messages">
-                        View All Messages
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/dashboard/collaboration/forums/digital-health">
+                        <Globe className="h-4 w-4 mr-1" />
+                        Join
                       </Link>
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
-                  <CardDescription>Connection and collaboration tools</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <Link to="/dashboard/collaboration/messages/new">
-                      <Plus className="h-4 w-4 mr-2" />
-                      New Message
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <Link to="/dashboard/collaboration/connections">
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Find Connections
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <Link to="/dashboard/collaboration/meetings/schedule">
-                      <CalendarPlus className="h-4 w-4 mr-2" />
-                      Schedule Meeting
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="meetings">
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>Upcoming Meetings</CardTitle>
-                  <CardDescription>Your scheduled discussions and calls</CardDescription>
                 </div>
-                <Button asChild>
-                  <Link to="/dashboard/collaboration/meetings/schedule">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Schedule
-                  </Link>
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {upcomingMeetings.length > 0 ? (
-                <div className="space-y-4">
-                  {upcomingMeetings.map((meeting) => (
-                    <div key={meeting.id} className="p-4 border rounded-md">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{meeting.title}</h3>
-                          <div className="flex items-center gap-4 mt-1">
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <Calendar className="h-3 w-3 mr-1" />
-                              {meeting.date}
-                            </div>
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {meeting.time}
-                            </div>
-                          </div>
-                          <div className="flex items-center mt-2 text-sm text-muted-foreground">
-                            <Users className="h-3 w-3 mr-1" />
-                            {meeting.attendees} attendees
-                          </div>
-                        </div>
-                        <div className={`text-xs px-2 py-1 rounded-full ${getStatusColor(meeting.status)}`}>
-                          {meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)}
-                        </div>
+
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium">Regulatory Compliance</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline">42 topics</Badge>
+                        <Badge variant="outline">175 posts</Badge>
                       </div>
-                      <div className="mt-3 flex justify-end gap-2">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/dashboard/collaboration/meetings/${meeting.id}`}>
-                            Details
-                          </Link>
-                        </Button>
-                        <Button size="sm" asChild>
-                          <Link to={`/dashboard/collaboration/meetings/${meeting.id}/join`}>
-                            <Video className="h-3 w-3 mr-1" />
-                            Join
-                          </Link>
-                        </Button>
-                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Discussions on navigating healthcare regulations in Saudi Arabia.
+                      </p>
                     </div>
-                  ))}
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/dashboard/collaboration/forums/regulatory">
+                        <Globe className="h-4 w-4 mr-1" />
+                        Join
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-10">
-                  <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">No upcoming meetings</p>
+
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium">Healthcare Investment</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline">38 topics</Badge>
+                        <Badge variant="outline">126 posts</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Forum for investors and startups to discuss healthcare funding opportunities.
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/dashboard/collaboration/forums/investment">
+                        <Globe className="h-4 w-4 mr-1" />
+                        Join
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-              )}
+              </div>
             </CardContent>
+            <CardFooter>
+              <Button asChild>
+                <Link to="/dashboard/collaboration/forums">
+                  Explore All Forums
+                </Link>
+              </Button>
+            </CardFooter>
           </Card>
         </TabsContent>
-        
-        <TabsContent value="forums">
+
+        <TabsContent value="events" className="mt-4">
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle>Discussion Forums</CardTitle>
-                  <CardDescription>Connect with the healthcare innovation community</CardDescription>
-                </div>
-                <Button asChild>
-                  <Link to="/dashboard/collaboration/forums/new">
-                    <Plus className="h-4 w-4 mr-1" />
-                    New Topic
-                  </Link>
-                </Button>
-              </div>
+              <CardTitle>Upcoming Events</CardTitle>
+              <CardDescription>Webinars, workshops, and networking events</CardDescription>
             </CardHeader>
             <CardContent>
-              {forumTopics.length > 0 ? (
-                <div className="space-y-4">
-                  {forumTopics.map((topic) => (
-                    <div key={topic.id} className="p-4 border rounded-md">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{topic.title}</h3>
-                          <div className="flex items-center text-sm mt-1">
-                            <span className="px-2 py-0.5 bg-moh-green/10 text-moh-green rounded-full text-xs">
-                              {topic.category}
-                            </span>
-                            <span className="ml-4 text-muted-foreground text-xs">
-                              {topic.replies} replies
-                            </span>
-                          </div>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Last activity {topic.lastActivity}
-                        </div>
+              <div className="space-y-4">
+                <div className="border rounded-md p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <Badge className="mb-1">Webinar</Badge>
+                      <h3 className="font-medium">AI in Healthcare: Opportunities and Challenges</h3>
+                      <div className="flex items-center gap-2 mt-1 text-sm">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>May 20, 2025 at 15:00</span>
                       </div>
-                      <div className="mt-3 flex justify-end">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/dashboard/collaboration/forums/topic/${topic.id}`}>
-                            View Discussion
-                          </Link>
-                        </Button>
+                      <div className="flex items-center gap-2 mt-1 text-sm">
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <span>Dr. Ahmed Al-Farsi, Healthcare AI Specialist</span>
                       </div>
                     </div>
-                  ))}
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      Registered
+                    </Badge>
+                  </div>
+                  <div className="flex justify-end mt-4">
+                    <Button size="sm" asChild>
+                      <Link to="/dashboard/collaboration/events/ai-healthcare">
+                        Add to Calendar
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-10">
-                  <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">No forum topics yet</p>
+
+                <div className="border rounded-md p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <Badge className="mb-1">Workshop</Badge>
+                      <h3 className="font-medium">Navigating Healthcare Regulations</h3>
+                      <div className="flex items-center gap-2 mt-1 text-sm">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>May 25, 2025 at 10:00</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 text-sm">
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <span>Ministry of Health Officials</span>
+                      </div>
+                    </div>
+                    <Button size="sm" variant="outline">Register</Button>
+                  </div>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex items-center gap-1 text-sm">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span>120 minutes</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm">
+                      <Star className="h-4 w-4 text-amber-500" />
+                      <span>Featured Event</span>
+                    </div>
+                  </div>
                 </div>
-              )}
-              
-              <div className="mt-4 flex justify-center">
-                <Button variant="outline" asChild>
-                  <Link to="/dashboard/collaboration/forums">
-                    View All Discussions
-                  </Link>
-                </Button>
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="teams">
-          <Card>
-            <CardHeader>
-              <CardTitle>Teams</CardTitle>
-              <CardDescription>Manage your collaboration teams</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center py-10">
-              <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">
-                Team functionality will be available in the next update
-              </p>
-              <Button disabled>Create Team</Button>
-            </CardContent>
+            <CardFooter>
+              <Button asChild>
+                <Link to="/dashboard/collaboration/events">
+                  View All Events
+                </Link>
+              </Button>
+            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>

@@ -1,258 +1,296 @@
 
-import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, FileCheck, FileText, HelpCircle, MessageSquare, Settings, Shield } from "lucide-react";
-import { DocumentsTabContent } from "./DocumentsTabContent";
-import { SandboxCallToAction } from "./SandboxCallToAction";
-import { ComplianceTracker } from "../ComplianceTracker";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Check, CheckCircle, Clock, FileText, Shield, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-
-// Mock data - in a real app, this would come from an API
-const mockRequirements = [
-  {
-    id: "req1",
-    title: "Quality Management System (ISO 13485)",
-    description: "Implement a medical device quality management system that meets ISO 13485 standards.",
-    status: "required" as const,
-    completed: false,
-    dueDate: "2025-07-30"
-  },
-  {
-    id: "req2",
-    title: "Risk Management (ISO 14971)",
-    description: "Conduct and document a comprehensive risk analysis.",
-    status: "required" as const,
-    completed: true,
-    dueDate: "2025-06-15"
-  },
-  {
-    id: "req3",
-    title: "Clinical Evaluation",
-    description: "Prepare clinical evaluation documentation with relevant clinical data.",
-    status: "required" as const,
-    completed: false,
-    dueDate: "2025-08-10"
-  },
-  {
-    id: "req4",
-    title: "Usability Engineering (IEC 62366)",
-    description: "Conduct usability testing and document results.",
-    status: "recommended" as const,
-    completed: false
-  },
-  {
-    id: "req5",
-    title: "Cybersecurity Documentation",
-    description: "Document cybersecurity measures and risk mitigation strategies.",
-    status: "recommended" as const,
-    completed: true
-  },
-  {
-    id: "req6",
-    title: "Environmental Impact Assessment",
-    description: "Evaluate and document the environmental impact of your innovation.",
-    status: "optional" as const,
-    completed: false
-  }
-];
 
 export function RegulatoryDashboard() {
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("overview");
-  const [requirements, setRequirements] = useState(mockRequirements);
-  const [innovationDescription, setInnovationDescription] = useState("");
-  const [innovationType, setInnovationType] = useState("");
-  const [isAnalyzingCompliance, setIsAnalyzingCompliance] = useState(false);
-  
-  const handleMarkComplete = (id: string) => {
-    setRequirements(prev => 
-      prev.map(req => 
-        req.id === id ? { ...req, completed: !req.completed } : req
-      )
-    );
-  };
-  
-  const handleAnalyzeCompliance = () => {
-    if (!innovationDescription || !innovationType) {
-      toast({
-        title: "Missing information",
-        description: "Please describe your innovation and select its type.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsAnalyzingCompliance(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      toast({
-        title: "Analysis Complete",
-        description: "Your regulatory requirements have been analyzed.",
-      });
-      setIsAnalyzingCompliance(false);
-    }, 2000);
-  };
-  
   return (
     <div className="space-y-6">
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="flex justify-between items-center"
-      >
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Regulatory Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage your regulatory compliance and sandbox applications
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" asChild>
-            <Link to="/dashboard/regulatory/documents/upload">
-              <FileText className="h-4 w-4 mr-2" />
-              Upload Documents
-            </Link>
-          </Button>
-          <Button variant="default" className="bg-moh-green hover:bg-moh-darkGreen" asChild>
-            <Link to="/dashboard/regulatory/applications/new">
-              <Shield className="h-4 w-4 mr-2" />
-              New Application
-            </Link>
-          </Button>
-        </div>
-      </motion.div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Sandbox Status</CardTitle>
+            <CardDescription>Your regulatory sandbox progress</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center py-4">
+              <div className="flex flex-col items-center">
+                <Badge className="bg-green-500 mb-2">Active</Badge>
+                <span className="text-3xl font-bold">Stage 2</span>
+                <span className="text-sm text-muted-foreground">of 4 stages</span>
+              </div>
+            </div>
+            <div className="space-y-1 mt-2">
+              <div className="flex justify-between text-sm">
+                <span>Progress</span>
+                <span>50%</span>
+              </div>
+              <Progress value={50} />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" asChild>
+              <Link to="/dashboard/regulatory/sandbox">
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                View Sandbox
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Compliance Status</CardTitle>
+            <CardDescription>Regulatory compliance overview</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="h-2 w-2 rounded-full bg-green-500 mr-2"></div>
+                <span>Patient Data</span>
+              </div>
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="h-2 w-2 rounded-full bg-green-500 mr-2"></div>
+                <span>Clinical Validation</span>
+              </div>
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="h-2 w-2 rounded-full bg-amber-500 mr-2"></div>
+                <span>Security Standards</span>
+              </div>
+              <Clock className="h-4 w-4 text-amber-500" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="h-2 w-2 rounded-full bg-slate-300 mr-2"></div>
+                <span>Device Registration</span>
+              </div>
+              <Clock className="h-4 w-4 text-slate-400" />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" variant="outline" asChild>
+              <Link to="/dashboard/regulatory/compliance">
+                <Shield className="mr-2 h-4 w-4" />
+                Compliance Details
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Required Actions</CardTitle>
+            <CardDescription>Complete these actions to proceed</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-500" />
+              <span className="text-sm line-through text-muted-foreground">Submit pilot data</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-green-500" />
+              <span className="text-sm line-through text-muted-foreground">Complete risk assessment</span>
+            </div>
+            <div className="flex items-center gap-2 text-amber-500">
+              <Clock className="h-4 w-4" />
+              <span className="text-sm">Update security documentation</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="h-4 w-4 border rounded-full"></div>
+              <span className="text-sm">Schedule final review</span>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" variant="default" asChild>
+              <Link to="/dashboard/regulatory/tasks">
+                <FileText className="mr-2 h-4 w-4" />
+                View All Tasks
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
       
-      <SandboxCallToAction />
-      
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs defaultValue="applications">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="applications">Applications</TabsTrigger>
-          <TabsTrigger value="guidance">Guidance</TabsTrigger>
+          <TabsTrigger value="requirements">Requirements</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="overview">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2">
-              <ComplianceTracker
-                requirements={requirements}
-                onMarkComplete={handleMarkComplete}
-              />
-            </div>
-            
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Compliance Support</CardTitle>
-                  <CardDescription>Get assistance with your regulatory journey</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button variant="outline" className="w-full justify-start">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Contact Regulatory Advisor
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <FileCheck className="h-4 w-4 mr-2" />
-                    Request Compliance Review
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Manage Notification Settings
-                  </Button>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Resources</CardTitle>
-                  <CardDescription>Helpful guides and documentation</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <div className="flex items-center">
-                      <FileText className="h-4 w-4 text-moh-green mr-2" />
-                      <span className="text-sm">Medical Device Classification Guide</span>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <div className="flex items-center">
-                      <FileText className="h-4 w-4 text-moh-green mr-2" />
-                      <span className="text-sm">Risk Assessment Template</span>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <FileText className="h-4 w-4 text-moh-green mr-2" />
-                      <span className="text-sm">Regulatory Submission Checklist</span>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="documents">
-          <DocumentsTabContent 
-            innovationDescription={innovationDescription}
-            innovationType={innovationType}
-            isAnalyzingCompliance={isAnalyzingCompliance}
-            onDescriptionChange={setInnovationDescription}
-            onTypeChange={setInnovationType}
-            onAnalyzeClick={handleAnalyzeCompliance}
-            onMarkComplete={handleMarkComplete}
-            requirements={requirements}
-          />
-        </TabsContent>
-        
-        <TabsContent value="applications">
+        <TabsContent value="applications" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Regulatory Applications</CardTitle>
-              <CardDescription>View and manage your regulatory submissions</CardDescription>
+              <CardTitle>Active Applications</CardTitle>
+              <CardDescription>Your current regulatory applications</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="border rounded-md p-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-medium">Medical Device Classification</h3>
+                    <p className="text-sm text-muted-foreground">Artificial Intelligence Diagnostic Tool</p>
+                  </div>
+                  <Badge>In Progress</Badge>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <div className="text-sm text-muted-foreground">
+                    Application #SFD-2025-0342
+                  </div>
+                  <Button size="sm" variant="outline">View Details</Button>
+                </div>
+              </div>
+              
+              <div className="border rounded-md p-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-medium">Clinical Trial Approval</h3>
+                    <p className="text-sm text-muted-foreground">Remote Patient Monitoring System</p>
+                  </div>
+                  <Badge variant="outline">Under Review</Badge>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                  <div className="text-sm text-muted-foreground">
+                    Application #SFD-2025-0189
+                  </div>
+                  <Button size="sm" variant="outline">View Details</Button>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button asChild>
+                <Link to="/dashboard/regulatory/new-application">
+                  New Application
+                </Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="requirements" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Regulatory Requirements</CardTitle>
+              <CardDescription>Key requirements for your innovation</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-10">
-                <HelpCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground mb-4">
-                  You haven't submitted any regulatory applications yet
-                </p>
-                <Button asChild>
-                  <Link to="/dashboard/regulatory/applications/new">
-                    Start New Application
-                  </Link>
-                </Button>
+              <div className="space-y-4">
+                <div className="border-l-4 border-moh-green pl-4 py-1">
+                  <h3 className="font-medium">Data Protection & Privacy</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Requirements for handling sensitive patient data in compliance with Saudi laws.
+                  </p>
+                  <Button variant="link" size="sm" className="pl-0">
+                    View Details
+                  </Button>
+                </div>
+                <div className="border-l-4 border-moh-green pl-4 py-1">
+                  <h3 className="font-medium">Clinical Validation Standards</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Required testing and validation for medical innovations in Saudi healthcare system.
+                  </p>
+                  <Button variant="link" size="sm" className="pl-0">
+                    View Details
+                  </Button>
+                </div>
+                <div className="border-l-4 border-amber-500 pl-4 py-1">
+                  <h3 className="font-medium">Security & Infrastructure</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Technical security requirements for health technology in Saudi Arabia.
+                  </p>
+                  <Button variant="link" size="sm" className="pl-0">
+                    View Details
+                  </Button>
+                </div>
+                <div className="border-l-4 border-slate-300 pl-4 py-1">
+                  <h3 className="font-medium">Medical Device Registration</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Process and requirements for registering medical devices in the Kingdom.
+                  </p>
+                  <Button variant="link" size="sm" className="pl-0">
+                    View Details
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
         
-        <TabsContent value="guidance">
+        <TabsContent value="timeline" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Regulatory Guidance</CardTitle>
-              <CardDescription>Expert advice and resources for your compliance journey</CardDescription>
+              <CardTitle>Regulatory Timeline</CardTitle>
+              <CardDescription>Key dates and milestones</CardDescription>
             </CardHeader>
-            <CardContent className="text-center py-10">
-              <p className="text-muted-foreground">
-                Guidance content will be implemented in the next phase.
-              </p>
+            <CardContent>
+              <div className="relative border-l border-slate-200 pl-8 ml-4 space-y-10">
+                {/* Timeline Item 1 */}
+                <div className="relative">
+                  <div className="absolute -left-[39px] h-5 w-5 rounded-full bg-green-100 border-2 border-green-500 flex items-center justify-center">
+                    <Check className="h-3 w-3 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Apr 15, 2025</p>
+                    <h3 className="font-medium">Application Submitted</h3>
+                    <p className="text-sm">Initial application for regulatory sandbox accepted</p>
+                  </div>
+                </div>
+                
+                {/* Timeline Item 2 */}
+                <div className="relative">
+                  <div className="absolute -left-[39px] h-5 w-5 rounded-full bg-green-100 border-2 border-green-500 flex items-center justify-center">
+                    <Check className="h-3 w-3 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Apr 28, 2025</p>
+                    <h3 className="font-medium">Initial Review Completed</h3>
+                    <p className="text-sm">Passed preliminary assessment and moved to Stage 2</p>
+                  </div>
+                </div>
+                
+                {/* Timeline Item 3 */}
+                <div className="relative">
+                  <div className="absolute -left-[39px] h-5 w-5 rounded-full bg-amber-100 border-2 border-amber-500 flex items-center justify-center">
+                    <Clock className="h-3 w-3 text-amber-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">May 20, 2025</p>
+                    <h3 className="font-medium">Security Review</h3>
+                    <p className="text-sm">In progress - Technical security assessment</p>
+                  </div>
+                </div>
+                
+                {/* Timeline Item 4 */}
+                <div className="relative">
+                  <div className="absolute -left-[39px] h-5 w-5 rounded-full bg-slate-100 border-2 border-slate-300">
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Jun 15, 2025</p>
+                    <h3 className="font-medium text-slate-500">Final Assessment</h3>
+                    <p className="text-sm text-slate-500">Scheduled - Complete regulatory review</p>
+                  </div>
+                </div>
+                
+                {/* Timeline Item 5 */}
+                <div className="relative">
+                  <div className="absolute -left-[39px] h-5 w-5 rounded-full bg-slate-100 border-2 border-slate-300">
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Jul 1, 2025</p>
+                    <h3 className="font-medium text-slate-500">Approval Decision</h3>
+                    <p className="text-sm text-slate-500">Pending - Final regulatory decision</p>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

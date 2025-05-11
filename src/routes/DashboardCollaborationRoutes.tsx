@@ -1,13 +1,13 @@
 
 import { Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import DashboardRegulatoryPage from '@/pages/dashboard/regulatory/index';
+import DashboardCollaborationPage from '@/pages/dashboard/collaboration/index';
 
-export const DashboardRegulatoryRoutes = (
-  <Route path="regulatory">
+export const DashboardCollaborationRoutes = (
+  <Route path="collaboration">
     <Route index element={
       <ProtectedRoute>
-        <DashboardRegulatoryPage />
+        <DashboardCollaborationPage />
       </ProtectedRoute>
     } />
   </Route>

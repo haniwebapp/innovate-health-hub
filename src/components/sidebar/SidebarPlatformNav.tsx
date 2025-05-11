@@ -1,6 +1,6 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
-import { DollarSign, BookOpen, ShieldCheck, Users, BarChart3, LineChart, ChartPieIcon } from "lucide-react";
+import { DollarSign, BookOpen, ShieldCheck, Users, BarChart3, LineChart, ChartPieIcon, FileText } from "lucide-react";
 
 interface SidebarPlatformNavProps {
   isCollapsed: boolean;
@@ -31,6 +31,11 @@ export function SidebarPlatformNav({ isCollapsed }: SidebarPlatformNavProps) {
           to: "/dashboard/collaboration", 
           icon: <Users size={18} className="text-moh-green" />, 
           text: "Collaboration" 
+        },
+        { 
+          to: "/dashboard/policy", 
+          icon: <FileText size={18} className="text-moh-green" />, 
+          text: "Policy Tools" 
         },
         {
           to: "/dashboard/investment/market-analysis",
