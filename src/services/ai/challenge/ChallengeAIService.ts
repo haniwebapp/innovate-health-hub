@@ -113,7 +113,8 @@ export class ChallengeAIService {
   ): Promise<{
     isDuplicate: boolean;
     similarityScore: number;
-    similarChallenges: { id: string; title: string; similarity: number }[];
+    similarChallenges: { id: string; title: string; similarity: number; overlappingConcepts?: string[] }[];
+    analysis?: string;
   }> {
     try {
       const { data, error } = await supabase.functions.invoke("duplicate-challenge-detection", {

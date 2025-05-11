@@ -45,3 +45,6 @@ verify_jwt = false
 
 [functions.proposal-scoring]
 verify_jwt = false
+
+[functions.duplicate-challenge-detection]
+verify_jwt = false

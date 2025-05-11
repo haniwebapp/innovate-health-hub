@@ -6,6 +6,7 @@ import { PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AIChallengeGenerator } from "@/components/innovation/AIChallengeGenerator";
 import { ProposalScoringTool } from "@/components/innovation/ProposalScoringTool";
+import { DuplicateChallengeDetector } from "@/components/innovation/DuplicateChallengeDetector";
 
 export default function DashboardInnovationsPage() {
   const [activeTab, setActiveTab] = useState("my-innovations");
@@ -52,6 +53,7 @@ export default function DashboardInnovationsPage() {
           <div className="space-y-8">
             <AIChallengeGenerator />
             <ProposalScoringTool />
+            <DuplicateChallengeDetector />
           </div>
         </TabsContent>
       </Tabs>
