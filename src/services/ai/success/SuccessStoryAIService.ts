@@ -2,7 +2,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import { StoryGenerationPrompt, StoryGenerationResult, StoryAnalysisResult } from "./types";
 
-export { StoryGenerationPrompt, StoryGenerationResult, StoryAnalysisResult };
+// Use 'export type' for re-exporting types when isolatedModules is enabled
+export type { StoryGenerationPrompt, StoryGenerationResult, StoryAnalysisResult };
 
 export class SuccessStoryAIService {
   /**
