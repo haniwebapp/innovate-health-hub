@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Beaker, Edit, Eye, FileCode, FileText, Shield, Table2 } from 'lucide-react';
+import { ApplicationCard } from '@/components/regulatory/applications/ApplicationCard';
 
 // Mock sandbox projects data
 const sandboxProjects = [
@@ -16,7 +17,11 @@ const sandboxProjects = [
     status: 'active',
     startDate: '2023-04-01',
     endDate: '2023-07-01',
-    riskLevel: 'Medium'
+    riskLevel: 'Medium',
+    progress: 65,
+    framework: 'AI Medical Solutions',
+    submittedDate: '2023-03-15',
+    testingPeriod: '2023-04-01 to 2023-07-01'
   },
   {
     id: '2',
@@ -25,7 +30,10 @@ const sandboxProjects = [
     status: 'pending',
     startDate: 'N/A',
     endDate: 'N/A',
-    riskLevel: 'High'
+    riskLevel: 'High',
+    progress: 30,
+    framework: 'Medical Devices Framework',
+    submittedDate: '2023-05-20'
   },
   {
     id: '3',
@@ -34,11 +42,17 @@ const sandboxProjects = [
     status: 'completed',
     startDate: '2023-01-15',
     endDate: '2023-03-15',
-    riskLevel: 'Low'
+    riskLevel: 'Low',
+    progress: 100,
+    framework: 'Digital Health Framework',
+    submittedDate: '2022-12-10',
+    testingPeriod: '2023-01-15 to 2023-03-15'
   }
 ];
 
 export default function AdminSandboxPage() {
+  const [activeTab, setActiveTab] = useState('projects');
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
@@ -65,12 +79,23 @@ export default function AdminSandboxPage() {
     }
   };
 
+  // Convert sandbox projects to application format for reusing application card
+  const convertedProjects = sandboxProjects.map(project => ({
+    id: project.id,
+    name: project.name,
+    status: project.status === 'active' ? 'approved' : project.status === 'pending' ? 'in-review' : 'draft',
+    submittedDate: project.submittedDate,
+    framework: project.framework,
+    progress: project.progress,
+    testingPeriod: project.testingPeriod
+  }));
+
   return (
     <AdminLayout
       title="Regulatory Sandbox"
       description="Monitor and manage regulatory sandbox activities"
     >
-      <Tabs defaultValue="projects" className="space-y-6">
+      <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList>
           <TabsTrigger value="projects">Sandbox Projects</TabsTrigger>
           <TabsTrigger value="policies">Policies</TabsTrigger>
@@ -79,48 +104,8 @@ export default function AdminSandboxPage() {
         </TabsList>
 
         <TabsContent value="projects" className="space-y-4">
-          {sandboxProjects.map(project => (
-            <Card key={project.id}>
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle>{project.name}</CardTitle>
-                    <CardDescription>Innovator: {project.innovator}</CardDescription>
-                  </div>
-                  {getStatusBadge(project.status)}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <div>
-                      <span className="font-medium">Testing Period:</span>{' '}
-                      {project.status === 'pending' ? 'Not started' : `${project.startDate} to ${project.endDate}`}
-                    </div>
-                    <div>
-                      {getRiskBadge(project.riskLevel)}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-end gap-2">
-                <Button variant="outline" size="sm">
-                  <Eye className="h-4 w-4 mr-1" />
-                  View Details
-                </Button>
-                {project.status === 'pending' && (
-                  <Button size="sm">
-                    Approve Testing
-                  </Button>
-                )}
-                {project.status === 'active' && (
-                  <Button size="sm">
-                    <FileText className="h-4 w-4 mr-1" />
-                    Testing Logs
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
+          {convertedProjects.map(project => (
+            <ApplicationCard key={project.id} application={project} />
           ))}
         </TabsContent>
 

@@ -6,6 +6,7 @@ import { Activity } from "lucide-react";
 import { motion } from "framer-motion";
 import { ActivityList } from "./ActivityList";
 import { ActivityData } from "./activityTypes";
+import { sortActivities } from "./activityUtils";
 
 interface ActivityCardProps {
   activities: ActivityData[];
@@ -23,6 +24,9 @@ export function ActivityCard({ activities }: ActivityCardProps) {
     }
   };
 
+  // Sort activities with pinned items first and by date
+  const sortedActivities = sortActivities(activities);
+
   return (
     <Card className="h-full border-moh-green/10 overflow-hidden relative">
       {/* Subtle gradient background effect */}
@@ -37,7 +41,7 @@ export function ActivityCard({ activities }: ActivityCardProps) {
       </CardHeader>
       <CardContent className="relative">
         <ScrollArea className="h-[320px] pr-4">
-          <ActivityList activities={activities} container={container} />
+          <ActivityList activities={sortedActivities} container={container} />
         </ScrollArea>
       </CardContent>
     </Card>

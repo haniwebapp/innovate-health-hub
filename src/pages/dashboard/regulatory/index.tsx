@@ -5,122 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FileCheck, Clock, AlertTriangle, Upload, Plus, Download, FileText, Shield, CheckCircle, HelpCircle, Beaker, FileCode } from "lucide-react";
+import { FileCheck, Clock, AlertTriangle, Upload, Plus, Download, FileText, Shield, CheckCircle, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { 
-  RegulatoryFramework, 
-  RegulatoryFrameworkCard 
-} from "@/components/regulatory/RegulatoryFrameworkCard";
-import { 
-  ComplianceRequirement, 
-  ComplianceRequirementCard 
-} from "@/components/regulatory/ComplianceRequirementCard";
+import { RegulatoryFrameworkList } from "@/components/regulatory/frameworks/RegulatoryFrameworkList";
+import { ApplicationList } from "@/components/regulatory/applications/ApplicationList";
+import { ComplianceRequirementList } from "@/components/regulatory/compliance/ComplianceRequirementList";
 import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
-
-// Mock data for sandbox applications
-const sandboxApplications = [
-  {
-    id: "1",
-    name: "Remote Patient Monitoring System",
-    status: "in-review",
-    submittedDate: "2025-04-28",
-    framework: "Medical Devices Regulatory Framework",
-    progress: 65,
-  },
-  {
-    id: "2",
-    name: "AI-Based Diagnostic Tool",
-    status: "approved",
-    submittedDate: "2025-03-15",
-    framework: "Digital Health Software Framework",
-    progress: 100,
-    testingPeriod: "2025-05-01 to 2025-07-31",
-  }
-];
-
-// Mock regulatory frameworks - updated to use string values for icons instead of JSX elements
-const frameworks: RegulatoryFramework[] = [
-  {
-    id: "mdf",
-    title: "Medical Devices Framework",
-    icon: "Shield",
-    description: "For physical medical devices and equipment",
-    completedSteps: 2,
-    totalSteps: 5,
-    steps: [
-      "Complete device classification form",
-      "Submit technical documentation",
-      "Register for conformity assessment",
-      "Perform safety testing",
-      "Submit final approval request"
-    ]
-  },
-  {
-    id: "dhf",
-    title: "Digital Health Software Framework",
-    icon: "Code",
-    description: "For healthcare software and digital tools",
-    completedSteps: 1,
-    totalSteps: 4,
-    steps: [
-      "Complete software assessment form",
-      "Submit security & privacy documentation",
-      "Perform usability testing",
-      "Submit final compliance report"
-    ]
-  },
-  {
-    id: "biof",
-    title: "Biotechnology Framework",
-    icon: "Beaker",
-    description: "For biotech and pharmaceutical innovations",
-    completedSteps: 0,
-    totalSteps: 6,
-    steps: [
-      "Submit product classification form",
-      "Register R&D protocols",
-      "Submit safety test results",
-      "Complete clinical trial documentation",
-      "Submit manufacturing protocols",
-      "Apply for final approval"
-    ]
-  }
-];
-
-// Mock compliance requirements - fixing the status type to use string literals
-const complianceRequirements: ComplianceRequirement[] = [
-  {
-    id: "1",
-    title: "Data Privacy Impact Assessment",
-    description: "Complete a detailed assessment of how patient data is collected, stored, and processed in your innovation.",
-    status: "required",
-    completed: true
-  },
-  {
-    id: "2",
-    title: "Security Testing Report",
-    description: "Submit results from penetration testing and security vulnerability assessments performed on your solution.",
-    status: "required",
-    completed: false
-  },
-  {
-    id: "3",
-    title: "Clinical Validation Documentation",
-    description: "Provide evidence of clinical testing and validation of your solution's effectiveness and safety.",
-    status: "recommended",
-    completed: false
-  },
-  {
-    id: "4",
-    title: "User Experience Analysis",
-    description: "Submit findings from usability testing with healthcare professionals who would use your system.",
-    status: "optional",
-    completed: false
-  }
-];
+import { 
+  mockSandboxApplications, 
+  mockRegulatoryFrameworks,
+  mockComplianceRequirements 
+} from "@/components/regulatory/mockData";
 
 export default function DashboardRegulatoryPage() {
   const [activeTab, setActiveTab] = useState("applications");
@@ -187,85 +83,8 @@ export default function DashboardRegulatoryPage() {
         
         <TabsContent value="applications">
           <div className="space-y-4">
-            {sandboxApplications.length > 0 ? (
-              <>
-                {sandboxApplications.map(application => (
-                  <Card key={application.id}>
-                    <CardHeader className="pb-2">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle>{application.name}</CardTitle>
-                          <CardDescription>Framework: {application.framework}</CardDescription>
-                        </div>
-                        <div>
-                          {application.status === "approved" ? (
-                            <Badge className="bg-green-500">Approved</Badge>
-                          ) : application.status === "in-review" ? (
-                            <Badge className="bg-amber-500">In Review</Badge>
-                          ) : application.status === "draft" ? (
-                            <Badge variant="outline">Draft</Badge>
-                          ) : (
-                            <Badge variant="destructive">Rejected</Badge>
-                          )}
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            Submitted: {application.submittedDate}
-                          </span>
-                          <span className="font-medium">
-                            {application.status === "approved" ? 
-                              "Testing period: " + application.testingPeriod : 
-                              "Application progress"}
-                          </span>
-                        </div>
-                        
-                        <Progress 
-                          value={application.progress} 
-                          className="h-2"
-                        />
-                      </div>
-                      
-                      <div className="mt-4 flex justify-end gap-2">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/dashboard/regulatory/applications/${application.id}`}>
-                            View Details
-                          </Link>
-                        </Button>
-                        
-                        {application.status === "approved" && (
-                          <Button size="sm" asChild>
-                            <Link to={`/dashboard/regulatory/testing/${application.id}`}>
-                              <FileCheck className="w-4 h-4 mr-1" />
-                              Submit Test Results
-                            </Link>
-                          </Button>
-                        )}
-                        
-                        {application.status === "in-review" && (
-                          <Button size="sm" asChild>
-                            <Link to={`/dashboard/regulatory/applications/${application.id}/edit`}>
-                              Edit Application
-                            </Link>
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-                
-                <div className="flex justify-end">
-                  <Button asChild>
-                    <Link to="/dashboard/regulatory/applications/new">
-                      <Plus className="w-4 h-4 mr-1" />
-                      New Application
-                    </Link>
-                  </Button>
-                </div>
-              </>
+            {mockSandboxApplications.length > 0 ? (
+              <ApplicationList applications={mockSandboxApplications} />
             ) : (
               <Card>
                 <CardHeader>
@@ -291,16 +110,11 @@ export default function DashboardRegulatoryPage() {
             
             <div className="mt-6">
               <h2 className="text-lg font-medium mb-2">Available Frameworks</h2>
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {frameworks.map((framework) => (
-                  <RegulatoryFrameworkCard
-                    key={framework.id}
-                    framework={framework}
-                    isSelected={selectedFramework === framework.id}
-                    onSelect={setSelectedFramework}
-                  />
-                ))}
-              </div>
+              <RegulatoryFrameworkList
+                frameworks={mockRegulatoryFrameworks}
+                selectedFramework={selectedFramework}
+                onSelectFramework={setSelectedFramework}
+              />
             </div>
           </div>
         </TabsContent>
@@ -324,15 +138,10 @@ export default function DashboardRegulatoryPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {complianceRequirements.map(requirement => (
-                    <ComplianceRequirementCard
-                      key={requirement.id}
-                      requirement={requirement}
-                      onMarkComplete={handleMarkComplete}
-                    />
-                  ))}
-                </div>
+                <ComplianceRequirementList
+                  requirements={mockComplianceRequirements}
+                  onMarkComplete={handleMarkComplete}
+                />
                 
                 <div className="mt-6 pt-4 border-t flex justify-between items-center">
                   <div className="text-sm text-muted-foreground">
