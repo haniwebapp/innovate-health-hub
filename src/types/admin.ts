@@ -1,4 +1,3 @@
-
 export interface UserProfile {
   id: string;
   email: string;
@@ -8,6 +7,18 @@ export interface UserProfile {
   organization?: string;
   lastSignIn: string;
   status: "active" | "inactive";
+}
+
+export interface ProfileData {
+  id?: string;
+  first_name?: string;
+  last_name?: string;
+  user_type?: string;
+  organization?: string;
+  avatar_url?: string;
+  updated_at?: string;
+  email?: string;
+  status?: "active" | "inactive";
 }
 
 export interface ProfileWithEmail extends UserProfile {
