@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AIChallengeGenerator } from "@/components/innovation/AIChallengeGenerator";
+import { ProposalScoringTool } from "@/components/innovation/ProposalScoringTool";
 
 export default function DashboardInnovationsPage() {
   const [activeTab, setActiveTab] = useState("my-innovations");
@@ -50,6 +51,7 @@ export default function DashboardInnovationsPage() {
         <TabsContent value="ai-tools">
           <div className="space-y-8">
             <AIChallengeGenerator />
+            <ProposalScoringTool />
           </div>
         </TabsContent>
       </Tabs>

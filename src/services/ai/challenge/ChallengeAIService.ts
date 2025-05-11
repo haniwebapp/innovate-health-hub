@@ -20,6 +20,7 @@ export interface ProposalScoreResult {
     impact: number;
     scalability: number;
     sustainability: number;
+    [key: string]: number;
   };
   strengths: string[];
   improvements: string[];
