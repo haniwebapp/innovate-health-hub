@@ -47,25 +47,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // First set up the auth state listener
+    // Set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, "Session:", !!session);
       setSession(session);
       setUser(session?.user ? session.user as ExtendedUser : null);
       
+      // Only check admin status if we have a session
       if (session?.user) {
-        checkIfUserIsAdmin(session.user.id);
+        // Use setTimeout to prevent potential recursion
+        setTimeout(() => {
+          checkIfUserIsAdmin();
+        }, 0);
       } else {
         setIsAdmin(false);
       }
     });
 
-    // Then get the current session
+    // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", !!session);
       setSession(session);
       setUser(session?.user ? session.user as ExtendedUser : null);
       
+      // Only check admin status if we have a session
       if (session?.user) {
-        checkIfUserIsAdmin(session.user.id);
+        checkIfUserIsAdmin();
       }
       setIsLoading(false);
     });
@@ -75,23 +82,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  // Removed the fetchUserProfile method that was causing recursion issues
-  // We'll rely on the admin status from the RPC function instead
-
-  const checkIfUserIsAdmin = async (userId: string) => {
+  const checkIfUserIsAdmin = async () => {
     try {
-      console.log("Checking admin status for user ID:", userId);
+      if (!session?.user?.id) {
+        console.log("No user ID to check admin status");
+        setIsAdmin(false);
+        return;
+      }
       
-      // Use ONLY the RPC function, which avoids recursion issues
+      console.log("Checking admin status for user ID:", session.user.id);
+      
+      // Use ONLY the RPC function to avoid recursion issues
       const { data: isAdminResult, error: rpcError } = await supabase
         .rpc('is_admin_user');
 
-      console.log("RPC result:", isAdminResult, "Error:", rpcError);
+      console.log("RPC admin check result:", isAdminResult, "Error:", rpcError);
 
       if (!rpcError) {
-        console.log("Setting admin status from RPC:", isAdminResult);
         setIsAdmin(!!isAdminResult); // Convert to boolean in case it's null
-        return;
       } else {
         console.error("Error calling is_admin_user RPC:", rpcError);
         setIsAdmin(false);
@@ -104,18 +112,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log("Attempting sign in for:", email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      if (error) {
+        console.error("Sign in error:", error);
+      }
       return { error };
     } catch (error) {
+      console.error("Exception during sign in:", error);
       return { error };
     }
   };
 
   const signUp = async (email: string, password: string, userData?: any) => {
     try {
+      console.log("Attempting sign up for:", email);
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -123,13 +137,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           data: userData,
         },
       });
+      if (error) {
+        console.error("Sign up error:", error);
+      }
       return { error };
     } catch (error) {
+      console.error("Exception during sign up:", error);
       return { error };
     }
   };
 
   const signOut = async () => {
+    console.log("Signing out");
     await supabase.auth.signOut();
   };
 

@@ -22,33 +22,45 @@ export default function IntegrationList({ category, title, description }: Integr
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
   useEffect(() => {
-    loadIntegrations();
+    // Only load integrations if the component is mounted
+    const controller = new AbortController();
+    loadIntegrations(controller.signal);
+    
+    return () => {
+      controller.abort();
+    };
   }, [category, isAdmin, isAuthenticated]); // Reload when auth state changes
 
-  const loadIntegrations = async () => {
+  const loadIntegrations = async (signal?: AbortSignal) => {
     setLoading(true);
     setError(null);
     setErrorDetails(null);
     
-    // Check if user is authenticated and admin before loading
-    if (!isAuthenticated) {
-      setError(new Error("Authentication required"));
-      setErrorDetails("You must be logged in to view integrations.");
-      setLoading(false);
-      return;
-    }
-    
-    if (!isAdmin) {
-      setError(new Error("Access denied"));
-      setErrorDetails("You must have admin privileges to view integrations.");
-      setLoading(false);
-      return;
-    }
-    
     try {
-      console.log(`Fetching integrations for category: ${category} (isAdmin: ${isAdmin})`);
-      const data = await fetchIntegrationsByType(category);
-      console.log(`Received integrations:`, data);
+      // Debug authentication state
+      console.log(`Auth state: isAuthenticated=${isAuthenticated}, isAdmin=${isAdmin}`);
+      
+      // Check for authentication before proceeding
+      if (!isAuthenticated) {
+        console.warn("User is not authenticated");
+        setError(new Error("Authentication required"));
+        setErrorDetails("You must be logged in to view integrations.");
+        setLoading(false);
+        return;
+      }
+      
+      // Check for admin privileges
+      if (!isAdmin) {
+        console.warn("User is not an admin");
+        setError(new Error("Access denied"));
+        setErrorDetails("You must have admin privileges to view integrations.");
+        setLoading(false);
+        return;
+      }
+      
+      console.log(`Fetching integrations for category: ${category}`);
+      const data = await fetchIntegrationsByType(category, signal);
+      console.log(`Received ${data.length} integrations for ${category}`);
       setIntegrations(data);
     } catch (error) {
       console.error("Error loading integrations:", error);
@@ -80,13 +92,15 @@ export default function IntegrationList({ category, title, description }: Integr
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   };
 
   const handleToggleIntegration = async (id: string, isActive: boolean) => {
     try {
-      console.log(`Toggling integration ${id} to ${isActive}`);
+      console.log(`Toggling integration ${id} to ${isActive ? 'active' : 'inactive'}`);
       const updatedIntegration = await toggleIntegration(id, isActive);
       
       // Update the integration in the state

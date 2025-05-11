@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Integration {
@@ -21,13 +22,14 @@ export interface IntegrationLog {
   created_at: string;
 }
 
-export async function fetchIntegrations() {
+export async function fetchIntegrations(signal?: AbortSignal) {
   try {
     console.log("Fetching all integrations...");
     const { data, error } = await supabase
       .from('integrations')
       .select('*')
-      .order('name', { ascending: true });
+      .order('name', { ascending: true })
+      .abortSignal(signal);
 
     if (error) {
       console.error("Supabase error in fetchIntegrations:", error);
@@ -46,14 +48,15 @@ export async function fetchIntegrations() {
   }
 }
 
-export async function fetchIntegrationsByType(type: string) {
+export async function fetchIntegrationsByType(type: string, signal?: AbortSignal) {
   try {
     console.log(`Fetching integrations with type: ${type}`);
     const { data, error } = await supabase
       .from('integrations')
       .select('*')
       .eq('type', type)
-      .order('name', { ascending: true });
+      .order('name', { ascending: true })
+      .abortSignal(signal);
 
     if (error) {
       console.error("Supabase error in fetchIntegrationsByType:", error);
