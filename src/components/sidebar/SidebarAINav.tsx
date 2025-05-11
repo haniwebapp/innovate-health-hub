@@ -5,7 +5,8 @@ import {
   BrainCircuit, 
   LineChart, 
   UserRound, 
-  ServerCog 
+  ServerCog,
+  Layers
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -25,6 +26,11 @@ export function SidebarAINav({ isCollapsed }: SidebarAINavProps) {
           to: "/dashboard/ai/overview", 
           icon: <Cpu size={18} className="text-purple-600" />, 
           text: "AI Overview" 
+        },
+        { 
+          to: "/ai/capabilities", 
+          icon: <Layers size={18} className="text-purple-600" />, 
+          text: "AI Roadmap" 
         },
         { 
           to: "/dashboard/ai/recommendations", 
