@@ -23,3 +23,4 @@ export * from './compliance/ComplianceAIService';
 export * from './events/EventsAIService';
 export * from './support/SupportAIService';
 export * from './clinical/ClinicalAIService';
+export * from './success/SuccessStoryAIService';

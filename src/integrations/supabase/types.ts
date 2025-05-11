@@ -502,6 +502,119 @@ export type Database = {
         }
         Relationships: []
       }
+      event_registrations: {
+        Row: {
+          attended: boolean | null
+          event_id: string
+          feedback: string | null
+          id: string
+          rating: number | null
+          registration_date: string
+          user_id: string
+        }
+        Insert: {
+          attended?: boolean | null
+          event_id: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          registration_date?: string
+          user_id: string
+        }
+        Update: {
+          attended?: boolean | null
+          event_id?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          registration_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          end_date: string
+          event_type: string
+          event_url: string | null
+          featured: boolean
+          id: string
+          is_virtual: boolean
+          location: string | null
+          max_attendees: number | null
+          presenter: string | null
+          presenter_organization: string | null
+          presenter_title: string | null
+          recording_url: string | null
+          registration_url: string | null
+          start_date: string
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          end_date: string
+          event_type: string
+          event_url?: string | null
+          featured?: boolean
+          id?: string
+          is_virtual?: boolean
+          location?: string | null
+          max_attendees?: number | null
+          presenter?: string | null
+          presenter_organization?: string | null
+          presenter_title?: string | null
+          recording_url?: string | null
+          registration_url?: string | null
+          start_date: string
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          end_date?: string
+          event_type?: string
+          event_url?: string | null
+          featured?: boolean
+          id?: string
+          is_virtual?: boolean
+          location?: string | null
+          max_attendees?: number | null
+          presenter?: string | null
+          presenter_organization?: string | null
+          presenter_title?: string | null
+          recording_url?: string | null
+          registration_url?: string | null
+          start_date?: string
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       innovation_investments: {
         Row: {
           amount: number
@@ -1548,6 +1661,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      success_stories: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          cover_image_url: string | null
+          created_at: string
+          featured: boolean
+          id: string
+          impact_metrics: Json | null
+          organization: string | null
+          publication_date: string | null
+          status: string
+          summary: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          category: string
+          content: string
+          cover_image_url?: string | null
+          created_at?: string
+          featured?: boolean
+          id?: string
+          impact_metrics?: Json | null
+          organization?: string | null
+          publication_date?: string | null
+          status?: string
+          summary: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          cover_image_url?: string | null
+          created_at?: string
+          featured?: boolean
+          id?: string
+          impact_metrics?: Json | null
+          organization?: string | null
+          publication_date?: string | null
+          status?: string
+          summary?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       support_interactions: {
         Row: {
