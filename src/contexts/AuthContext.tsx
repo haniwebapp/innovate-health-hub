@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       if (session?.user) {
         checkIfUserIsAdmin(session.user.id);
-        fetchUserProfile(session.user.id);
       } else {
         setIsAdmin(false);
       }
@@ -67,7 +66,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       if (session?.user) {
         checkIfUserIsAdmin(session.user.id);
-        fetchUserProfile(session.user.id);
       }
       setIsLoading(false);
     });
@@ -77,73 +75,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
-    try {
-      // Use direct query instead of joining with user_type to avoid recursion
-      console.log("Fetching user profile for ID:", userId);
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('first_name, last_name, avatar_url')
-        .eq('id', userId)
-        .single();
-        
-      if (error) {
-        console.error("Error fetching user profile:", error);
-        return;
-      }
-      
-      if (data && user) {
-        console.log("User profile data retrieved:", data);
-        
-        // Update the user object with profile data
-        setUser(currentUser => {
-          if (!currentUser) return null;
-          return {
-            ...currentUser,
-            first_name: data.first_name,
-            last_name: data.last_name,
-            avatar_url: data.avatar_url
-          };
-        });
-      }
-    } catch (error) {
-      console.error("Exception fetching user profile:", error);
-    }
-  };
+  // Removed the fetchUserProfile method that was causing recursion issues
+  // We'll rely on the admin status from the RPC function instead
 
   const checkIfUserIsAdmin = async (userId: string) => {
     try {
       console.log("Checking admin status for user ID:", userId);
       
-      // First try to use the RPC function if it exists
+      // Use ONLY the RPC function, which avoids recursion issues
       const { data: isAdminResult, error: rpcError } = await supabase
         .rpc('is_admin_user');
 
       console.log("RPC result:", isAdminResult, "Error:", rpcError);
 
-      if (!rpcError && isAdminResult !== null) {
+      if (!rpcError) {
         console.log("Setting admin status from RPC:", isAdminResult);
-        setIsAdmin(isAdminResult);
+        setIsAdmin(!!isAdminResult); // Convert to boolean in case it's null
         return;
-      }
-      
-      // Fallback to direct query if RPC fails - using a minimal select to avoid recursion
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('user_type')
-        .eq('id', userId)
-        .single();
-      
-      if (error) {
-        console.error("Error checking admin status:", error);
+      } else {
+        console.error("Error calling is_admin_user RPC:", rpcError);
         setIsAdmin(false);
-        return;
       }
-      
-      console.log("User type from profiles table:", data?.user_type);
-      setIsAdmin(data?.user_type === 'admin');
-      
     } catch (error) {
       console.error("Exception checking admin status:", error);
       setIsAdmin(false);

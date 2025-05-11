@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Integration {
@@ -33,10 +32,8 @@ export async function fetchIntegrations() {
     if (error) {
       console.error("Supabase error in fetchIntegrations:", error);
       
-      if (error.message.includes("recursion")) {
-        throw new Error(`Database permission error (recursion): ${error.message}`);
-      } else if (error.message.includes("permission denied")) {
-        throw new Error(`Access denied: ${error.message}`);
+      if (error.message.includes("recursion") || error.message.includes("permission")) {
+        throw new Error(`Database access error: You may not have the correct permissions to view integrations. Please make sure you're logged in with an admin account.`);
       } else {
         throw new Error(`Failed to fetch integrations: ${error.message}`);
       }
@@ -61,12 +58,10 @@ export async function fetchIntegrationsByType(type: string) {
     if (error) {
       console.error("Supabase error in fetchIntegrationsByType:", error);
       
-      if (error.message.includes("recursion")) {
-        throw new Error(`Database permission error (recursion): ${error.message}`);
-      } else if (error.message.includes("permission denied")) {
-        throw new Error(`Access denied: ${error.message}`);
+      if (error.message.includes("recursion") || error.message.includes("permission")) {
+        throw new Error(`Database access error: You may not have the correct permissions to view ${type} integrations. Please make sure you're logged in with an admin account.`);
       } else {
-        throw new Error(`Failed to fetch integrations by type: ${error.message}`);
+        throw new Error(`Failed to fetch ${type} integrations: ${error.message}`);
       }
     }
     
@@ -178,8 +173,8 @@ export async function toggleIntegration(id: string, isActive: boolean) {
     if (error) {
       console.error("Supabase error in toggleIntegration:", error);
       
-      if (error.message.includes("recursion")) {
-        throw new Error(`Database permission error (recursion): ${error.message}`);
+      if (error.message.includes("recursion") || error.message.includes("permission")) {
+        throw new Error(`Database access error: You may not have the correct permissions to update integrations. Please make sure you're logged in with an admin account.`);
       } else {
         throw new Error(`Failed to toggle integration: ${error.message}`);
       }
