@@ -2,9 +2,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import LoginForm from '@/components/auth/LoginForm';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
   const { user, isLoading } = useAuth();
@@ -17,6 +19,16 @@ export default function LoginPage() {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-moh-lightGreen/20 flex flex-col md:flex-row items-center justify-center p-4" dir="ltr">
+      {/* Go back to home button */}
+      <div className="absolute top-4 left-4">
+        <Button variant="ghost" size="sm" asChild>
+          <Link to="/" className="flex items-center text-moh-darkGreen hover:text-moh-green">
+            <ArrowLeft className="mr-1 h-4 w-4" />
+            {t('common.backToHome')}
+          </Link>
+        </Button>
+      </div>
+      
       {/* Left side (MOH branding area) */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
