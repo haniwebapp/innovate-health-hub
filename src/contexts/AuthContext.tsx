@@ -92,17 +92,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       console.log("Checking admin status for user ID:", session.user.id);
       
-      // Use ONLY the RPC function to avoid recursion issues
+      // Use the RPC function to check admin status
+      // This avoids the recursion issues with direct queries
       const { data: isAdminResult, error: rpcError } = await supabase
         .rpc('is_admin_user');
-
+      
       console.log("RPC admin check result:", isAdminResult, "Error:", rpcError);
 
       if (!rpcError) {
         setIsAdmin(!!isAdminResult); // Convert to boolean in case it's null
       } else {
         console.error("Error calling is_admin_user RPC:", rpcError);
-        setIsAdmin(false);
+        
+        // Fall back to direct profile check if RPC fails
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('user_type')
+            .eq('id', session.user.id)
+            .single();
+            
+          if (!profileError && profileData) {
+            console.log("Fallback profile check:", profileData);
+            setIsAdmin(profileData.user_type === 'admin');
+          } else {
+            console.error("Error in fallback profile check:", profileError);
+            setIsAdmin(false);
+          }
+        } catch (fallbackError) {
+          console.error("Exception in fallback admin check:", fallbackError);
+          setIsAdmin(false);
+        }
       }
     } catch (error) {
       console.error("Exception checking admin status:", error);

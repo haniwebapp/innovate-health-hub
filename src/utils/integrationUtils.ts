@@ -25,6 +25,19 @@ export interface IntegrationLog {
 export async function fetchIntegrations(signal?: AbortSignal) {
   try {
     console.log("Fetching all integrations...");
+    
+    // First check if the user is admin to avoid permission issues
+    const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin_user');
+    
+    if (isAdminError) {
+      console.error("Error checking admin status:", isAdminError);
+      throw new Error(`Permission check failed: You may not have permission to view integrations. Please verify your account has admin privileges.`);
+    }
+    
+    if (!isAdminData) {
+      throw new Error(`Access denied: Only administrators can view integrations.`);
+    }
+    
     const { data, error } = await supabase
       .from('integrations')
       .select('*')
@@ -51,6 +64,19 @@ export async function fetchIntegrations(signal?: AbortSignal) {
 export async function fetchIntegrationsByType(type: string, signal?: AbortSignal) {
   try {
     console.log(`Fetching integrations with type: ${type}`);
+    
+    // First check if the user is admin to avoid permission issues
+    const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin_user');
+    
+    if (isAdminError) {
+      console.error("Error checking admin status:", isAdminError);
+      throw new Error(`Permission check failed: You may not have permission to view integrations. Please verify your account has admin privileges.`);
+    }
+    
+    if (!isAdminData) {
+      throw new Error(`Access denied: Only administrators can view integrations.`);
+    }
+    
     const { data, error } = await supabase
       .from('integrations')
       .select('*')
@@ -162,6 +188,14 @@ export async function logIntegrationEvent(integrationId: string, eventType: stri
 export async function toggleIntegration(id: string, isActive: boolean) {
   try {
     console.log(`Toggling integration ${id} to ${isActive ? 'active' : 'inactive'}`);
+    
+    // First check if the user is admin to avoid permission issues
+    const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin_user');
+    
+    if (isAdminError || !isAdminData) {
+      console.error("Error checking admin status:", isAdminError);
+      throw new Error(`Access denied: Only administrators can update integrations.`);
+    }
     
     const { data, error } = await supabase
       .from('integrations')

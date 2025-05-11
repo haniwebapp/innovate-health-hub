@@ -5,7 +5,7 @@ import IntegrationItem from "./IntegrationItem";
 import { useToast } from "@/hooks/use-toast";
 import { fetchIntegrationsByType, Integration, toggleIntegration } from "@/utils/integrationUtils";
 import { AdminLoading, AdminError, AdminEmpty } from "@/components/admin/ui/AdminPageState";
-import { useAuth } from "@/contexts/AuthContext"; // Import auth context
+import { useAuth } from "@/contexts/AuthContext";
 
 interface IntegrationListProps {
   category: string;
@@ -15,7 +15,7 @@ interface IntegrationListProps {
 
 export default function IntegrationList({ category, title, description }: IntegrationListProps) {
   const { toast } = useToast();
-  const { isAdmin, isAuthenticated } = useAuth(); // Get auth state
+  const { isAdmin, isAuthenticated } = useAuth();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -76,7 +76,7 @@ export default function IntegrationList({ category, title, description }: Integr
       let detailedError = "Failed to load integrations.";
       
       if (errorMessage.includes("recursion")) {
-        detailedError = "A database policy issue was detected. This is likely due to a permissions configuration issue.";
+        detailedError = "A database policy issue was detected. This is likely due to a permissions configuration. Please contact the administrator.";
       } else if (errorMessage.includes("permission")) {
         detailedError = "Access denied. Please verify you have admin access and are properly authenticated.";
       } else if (errorMessage.includes("Database access error")) {
