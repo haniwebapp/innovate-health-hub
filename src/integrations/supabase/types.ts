@@ -1012,6 +1012,156 @@ export type Database = {
         }
         Relationships: []
       }
+      sandbox_applications: {
+        Row: {
+          created_at: string
+          description: string
+          end_date: string | null
+          framework_id: string | null
+          id: string
+          innovation_type: string
+          innovator: string
+          name: string
+          organization_type: string
+          progress: number | null
+          regulatory_challenges: string | null
+          risk_level: string | null
+          start_date: string | null
+          status: string
+          submitted_at: string | null
+          testing_duration: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          end_date?: string | null
+          framework_id?: string | null
+          id?: string
+          innovation_type: string
+          innovator: string
+          name: string
+          organization_type: string
+          progress?: number | null
+          regulatory_challenges?: string | null
+          risk_level?: string | null
+          start_date?: string | null
+          status?: string
+          submitted_at?: string | null
+          testing_duration: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_date?: string | null
+          framework_id?: string | null
+          id?: string
+          innovation_type?: string
+          innovator?: string
+          name?: string
+          organization_type?: string
+          progress?: number | null
+          regulatory_challenges?: string | null
+          risk_level?: string | null
+          start_date?: string | null
+          status?: string
+          submitted_at?: string | null
+          testing_duration?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sandbox_applications_framework_id_fkey"
+            columns: ["framework_id"]
+            isOneToOne: false
+            referencedRelation: "regulatory_frameworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sandbox_compliance_requirements: {
+        Row: {
+          application_id: string
+          completed: boolean
+          created_at: string
+          description: string
+          id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          completed?: boolean
+          created_at?: string
+          description: string
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          completed?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sandbox_compliance_requirements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sandbox_feedback: {
+        Row: {
+          application_id: string
+          author: string
+          author_role: string
+          created_at: string
+          id: string
+          is_official: boolean
+          message: string
+        }
+        Insert: {
+          application_id: string
+          author: string
+          author_role: string
+          created_at?: string
+          id?: string
+          is_official?: boolean
+          message: string
+        }
+        Update: {
+          application_id?: string
+          author?: string
+          author_role?: string
+          created_at?: string
+          id?: string
+          is_official?: boolean
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sandbox_feedback_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sandbox_test_results: {
         Row: {
           application_id: string
@@ -1404,6 +1554,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      analyze_application_compliance: {
+        Args: { app_id: string; app_description: string; app_type: string }
+        Returns: {
+          application_id: string
+          completed: boolean
+          created_at: string
+          description: string
+          id: string
+          status: string
+          title: string
+          updated_at: string
+        }[]
+      }
       get_challenge_submissions: {
         Args: { input_challenge_id: string }
         Returns: {

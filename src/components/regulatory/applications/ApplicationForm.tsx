@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ApplicationFormData } from "./types";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { submitSandboxApplication } from "@/utils/regulatoryUtils";
 
 interface ApplicationFormProps {
   onSubmit: (data: ApplicationFormData) => void;
@@ -31,13 +33,53 @@ export function ApplicationForm({
     ...initialData
   });
 
+  const { toast } = useToast();
+  const [submittingToDb, setSubmittingToDb] = useState(false);
+
   const handleChange = (field: keyof ApplicationFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Call the parent onSubmit handler first
     onSubmit(formData as ApplicationFormData);
+    
+    // Check if we should also submit to the database
+    if (!submittingToDb) {
+      try {
+        setSubmittingToDb(true);
+        
+        // Map form data to match the database structure
+        await submitSandboxApplication({
+          name: formData.name || '',
+          description: formData.description || '',
+          innovator: 'Current User', // This would ideally come from the user profile
+          innovation_type: formData.innovationType || 'other',
+          regulatory_challenges: formData.regulatoryChallenges,
+          testing_duration: formData.testingDuration || '3-months',
+          organization_type: formData.organizationType || 'other',
+          status: 'pending',
+          risk_level: 'Medium',
+          framework_id: null, // We would map this to a real framework ID if available
+        });
+        
+        toast({
+          title: "Application submitted to database",
+          description: "Your application has been saved to the regulatory sandbox database",
+        });
+      } catch (error) {
+        console.error('Error submitting application to database:', error);
+        toast({
+          title: "Database submission failed",
+          description: "There was an error saving your application to the database. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setSubmittingToDb(false);
+      }
+    }
   };
 
   const handleSaveDraft = () => {
@@ -172,8 +214,8 @@ export function ApplicationForm({
         <Button type="button" variant="outline" onClick={handleSaveDraft}>
           Save Draft
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit Application"}
+        <Button type="submit" disabled={isSubmitting || submittingToDb}>
+          {isSubmitting || submittingToDb ? "Submitting..." : "Submit Application"}
         </Button>
       </div>
     </form>
