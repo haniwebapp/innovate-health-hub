@@ -175,6 +175,51 @@ export type Database = {
           },
         ]
       }
+      challenge_similarities: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          id: string
+          overlapping_concepts: string[] | null
+          similar_challenge_id: string | null
+          similarity_score: number
+          updated_at: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          id?: string
+          overlapping_concepts?: string[] | null
+          similar_challenge_id?: string | null
+          similarity_score: number
+          updated_at?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          id?: string
+          overlapping_concepts?: string[] | null
+          similar_challenge_id?: string | null
+          similarity_score?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_similarities_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_similarities_similar_challenge_id_fkey"
+            columns: ["similar_challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_submissions: {
         Row: {
           challenge_id: string
