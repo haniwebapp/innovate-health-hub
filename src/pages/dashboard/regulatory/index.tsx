@@ -1,337 +1,257 @@
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { FileCheck, Clock, AlertTriangle, Upload, Plus, Download, FileText, Shield, CheckCircle, HelpCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { RegulatoryFrameworkList } from "@/components/regulatory/frameworks/RegulatoryFrameworkList";
+import { ApplicationList } from "@/components/regulatory/applications/ApplicationList";
+import { ComplianceRequirementList } from "@/components/regulatory/compliance/ComplianceRequirementList";
+import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
 import { 
-  FileText, 
-  PlusCircle, 
-  Clock, 
-  CheckCircle, 
-  AlertTriangle, 
-  Loader2 
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useSandboxApplications } from '@/hooks/useSandboxApplications';
-import { fetchSandboxComplianceRequirements } from '@/utils/regulatoryUtils';
-import { SandboxComplianceList } from '@/components/regulatory/sandbox/SandboxComplianceList';
-import { supabase } from '@/integrations/supabase/client';
+  mockSandboxApplications, 
+  mockRegulatoryFrameworks,
+  mockComplianceRequirements 
+} from "@/components/regulatory/mockData";
 
-export default function RegulatoryDashboardPage() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('applications');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
-  const [complianceRequirements, setComplianceRequirements] = useState([]);
-  const [loadingRequirements, setLoadingRequirements] = useState(false);
+export default function DashboardRegulatoryPage() {
+  const [activeTab, setActiveTab] = useState("applications");
+  const [selectedFramework, setSelectedFramework] = useState<string | null>("mdf");
+  const { toast } = useToast();
+  const [innovationDescription, setInnovationDescription] = useState("");
+  const [innovationType, setInnovationType] = useState("digital health application");
+  const [isAnalyzingCompliance, setIsAnalyzingCompliance] = useState(false);
   
-  const { 
-    applications, 
-    loading, 
-    error, 
-    user,
-    updateStatus,
-    filterApplications,
-    refreshApplications
-  } = useSandboxApplications(isAdmin);
-  
-  // Check if user is admin
-  useEffect(() => {
-    const checkIfAdmin = async () => {
-      // In a real implementation, we would check if the user has admin role
-      // For demo purposes, we'll use a user metadata field
-      const { data } = await supabase.auth.getUser();
-      if (data?.user?.user_metadata?.role === 'admin') {
-        setIsAdmin(true);
-      }
-    };
+  const handleMarkComplete = (id: string) => {
+    toast({
+      title: "Requirement updated",
+      description: "Compliance requirement marked as completed",
+    });
+  };
+
+  const handleAnalyzeCompliance = () => {
+    if (!innovationDescription) {
+      toast({
+        title: "Description required",
+        description: "Please provide a description of your innovation",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    checkIfAdmin();
-  }, []);
-  
-  // Load compliance requirements when an application is selected
-  useEffect(() => {
-    const loadRequirements = async () => {
-      if (!selectedApplicationId) return;
+    setIsAnalyzingCompliance(true);
+    
+    // Simulate API call with timeout
+    setTimeout(() => {
+      setIsAnalyzingCompliance(false);
+      toast({
+        title: "Analysis complete",
+        description: "Compliance requirements have been generated",
+      });
       
-      setLoadingRequirements(true);
-      try {
-        const requirements = await fetchSandboxComplianceRequirements(selectedApplicationId);
-        setComplianceRequirements(requirements);
-      } catch (err) {
-        console.error("Error loading compliance requirements:", err);
-      } finally {
-        setLoadingRequirements(false);
-      }
-    };
-    
-    loadRequirements();
-  }, [selectedApplicationId]);
-  
-  const handleApplicationClick = (id: string) => {
-    // Toggle selection
-    if (selectedApplicationId === id) {
-      setSelectedApplicationId(null);
-    } else {
-      setSelectedApplicationId(id);
-    }
+      // Would normally set requirements from API response
+      setActiveTab("documents");
+    }, 2000);
   };
-  
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge className="bg-amber-500">Pending Review</Badge>;
-      case 'active':
-        return <Badge className="bg-green-600">Active Testing</Badge>;
-      case 'completed':
-        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Completed</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive">Rejected</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
-  
-  const filteredApplications = filterApplications(selectedStatus);
-  
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Regulatory Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage your regulatory sandbox applications
-          </p>
-        </div>
-        <Button onClick={() => navigate('/dashboard/regulatory/applications/new')}>
-          <PlusCircle className="mr-2 h-4 w-4" /> New Application
-        </Button>
+      <BreadcrumbNav 
+        currentPage="Regulatory Sandbox" 
+        items={[
+          { label: "Dashboard", href: "/dashboard" },
+        ]}
+      />
+      
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Regulatory Sandbox</h1>
+        <p className="text-muted-foreground">
+          Test your innovations in a controlled regulatory environment
+        </p>
       </div>
       
-      <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="applications">My Applications</TabsTrigger>
-          <TabsTrigger value="requirements">Compliance Requirements</TabsTrigger>
-          <TabsTrigger value="testing">Testing Results</TabsTrigger>
-          {isAdmin && (
-            <TabsTrigger value="admin">Admin Dashboard</TabsTrigger>
-          )}
+          <TabsTrigger value="documents">Compliance Documents</TabsTrigger>
+          <TabsTrigger value="feedback">MoH Guidance</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="applications" className="space-y-4">
-          <div className="flex mb-4 space-x-2">
-            <Button 
-              variant={!selectedStatus ? "default" : "outline"} 
-              size="sm"
-              onClick={() => setSelectedStatus(null)}
-            >
-              All
-            </Button>
-            <Button 
-              variant={selectedStatus === 'pending' ? "default" : "outline"} 
-              size="sm"
-              onClick={() => setSelectedStatus('pending')}
-            >
-              Pending
-            </Button>
-            <Button 
-              variant={selectedStatus === 'active' ? "default" : "outline"} 
-              size="sm"
-              onClick={() => setSelectedStatus('active')}
-            >
-              Active
-            </Button>
-            <Button 
-              variant={selectedStatus === 'completed' ? "default" : "outline"} 
-              size="sm"
-              onClick={() => setSelectedStatus('completed')}
-            >
-              Completed
-            </Button>
+        <TabsContent value="applications">
+          <div className="space-y-4">
+            {mockSandboxApplications.length > 0 ? (
+              <ApplicationList applications={mockSandboxApplications} />
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sandbox Applications</CardTitle>
+                  <CardDescription>
+                    Apply for regulatory testing environments
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="text-center py-10">
+                  <FileCheck className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    You don't have any sandbox applications yet. Start by applying for a regulatory testing environment.
+                  </p>
+                  <Button asChild>
+                    <Link to="/dashboard/regulatory/applications/new">
+                      <Plus className="w-4 h-4 mr-1" />
+                      New Application
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            
+            <div className="mt-6">
+              <h2 className="text-lg font-medium mb-2">Available Frameworks</h2>
+              <RegulatoryFrameworkList
+                frameworks={mockRegulatoryFrameworks}
+                selectedFramework={selectedFramework}
+                onSelectFramework={setSelectedFramework}
+              />
+            </div>
           </div>
-          
-          {loading ? (
-            <div className="flex items-center justify-center p-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : error ? (
-            <Card>
-              <CardContent className="py-8">
-                <div className="flex flex-col items-center text-center">
-                  <AlertTriangle className="h-12 w-12 text-amber-500 mb-4" />
-                  <h3 className="text-lg font-semibold mb-1">Error Loading Applications</h3>
-                  <p className="text-sm text-muted-foreground">{error}</p>
-                  <Button variant="outline" className="mt-4" onClick={() => refreshApplications()}>
-                    Try Again
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : filteredApplications.length === 0 ? (
-            <Card>
-              <CardContent className="py-8">
-                <div className="flex flex-col items-center text-center">
-                  <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-1">No Applications Found</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedStatus 
-                      ? `You don't have any ${selectedStatus} applications` 
-                      : "You haven't submitted any sandbox applications yet"}
-                  </p>
-                  <Button className="mt-4" onClick={() => navigate('/dashboard/regulatory/applications/new')}>
-                    Submit New Application
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {filteredApplications.map(application => (
-                <Card 
-                  key={application.id} 
-                  className={`cursor-pointer hover:shadow-md transition-shadow ${
-                    selectedApplicationId === application.id ? "border-moh-green" : ""
-                  }`}
-                  onClick={() => handleApplicationClick(application.id)}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-lg font-semibold">{application.name}</h3>
-                          {getStatusBadge(application.status)}
-                        </div>
-                        
-                        <p className="text-sm text-muted-foreground mb-2 max-w-2xl">
-                          {application.description.slice(0, 150)}
-                          {application.description.length > 150 ? "..." : ""}
-                        </p>
-                        
-                        <div className="flex space-x-4 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-1" />
-                            Submitted: {new Date(application.submitted_at).toLocaleDateString()}
-                          </div>
-                          
-                          <div className="flex items-center">
-                            <FileText className="h-4 w-4 mr-1" />
-                            Type: {application.innovation_type}
-                          </div>
-                          
-                          {application.progress > 0 && (
-                            <div className="flex items-center">
-                              <CheckCircle className="h-4 w-4 mr-1" />
-                              Progress: {application.progress}%
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/dashboard/regulatory/applications/${application.id}`);
-                        }}>
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
         </TabsContent>
         
-        <TabsContent value="requirements">
-          {selectedApplicationId ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">
-                  Compliance Requirements
-                </h2>
-                <Button variant="outline" onClick={() => setSelectedApplicationId(null)}>
-                  Back to Applications
-                </Button>
-              </div>
-              
-              {loadingRequirements ? (
-                <div className="flex items-center justify-center p-8">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                </div>
-              ) : (
-                <SandboxComplianceList 
-                  requirements={complianceRequirements}
-                  onRequirementsChange={() => {
-                    // Refresh requirements
-                    fetchSandboxComplianceRequirements(selectedApplicationId)
-                      .then(setComplianceRequirements);
-                    
-                    // Also refresh applications to update progress
-                    refreshApplications();
-                  }}
+        <TabsContent value="documents">
+          <div className="space-y-4">
+            <AIComplianceAnalyzer
+              innovationDescription={innovationDescription}
+              innovationType={innovationType}
+              isAnalyzingCompliance={isAnalyzingCompliance}
+              onDescriptionChange={setInnovationDescription}
+              onTypeChange={setInnovationType}
+              onAnalyzeClick={handleAnalyzeCompliance}
+            />
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Compliance Requirements</CardTitle>
+                <CardDescription>
+                  Documents and assessments required for your innovation
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ComplianceRequirementList
+                  requirements={mockComplianceRequirements}
+                  onMarkComplete={handleMarkComplete}
                 />
-              )}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="py-8">
-                <div className="flex flex-col items-center text-center">
-                  <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-1">No Application Selected</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Select an application to view its compliance requirements
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="mt-4" 
-                    onClick={() => setActiveTab('applications')}
-                  >
-                    View Applications
+                
+                <div className="mt-6 pt-4 border-t flex justify-between items-center">
+                  <div className="text-sm text-muted-foreground">
+                    <HelpCircle className="inline h-4 w-4 mr-1" />
+                    Need help with compliance? Contact our regulatory experts
+                  </div>
+                  <Button asChild>
+                    <Link to="/dashboard/regulatory/documents/upload">
+                      <Upload className="w-4 h-4 mr-1" />
+                      Upload Documents
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          )}
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Document Library</CardTitle>
+                <CardDescription>
+                  Your uploaded compliance documents
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">
+                    You haven't uploaded any documents yet
+                  </p>
+                  <Button className="mt-4" asChild>
+                    <Link to="/dashboard/regulatory/documents/upload">
+                      <Upload className="w-4 h-4 mr-1" />
+                      Upload Documents
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
         
-        <TabsContent value="testing">
+        <TabsContent value="feedback">
           <Card>
             <CardHeader>
-              <CardTitle>Testing Dashboard</CardTitle>
-              <CardDescription>Manage and submit test results for your sandbox applications</CardDescription>
+              <CardTitle>Ministry Guidance</CardTitle>
+              <CardDescription>
+                Feedback and guidance from regulatory experts
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center justify-center p-8 text-center">
-                <CheckCircle className="h-16 w-16 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Testing Module Coming Soon</h3>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  This feature is currently under development and will be available in the next release.
-                </p>
+              <Alert className="mb-6">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Important Notice</AlertTitle>
+                <AlertDescription>
+                  To expedite your testing approval, please ensure you've completed the data privacy impact assessment.
+                </AlertDescription>
+              </Alert>
+              
+              <div className="space-y-6">
+                <div className="border rounded-md p-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="bg-moh-green/10 p-2 rounded-full">
+                      <CheckCircle className="h-4 w-4 text-moh-green" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Patient Safety Requirements</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Updated guidance on patient safety requirements for medical software
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button variant="outline" size="sm">
+                      <Download className="h-3 w-3 mr-1" />
+                      Download Guidance
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="border rounded-md p-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="bg-moh-green/10 p-2 rounded-full">
+                      <Clock className="h-4 w-4 text-moh-green" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Testing Timeline Expectations</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Updated information about sandbox testing periods and milestone requirements
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button variant="outline" size="sm">
+                      <Download className="h-3 w-3 mr-1" />
+                      Download Guidance
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-4 border-t">
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/dashboard/regulatory/guidance/schedule">
+                    Schedule Consultation with Regulatory Expert
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
-        
-        {isAdmin && (
-          <TabsContent value="admin">
-            <Card>
-              <CardHeader>
-                <CardTitle>Admin Dashboard</CardTitle>
-                <CardDescription>Manage sandbox applications and regulatory frameworks</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  <Button onClick={() => navigate('/admin/sandbox')}>
-                    Go to Admin Sandbox Dashboard
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        )}
       </Tabs>
     </div>
   );
