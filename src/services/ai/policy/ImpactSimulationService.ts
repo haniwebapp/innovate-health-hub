@@ -1,0 +1,95 @@
+
+import { supabase } from "@/integrations/supabase/client";
+import { AIService } from "../AIService";
+import { PolicyData, PolicyImpactResult, PolicyImpactSimulation } from "./types";
+import { CallTrace } from "@/types/ai";
+
+/**
+ * Service for simulating policy impacts
+ */
+export class ImpactSimulationService {
+  /**
+   * Simulates the potential impact of a policy or healthcare innovation
+   */
+  static async simulatePolicyImpact(
+    policyDescription: string,
+    targetSectors: string[],
+    timeframe: "short" | "medium" | "long",
+    context?: string
+  ): Promise<PolicyImpactSimulation> {
+    try {
+      const trace = AIService.createTrace("policy-impact-simulation", context || "impact-analysis");
+      
+      const { data, error } = await supabase.functions.invoke("policy-impact-simulation", {
+        body: { 
+          policyDescription, 
+          targetSectors, 
+          timeframe,
+          trace 
+        }
+      });
+
+      if (error) throw error;
+      
+      // Log the AI operation for analytics and improvement
+      await AIService.logAIOperation(
+        "policy-impact-simulation",
+        context || "impact-analysis",
+        { policyDescription, targetSectors, timeframe },
+        data,
+        undefined
+      );
+      
+      return data as PolicyImpactSimulation;
+    } catch (error: any) {
+      console.error("Error in policy impact simulation:", error);
+      return {
+        sectors: [],
+        timelineImpact: {
+          shortTerm: "Unable to analyze due to error.",
+          mediumTerm: "Unable to analyze due to error.",
+          longTerm: "Unable to analyze due to error."
+        },
+        stakeholders: [],
+        risks: ["Analysis failed due to technical error."],
+        opportunities: [],
+        overallAssessment: "Error performing policy impact analysis.",
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Simulates the potential impact of a policy using the policy data object
+   * This version is used in the PolicyImpactSimulator component
+   */
+  static async simulateImpact(
+    policy: PolicyData,
+    params: { timeframe: string; region: string }
+  ): Promise<PolicyImpactResult> {
+    try {
+      // Call the policy-impact-simulation edge function
+      const { data, error } = await supabase.functions.invoke("policy-impact-simulation", {
+        body: { 
+          policyData: policy,
+          simulationParams: params
+        }
+      });
+
+      if (error) throw error;
+      
+      return data as PolicyImpactResult;
+    } catch (error: any) {
+      console.error("Error in policy impact simulation:", error);
+      return {
+        impactScore: 0,
+        stakeholderImpact: {},
+        economicImpact: "Unable to analyze due to an error.",
+        healthcareOutcomeImpact: "Unable to analyze due to an error.",
+        implementationComplexity: "Unable to analyze due to an error.",
+        recommendations: ["Analysis failed due to technical error."],
+        error: error.message
+      };
+    }
+  }
+}
