@@ -1,3 +1,4 @@
+
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
@@ -35,6 +36,10 @@ import RegulatoryPage from '@/pages/innovations/submit/regulatory';
 import ContactInformationPage from '@/pages/innovations/submit/contact';
 import ReviewPage from '@/pages/innovations/submit/review';
 
+// Phase pages - NEW
+import PlatformPhasesPage from '@/pages/platform/PlatformPhasesPage';
+import AICapabilitiesPage from '@/pages/ai/AICapabilitiesPage';
+
 import InvestmentPage from '@/pages/investment';
 import PortfolioPage from '@/pages/investment/portfolio';
 import MarketAnalysisPage from '@/pages/investment/market-analysis';
@@ -52,6 +57,12 @@ import DashboardKnowledgePage from '@/pages/dashboard/knowledge/index';
 import DashboardInvestmentPage from '@/pages/dashboard/investment/index';
 import DashboardRegulatoryPage from '@/pages/dashboard/regulatory/index';
 import DashboardCollaborationPage from '@/pages/dashboard/collaboration/index';
+
+// AI pages - NEW
+import AIOverviewPage from '@/pages/dashboard/ai/overview';
+import AIRecommendationsPage from '@/pages/dashboard/ai/recommendations';
+import AIAnalyticsPage from '@/pages/dashboard/ai/analytics';
+import AIInsightsPage from '@/pages/dashboard/ai/insights';
 
 // Regulatory Applications
 import NewRegulatoryApplicationPage from '@/pages/dashboard/regulatory/applications/new';
@@ -72,6 +83,8 @@ import AdminKnowledgePage from '@/pages/admin/knowledge/index';
 import AdminNotificationsPage from '@/pages/admin/notifications/index';
 import AdminIntegrationsPage2 from '@/pages/admin/integrations/index';
 import AdminSettingsPage2 from '@/pages/admin/SettingsPage';
+import AdminPhasesPage from '@/pages/admin/phases/AdminPhasesPage';
+import AdminAIPage from '@/pages/admin/ai/index';
 
 import PolicyPage from '@/pages/policy/index';
 
@@ -85,6 +98,10 @@ export function AppRoutes() {
       <Route path="/challenges/:id" element={<ChallengeDetails />} />
       <Route path="/innovations" element={<InnovationsPage />} />
       <Route path="/innovations/:id" element={<InnovationDetails />} />
+      
+      {/* New Public Phase Pages */}
+      <Route path="/platform/phases" element={<PlatformPhasesPage />} />
+      <Route path="/ai/capabilities" element={<AICapabilitiesPage />} />
       
       {/* Innovation Submission Flow - Now Protected */}
       <Route path="/innovations/submit" element={
@@ -145,6 +162,12 @@ export function AppRoutes() {
         <Route path="knowledge" element={<DashboardKnowledgePage />} />
         <Route path="collaboration" element={<DashboardCollaborationPage />} />
         
+        {/* AI Routes - NEW */}
+        <Route path="ai/overview" element={<AIOverviewPage />} />
+        <Route path="ai/recommendations" element={<AIRecommendationsPage />} />
+        <Route path="ai/analytics" element={<AIAnalyticsPage />} />
+        <Route path="ai/insights" element={<AIInsightsPage />} />
+        
         <Route path="submit/:challengeId" element={<SubmitChallengePage />} />
         <Route path="create-challenge" element={<CreateChallengePage />} />
         
@@ -185,6 +208,16 @@ export function AppRoutes() {
         <Route path="admin/reports" element={
           <ProtectedRoute adminOnly={true}>
             <AdminReportsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/phases" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminPhasesPage />
+          </ProtectedRoute>
+        } />
+        <Route path="admin/ai" element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminAIPage />
           </ProtectedRoute>
         } />
         <Route path="admin/challenges" element={

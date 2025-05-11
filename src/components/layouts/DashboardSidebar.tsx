@@ -7,6 +7,7 @@ import { SidebarHeader } from "@/components/sidebar/SidebarHeader";
 import { SidebarMainNav } from "@/components/sidebar/SidebarMainNav";
 import { SidebarInnovationNav } from "@/components/sidebar/SidebarInnovationNav";
 import { SidebarPlatformNav } from "@/components/sidebar/SidebarPlatformNav";
+import { SidebarAINav } from "@/components/sidebar/SidebarAINav";
 import { SidebarAdminNav } from "@/components/sidebar/SidebarAdminNav";
 import { SidebarFooter } from "@/components/sidebar/SidebarFooter";
 
@@ -47,6 +48,9 @@ export default function DashboardSidebar({
           
           {/* Platform Navigation */}
           <SidebarPlatformNav isCollapsed={isCollapsed} />
+
+          {/* AI Navigation - NEW */}
+          <SidebarAINav isCollapsed={isCollapsed} />
           
           {/* Admin Navigation */}
           {isAdmin && <SidebarAdminNav isCollapsed={isCollapsed} />}
