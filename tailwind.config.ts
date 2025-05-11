@@ -67,7 +67,7 @@ export default {
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#E8F5F0', // Lighter green for backgrounds
+					lightGreen: '#E8F5F0', // Updated to a proper light green for backgrounds
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',

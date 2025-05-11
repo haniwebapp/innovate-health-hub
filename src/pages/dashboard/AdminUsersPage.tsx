@@ -115,6 +115,7 @@ export default function AdminUsersPage() {
         </div>
       }
     >
+      {/* AI Assistant Section */}
       {showAIAssistant && (
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -127,6 +128,7 @@ export default function AdminUsersPage() {
         </motion.div>
       )}
 
+      {/* Search Bar */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -142,6 +144,7 @@ export default function AdminUsersPage() {
         />
       </motion.div>
 
+      {/* User Tabs */}
       <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-4 bg-moh-lightGreen/50 border-moh-green/10 p-1">
           <TabsTrigger 
@@ -177,6 +180,7 @@ export default function AdminUsersPage() {
         </motion.div>
       </Tabs>
       
+      {/* User Stats */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -186,6 +190,7 @@ export default function AdminUsersPage() {
         <AdminUserStats users={users} />
       </motion.div>
 
+      {/* User Insights */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
