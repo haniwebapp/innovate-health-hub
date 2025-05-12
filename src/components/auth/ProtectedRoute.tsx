@@ -6,10 +6,9 @@ import { Loader2 } from "lucide-react";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   adminOnly?: boolean;
-  allowedRoles?: string[];
 }
 
-export default function ProtectedRoute({ children, adminOnly = false, allowedRoles }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, adminOnly = false }: ProtectedRouteProps) {
   const { user, isLoading, isAdmin, isAuthenticated } = useAuth();
   const location = useLocation();
   
@@ -30,15 +29,6 @@ export default function ProtectedRoute({ children, adminOnly = false, allowedRol
   // If this is an admin-only route and the user is not an admin
   if (adminOnly && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
-  }
-  
-  // Check for role-based access if allowedRoles is provided
-  if (allowedRoles && allowedRoles.length > 0) {
-    // Assume user.role exists or implement your own role checking logic
-    const userRole = user?.role || '';
-    if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/dashboard" replace />;
-    }
   }
 
   return <>{children}</>;

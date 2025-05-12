@@ -53,9 +53,9 @@ export default function LoginForm() {
     } catch (error: any) {
       console.error("Login error:", error);
       if (error.message === "Invalid login credentials") {
-        setErrorMessage(t('login.invalidCredentials') || "Invalid email or password");
+        setErrorMessage(t('login.invalidCredentials') || "Invalid credentials");
       } else {
-        setErrorMessage(error.message || t('login.genericError') || "An error occurred during login");
+        setErrorMessage(error.message || t('login.genericError') || "An error occurred");
       }
     } finally {
       setIsLoading(false);

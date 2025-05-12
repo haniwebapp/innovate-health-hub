@@ -18,7 +18,7 @@ export default function AdminSandboxDetailPage() {
       <div className="mb-6">
         <Button
           variant="outline"
-          onClick={() => navigate('/dashboard/admin/sandbox')}
+          onClick={() => navigate('/admin/sandbox')}
           className="flex items-center gap-1"
         >
           <ArrowLeft className="h-4 w-4" />

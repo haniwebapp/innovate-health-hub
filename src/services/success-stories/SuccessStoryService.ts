@@ -142,8 +142,7 @@ export class SuccessStoryService {
       if (storyData.organization) dbStory.organization = storyData.organization;
       if (storyData.coverImageUrl) dbStory.cover_image_url = storyData.coverImageUrl;
       
-      // Using toISOString() to convert Date to string
-      dbStory.updated_at = new Date().toISOString();
+      dbStory.updated_at = new Date();
       
       const { data, error } = await supabase
         .from('success_stories')
@@ -170,8 +169,8 @@ export class SuccessStoryService {
         .from('success_stories')
         .update({
           status: 'published',
-          publication_date: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          publication_date: new Date(),
+          updated_at: new Date()
         })
         .eq('id', id)
         .select()
@@ -195,7 +194,7 @@ export class SuccessStoryService {
         .from('success_stories')
         .update({
           status: 'archived',
-          updated_at: new Date().toISOString()
+          updated_at: new Date()
         })
         .eq('id', id)
         .select()
@@ -219,7 +218,7 @@ export class SuccessStoryService {
         .from('success_stories')
         .update({
           featured,
-          updated_at: new Date().toISOString()
+          updated_at: new Date()
         })
         .eq('id', id)
         .select()

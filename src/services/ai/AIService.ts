@@ -1,7 +1,8 @@
 
-import { checkAIServices } from "./utils/AIServiceHealth";
-import { createTrace } from "./utils/AIServiceTracing";
+import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
+import { createTrace, logAIOperation, recordFeedback } from "./utils/AIServiceTracing";
 import { handleError } from "./utils/AIServiceErrors";
+import { checkAIServices } from "./utils/AIServiceHealth";
 
 export enum AIServiceType {
   INVESTMENT = "investment",
@@ -16,21 +17,6 @@ export enum AIServiceType {
   ADMIN = "admin",
   COMPLIANCE = "compliance",
   COMMUNITY = "community"
-}
-
-export interface AIServiceStaticReferences {
-  investment: any;
-  regulatory: any;
-  innovation: any;
-  knowledge: any;
-  policy: any;
-  challenge: any;
-  support: any;
-  clinical: any;
-  events: any;
-  admin: any;
-  compliance: any;
-  community: any;
 }
 
 export class AIService {
@@ -77,49 +63,11 @@ export class AIService {
   static set admin(service: any) { this.services.admin = service; }
   static set compliance(service: any) { this.services.compliance = service; }
   static set community(service: any) { this.services.community = service; }
-  
-  /**
-   * Check the health of all AI services
-   * @returns Promise that resolves when all health checks are complete
-   */
-  static async checkAIServices(): Promise<void> {
-    return checkAIServices();
-  }
 
-  /**
-   * Handle errors from AI service operations in a standardized way
-   * @param error Original error
-   * @param operation Operation being performed
-   * @param context Context in which the error occurred
-   * @returns Error with standardized properties
-   */
-  static handleError = handleError;
-
-  /**
-   * Create a trace for AI operations
-   */
+  // Re-export utility methods
   static createTrace = createTrace;
-
-  /**
-   * Log AI operations for monitoring
-   */
-  static logAIOperation = async (
-    operation: string,
-    context: string,
-    input: any,
-    output: any,
-    userId?: string
-  ): Promise<void> => {
-    try {
-      console.log(`AI Operation: ${operation}`, {
-        context,
-        input: JSON.stringify(input),
-        output: JSON.stringify(output),
-        userId,
-        timestamp: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error logging AI operation:", error);
-    }
-  }
+  static logAIOperation = logAIOperation;
+  static recordFeedback = recordFeedback;
+  static handleError = handleError;
+  static checkAIServices = checkAIServices;
 }

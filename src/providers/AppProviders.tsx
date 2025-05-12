@@ -1,28 +1,30 @@
 
-import React from 'react';
+import { ReactNode } from 'react';
+import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { UIProvider } from './UIProvider';
-
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 interface AppProvidersProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  queryClient: QueryClient;
 }
 
-export default function AppProviders({ children }: AppProvidersProps) {
+export function AppProviders({ children, queryClient }: AppProvidersProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <UIProvider>
-        {children}
-      </UIProvider>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="light" storageKey="moh-theme-preference">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <LanguageProvider>
+            <TooltipProvider>
+              {children}
+              <Toaster />
+            </TooltipProvider>
+          </LanguageProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

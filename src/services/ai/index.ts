@@ -1,6 +1,6 @@
 
 // Main service
-export { AIService, AIServiceType } from './AIService';
+export * from './AIService';
 
 // Types
 export * from './types/AIServiceTypes';

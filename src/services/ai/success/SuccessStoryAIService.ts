@@ -3,47 +3,36 @@ import { supabase } from "@/integrations/supabase/client";
 import { AIService } from "../AIService";
 
 export interface StoryGenerationPrompt {
-  title: string;
-  innovationType: string;
+  innovation: string;
+  impact: string;
   organization: string;
-  challenge: string;
-  solution: string;
-  outcome: string;
-  quotes?: string[];
-  keywords?: string[];
+  keyOutcomes: string[];
 }
 
 export interface StoryGenerationResult {
   title: string;
-  content: string;
   summary: string;
-  highlights: string[];
-  suggestedImages: string[];
-  socialMediaSnippets: {
-    twitter: string;
-    linkedin: string;
-    facebook: string;
-  };
+  content: string;
+  impactMetrics: Record<string, any>;
+  suggestedTags: string[];
 }
 
 export interface StoryAnalysisResult {
   readabilityScore: number;
   sentimentScore: number;
-  tone: "professional" | "casual" | "inspirational" | "technical";
-  targetAudience: string[];
-  keyMessages: string[];
+  engagementPotential: number;
   improvementSuggestions: string[];
-  strengths: string[];
+  keyHighlights: string[];
 }
 
 /**
- * Service for AI-powered success story generation and analysis
+ * Service for handling success story-related AI operations
  */
 export class SuccessStoryAIService {
   /**
-   * Generate a success story based on provided details
+   * Generate a draft success story based on provided information
    */
-  static async generateSuccessStory(
+  static async generateStory(
     prompt: StoryGenerationPrompt
   ): Promise<StoryGenerationResult> {
     try {
@@ -55,12 +44,12 @@ export class SuccessStoryAIService {
       return data as StoryGenerationResult;
     } catch (error: any) {
       console.error("Error generating success story:", error);
-      throw AIService.handleError(error, "generateSuccessStory", "success");
+      throw AIService.handleError(error, "generateStory", "success");
     }
   }
 
   /**
-   * Analyze a success story for quality and improvement suggestions
+   * Analyze an existing story for quality and improvement suggestions
    */
   static async analyzeStory(
     title: string,
@@ -77,58 +66,37 @@ export class SuccessStoryAIService {
       if (error) throw error;
       return data as StoryAnalysisResult;
     } catch (error: any) {
-      console.error("Error analyzing story:", error);
+      console.error("Error analyzing success story:", error);
       throw AIService.handleError(error, "analyzeStory", "success");
     }
   }
 
   /**
-   * Generate social media content from a success story
+   * Suggest relevant success stories based on user interests
    */
-  static async generateSocialContent(
-    storyTitle: string,
-    storyContent: string,
-    platforms: string[] = ["twitter", "linkedin", "facebook"]
-  ): Promise<Record<string, string[]>> {
+  static async suggestRelatedStories(
+    currentStoryId: string,
+    limit: number = 3
+  ): Promise<{
+    id: string;
+    title: string;
+    summary: string;
+    relevanceScore: number;
+    category: string;
+  }[]> {
     try {
-      const { data, error } = await supabase.functions.invoke("social-content-generator", {
+      const { data, error } = await supabase.functions.invoke("story-recommender", {
         body: { 
-          storyTitle,
-          storyContent,
-          platforms
+          currentStoryId,
+          limit
         }
       });
 
       if (error) throw error;
       return data;
     } catch (error: any) {
-      console.error("Error generating social content:", error);
-      throw AIService.handleError(error, "generateSocialContent", "success");
-    }
-  }
-
-  /**
-   * Generate image prompts for success story illustrations
-   */
-  static async generateImagePrompts(
-    storyTitle: string,
-    storyContent: string,
-    count: number = 3
-  ): Promise<string[]> {
-    try {
-      const { data, error } = await supabase.functions.invoke("image-prompt-generator", {
-        body: { 
-          storyTitle,
-          storyContent,
-          count
-        }
-      });
-
-      if (error) throw error;
-      return data;
-    } catch (error: any) {
-      console.error("Error generating image prompts:", error);
-      throw AIService.handleError(error, "generateImagePrompts", "success");
+      console.error("Error suggesting related stories:", error);
+      throw AIService.handleError(error, "suggestRelatedStories", "success");
     }
   }
 }

@@ -1,161 +1,103 @@
 
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { SidebarNavSection } from "./SidebarNavSection";
 import { 
-  LayoutDashboard, 
+  BarChart3,
   Users, 
   Settings, 
-  BarChart2, 
   Plug, 
-  FileText,
-  BrainCircuit,
-  Activity,
-  Stethoscope,
-  BoxSelect,
-  FolderKanban,
-  CalendarDays,
-  ImageIcon
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+  FileText, 
+  Lightbulb, 
+  DollarSign, 
+  Shield, 
+  BookOpen, 
+  Bell, 
+  Award 
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLocation } from "react-router-dom";
 
 interface SidebarAdminNavProps {
-  className?: string;
-  isCollapsed?: boolean;
+  isCollapsed: boolean;
 }
 
-export function SidebarAdminNav({ className, isCollapsed = false }: SidebarAdminNavProps) {
+export function SidebarAdminNav({ isCollapsed }: SidebarAdminNavProps) {
+  const { isAdmin } = useAuth();
+  const location = useLocation();
+  
+  // Don't show admin nav if user is not admin
+  if (!isAdmin) {
+    return null;
+  }
+  
+  const adminItems = [
+    { 
+      to: "/dashboard/admin", 
+      icon: <BarChart3 size={18} className="text-moh-gold" />, 
+      text: "Admin Dashboard",
+      exact: true
+    },
+    { 
+      to: "/dashboard/admin/cms", 
+      icon: <FileText size={18} className="text-moh-gold" />, 
+      text: "CMS"
+    },
+    { 
+      to: "/dashboard/admin/users", 
+      icon: <Users size={18} className="text-moh-gold" />, 
+      text: "Users"
+    },
+    { 
+      to: "/dashboard/admin/challenges", 
+      icon: <Award size={18} className="text-moh-gold" />, 
+      text: "Challenges"
+    },
+    { 
+      to: "/dashboard/admin/innovations", 
+      icon: <Lightbulb size={18} className="text-moh-gold" />, 
+      text: "Innovations"
+    },
+    { 
+      to: "/dashboard/admin/investment", 
+      icon: <DollarSign size={18} className="text-moh-gold" />, 
+      text: "Investment"
+    },
+    { 
+      to: "/dashboard/admin/sandbox", 
+      icon: <Shield size={18} className="text-moh-gold" />, 
+      text: "Regulatory"
+    },
+    { 
+      to: "/dashboard/admin/knowledge", 
+      icon: <BookOpen size={18} className="text-moh-gold" />, 
+      text: "Knowledge"
+    },
+    { 
+      to: "/dashboard/admin/notifications", 
+      icon: <Bell size={18} className="text-moh-gold" />, 
+      text: "Notifications"
+    },
+    { 
+      to: "/dashboard/admin/reports", 
+      icon: <BarChart3 size={18} className="text-moh-gold" />, 
+      text: "Reports"
+    },
+    { 
+      to: "/dashboard/admin/integrations", 
+      icon: <Plug size={18} className="text-moh-gold" />, 
+      text: "Integrations"
+    },
+    { 
+      to: "/dashboard/admin/settings", 
+      icon: <Settings size={18} className="text-moh-gold" />, 
+      text: "Settings"
+    }
+  ];
+  
   return (
-    <nav className={cn("flex flex-col space-y-1", className)}>
-      <NavLink
-        to="/dashboard/admin"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-        end
-      >
-        <LayoutDashboard className="h-4 w-4" />
-        {!isCollapsed && <span>Dashboard</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/analytics"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <BarChart2 className="h-4 w-4" />
-        {!isCollapsed && <span>Analytics</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/users"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <Users className="h-4 w-4" />
-        {!isCollapsed && <span>Users</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/cms"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <FolderKanban className="h-4 w-4" />
-        {!isCollapsed && <span>Content</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/settings"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <Settings className="h-4 w-4" />
-        {!isCollapsed && <span>Settings</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/integrations"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <Plug className="h-4 w-4" />
-        {!isCollapsed && <span>Integrations</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/logs"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <FileText className="h-4 w-4" />
-        {!isCollapsed && <span>Logs</span>}
-      </NavLink>
-      
-      <NavLink
-        to="/dashboard/admin/ai-governance"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <BrainCircuit className="h-4 w-4" />
-        {!isCollapsed && <span>AI Governance</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/clinical"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <Stethoscope className="h-4 w-4" />
-        {!isCollapsed && <span>Clinical</span>}
-      </NavLink>
-
-      <NavLink
-        to="/dashboard/admin/sandbox"
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-          )
-        }
-      >
-        <BoxSelect className="h-4 w-4" />
-        {!isCollapsed && <span>Regulatory Sandbox</span>}
-      </NavLink>
-    </nav>
+    <SidebarNavSection 
+      title="Administration" 
+      isCollapsed={isCollapsed} 
+      items={adminItems}
+    />
   );
 }

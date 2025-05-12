@@ -135,9 +135,9 @@ export default function RegisterForm() {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-moh-darkGreen/50 mb-2">
-            <span>{t('register.personalInfo') || "Personal Info"}</span>
-            <span>{t('register.security') || "Security"}</span>
-            <span>{t('register.profile') || "Profile"}</span>
+            <span>{t('register.personalInfo')}</span>
+            <span>{t('register.security')}</span>
+            <span>{t('register.profile')}</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full">
             <div 
@@ -162,12 +162,12 @@ export default function RegisterForm() {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-moh-darkGreen">{t('register.firstName') || "First Name"}</FormLabel>
+                    <FormLabel className="text-moh-darkGreen">{t('register.firstName')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input 
-                          placeholder={t('register.firstName') || "First Name"} 
+                          placeholder={t('register.firstName')} 
                           {...field} 
                           className="pl-10 border-moh-green/20 focus-visible:ring-moh-green/30" 
                           disabled={isLoading} 
@@ -184,12 +184,12 @@ export default function RegisterForm() {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-moh-darkGreen">{t('register.lastName') || "Last Name"}</FormLabel>
+                    <FormLabel className="text-moh-darkGreen">{t('register.lastName')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input 
-                          placeholder={t('register.lastName') || "Last Name"} 
+                          placeholder={t('register.lastName')} 
                           {...field} 
                           className="pl-10 border-moh-green/20 focus-visible:ring-moh-green/30" 
                           disabled={isLoading} 
@@ -207,12 +207,12 @@ export default function RegisterForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-moh-darkGreen">{t('register.email') || "Email Address"}</FormLabel>
+                  <FormLabel className="text-moh-darkGreen">{t('register.email')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
-                        placeholder={t('footer.emailPlaceholder') || "your@email.com"} 
+                        placeholder={t('footer.emailPlaceholder')} 
                         {...field} 
                         className="pl-10 border-moh-green/20 focus-visible:ring-moh-green/30" 
                         disabled={isLoading} 
@@ -232,7 +232,7 @@ export default function RegisterForm() {
                 className="bg-moh-green hover:bg-moh-darkGreen"
                 disabled={isLoading}
               >
-                {t('register.next') || "Next"}
+                {t('register.next')}
               </Button>
             </div>
           </motion.div>
@@ -252,7 +252,7 @@ export default function RegisterForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-moh-darkGreen">{t('register.password') || "Password"}</FormLabel>
+                  <FormLabel className="text-moh-darkGreen">{t('register.password')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <KeyIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -272,7 +272,7 @@ export default function RegisterForm() {
                     <div className="mt-2">
                       <div className="flex justify-between items-center mb-1">
                         <span className="text-xs text-muted-foreground">
-                          {t('register.passwordStrength') || "Password Strength"}
+                          {t('register.passwordStrength')}
                         </span>
                         <span className={`text-xs font-medium
                           ${passwordStrength < 25 ? 'text-red-500' : 
@@ -296,7 +296,7 @@ export default function RegisterForm() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-moh-darkGreen">{t('register.confirmPassword') || "Confirm Password"}</FormLabel>
+                  <FormLabel className="text-moh-darkGreen">{t('register.confirmPassword')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -323,7 +323,7 @@ export default function RegisterForm() {
                 className="border-moh-green text-moh-green hover:bg-moh-lightGreen hover:text-moh-darkGreen"
                 disabled={isLoading}
               >
-                {t('register.back') || "Back"}
+                {t('register.back')}
               </Button>
               
               <Button 
@@ -332,7 +332,7 @@ export default function RegisterForm() {
                 className="bg-moh-green hover:bg-moh-darkGreen"
                 disabled={isLoading}
               >
-                {t('register.next') || "Next"}
+                {t('register.next')}
               </Button>
             </div>
           </motion.div>
@@ -352,7 +352,7 @@ export default function RegisterForm() {
               name="userType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-moh-darkGreen">{t('register.userType') || "User Type"}</FormLabel>
+                  <FormLabel className="text-moh-darkGreen">{t('register.userType')}</FormLabel>
                   <Select 
                     onValueChange={field.onChange} 
                     defaultValue={field.value} 
@@ -360,15 +360,15 @@ export default function RegisterForm() {
                   >
                     <FormControl>
                       <SelectTrigger className="border-moh-green/20 focus:ring-moh-green/30">
-                        <SelectValue placeholder={t('register.selectUserType') || "Select user type"} />
+                        <SelectValue placeholder={t('register.selectUserType')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="individual">{t('register.individual') || "Individual"}</SelectItem>
-                      <SelectItem value="healthcare_professional">{t('register.healthcareProfessional') || "Healthcare Professional"}</SelectItem>
-                      <SelectItem value="innovator">{t('register.innovator') || "Innovator"}</SelectItem>
-                      <SelectItem value="investor">{t('register.investor') || "Investor"}</SelectItem>
-                      <SelectItem value="organization">{t('register.organization') || "Organization"}</SelectItem>
+                      <SelectItem value="individual">{t('register.individual')}</SelectItem>
+                      <SelectItem value="healthcare_professional">{t('register.healthcareProfessional')}</SelectItem>
+                      <SelectItem value="innovator">{t('register.innovator')}</SelectItem>
+                      <SelectItem value="investor">{t('register.investor')}</SelectItem>
+                      <SelectItem value="organization">{t('register.organization')}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -382,12 +382,12 @@ export default function RegisterForm() {
                 name="organization"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-moh-darkGreen">{t('register.organizationName') || "Organization Name"}</FormLabel>
+                    <FormLabel className="text-moh-darkGreen">{t('register.organizationName')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input 
-                          placeholder={t('register.organizationName') || "Organization Name"} 
+                          placeholder={t('register.organizationName')} 
                           {...field} 
                           className="pl-10 border-moh-green/20 focus-visible:ring-moh-green/30" 
                           disabled={isLoading} 
@@ -409,7 +409,7 @@ export default function RegisterForm() {
                   required
                 />
                 <label htmlFor="terms" className="text-sm text-muted-foreground">
-                  {t('register.agreeTerms') || "I agree to the Terms of Service and Privacy Policy"}
+                  {t('register.agreeTerms')}
                 </label>
               </div>
               
@@ -421,7 +421,7 @@ export default function RegisterForm() {
                   className="border-moh-green text-moh-green hover:bg-moh-lightGreen hover:text-moh-darkGreen"
                   disabled={isLoading}
                 >
-                  {t('register.back') || "Back"}
+                  {t('register.back')}
                 </Button>
                 
                 <Button 
@@ -432,10 +432,10 @@ export default function RegisterForm() {
                   {isLoading ? (
                     <>
                       <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-                      {t('register.creatingAccount') || "Creating Account..."}
+                      {t('register.creatingAccount')}
                     </>
                   ) : (
-                    t('register.createAccount') || "Create Account"
+                    t('register.createAccount')
                   )}
                 </Button>
               </div>
@@ -445,9 +445,9 @@ export default function RegisterForm() {
         
         {currentStep === 1 && (
           <div className="text-center text-sm pt-4">
-            {t('register.alreadyHaveAccount') || "Already have an account?"}{" "}
+            {t('register.alreadyHaveAccount')}{" "}
             <Link to="/auth/login" className="text-moh-green hover:underline font-medium">
-              {t('login.signIn') || "Sign In"}
+              {t('login.signIn')}
             </Link>
           </div>
         )}

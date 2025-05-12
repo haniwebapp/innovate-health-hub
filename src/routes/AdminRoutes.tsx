@@ -1,24 +1,31 @@
 
-import { lazy } from "react";
-import { Route } from "react-router-dom";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { Route } from 'react-router-dom';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import AdminDashboardPage from '@/pages/dashboard/AdminDashboardPage';
+import AdminCmsPage from '@/pages/admin/cms/index';
+import AdminReportsPage from '@/pages/admin/reports/index';
+import AdminUserManagementPage from '@/pages/admin/users/index';
+import AdminChallengeManagementPage from '@/pages/admin/challenges/index';
+import AdminInnovationRegistryPage from '@/pages/admin/innovations/index';
+import AdminInvestmentToolsPage from '@/pages/admin/investment/index';
+import AdminSandboxPage from '@/pages/admin/sandbox/index';
+import AdminKnowledgePage from '@/pages/admin/knowledge/index';
+import AdminNotificationsPage from '@/pages/admin/notifications/index';
+import AdminIntegrationsPage2 from '@/pages/admin/integrations/index';
+import AdminSettingsPage2 from '@/pages/admin/SettingsPage';
+import AdminAnalyticsPage from '@/pages/dashboard/AdminAnalyticsPage';
 
-// Lazy loaded pages
-const AdminDashboardPage = lazy(() => import("@/pages/dashboard/AdminDashboardPage"));
-const AdminAnalyticsPage = lazy(() => import("@/pages/dashboard/AdminAnalyticsPage"));
-const AdminIntegrationsPage = lazy(() => import("@/pages/dashboard/AdminIntegrationsPage"));
-const AdminSettingsPage = lazy(() => import("@/pages/dashboard/AdminSettingsPage"));
-const AdminUsersPage = lazy(() => import("@/pages/dashboard/AdminUsersPage"));
-const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
-const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
-const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
-
-// Export as JSX fragment, not as a component
-const AdminRoutes = (
+export const AdminRoutes = (
   <>
+    {/* Admin Routes within Dashboard */}
     <Route path="admin" element={
       <ProtectedRoute adminOnly={true}>
         <AdminDashboardPage />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/users" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminUserManagementPage />
       </ProtectedRoute>
     } />
     <Route path="admin/analytics" element={
@@ -26,19 +33,39 @@ const AdminRoutes = (
         <AdminAnalyticsPage />
       </ProtectedRoute>
     } />
-    <Route path="admin/integrations" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminIntegrationsPage />
-      </ProtectedRoute>
-    } />
     <Route path="admin/settings" element={
       <ProtectedRoute adminOnly={true}>
-        <AdminSettingsPage />
+        <AdminSettingsPage2 />
       </ProtectedRoute>
     } />
-    <Route path="admin/users" element={
+    <Route path="admin/integrations" element={
       <ProtectedRoute adminOnly={true}>
-        <AdminUsersPage />
+        <AdminIntegrationsPage2 />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/cms" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminCmsPage />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/reports" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminReportsPage />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/challenges" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminChallengeManagementPage />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/innovations" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminInnovationRegistryPage />
+      </ProtectedRoute>
+    } />
+    <Route path="admin/investment" element={
+      <ProtectedRoute adminOnly={true}>
+        <AdminInvestmentToolsPage />
       </ProtectedRoute>
     } />
     <Route path="admin/sandbox" element={
@@ -46,17 +73,15 @@ const AdminRoutes = (
         <AdminSandboxPage />
       </ProtectedRoute>
     } />
-    <Route path="admin/sandbox/:id" element={
+    <Route path="admin/knowledge" element={
       <ProtectedRoute adminOnly={true}>
-        <AdminSandboxDetailPage />
+        <AdminKnowledgePage />
       </ProtectedRoute>
     } />
-    <Route path="admin/ai-governance" element={
+    <Route path="admin/notifications" element={
       <ProtectedRoute adminOnly={true}>
-        <AIGovernancePage />
+        <AdminNotificationsPage />
       </ProtectedRoute>
     } />
   </>
 );
-
-export default AdminRoutes;

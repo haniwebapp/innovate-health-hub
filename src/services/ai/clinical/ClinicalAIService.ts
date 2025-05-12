@@ -1,137 +1,125 @@
-import { ClinicalTag, ClinicalRecord } from "@/types/clinicalTypes";
-import type { TextAnalysisResult } from "@/types/clinicalTypes";
 
-export interface SimilarRecord {
-  id: string;
-  title: string;
-  description?: string;
-  record_type?: string;
-  created_at?: string;
-  diagnosis?: string[];
-  symptoms?: string[];
-  similarity?: number;
+import { supabase } from "@/integrations/supabase/client";
+import { AIService } from "../AIService";
+
+export interface ClinicalCodeResult {
+  icd10Codes: string[];
+  drgCodes: string[];
+  confidence: number;
+  notes: string;
 }
 
-// Re-export the TextAnalysisResult interface using 'export type' syntax
-export type { TextAnalysisResult };
+export interface SymptomCluster {
+  clusterId: string;
+  symptoms: string[];
+  possibleConditions: string[];
+  severity: "low" | "moderate" | "high";
+  recommendations: string[];
+}
 
+export interface DiseaseBurdenForecast {
+  region: string;
+  timeframe: string;
+  predictions: {
+    condition: string;
+    prevalenceRate: number;
+    trend: "increasing" | "stable" | "decreasing";
+    confidenceLevel: number;
+  }[];
+  interventionImpact: {
+    intervention: string;
+    potentialImpact: number;
+    timeToEffect: string;
+  }[];
+}
+
+/**
+ * Service for handling clinical AI operations
+ */
 export class ClinicalAIService {
   /**
-   * Automatically generate tags for a clinical record
-   * @param recordId The ID of the clinical record
-   * @returns Array of generated tags
+   * Generate ICD/DRG codes for clinical text
    */
-  static async autoTagRecord(recordId: string): Promise<(ClinicalTag | string)[]> {
-    // This would normally call an AI service or API
-    // For the mock implementation, we'll return simulated tags
-    console.log(`Auto-tagging record ${recordId}`);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Return mock tags
-    return [
-      "Medical Device",
-      "Cardiovascular",
-      "Telemonitoring",
-      "Remote Care"
-    ];
+  static async generateClinicalCodes(clinicalText: string): Promise<ClinicalCodeResult> {
+    try {
+      const { data, error } = await supabase.functions.invoke("clinical-code-generator", {
+        body: { clinicalText }
+      });
+
+      if (error) throw error;
+      return data as ClinicalCodeResult;
+    } catch (error: any) {
+      console.error("Error generating clinical codes:", error);
+      throw AIService.handleError(error, "generateClinicalCodes", "clinical");
+    }
   }
 
   /**
-   * Analyze text content to extract clinical information
-   * @param text The text to analyze
-   * @returns Analysis results
+   * Map symptom clusters from clinical descriptions
    */
-  static async analyzeText(text: string): Promise<TextAnalysisResult> {
-    console.log(`Analyzing clinical text: ${text.substring(0, 50)}...`);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    
-    // Return mock analysis results
-    return {
-      tags: ["Cardiovascular", "Device", "Monitoring", "Remote"],
-      categories: ["Medical Device", "Healthcare Technology"],
-      entities: ["ECG", "Heart Rate", "Arrhythmia"],
-      summary: "Text describes a cardiovascular monitoring device for remote patient care",
-      confidence: 0.92
-    };
+  static async mapSymptomClusters(
+    symptoms: string[]
+  ): Promise<SymptomCluster[]> {
+    try {
+      const { data, error } = await supabase.functions.invoke("symptom-cluster-mapper", {
+        body: { symptoms }
+      });
+
+      if (error) throw error;
+      return data as SymptomCluster[];
+    } catch (error: any) {
+      console.error("Error mapping symptom clusters:", error);
+      throw AIService.handleError(error, "mapSymptomClusters", "clinical");
+    }
   }
 
   /**
-   * Generate clinical recommendations based on a record
-   * @param recordId The ID of the clinical record
-   * @returns Recommendations and references
+   * Generate disease burden forecasts for a region
    */
-  static async generateRecommendations(recordId: string): Promise<{
-    recommendations: string[];
-    references: string[];
-  }> {
-    console.log(`Generating recommendations for record ${recordId}`);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Return mock recommendations
-    return {
-      recommendations: [
-        "Consider additional cardiac monitoring for high-risk patients",
-        "Implement regular remote check-ins with patients over 65",
-        "Review device data at least once every 72 hours",
-        "Establish clear intervention protocols based on alert thresholds"
-      ],
-      references: [
-        "Smith, J. et al (2024). Remote Monitoring in Cardiac Care. Journal of Telehealth, 15(2), 45-52.",
-        "American Heart Association (2025). Guidelines for Remote Cardiac Monitoring.",
-        "WHO (2024). Best Practices in Telemedicine for Cardiovascular Disease Management."
-      ]
-    };
+  static async forecastDiseaseBurden(
+    region: string,
+    timeframe: string,
+    conditions?: string[]
+  ): Promise<DiseaseBurdenForecast> {
+    try {
+      const { data, error } = await supabase.functions.invoke("disease-burden-forecaster", {
+        body: { 
+          region,
+          timeframe,
+          conditions
+        }
+      });
+
+      if (error) throw error;
+      return data as DiseaseBurdenForecast;
+    } catch (error: any) {
+      console.error("Error forecasting disease burden:", error);
+      throw AIService.handleError(error, "forecastDiseaseBurden", "clinical");
+    }
   }
 
   /**
-   * Find similar clinical records
-   * @param recordId The ID of the clinical record
-   * @returns Array of similar records
+   * Generate clinical report draft from structured data
    */
-  static async findSimilarRecords(recordId: string): Promise<SimilarRecord[]> {
-    console.log(`Finding similar records to ${recordId}`);
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    
-    // Return mock similar records
-    return [
-      {
-        id: "sim1",
-        title: "Cardiac Monitoring System",
-        description: "Wearable cardiac monitoring device for continuous heart rhythm tracking",
-        record_type: "Medical Device",
-        created_at: "2025-01-15T08:30:00Z",
-        diagnosis: ["Arrhythmia", "Atrial fibrillation"],
-        symptoms: ["Palpitations", "Dizziness"],
-        similarity: 0.89
-      },
-      {
-        id: "sim2",
-        title: "Remote ECG Monitoring Solution",
-        description: "Cloud-based ECG monitoring solution for cardiac patients",
-        record_type: "Digital Health",
-        created_at: "2024-11-20T14:15:00Z",
-        diagnosis: ["Tachycardia", "Heart failure"],
-        symptoms: ["Shortness of breath", "Fatigue"],
-        similarity: 0.78
-      },
-      {
-        id: "sim3",
-        title: "Implantable Cardiac Sensor",
-        description: "Miniaturized implantable sensor for continuous cardiac monitoring",
-        record_type: "Medical Device",
-        created_at: "2025-03-05T09:45:00Z",
-        diagnosis: ["Heart failure", "Arrhythmia"],
-        symptoms: ["Edema", "Irregular heartbeat"],
-        similarity: 0.72
-      }
-    ];
+  static async draftClinicalReport(
+    patientData: any,
+    clinicalObservations: string[],
+    reportType: string
+  ): Promise<string> {
+    try {
+      const { data, error } = await supabase.functions.invoke("clinical-report-drafter", {
+        body: { 
+          patientData,
+          clinicalObservations,
+          reportType
+        }
+      });
+
+      if (error) throw error;
+      return data.reportContent;
+    } catch (error: any) {
+      console.error("Error drafting clinical report:", error);
+      throw AIService.handleError(error, "draftClinicalReport", "clinical");
+    }
   }
 }
