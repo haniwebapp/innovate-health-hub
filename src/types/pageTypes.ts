@@ -1,4 +1,23 @@
 
+// Define the PageSection interface
+export interface PageSection {
+  type: string;
+  title?: string;
+  content?: string;
+  buttonText?: string;
+  imageUrl?: string;
+  backgroundImage?: string;
+  items?: any[];
+  alignment?: string;
+  [key: string]: any; // Allow for additional fields
+}
+
+// Define the PageContent interface
+export interface PageContent {
+  sections: PageSection[];
+}
+
+// Define the WebsitePage interface
 export interface WebsitePage {
   id: string;
   slug: string;
@@ -11,8 +30,8 @@ export interface WebsitePage {
   updatedAt: Date;
 }
 
+// Define the WebsitePageFormData interface for create/update operations
 export interface WebsitePageFormData {
-  id?: string;
   slug: string;
   title: string;
   content: PageContent;
@@ -20,17 +39,18 @@ export interface WebsitePageFormData {
   published?: boolean;
 }
 
-export interface PageContent {
-  sections: PageSection[];
+// Define the AIComplianceAnalysis interface
+export interface AIComplianceRequirement {
+  id: string;
+  title: string;
+  description: string;
+  status: 'required' | 'recommended' | 'optional';
+  completed: boolean;
 }
 
-export interface PageSection {
-  type: 'hero' | 'content' | 'cards' | 'cta' | 'image-text';
-  title?: string;
-  content?: string;
-  bgColor?: string;
-  items?: any[];
-  imageUrl?: string;
-  alignment?: 'left' | 'right' | 'center';
-  [key: string]: any;
+export interface AIComplianceAnalysis {
+  score: number;
+  summary: string;
+  requirements: AIComplianceRequirement[];
+  documentRecommendations: string[];
 }

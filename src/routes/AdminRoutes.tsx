@@ -14,6 +14,7 @@ import AdminCmsPage from '@/pages/admin/cms/index';
 import PagesListPage from '@/pages/admin/cms/pages/index';
 import EditPagePage from '@/pages/admin/cms/pages/edit';
 import NewPagePage from '@/pages/admin/cms/pages/new';
+import AdminInnovationRegistryPage from '@/pages/admin/innovations/index';
 
 export const AdminRoutes = (
   <Route path="/dashboard/admin" element={<DashboardLayout />}>
@@ -49,5 +50,8 @@ export const AdminRoutes = (
         <Route path="edit/:id" element={<EditPagePage />} />
       </Route>
     </Route>
+    
+    {/* Innovations Management */}
+    <Route path="innovations" element={<AdminInnovationRegistryPage />} />
   </Route>
 );

@@ -105,10 +105,12 @@ export class PageService {
         throw new Error("User must be authenticated to create a page");
       }
       
+      // The key change here is to explicitly convert the content object to a JSON string
+      // and then back when retrieving it, to ensure proper typing
       const dbPage = {
         slug: pageData.slug,
         title: pageData.title,
-        content: pageData.content as any, // Cast to any to bypass type checking
+        content: pageData.content, // Supabase will handle the JSON serialization
         meta_description: pageData.metaDescription,
         published: pageData.published || false,
         last_updated_by: user.data.user.id
@@ -144,7 +146,7 @@ export class PageService {
       
       if (pageData.slug) dbPage.slug = pageData.slug;
       if (pageData.title) dbPage.title = pageData.title;
-      if (pageData.content) dbPage.content = pageData.content;
+      if (pageData.content) dbPage.content = pageData.content; // Supabase will handle the JSON serialization
       if (pageData.metaDescription !== undefined) dbPage.meta_description = pageData.metaDescription;
       if (pageData.published !== undefined) dbPage.published = pageData.published;
       
@@ -223,7 +225,7 @@ export class PageService {
       id: dbPage.id,
       slug: dbPage.slug,
       title: dbPage.title,
-      content: dbPage.content,
+      content: dbPage.content as PageContent, // Explicitly cast to PageContent
       metaDescription: dbPage.meta_description,
       lastUpdatedBy: dbPage.last_updated_by,
       published: dbPage.published,

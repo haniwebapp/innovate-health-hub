@@ -1,121 +1,222 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { ChevronRight, DatabaseIcon, MessageSquare, Plug, PlusCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Link } from 'react-router-dom';
-import IntegrationList from '@/components/admin/IntegrationList';
-import IntegrationLogs from '@/components/admin/IntegrationLogs';
+import { Plus, Link2, ExternalLink, Database, Code, AlertTriangle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
-export default function AdminIntegrationsPage2() {
-  const [showLogs, setShowLogs] = useState(false);
-  const [selectedIntegration, setSelectedIntegration] = useState('');
-
-  const toggleLogs = (integration: string) => {
-    if (selectedIntegration === integration && showLogs) {
-      setShowLogs(false);
-    } else {
-      setSelectedIntegration(integration);
-      setShowLogs(true);
+export default function AdminIntegrations() {
+  const { toast } = useToast();
+  
+  // Sample integrations data for demonstration
+  const integrations = [
+    {
+      id: '1',
+      name: 'EHR System Integration',
+      description: 'Connects to Electronic Health Record systems via FHIR API.',
+      status: 'active',
+      lastSync: '2023-06-12T09:30:00',
+      type: 'data'
+    },
+    {
+      id: '2',
+      name: 'Payment Gateway',
+      description: 'Processes payments for innovation submissions.',
+      status: 'inactive',
+      lastSync: null,
+      type: 'payment'
+    },
+    {
+      id: '3',
+      name: 'Email Service',
+      description: 'Handles transactional emails to users.',
+      status: 'active',
+      lastSync: '2023-06-15T14:22:00',
+      type: 'communication'
+    },
+    {
+      id: '4',
+      name: 'Analytics Platform',
+      description: 'Tracks platform usage and user behavior.',
+      status: 'warning',
+      lastSync: '2023-06-14T08:45:00',
+      type: 'analytics'
     }
+  ];
+
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'active':
+        return <Badge className="bg-green-500">Active</Badge>;
+      case 'inactive':
+        return <Badge variant="outline" className="text-gray-500">Inactive</Badge>;
+      case 'warning':
+        return <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">Warning</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const getIntegrationIcon = (type: string) => {
+    switch(type) {
+      case 'data':
+        return <Database className="h-5 w-5 text-blue-500" />;
+      case 'payment':
+        return <Code className="h-5 w-5 text-purple-500" />;
+      case 'communication':
+        return <Link2 className="h-5 w-5 text-green-500" />;
+      case 'analytics':
+        return <AlertTriangle className="h-5 w-5 text-amber-500" />;
+      default:
+        return <ExternalLink className="h-5 w-5 text-gray-500" />;
+    }
+  };
+
+  const handleTestIntegration = (id: string, name: string) => {
+    toast({
+      title: "Testing Integration",
+      description: `Testing connection to ${name}...`,
+    });
+    
+    // Simulate API call
+    setTimeout(() => {
+      toast({
+        title: "Integration Test Complete",
+        description: `Successfully connected to ${name}`,
+        variant: "success",
+      });
+    }, 2000);
   };
 
   return (
     <AdminLayout
-      title="Integrations Panel"
-      description="Manage external integrations and connections"
+      title="Integrations"
+      description="Manage external services and API connections"
       actions={
         <Button>
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Add Integration
+          <Plus className="mr-2 h-4 w-4" />
+          Add New Integration
         </Button>
       }
     >
-      <Tabs defaultValue="data" className="space-y-6">
+      <Tabs defaultValue="active" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="data">Data & APIs</TabsTrigger>
-          <TabsTrigger value="communication">Communication</TabsTrigger>
-          <TabsTrigger value="payment">Payment</TabsTrigger>
-          <TabsTrigger value="audit">Audit Logs</TabsTrigger>
+          <TabsTrigger value="active">Active</TabsTrigger>
+          <TabsTrigger value="all">All Integrations</TabsTrigger>
+          <TabsTrigger value="available">Available</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="data" className="space-y-6">
-          <IntegrationList
-            category="data"
-            title="Data & API"
-            description="Manage database and API integrations"
-          />
-
-          {showLogs && selectedIntegration === 'Supabase' && (
-            <IntegrationLogs integrationId="1234-5678-9012" />
-          )}
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Database Management</CardTitle>
-              <CardDescription>Manage database connections and settings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-md border bg-muted/50">
-                <div className="flex items-center justify-between p-4">
-                  <div className="flex items-center gap-3">
-                    <DatabaseIcon className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">Supabase</p>
-                      <p className="text-xs text-muted-foreground">Primary database connection</p>
+        <TabsContent value="active" className="space-y-4">
+          {integrations
+            .filter(integration => integration.status === 'active')
+            .map(integration => (
+              <Card key={integration.id}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <div className="flex items-center space-x-2">
+                    {getIntegrationIcon(integration.type)}
+                    <CardTitle className="text-xl font-semibold">{integration.name}</CardTitle>
+                  </div>
+                  {getStatusBadge(integration.status)}
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="mb-4">{integration.description}</CardDescription>
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-gray-500">
+                      Last synced: {integration.lastSync ? new Date(integration.lastSync).toLocaleString() : 'Never'}
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleTestIntegration(integration.id, integration.name)}
+                      >
+                        Test Connection
+                      </Button>
+                      <Button 
+                        size="sm"
+                        asChild
+                      >
+                        <Link to={`/dashboard/admin/integrations/${integration.id}`}>
+                          Configure
+                        </Link>
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
+                </CardContent>
+              </Card>
+            ))}
+        </TabsContent>
+
+        <TabsContent value="all" className="space-y-4">
+          {integrations.map(integration => (
+            <Card key={integration.id}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <div className="flex items-center space-x-2">
+                  {getIntegrationIcon(integration.type)}
+                  <CardTitle className="text-xl font-semibold">{integration.name}</CardTitle>
+                </div>
+                {getStatusBadge(integration.status)}
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="mb-4">{integration.description}</CardDescription>
+                <div className="flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    Last synced: {integration.lastSync ? new Date(integration.lastSync).toLocaleString() : 'Never'}
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="outline" 
                       size="sm"
-                      onClick={() => toggleLogs('Supabase')}
+                      onClick={() => handleTestIntegration(integration.id, integration.name)}
                     >
-                      {selectedIntegration === 'Supabase' && showLogs ? 'Hide Logs' : 'Show Logs'}
+                      Test Connection
                     </Button>
-                    <Button size="sm" asChild>
-                      <Link to="/admin/integrations/database">
-                        Manage
-                        <ChevronRight className="h-4 w-4 ml-1" />
+                    <Button 
+                      size="sm"
+                      asChild
+                    >
+                      <Link to={`/dashboard/admin/integrations/${integration.id}`}>
+                        Configure
                       </Link>
                     </Button>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ))}
         </TabsContent>
 
-        <TabsContent value="communication">
-          <IntegrationList
-            category="communication"
-            title="Communication"
-            description="Manage email, SMS, and messaging integrations"
-          />
-        </TabsContent>
-
-        <TabsContent value="payment">
-          <IntegrationList
-            category="payment"
-            title="Payment"
-            description="Manage payment gateway integrations"
-          />
-        </TabsContent>
-
-        <TabsContent value="audit">
-          <Card>
-            <CardHeader>
-              <CardTitle>Integration Audit Logs</CardTitle>
-              <CardDescription>Monitor integration activities and events</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center p-10">
-              <Plug className="h-16 w-16 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">Audit logging will be implemented in Phase 3.</p>
-              <Button>View All Logs</Button>
-            </CardContent>
-          </Card>
+        <TabsContent value="available">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>EHR Integration</CardTitle>
+                <CardDescription>Connect with Electronic Health Record systems</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Connect to major EHR platforms using standard FHIR APIs. Enable secure data exchange for patient records.
+                </p>
+                <Button>Set Up Integration</Button>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Research Database</CardTitle>
+                <CardDescription>Access medical research databases</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Connect to clinical research repositories and academic databases for evidence-based innovation validation.
+                </p>
+                <Button>Set Up Integration</Button>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </AdminLayout>
