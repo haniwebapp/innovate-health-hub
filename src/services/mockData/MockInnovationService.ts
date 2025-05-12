@@ -8,10 +8,18 @@ export class MockInnovationService {
    */
   static async generateMockInnovations(): Promise<number> {
     try {
+      // We need to create the innovations table first if it doesn't exist
+      await supabase.rpc('create_innovations_table_if_not_exists');
+      
       // Check if innovations already exist
-      const { data: existingInnovations } = await supabase
+      const { data: existingInnovations, error: checkError } = await supabase
         .from('innovations')
         .select('id');
+      
+      if (checkError) {
+        console.log('Error checking innovations table, it may not exist yet:', checkError);
+        return 0;
+      }
       
       if (existingInnovations && existingInnovations.length > 0) {
         console.log('Mock innovations already exist in the database');
@@ -30,9 +38,9 @@ export class MockInnovationService {
         website: innovation.website,
         contact: innovation.contact,
         rating: innovation.rating,
-        created_at: innovation.createdAt ? new Date(innovation.createdAt) : new Date(),
-        regulatory_status: innovation.regulatoryStatus as any,
-        impact_metrics: innovation.impactMetrics as any
+        created_at: innovation.createdAt ? new Date(innovation.createdAt).toISOString() : new Date().toISOString(),
+        regulatory_status: innovation.regulatoryStatus ? JSON.stringify(innovation.regulatoryStatus) : null,
+        impact_metrics: innovation.impactMetrics ? JSON.stringify(innovation.impactMetrics) : null
       }));
       
       // Insert innovations

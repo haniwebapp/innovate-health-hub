@@ -25,8 +25,8 @@ export class MockChallengeService {
           category: "Digital Health",
           image_url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=800&auto=format&fit=crop",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 3, 1), // April 1, 2025
-          end_date: new Date(2025, 6, 30), // July 30, 2025
+          start_date: new Date(2025, 3, 1).toISOString(), // April 1, 2025
+          end_date: new Date(2025, 6, 30).toISOString(), // July 30, 2025
           status: "active",
           prize: "500,000 SAR and implementation support",
           eligibility: "Open to Saudi-based startups, universities, and research institutions",
@@ -52,8 +52,8 @@ export class MockChallengeService {
           category: "AI & Healthcare",
           image_url: "https://images.unsplash.com/photo-1576091160110-aa486e7f895e?q=80&w=800&auto=format&fit=crop",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 2, 15), // March 15, 2025
-          end_date: new Date(2025, 5, 15), // June 15, 2025
+          start_date: new Date(2025, 2, 15).toISOString(), // March 15, 2025
+          end_date: new Date(2025, 5, 15).toISOString(), // June 15, 2025
           status: "active",
           prize: "750,000 SAR and clinical validation support",
           eligibility: "Open globally with preference for Saudi-based teams",
@@ -79,8 +79,8 @@ export class MockChallengeService {
           category: "Mental Health",
           image_url: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?q=80&w=800&auto=format&fit=crop",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 4, 10), // May 10, 2025
-          end_date: new Date(2025, 7, 10), // August 10, 2025
+          start_date: new Date(2025, 4, 10).toISOString(), // May 10, 2025
+          end_date: new Date(2025, 7, 10).toISOString(), // August 10, 2025
           status: "upcoming",
           prize: "350,000 SAR and pilot implementation",
           eligibility: "Open to Saudi citizens, residents, and entities",
@@ -106,8 +106,8 @@ export class MockChallengeService {
           category: "IoT & Healthcare",
           image_url: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=800&auto=format&fit=crop",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 1, 1), // February 1, 2025
-          end_date: new Date(2025, 4, 1), // May 1, 2025
+          start_date: new Date(2025, 1, 1).toISOString(), // February 1, 2025
+          end_date: new Date(2025, 4, 1).toISOString(), // May 1, 2025
           status: "active",
           prize: "600,000 SAR and hospital implementation partnership",
           eligibility: "Open to all innovators, startups, and established companies",
@@ -133,8 +133,8 @@ export class MockChallengeService {
           category: "Digital Health",
           image_url: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=800&auto=format&fit=crop",
           organizer: "Ministry of Health",
-          start_date: new Date(2024, 11, 15), // December 15, 2024
-          end_date: new Date(2025, 2, 28), // February 28, 2025
+          start_date: new Date(2024, 11, 15).toISOString(), // December 15, 2024
+          end_date: new Date(2025, 2, 28).toISOString(), // February 28, 2025
           status: "draft",
           prize: "400,000 SAR and national rollout support",
           eligibility: "Open to game developers, health tech startups, and university teams",
