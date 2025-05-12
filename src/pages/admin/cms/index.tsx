@@ -5,6 +5,8 @@ import AdminLayout from '@/components/layouts/AdminLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { CalendarRange, FileText, ImageIcon, LayoutGrid } from 'lucide-react';
+import { PageList } from '@/components/cms/pages/PageList';
+import { Link } from 'react-router-dom';
 
 export default function AdminCmsPage() {
   return (
@@ -21,27 +23,7 @@ export default function AdminCmsPage() {
         </TabsList>
 
         <TabsContent value="pages" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Website Pages</CardTitle>
-              <CardDescription>Edit main navigation pages</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {["Home", "About", "Challenges", "Innovations", "Investment", "Regulatory", "Knowledge Hub"].map((page) => (
-                  <Card key={page} className="bg-muted">
-                    <CardContent className="p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <LayoutGrid className="h-5 w-5 text-muted-foreground" />
-                        <span>{page}</span>
-                      </div>
-                      <Button size="sm" variant="outline">Edit</Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <PageList />
         </TabsContent>
 
         <TabsContent value="media">

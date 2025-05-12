@@ -50,3 +50,7 @@ verify_jwt = false
 
 [functions.strategy-gap-analysis]
 verify_jwt = false
+
+[functions.page-validator]
+verify_jwt = true
+
