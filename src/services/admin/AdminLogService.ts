@@ -22,7 +22,7 @@ class AdminLogService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by AdminLog type
       return data ? {
         ...data,
         created_at: new Date(data.created_at)

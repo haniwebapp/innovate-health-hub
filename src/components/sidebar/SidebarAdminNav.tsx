@@ -30,6 +30,7 @@ export function SidebarAdminNav({ className, isCollapsed = false }: SidebarAdmin
             isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
           )
         }
+        end
       >
         <LayoutDashboard className="h-4 w-4" />
         {!isCollapsed && <span>Dashboard</span>}
