@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 
-export function AnimatedPulseRings() {
+export function PulseRings() {
   return (
     <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block">
       {[...Array(3)].map((_, i) => (
@@ -33,3 +33,6 @@ export function AnimatedPulseRings() {
     </div>
   );
 }
+
+// Also export as AnimatedPulseRings for backwards compatibility
+export { PulseRings as AnimatedPulseRings };

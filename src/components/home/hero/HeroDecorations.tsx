@@ -3,7 +3,7 @@ import { GradientBlobs } from "./animations/GradientBlobs";
 import { FloatingOrbs } from "./animations/FloatingOrbs";
 import { BackgroundParticles } from "./animations/BackgroundParticles";
 import { SparkleIcons } from "./animations/SparkleIcons";
-import { AnimatedPulseRings } from "./animations/PulseRings";
+import { PulseRings } from "./animations/PulseRings";
 import { GradientOverlay } from "./animations/GradientOverlay";
 
 export function HeroDecorations() {
@@ -25,7 +25,7 @@ export function HeroDecorations() {
       <SparkleIcons />
       
       {/* Pulse rings */}
-      <AnimatedPulseRings />
+      <PulseRings />
     </>
   );
 }
