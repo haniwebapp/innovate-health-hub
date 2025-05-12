@@ -1,9 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
-
-// OpenAI API key is stored as a secret in Supabase
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,6 +24,9 @@ serve(async (req) => {
     if (!innovationData) {
       throw new Error("Innovation data is required");
     }
+
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
 
     // Prepare the prompt for GPT based on the innovation data and investor criteria
     const systemPrompt = `You are an investment matching expert specializing in healthcare innovations. 
@@ -59,66 +60,50 @@ serve(async (req) => {
     "alignmentAreas" (array of strings).`;
 
     // Call OpenAI for the analysis
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
         temperature: 0.5,
-      }),
-    });
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("OpenAI API error:", error);
-      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
-    }
-
-    const openAIResponse = await response.json();
-    const content = openAIResponse.choices[0].message.content;
-    
-    // Log the OpenAI response
-    console.log("OpenAI response:", content);
-    
-    // Parse the response to extract the JSON
-    let matchResult;
-    try {
-      // Sometimes GPT includes markdown code block indicators, so we need to handle that
-      const jsonContent = content.includes("```json")
-        ? content.split("```json")[1].split("```")[0]
-        : content;
+      // Log the OpenAI response
+      console.log("OpenAI response:", completion.choices[0].message.content);
+      
+      // Parse the response to extract the JSON
+      let matchResult;
+      try {
+        matchResult = JSON.parse(completion.choices[0].message.content || "{}");
+      } catch (error) {
+        console.error("Failed to parse GPT response as JSON:", error);
+        console.log("Raw content:", completion.choices[0].message.content);
         
-      matchResult = JSON.parse(jsonContent);
-    } catch (error) {
-      console.error("Failed to parse GPT response as JSON:", error);
-      console.log("Raw content:", content);
-      // Fallback to a simpler approach to extract data
-      matchResult = {
-        matchScore: extractNumberFromText(content, "matchScore") || 50,
-        mainReasons: extractListFromText(content, "mainReasons"),
-        swotAnalysis: {
-          strengths: extractListFromText(content, "strengths"),
-          weaknesses: extractListFromText(content, "weaknesses"),
-          opportunities: extractListFromText(content, "opportunities"),
-          threats: extractListFromText(content, "threats")
-        },
-        recommendedApproach: extractTextFromText(content, "recommendedApproach") || "No specific approach recommended.",
-        keyMetrics: extractListFromText(content, "keyMetrics"),
-        alignmentAreas: extractListFromText(content, "alignmentAreas")
-      };
-    }
+        // Fallback to a simpler approach to extract data
+        matchResult = {
+          matchScore: extractNumberFromText(completion.choices[0].message.content || "", "matchScore") || 50,
+          mainReasons: extractListFromText(completion.choices[0].message.content || "", "mainReasons"),
+          swotAnalysis: {
+            strengths: extractListFromText(completion.choices[0].message.content || "", "strengths"),
+            weaknesses: extractListFromText(completion.choices[0].message.content || "", "weaknesses"),
+            opportunities: extractListFromText(completion.choices[0].message.content || "", "opportunities"),
+            threats: extractListFromText(completion.choices[0].message.content || "", "threats")
+          },
+          recommendedApproach: extractTextFromText(completion.choices[0].message.content || "", "recommendedApproach") || "No specific approach recommended.",
+          keyMetrics: extractListFromText(completion.choices[0].message.content || "", "keyMetrics"),
+          alignmentAreas: extractListFromText(completion.choices[0].message.content || "", "alignmentAreas")
+        };
+      }
 
-    // Return the match result
-    return new Response(JSON.stringify(matchResult), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      // Return the match result
+      return new Response(JSON.stringify(matchResult), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    } catch (error) {
+      return handleOpenAIError(error);
+    }
   } catch (error) {
     console.error("Error in investment-match function:", error);
     return new Response(JSON.stringify({ 

@@ -1,13 +1,13 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -19,10 +19,6 @@ serve(async (req) => {
 
   try {
     const { userId, interests = [], pastActivity = [] } = await req.json();
-    
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found');
-    }
     
     if (!userId) {
       throw new Error('User ID is required');
@@ -73,15 +69,13 @@ serve(async (req) => {
       profile: profileData || {}
     };
     
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+    
     // Call OpenAI for personalized recommendations
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           {
             role: 'system',
@@ -94,26 +88,16 @@ serve(async (req) => {
         ],
         response_format: { type: "json_object" },
         temperature: 0.5,
-      }),
-    });
-    
-    const data = await response.json();
-    
-    if (!data.choices || data.choices.length === 0) {
-      console.error('OpenAI API error:', data);
-      throw new Error('Failed to generate recommendations');
-    }
-    
-    try {
-      const recommendationsResponse = JSON.parse(data.choices[0].message.content);
+      });
+      
+      const recommendationsResponse = JSON.parse(completion.choices[0].message.content || "{}");
       const recommendations = recommendationsResponse.recommendations || [];
       
       return new Response(JSON.stringify(recommendations), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
-    } catch (parseError) {
-      console.error('Error parsing recommendations:', parseError);
-      throw new Error('Failed to parse recommendation results');
+    } catch (error) {
+      return handleOpenAIError(error);
     }
   } catch (error) {
     console.error('Error in learning-recommendations function:', error);

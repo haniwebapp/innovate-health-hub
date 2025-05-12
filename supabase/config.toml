@@ -4,53 +4,43 @@ project_id = "ntgrokpnwizohtfkcfec"
 [api]
 enabled = true
 port = 54321
-schemas = ["public", "storage", "graphql_public"]
+schemas = ["public", "storage"]
 
 [db]
 port = 54322
 
 [studio]
-enabled = true
 port = 54323
-api_url = "http://localhost"
 
 [inbucket]
-enabled = true
 port = 54324
-
-[auth]
-enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["https://localhost:3000"]
-jwt_expiry = 3600
-enable_refresh_token_rotation = true
-refresh_token_reuse_interval = 10
-enable_signup = true
-
-[realtime]
-enabled = true
 
 [storage]
 enabled = true
 
-[edge_functions]
+[auth]
 enabled = true
 
-[functions.support-assistant]
-verify_jwt = false
+[realtime]
+enabled = true
 
-[functions.ticket-classification]
-verify_jwt = false
-
+[functions]
 [functions.first-response-generator]
-verify_jwt = false
-
 [functions.feedback-summarizer]
-verify_jwt = false
-
-[functions.strategy-gap-analysis]
-verify_jwt = false
-
-[functions.page-validator]
-verify_jwt = true
-
+[functions.user-insights]
+[functions.submission-enhancement]
+[functions.ticket-classification]
+[functions.reviewer-matching]
+[functions.proposal-scoring]
+[functions.semantic-search]
+[functions.innovation-insights]
+[functions.regulatory-analysis]
+[functions.learning-recommendations]
+[functions.policy-analysis-qa]
+[functions.healthcare-policy-analysis]
+[functions.vision-2030-alignment]
+[functions.policy-impact-simulation]
+[functions.investment-match]
+[functions.market-analysis]
+[functions.support-assistant]
+[functions.story-analyzer]

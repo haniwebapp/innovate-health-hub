@@ -2,9 +2,9 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.43.1";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 // Environment variables
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") || "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
@@ -55,6 +55,9 @@ serve(async (req) => {
       // Continue even if we can't get resources
     }
     
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+    
     // Construct messages for OpenAI
     const messages = [
       {
@@ -79,38 +82,19 @@ serve(async (req) => {
     ];
     
     // Call OpenAI API
-    const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages,
         temperature: 0.5,
         max_tokens: 500
-      })
-    });
-    
-    const openAIData = await openAIResponse.json();
-    
-    if (openAIData.error) {
-      console.error("OpenAI API error:", openAIData.error);
-      throw new Error(`OpenAI API error: ${openAIData.error.message}`);
-    }
-    
-    const answer = openAIData.choices[0].message.content;
-    
-    // Generate follow-up questions
-    const followUpResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+      });
+      
+      const answer = completion.choices[0].message.content;
+      
+      // Generate follow-up questions
+      const followUpResponse = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           {
             role: "system",
@@ -124,83 +108,54 @@ serve(async (req) => {
         temperature: 0.7,
         max_tokens: 150,
         response_format: { type: "json_object" }
-      })
-    });
-    
-    const followUpData = await followUpResponse.json();
-    let followUpQuestions = [];
-    
-    if (!followUpData.error && followUpData.choices && followUpData.choices[0].message.content) {
+      });
+      
+      let followUpQuestions = [];
+      
       try {
-        const parsedContent = JSON.parse(followUpData.choices[0].message.content);
+        const parsedContent = JSON.parse(followUpResponse.choices[0].message.content || "{}");
         followUpQuestions = parsedContent.questions || [];
       } catch (err) {
         console.error("Error parsing follow-up questions:", err);
       }
-    }
-    
-    // Find related resources
-    let relatedResources = [];
-    try {
-      const resourceResponse = await fetch("https://api.openai.com/v1/embeddings", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "text-embedding-3-small",
-          input: query
-        })
+      
+      // Find related resources
+      let relatedResources = [];
+      
+      const embeddingResponse = await openai.embeddings.create({
+        model: OPENAI_MODELS.TEXT_EMBEDDING,
+        input: query
       });
       
-      const embeddingData = await resourceResponse.json();
+      const embedding = embeddingResponse.data[0].embedding;
       
-      if (!embeddingData.error && embeddingData.data && embeddingData.data[0].embedding) {
-        const embedding = embeddingData.data[0].embedding;
+      // Use the embedding to find similar resources
+      // For simplicity, we'll just fetch a few resources by category that might be relevant
+      const { data: resources } = await supabase
+        .from('knowledge_resources')
+        .select('title, type, url')
+        .limit(3);
         
-        // Use the embedding to find similar resources
-        // For simplicity, we'll just fetch a few resources by category that might be relevant
-        const { data: resources } = await supabase
-          .from('knowledge_resources')
-          .select('title, type, url')
-          .limit(3);
-          
-        if (resources) {
-          relatedResources = resources.map(r => ({
-            title: r.title,
-            url: r.url || `/dashboard/knowledge/resource/${r.id}`,
-            type: r.type
-          }));
-        }
+      if (resources) {
+        relatedResources = resources.map(r => ({
+          title: r.title,
+          url: r.url || `/dashboard/knowledge/resource/${r.id}`,
+          type: r.type
+        }));
       }
-    } catch (err) {
-      console.error("Error finding related resources:", err);
+      
+      // Return response with answer, follow-up questions, and related resources
+      return new Response(
+        JSON.stringify({
+          answer,
+          followUpQuestions,
+          relatedResources
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
     }
-    
-    // Log the interaction in the database if user is authenticated
-    if (userId) {
-      try {
-        await supabase.from('support_interactions').insert({
-          user_id: userId,
-          query,
-          response: answer,
-          interaction_type: 'ai_chat'
-        });
-      } catch (err) {
-        console.error("Error logging support interaction:", err);
-      }
-    }
-    
-    // Return response
-    return new Response(
-      JSON.stringify({
-        answer,
-        followUpQuestions,
-        relatedResources
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Support assistant error:", error.message);
     return new Response(

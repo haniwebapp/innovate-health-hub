@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,15 +21,13 @@ serve(async (req) => {
       throw new Error("User data is required");
     }
 
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+
     // Analyze user data
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${Deno.env.get("OPENAI_API_KEY")}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           {
             role: "system",
@@ -53,37 +52,17 @@ serve(async (req) => {
         ],
         temperature: 0.5,
         response_format: { type: "json_object" }
-      })
-    });
+      });
 
-    if (!openaiResponse.ok) {
-      const error = await openaiResponse.json();
-      throw new Error(error.error?.message || "Failed to get response from OpenAI");
+      const insights = JSON.parse(completion.choices[0].message.content || "{}");
+
+      return new Response(
+        JSON.stringify(insights),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
     }
-
-    const data = await openaiResponse.json();
-    let insights;
-    
-    try {
-      // Parse the content from OpenAI response
-      insights = JSON.parse(data.choices[0].message.content);
-    } catch (e) {
-      console.error("Error parsing OpenAI response as JSON:", e);
-      insights = {
-        summary: "Failed to analyze user data properly.",
-        userGroups: [{ 
-          name: "All Users", 
-          count: userData.length, 
-          description: "All platform users" 
-        }],
-        recommendations: ["Request a new analysis as the current one failed."]
-      };
-    }
-
-    return new Response(
-      JSON.stringify(insights),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error: any) {
     console.error("Error in user-insights function:", error);
     return new Response(

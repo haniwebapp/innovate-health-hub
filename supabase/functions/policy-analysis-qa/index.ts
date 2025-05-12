@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,12 +19,6 @@ serve(async (req) => {
     
     if (!policyText) {
       throw new Error("Policy text is required");
-    }
-
-    // Get OpenAI API key from environment variable
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error("OpenAI API key not found");
     }
 
     console.log(`Processing ${analysisType || 'Q&A'} for policy`);
@@ -90,45 +85,39 @@ serve(async (req) => {
       };
     }
 
-    // Call OpenAI API
-    const messages = question 
-      ? [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Policy document: ${policyText}\n\nQuestion: ${question}` }
-        ]
-      : [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Analyze this healthcare policy: ${policyText}` }
-        ];
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${openAIApiKey}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    // Call OpenAI API
+    try {
+      const messages = question 
+        ? [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: `Policy document: ${policyText}\n\nQuestion: ${question}` }
+          ]
+        : [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: `Analyze this healthcare policy: ${policyText}` }
+          ];
+
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: messages,
         temperature: 0.3,
         response_format: { type: "json_object" }
-      })
-    });
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Failed to get response from OpenAI");
+      const analysisResult = JSON.parse(completion.choices[0].message.content || "{}");
+      
+      console.log(`Analysis completed for ${analysisType || 'Q&A'}`);
+
+      return new Response(
+        JSON.stringify({ ...responseFormat, ...analysisResult }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
     }
-
-    const data = await response.json();
-    const analysisResult = JSON.parse(data.choices[0].message.content);
-    
-    console.log(`Analysis completed for ${analysisType || 'Q&A'}`);
-
-    return new Response(
-      JSON.stringify({ ...responseFormat, ...analysisResult }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Error in policy-analysis-qa function:", error);
     return new Response(

@@ -1,9 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-// Environment variables
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") || "";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 // Define CORS headers
 const corsHeaders = {
@@ -28,15 +26,13 @@ serve(async (req) => {
       );
     }
     
-    // Call OpenAI API to summarize feedback
-    const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+    
+    // Call OpenAI API to summarize feedback using the SDK
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           {
             role: "system",
@@ -56,23 +52,18 @@ serve(async (req) => {
         ],
         temperature: 0.5,
         response_format: { type: "json_object" }
-      })
-    });
-    
-    const openAIData = await openAIResponse.json();
-    
-    if (openAIData.error) {
-      console.error("OpenAI API error:", openAIData.error);
-      throw new Error(`OpenAI API error: ${openAIData.error.message}`);
+      });
+      
+      const analysis = JSON.parse(completion.choices[0].message.content || "{}");
+      
+      // Return analysis
+      return new Response(
+        JSON.stringify(analysis),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
     }
-    
-    const analysis = JSON.parse(openAIData.choices[0].message.content);
-    
-    // Return analysis
-    return new Response(
-      JSON.stringify(analysis),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Feedback summarization error:", error.message);
     return new Response(

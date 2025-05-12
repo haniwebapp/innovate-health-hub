@@ -1,9 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-// Environment variables
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") || "";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 // Define CORS headers
 const corsHeaders = {
@@ -28,15 +26,13 @@ serve(async (req) => {
       );
     }
     
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+    
     // Call OpenAI API to classify the ticket
-    const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           {
             role: "system",
@@ -57,45 +53,40 @@ serve(async (req) => {
         ],
         temperature: 0.3,
         response_format: { type: "json_object" }
-      })
-    });
-    
-    const openAIData = await openAIResponse.json();
-    
-    if (openAIData.error) {
-      console.error("OpenAI API error:", openAIData.error);
-      throw new Error(`OpenAI API error: ${openAIData.error.message}`);
+      });
+      
+      const classification = JSON.parse(completion.choices[0].message.content || "{}");
+      
+      // Validate classification results
+      const validUrgencies = ["low", "medium", "high", "critical"];
+      const validSentiments = ["positive", "neutral", "negative"];
+      const validCategories = ["account", "innovation", "regulatory", "investment", "platform", "other"];
+      const validTeams = ["support", "technical", "admin", "innovation", "regulatory", "investment"];
+      
+      if (!validUrgencies.includes(classification.urgency)) {
+        classification.urgency = "medium";
+      }
+      
+      if (!validSentiments.includes(classification.sentiment)) {
+        classification.sentiment = "neutral";
+      }
+      
+      if (!validCategories.includes(classification.category)) {
+        classification.category = "other";
+      }
+      
+      if (!validTeams.includes(classification.assignedTeam)) {
+        classification.assignedTeam = "support";
+      }
+      
+      // Return classification
+      return new Response(
+        JSON.stringify(classification),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
     }
-    
-    const classification = JSON.parse(openAIData.choices[0].message.content);
-    
-    // Validate classification results
-    const validUrgencies = ["low", "medium", "high", "critical"];
-    const validSentiments = ["positive", "neutral", "negative"];
-    const validCategories = ["account", "innovation", "regulatory", "investment", "platform", "other"];
-    const validTeams = ["support", "technical", "admin", "innovation", "regulatory", "investment"];
-    
-    if (!validUrgencies.includes(classification.urgency)) {
-      classification.urgency = "medium";
-    }
-    
-    if (!validSentiments.includes(classification.sentiment)) {
-      classification.sentiment = "neutral";
-    }
-    
-    if (!validCategories.includes(classification.category)) {
-      classification.category = "other";
-    }
-    
-    if (!validTeams.includes(classification.assignedTeam)) {
-      classification.assignedTeam = "support";
-    }
-    
-    // Return classification
-    return new Response(
-      JSON.stringify(classification),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Ticket classification error:", error.message);
     return new Response(

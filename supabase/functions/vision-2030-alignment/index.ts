@@ -1,9 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
-
-// OpenAI API key is stored as a secret in Supabase
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,6 +23,9 @@ serve(async (req) => {
     if (!innovationData) {
       throw new Error("Innovation data is required");
     }
+
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
 
     // Prepare the prompt for GPT
     const systemPrompt = `You are a Saudi Vision 2030 healthcare expert specializing in evaluating how healthcare innovations 
@@ -52,76 +53,55 @@ serve(async (req) => {
     "recommendations" (array of strings)`;
 
     // Call OpenAI API
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
         temperature: 0.4,
-      }),
-    });
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("OpenAI API error:", error);
-      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
-    }
+      let alignmentAnalysis;
+      try {
+        alignmentAnalysis = JSON.parse(completion.choices[0].message.content || "{}");
+      } catch (error) {
+        console.error("Failed to parse GPT response as JSON:", error);
+        console.log("Raw content:", completion.choices[0].message.content);
+        
+        // Create a fallback structure
+        alignmentAnalysis = {
+          alignmentScore: 75,
+          alignmentAreas: [
+            "Digital healthcare transformation",
+            "Preventive care focus",
+            "Healthcare access improvement"
+          ],
+          vision2030Objectives: [
+            "Improve quality of healthcare services",
+            "Expand privatization of government services",
+            "Promote digital transformation in healthcare"
+          ],
+          improvementAreas: [
+            "Stronger localization components",
+            "Clearer sustainability metrics"
+          ],
+          potentialImpact: "Moderate to high positive impact on healthcare quality metrics and accessibility goals",
+          recommendations: [
+            "Enhance focus on Saudi workforce development",
+            "Include more specific Vision 2030 KPIs in measurement framework"
+          ]
+        };
+      }
 
-    const openAIResponse = await response.json();
-    const content = openAIResponse.choices[0].message.content;
-    
-    // Log the OpenAI response
-    console.log("OpenAI response:", content);
-    
-    // Parse the JSON response
-    let alignmentAnalysis;
-    try {
-      // Handle potential markdown formatting in the response
-      const jsonContent = content.includes("```json")
-        ? content.split("```json")[1].split("```")[0]
-        : content;
-      
-      alignmentAnalysis = JSON.parse(jsonContent);
+      // Return the alignment analysis
+      return new Response(JSON.stringify(alignmentAnalysis), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } catch (error) {
-      console.error("Failed to parse GPT response as JSON:", error);
-      console.log("Raw content:", content);
-      
-      // Create a fallback structure
-      alignmentAnalysis = {
-        alignmentScore: 75,
-        alignmentAreas: [
-          "Digital healthcare transformation",
-          "Preventive care focus",
-          "Healthcare access improvement"
-        ],
-        vision2030Objectives: [
-          "Improve quality of healthcare services",
-          "Expand privatization of government services",
-          "Promote digital transformation in healthcare"
-        ],
-        improvementAreas: [
-          "Stronger localization components",
-          "Clearer sustainability metrics"
-        ],
-        potentialImpact: "Moderate to high positive impact on healthcare quality metrics and accessibility goals",
-        recommendations: [
-          "Enhance focus on Saudi workforce development",
-          "Include more specific Vision 2030 KPIs in measurement framework"
-        ]
-      };
+      return handleOpenAIError(error);
     }
-
-    // Return the alignment analysis
-    return new Response(JSON.stringify(alignmentAnalysis), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
   } catch (error) {
     console.error("Error in vision-2030-alignment function:", error);
     return new Response(JSON.stringify({ 

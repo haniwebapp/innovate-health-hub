@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,12 +22,6 @@ serve(async (req) => {
       throw new Error("Policy data is required");
     }
 
-    // Get OpenAI API key from environment variable
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error("OpenAI API key not found");
-    }
-
     // Default simulation parameters if not provided
     const timeframe = simulationParams?.timeframe || "5 years";
     const region = simulationParams?.region || "Saudi Arabia";
@@ -40,15 +35,13 @@ serve(async (req) => {
       operation: trace?.operation
     }));
 
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+
     // Call OpenAI API for policy impact simulation
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${openAIApiKey}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           {
             role: "system",
@@ -92,29 +85,25 @@ serve(async (req) => {
         ],
         temperature: 0.3,
         response_format: { type: "json_object" }
-      })
-    });
+      });
 
-    if (!openaiResponse.ok) {
-      const error = await openaiResponse.json();
-      throw new Error(error.error?.message || "Failed to get response from OpenAI");
+      const impactResult = JSON.parse(completion.choices[0].message.content || "{}");
+      
+      console.log("Policy impact simulation completed:", JSON.stringify({
+        policyName: policyData.name,
+        impactScore: impactResult.impactScore,
+        traceId: trace?.traceId,
+        processingTime: `${Date.now() - (trace ? new Date(trace.timestamp).getTime() : Date.now())}ms`
+      }));
+
+      // Return the policy impact simulation results
+      return new Response(
+        JSON.stringify(impactResult),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
     }
-
-    const data = await openaiResponse.json();
-    const impactResult = JSON.parse(data.choices[0].message.content);
-    
-    console.log("Policy impact simulation completed:", JSON.stringify({
-      policyName: policyData.name,
-      impactScore: impactResult.impactScore,
-      traceId: trace?.traceId,
-      processingTime: `${Date.now() - (trace ? new Date(trace.timestamp).getTime() : Date.now())}ms`
-    }));
-
-    // Return the policy impact simulation results
-    return new Response(
-      JSON.stringify(impactResult),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
   } catch (error) {
     console.error("Error in policy-impact-simulation function:", error);
     return new Response(

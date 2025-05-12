@@ -1,9 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
-
-// OpenAI API key is stored as a secret in Supabase
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,6 +28,9 @@ serve(async (req) => {
     const selectedRegion = region || "Saudi Arabia";
     const selectedTimeframe = timeframe || "next 5 years";
 
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
+
     // Prepare the prompt for GPT
     const systemPrompt = `You are a healthcare market analysis expert specializing in investment opportunities in ${selectedRegion}. 
     Provide detailed market analysis and investment insights for the healthcare sector.`;
@@ -54,70 +55,53 @@ serve(async (req) => {
     "regulatoryImpact", "vision2030Alignment", "investmentRecommendations" (array)`;
 
     // Call OpenAI API for market analysis
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
         temperature: 0.5,
-      }),
-    });
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("OpenAI API error:", error);
-      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
-    }
-
-    const openAIResponse = await response.json();
-    const content = openAIResponse.choices[0].message.content;
-    
-    // Log the OpenAI response
-    console.log("OpenAI response:", content);
-    
-    // Parse the JSON response
-    let marketAnalysis;
-    try {
-      // Handle potential markdown formatting in the response
-      const jsonContent = content.includes("```json")
-        ? content.split("```json")[1].split("```")[0]
-        : content;
+      // Log the OpenAI response
+      console.log("OpenAI response:", completion.choices[0].message.content);
       
-      marketAnalysis = JSON.parse(jsonContent);
+      // Parse the JSON response
+      let marketAnalysis;
+      try {
+        marketAnalysis = JSON.parse(completion.choices[0].message.content || "{}");
+      } catch (error) {
+        console.error("Failed to parse GPT response as JSON:", error);
+        console.log("Raw content:", completion.choices[0].message.content);
+        
+        // Create a fallback response structure
+        marketAnalysis = {
+          summary: extractSection(completion.choices[0].message.content || "", "summary") || `Analysis for ${sector} in ${selectedRegion}.`,
+          growthRate: extractNumber(completion.choices[0].message.content || "", "growthRate") || 5.5,
+          marketSize: extractSection(completion.choices[0].message.content || "", "marketSize") || "Unknown market size",
+          keyTrends: extractList(completion.choices[0].message.content || "", "keyTrends") || ["Increasing digital health adoption", "Growing focus on preventive care"],
+          emergingOpportunities: extractList(completion.choices[0].message.content || "", "emergingOpportunities") || ["Telemedicine expansion", "AI-powered diagnostics"],
+          riskFactors: extractList(completion.choices[0].message.content || "", "riskFactors") || ["Regulatory changes", "Market competition"],
+          competitiveLandscape: {
+            keyPlayers: extractList(completion.choices[0].message.content || "", "keyPlayers") || ["Major healthcare providers"],
+            marketShare: {},
+            barriers: extractList(completion.choices[0].message.content || "", "barriers") || ["High initial investment", "Regulatory approval"]
+          },
+          regulatoryImpact: extractSection(completion.choices[0].message.content || "", "regulatoryImpact") || "Regulatory environment continues to evolve.",
+          vision2030Alignment: extractSection(completion.choices[0].message.content || "", "vision2030Alignment") || "Aligns with Saudi Vision 2030 healthcare transformation goals.",
+          investmentRecommendations: extractList(completion.choices[0].message.content || "", "investmentRecommendations") || ["Focus on digital health solutions"]
+        };
+      }
+
+      // Return the market analysis
+      return new Response(JSON.stringify(marketAnalysis), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } catch (error) {
-      console.error("Failed to parse GPT response as JSON:", error);
-      console.log("Raw content:", content);
-      
-      // Create a fallback response structure
-      marketAnalysis = {
-        summary: extractSection(content, "summary") || `Analysis for ${sector} in ${selectedRegion}.`,
-        growthRate: extractNumber(content, "growthRate") || 5.5,
-        marketSize: extractSection(content, "marketSize") || "Unknown market size",
-        keyTrends: extractList(content, "keyTrends") || ["Increasing digital health adoption", "Growing focus on preventive care"],
-        emergingOpportunities: extractList(content, "emergingOpportunities") || ["Telemedicine expansion", "AI-powered diagnostics"],
-        riskFactors: extractList(content, "riskFactors") || ["Regulatory changes", "Market competition"],
-        competitiveLandscape: {
-          keyPlayers: extractList(content, "keyPlayers") || ["Major healthcare providers"],
-          marketShare: {},
-          barriers: extractList(content, "barriers") || ["High initial investment", "Regulatory approval"]
-        },
-        regulatoryImpact: extractSection(content, "regulatoryImpact") || "Regulatory environment continues to evolve.",
-        vision2030Alignment: extractSection(content, "vision2030Alignment") || "Aligns with Saudi Vision 2030 healthcare transformation goals.",
-        investmentRecommendations: extractList(content, "investmentRecommendations") || ["Focus on digital health solutions"]
-      };
+      return handleOpenAIError(error);
     }
-
-    // Return the market analysis
-    return new Response(JSON.stringify(marketAnalysis), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
   } catch (error) {
     console.error("Error in market-analysis function:", error);
     return new Response(JSON.stringify({ 
