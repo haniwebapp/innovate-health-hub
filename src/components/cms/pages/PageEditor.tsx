@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -188,7 +187,7 @@ export function PageEditor() {
         toast({
           title: "Content Issues Detected",
           description: "Please review the validation issues before publishing.",
-          variant: "warning",
+          variant: "destructive",
         });
       }
 
@@ -219,7 +218,6 @@ export function PageEditor() {
         toast({
           title: "Page Published",
           description: "The page is now live on the website.",
-          variant: "success",
         });
       }
 
