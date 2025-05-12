@@ -13,7 +13,7 @@ const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
 const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
 const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
-// Export the routes as an array of Route elements, not as a component
+// Export as JSX fragment, not as a component
 const AdminRoutes = (
   <>
     <Route path="admin" element={
