@@ -1,5 +1,17 @@
 import { motion } from "framer-motion";
-import { Sparkles, Heart, Stethoscope, Pill, Microscope, Dna, HeartPulse, Syringe } from "lucide-react";
+import { Heart, Stethoscope, Pill, Microscope, Dna, HeartPulse, Syringe } from "lucide-react";
+import {
+  FloatingParticles,
+  GradientBlobs,
+  FloatingMedicalIcons,
+  DNAHelix,
+  SparkleEffects,
+  HeartbeatLine,
+  CellDivision,
+  PulseRings,
+  MedicalCross,
+  AnimatedFlask
+} from "./decorations";
 
 export function HeroDecorations() {
   // Generate a set of random positions for animated elements
@@ -321,6 +333,9 @@ export function HeroDecorations() {
           ))}
         </div>
       </div>
+      
+      {/* Animated Lab Flask with bubbling liquid */}
+      <AnimatedFlask />
     </>
   );
 }
