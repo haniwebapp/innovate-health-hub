@@ -4,7 +4,7 @@ import { PublicRoutes } from './PublicRoutes';
 import { AuthRoutes } from './AuthRoutes';
 import { InnovationSubmissionRoutes } from './InnovationSubmissionRoutes';
 import { DashboardMainRoutes } from './DashboardMainRoutes';
-import { AdminRoutes } from './AdminRoutes';
+import { adminRoutes } from './AdminRoutes';
 import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 
@@ -24,7 +24,7 @@ export function AppRoutes() {
       {DashboardMainRoutes}
       
       {/* Admin Routes */}
-      <AdminRoutes />
+      {adminRoutes}
       
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />

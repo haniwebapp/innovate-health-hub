@@ -1,5 +1,5 @@
 
-import { ClinicalTag, ClinicalRecord } from "@/types/clinicalTypes";
+import { ClinicalTag, ClinicalRecord, TextAnalysisResult } from "@/types/clinicalTypes";
 
 export interface SimilarRecord {
   id: string;
@@ -10,14 +10,6 @@ export interface SimilarRecord {
   diagnosis?: string[];
   symptoms?: string[];
   similarity?: number;
-}
-
-export interface TextAnalysisResult {
-  tags: string[];
-  categories: string[];
-  entities: string[];
-  summary?: string;
-  confidence: number;
 }
 
 export class ClinicalAIService {

@@ -8,7 +8,9 @@ import {
   BarChart2, 
   Plug, 
   FileText,
-  BrainCircuit
+  BrainCircuit,
+  Activity,
+  Stethoscope
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -109,6 +111,19 @@ export function SidebarAdminNav({ className, isCollapsed = false }: SidebarAdmin
       >
         <BrainCircuit className="h-4 w-4" />
         {!isCollapsed && <span>AI Governance</span>}
+      </NavLink>
+
+      <NavLink
+        to="/dashboard/admin/clinical"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+          )
+        }
+      >
+        <Stethoscope className="h-4 w-4" />
+        {!isCollapsed && <span>Clinical</span>}
       </NavLink>
     </nav>
   );

@@ -1,292 +1,262 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { BarChart as BarChartIcon, LineChart as LineChartIcon, PieChart as PieChartIcon, Activity } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
-import { toast } from "sonner";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { ArrowRight, Info, FileText, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
-const mockAdoptionData = [
-  { month: "Jan", innovations: 25, challenges: 10, users: 120 },
-  { month: "Feb", innovations: 32, challenges: 12, users: 135 },
-  { month: "Mar", innovations: 38, challenges: 15, users: 152 },
-  { month: "Apr", innovations: 40, challenges: 18, users: 168 },
-  { month: "May", innovations: 52, challenges: 22, users: 189 },
-  { month: "Jun", innovations: 65, challenges: 28, users: 210 },
-  { month: "Jul", innovations: 75, challenges: 32, users: 250 },
-  { month: "Aug", innovations: 85, challenges: 38, users: 280 },
-  { month: "Sep", innovations: 92, challenges: 45, users: 320 },
+// Sample data for charts
+const confidenceData = [
+  { name: 'Very Low', value: 5 },
+  { name: 'Low', value: 12 },
+  { name: 'Medium', value: 25 },
+  { name: 'High', value: 38 },
+  { name: 'Very High', value: 20 },
 ];
 
-const mockForecastData = [
-  { month: "Oct", innovations: 100, challenges: 50, users: 350 },
-  { month: "Nov", innovations: 115, challenges: 55, users: 380 },
-  { month: "Dec", innovations: 130, challenges: 62, users: 410 },
-  { month: "Jan", innovations: 145, challenges: 68, users: 450 },
+const accuracyData = [
+  { name: 'Demographic 1', accuracy: 92, baseline: 85 },
+  { name: 'Demographic 2', accuracy: 88, baseline: 85 },
+  { name: 'Demographic 3', accuracy: 78, baseline: 85 },
+  { name: 'Demographic 4', accuracy: 86, baseline: 85 },
+  { name: 'Demographic 5', accuracy: 94, baseline: 85 },
 ];
 
-const mockRegulatoryTrends = [
-  { category: "Medical Devices", changes: 12, impact: 75 },
-  { category: "Digital Health", changes: 8, impact: 60 },
-  { category: "Pharma", changes: 6, impact: 85 },
-  { category: "Biotech", changes: 9, impact: 70 },
-  { category: "Health Services", changes: 5, impact: 50 },
-];
+const getBarColor = (value: number) => {
+  if (value < 80) return '#f87171';  // red-400
+  if (value < 90) return '#fbbf24';  // amber-400
+  return '#34d399';  // emerald-400
+};
 
 export function PredictiveAnalytics() {
-  const [selectedModel, setSelectedModel] = useState("growth");
-  const [forecastPeriod, setForecastPeriod] = useState(3);
-  const [confidenceInterval, setConfidenceInterval] = useState(95);
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const combinedData = [...mockAdoptionData, ...mockForecastData.slice(0, forecastPeriod)];
-
-  const handleGenerateForecast = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      toast.success("Forecast generated successfully");
-    }, 1500);
-  };
-
+  const [timeRange, setTimeRange] = useState('30d');
+  const [modelType, setModelType] = useState('all');
+  
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="col-span-1 md:col-span-2">
-          <CardHeader>
-            <CardTitle>Platform Growth Forecast</CardTitle>
-            <CardDescription>
-              Predicted growth trends for platform adoption
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={combinedData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="innovations" 
-                  stroke="#8884d8" 
-                  activeDot={{ r: 8 }} 
-                  strokeWidth={2} 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="challenges" 
-                  stroke="#82ca9d" 
-                  strokeWidth={2} 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="users" 
-                  stroke="#ffc658" 
-                  strokeWidth={2} 
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-          <CardFooter className="text-sm text-muted-foreground border-t pt-4">
-            <div className="flex items-center gap-1">
-              <div className="h-2 w-2 bg-slate-300 rounded-full"></div>
-              <span>Historical Data</span>
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+            <div>
+              <CardTitle>Predictive Analytics Monitoring</CardTitle>
+              <CardDescription>Monitor and evaluate predictive AI models across the platform</CardDescription>
             </div>
-            <div className="flex items-center gap-1 ml-4">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-              <span>Predicted (CI: {confidenceInterval}%)</span>
+            <div className="flex flex-wrap gap-2">
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className="w-[130px]">
+                  <SelectValue placeholder="Time Range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7d">Last 7 days</SelectItem>
+                  <SelectItem value="30d">Last 30 days</SelectItem>
+                  <SelectItem value="90d">Last 90 days</SelectItem>
+                  <SelectItem value="12m">Last 12 months</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={modelType} onValueChange={setModelType}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Model Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Models</SelectItem>
+                  <SelectItem value="clinical">Clinical</SelectItem>
+                  <SelectItem value="diagnostic">Diagnostic</SelectItem>
+                  <SelectItem value="operational">Operational</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Forecast Controls</CardTitle>
-            <CardDescription>
-              Configure predictive model parameters
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="model-type">Prediction Model</Label>
-                <Select value={selectedModel} onValueChange={setSelectedModel}>
-                  <SelectTrigger id="model-type">
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="growth">Growth Projection</SelectItem>
-                    <SelectItem value="adoption">Adoption Rate</SelectItem>
-                    <SelectItem value="regulatory">Regulatory Impact</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Forecast Period (months)</Label>
-                <div className="flex items-center">
-                  <Slider
-                    className="flex-1 mr-4"
-                    min={1}
-                    max={12}
-                    step={1}
-                    value={[forecastPeriod]}
-                    onValueChange={(value) => setForecastPeriod(value[0])}
-                  />
-                  <span className="w-8 text-center">{forecastPeriod}</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Confidence Interval (%)</Label>
-                <div className="flex items-center">
-                  <Slider
-                    className="flex-1 mr-4"
-                    min={80}
-                    max={99}
-                    step={1}
-                    value={[confidenceInterval]}
-                    onValueChange={(value) => setConfidenceInterval(value[0])}
-                  />
-                  <span className="w-8 text-center">{confidenceInterval}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2 pt-2">
-                <Switch 
-                  id="advanced-options" 
-                  checked={showAdvancedOptions} 
-                  onCheckedChange={setShowAdvancedOptions} 
-                />
-                <Label htmlFor="advanced-options">Show advanced options</Label>
-              </div>
-
-              {showAdvancedOptions && (
-                <div className="space-y-2 pt-2">
-                  <Label htmlFor="seasonality">Seasonality</Label>
-                  <Select defaultValue="quarterly">
-                    <SelectTrigger id="seasonality">
-                      <SelectValue placeholder="Seasonality" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="quarterly">Quarterly</SelectItem>
-                      <SelectItem value="annually">Annually</SelectItem>
-                      <SelectItem value="none">None</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              <Button 
-                className="w-full mt-4" 
-                onClick={handleGenerateForecast}
-                disabled={loading}
-              >
-                {loading ? "Generating..." : "Generate Forecast"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs defaultValue="innovation">
-        <TabsList>
-          <TabsTrigger value="innovation" className="flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            Innovation Predictions
-          </TabsTrigger>
-          <TabsTrigger value="investment" className="flex items-center gap-2">
-            <BarChartIcon className="h-4 w-4" />
-            Investment Trends
-          </TabsTrigger>
-          <TabsTrigger value="regulatory" className="flex items-center gap-2">
-            <LineChartIcon className="h-4 w-4" />
-            Regulatory Trends
-          </TabsTrigger>
-        </TabsList>
+          </div>
+        </CardHeader>
         
-        <TabsContent value="innovation" className="pt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Innovation Success Prediction</CardTitle>
-              <CardDescription>
-                Predictive analytics for innovation success factors
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={mockRegulatoryTrends}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="category" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="changes" fill="#8884d8" name="Regulatory Changes" />
-                  <Bar dataKey="impact" fill="#82ca9d" name="Estimated Impact Score" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="investment" className="pt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Investment Pattern Analysis</CardTitle>
-              <CardDescription>
-                Predicted investment areas based on historic data
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center py-12 text-muted-foreground">
-                Investment trend visualization will be implemented in the next phase.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="regulatory" className="pt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Regulatory Change Projection</CardTitle>
-              <CardDescription>
-                Forecasting upcoming regulatory changes and impacts
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center py-12 text-muted-foreground">
-                Regulatory projection visualization will be implemented in the next phase.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            {[
+              { title: "Total Predictions", value: "234,567", change: "+12.5%", positive: true },
+              { title: "Average Accuracy", value: "87.3%", change: "+2.4%", positive: true },
+              { title: "False Positives", value: "3.2%", change: "-0.8%", positive: true },
+              { title: "Confidence Level", value: "High", change: "Stable", positive: true },
+            ].map((stat, i) => (
+              <Card key={i} className="overflow-hidden">
+                <CardContent className="p-5">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm text-muted-foreground">{stat.title}</p>
+                      <p className="text-2xl font-bold mt-1">{stat.value}</p>
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className={`${
+                        stat.positive ? "bg-green-50 text-green-700 border-green-100" : "bg-red-50 text-red-700 border-red-100"
+                      }`}
+                    >
+                      {stat.change}
+                    </Badge>
+                  </div>
+                </CardContent>
+                <div className={`h-1 ${stat.positive ? "bg-green-500" : "bg-red-500"}`}></div>
+              </Card>
+            ))}
+          </div>
+          
+          <Tabs defaultValue="performance">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsTrigger value="performance">Performance</TabsTrigger>
+              <TabsTrigger value="confidence">Confidence</TabsTrigger>
+              <TabsTrigger value="fairness">Fairness</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="performance">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Model Performance By Segment</CardTitle>
+                  <CardDescription>Comparing accuracy across different demographic segments</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={accuracyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis domain={[50, 100]} />
+                        <Tooltip />
+                        <Bar dataKey="accuracy" name="Accuracy (%)">
+                          {accuracyData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={getBarColor(entry.accuracy)} />
+                          ))}
+                        </Bar>
+                        <Bar dataKey="baseline" name="Baseline (%)" fill="#94a3b8" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+                <CardFooter className="border-t bg-muted/50 flex justify-between text-sm text-muted-foreground">
+                  <div>
+                    <Info className="h-4 w-4 inline mr-1" />
+                    Performance is below target for Demographic 3
+                  </div>
+                  <Button variant="link" className="p-0 h-auto text-sm">
+                    View Detailed Report <ArrowRight className="h-3 w-3 ml-1" />
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="confidence">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Prediction Confidence Distribution</CardTitle>
+                  <CardDescription>Distribution of confidence levels for all predictions</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={confidenceData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="value" name="Percentage (%)" fill="#10b981" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+                <CardFooter className="border-t bg-muted/50 text-sm text-muted-foreground">
+                  Overall confidence distribution suggests reliable model performance. 
+                  58% of predictions have high or very high confidence.
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="fairness">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader>
+                    <div className="flex justify-between">
+                      <CardTitle className="text-base">Fairness Metrics</CardTitle>
+                      <Badge variant="outline">Good</Badge>
+                    </div>
+                    <CardDescription>Analysis of predictive equity across groups</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm font-medium">Demographic Parity</span>
+                          <span className="text-sm">92%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-500 h-2 rounded-full" style={{width: "92%"}}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm font-medium">Equal Opportunity</span>
+                          <span className="text-sm">88%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-500 h-2 rounded-full" style={{width: "88%"}}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm font-medium">Predictive Parity</span>
+                          <span className="text-sm">78%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-amber-500 h-2 rounded-full" style={{width: "78%"}}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <div className="flex justify-between">
+                      <CardTitle className="text-base">Recommendations</CardTitle>
+                      <Button size="sm" variant="outline" className="h-8">
+                        <FileText className="h-3 w-3 mr-1" /> Export
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      <li className="flex gap-2">
+                        <TrendingUp className="h-5 w-5 text-amber-500 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-medium">Improve data representation</p>
+                          <p className="text-muted-foreground">Add more training data for underrepresented groups</p>
+                        </div>
+                      </li>
+                      <li className="flex gap-2">
+                        <TrendingUp className="h-5 w-5 text-amber-500 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-medium">Adjust decision thresholds</p>
+                          <p className="text-muted-foreground">Fine-tune thresholds to balance performance across groups</p>
+                        </div>
+                      </li>
+                      <li className="flex gap-2">
+                        <TrendingUp className="h-5 w-5 text-green-500 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-medium">Continue monitoring</p>
+                          <p className="text-muted-foreground">System shows good fairness metrics overall</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }
+
+export default PredictiveAnalytics;
