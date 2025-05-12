@@ -64,6 +64,9 @@ const MedicalBadge = React.forwardRef<HTMLDivElement, MedicalBadgeProps>(
       } : {}
     };
 
+    // Cast children to React.ReactNode to fix type compatibility issue
+    const safeChildren = children as React.ReactNode;
+
     return (
       <motion.div
         ref={ref}
@@ -74,7 +77,7 @@ const MedicalBadge = React.forwardRef<HTMLDivElement, MedicalBadgeProps>(
         {...props}
       >
         {icon && <span className="mr-1">{icon}</span>}
-        {children}
+        {safeChildren}
       </motion.div>
     );
   }

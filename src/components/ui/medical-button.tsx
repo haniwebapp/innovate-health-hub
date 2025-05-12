@@ -73,6 +73,9 @@ const MedicalButton = React.forwardRef<HTMLButtonElement, MedicalButtonProps>(
       },
     };
     
+    // Cast children to React.ReactNode to fix type compatibility issue
+    const safeChildren = children as React.ReactNode;
+    
     return (
       <motion.button
         className={cn(buttonVariants({ variant, size, rounded, className }))}
@@ -94,7 +97,7 @@ const MedicalButton = React.forwardRef<HTMLButtonElement, MedicalButtonProps>(
         ) : (
           <div className="flex items-center justify-center gap-2">
             {iconLeft && <span className="mr-1">{iconLeft}</span>}
-            {children}
+            {safeChildren}
             {iconRight && <span className="ml-1">{iconRight}</span>}
           </div>
         )}

@@ -87,7 +87,7 @@ export default function DashboardPage() {
   
   return (
     <MedicalDashboardLayout
-      title={`Welcome, ${user?.firstName || 'User'}`}
+      title={`Welcome, ${user?.first_name || 'User'}`}
       subtitle="Your healthcare innovation dashboard"
       headerActions={
         <div className="flex gap-2">

@@ -49,9 +49,11 @@ export interface HeadingProps
     animated?: boolean;
 }
 
-// Combine React heading props with Framer Motion props
-type CombinedHeadingProps = Omit<HeadingProps, keyof HTMLMotionProps<"h1" | "h2" | "h3" | "h4" | "h5" | "h6">> & 
-  HTMLMotionProps<"h1" | "h2" | "h3" | "h4" | "h5" | "h6">;
+type HeadingElement = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+// Combine React heading props with Framer Motion props, more carefully typed
+type CombinedHeadingProps = Omit<HeadingProps, keyof HTMLMotionProps<HeadingElement>> & 
+  HTMLMotionProps<HeadingElement>;
 
 const MedicalHeading = React.forwardRef<HTMLHeadingElement, CombinedHeadingProps>(
   ({ className, variant, size, weight, align, as = "h2", animated = true, children, ...props }, ref) => {
@@ -68,7 +70,7 @@ const MedicalHeading = React.forwardRef<HTMLHeadingElement, CombinedHeadingProps
     };
 
     // Map size to appropriate heading element if not specified
-    const getDefaultElement = () => {
+    const getDefaultElement = (): HeadingElement => {
       switch (size) {
         case "h1": return "h1";
         case "h2": return "h2";
@@ -82,7 +84,11 @@ const MedicalHeading = React.forwardRef<HTMLHeadingElement, CombinedHeadingProps
 
     const Element = as || getDefaultElement();
     
-    const MotionHeading = motion[Element as keyof typeof motion];
+    // Instead of accessing the motion element directly, create a component
+    const MotionHeading = motion[Element];
+
+    // Cast children to React.ReactNode to fix type compatibility issue
+    const safeChildren = children as React.ReactNode;
 
     return (
       <MotionHeading
@@ -93,7 +99,7 @@ const MedicalHeading = React.forwardRef<HTMLHeadingElement, CombinedHeadingProps
         variants={headingAnimationVariants}
         {...props}
       >
-        {children}
+        {safeChildren}
       </MotionHeading>
     );
   }

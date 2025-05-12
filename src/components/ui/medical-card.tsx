@@ -15,7 +15,7 @@ type CombinedCardProps = Omit<MedicalCardProps, keyof HTMLMotionProps<"div">> &
   HTMLMotionProps<"div">;
 
 const MedicalCard = React.forwardRef<HTMLDivElement, CombinedCardProps>(
-  ({ className, gradient = false, elevation = 'medium', hoverEffect = false, glassEffect = false, ...props }, ref) => {
+  ({ className, gradient = false, elevation = 'medium', hoverEffect = false, glassEffect = false, children, ...props }, ref) => {
     const elevationClasses = {
       flat: 'shadow-none',
       low: 'shadow-sm',
@@ -41,6 +41,9 @@ const MedicalCard = React.forwardRef<HTMLDivElement, CombinedCardProps>(
       } : {}
     };
 
+    // Cast children to React.ReactNode to fix type compatibility issue
+    const safeChildren = children as React.ReactNode;
+
     return (
       <motion.div
         ref={ref}
@@ -57,7 +60,9 @@ const MedicalCard = React.forwardRef<HTMLDivElement, CombinedCardProps>(
         whileHover={hoverEffect ? "hover" : undefined}
         variants={cardVariants}
         {...props}
-      />
+      >
+        {safeChildren}
+      </motion.div>
     );
   }
 );
