@@ -38,6 +38,28 @@ export interface TreatmentPlan {
   monitoringPlan: string;
 }
 
+export interface SimilarRecord {
+  id: string;
+  title: string;
+  similarity: number;
+  diagnosis: string[];
+}
+
+export interface ClinicalTextAnalysisResult {
+  entities: {
+    type: string;
+    text: string;
+    confidence: number;
+  }[];
+  summary: string;
+  suggestedCodes: {
+    code: string;
+    description: string;
+    system: string;
+  }[];
+  keyFindings: string[];
+}
+
 /**
  * Service for healthcare clinical AI operations
  */
@@ -146,6 +168,120 @@ export class ClinicalAIService {
     } catch (error: any) {
       console.error("Error generating clinical documentation:", error);
       throw AIService.handleError(error, "generateClinicalDocumentation", "clinical");
+    }
+  }
+
+  /**
+   * Find similar clinical records based on symptoms and diagnosis
+   */
+  static async findSimilarRecords(
+    recordId: string,
+    limit: number = 5
+  ): Promise<SimilarRecord[]> {
+    try {
+      const { data, error } = await supabase.functions.invoke("clinical-similarity-search", {
+        body: { 
+          recordId,
+          limit
+        }
+      });
+
+      if (error) throw error;
+      return data as SimilarRecord[];
+    } catch (error: any) {
+      console.error("Error finding similar records:", error);
+      throw AIService.handleError(error, "findSimilarRecords", "clinical");
+    }
+  }
+
+  /**
+   * Analyze clinical text for entities, codes, and insights
+   */
+  static async analyzeText(
+    text: string
+  ): Promise<ClinicalTextAnalysisResult> {
+    try {
+      const { data, error } = await supabase.functions.invoke("clinical-text-analysis", {
+        body: { text }
+      });
+
+      if (error) throw error;
+      return data as ClinicalTextAnalysisResult;
+    } catch (error: any) {
+      console.error("Error analyzing clinical text:", error);
+      throw AIService.handleError(error, "analyzeText", "clinical");
+    }
+  }
+
+  /**
+   * Automatically generate tags for a clinical record
+   */
+  static async autoTagRecord(
+    recordId: string
+  ): Promise<string[]> {
+    try {
+      const { data, error } = await supabase
+        .from('clinical_records')
+        .select('*')
+        .eq('id', recordId)
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error("Record not found");
+      
+      const record = data;
+      
+      const analysisResult = await this.analyzeText(
+        `${record.title}. ${record.description || ''}`
+      );
+      
+      const tags = analysisResult.entities
+        .filter(entity => entity.confidence > 0.7)
+        .map(entity => entity.text);
+      
+      // Store tags in the database
+      await Promise.all(tags.map(tag => 
+        supabase.from('clinical_tags').insert({
+          record_id: recordId,
+          tag,
+          source: 'ai',
+          confidence: 0.8
+        })
+      ));
+      
+      return tags;
+    } catch (error: any) {
+      console.error("Error auto-tagging record:", error);
+      throw AIService.handleError(error, "autoTagRecord", "clinical");
+    }
+  }
+
+  /**
+   * Generate treatment recommendations based on record
+   */
+  static async generateRecommendations(
+    recordId: string
+  ): Promise<string[]> {
+    try {
+      const { data: record, error } = await supabase
+        .from('clinical_records')
+        .select('*')
+        .eq('id', recordId)
+        .single();
+
+      if (error) throw error;
+      if (!record) throw new Error("Record not found");
+
+      // For simplicity we'll use the analyzeClinicalData method
+      const analysis = await this.analyzeClinicalData({
+        patientData: JSON.stringify(record),
+        clinicalNotes: record.description
+      });
+
+      return analysis.recommendedActions;
+    } catch (error: any) {
+      console.error("Error generating recommendations:", error);
+      throw AIService.handleError(error, "generateRecommendations", "clinical");
     }
   }
 }

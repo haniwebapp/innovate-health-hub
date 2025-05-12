@@ -105,6 +105,85 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_call_traces: {
+        Row: {
+          duration: number | null
+          endpoint: string | null
+          id: string
+          operation_log_id: string
+          request_data: Json | null
+          response_data: Json | null
+          service_name: string
+          timestamp: string
+          trace_type: string
+        }
+        Insert: {
+          duration?: number | null
+          endpoint?: string | null
+          id?: string
+          operation_log_id: string
+          request_data?: Json | null
+          response_data?: Json | null
+          service_name: string
+          timestamp?: string
+          trace_type: string
+        }
+        Update: {
+          duration?: number | null
+          endpoint?: string | null
+          id?: string
+          operation_log_id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          service_name?: string
+          timestamp?: string
+          trace_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_call_traces_operation_log_id_fkey"
+            columns: ["operation_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_operations_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_feedback: {
+        Row: {
+          created_at: string
+          feedback_text: string | null
+          id: string
+          operation_log_id: string
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          operation_log_id: string
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          operation_log_id?: string
+          rating?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_feedback_operation_log_id_fkey"
+            columns: ["operation_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_operations_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_match_scores: {
         Row: {
           analyzed_at: string
@@ -145,6 +224,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_operations_logs: {
+        Row: {
+          created_at: string
+          duration: number | null
+          error_details: string | null
+          id: string
+          input_summary: Json | null
+          metadata: Json | null
+          operation_name: string
+          output_summary: Json | null
+          service_name: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration?: number | null
+          error_details?: string | null
+          id?: string
+          input_summary?: Json | null
+          metadata?: Json | null
+          operation_name: string
+          output_summary?: Json | null
+          service_name: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration?: number | null
+          error_details?: string | null
+          id?: string
+          input_summary?: Json | null
+          metadata?: Json | null
+          operation_name?: string
+          output_summary?: Json | null
+          service_name?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       application_compliance: {
         Row: {
