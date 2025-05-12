@@ -22,6 +22,7 @@ export interface WebsitePage {
   id: string;
   slug: string;
   title: string;
+  description?: string;  // Added this field
   content: PageContent;
   metaDescription?: string;
   lastUpdatedBy?: string;

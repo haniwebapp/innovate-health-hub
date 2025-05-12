@@ -11,6 +11,7 @@ import { SearchDialog } from './SearchDialog';
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [cmsPages, setCmsPages] = useState<WebsitePage[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   
   // Function to check if a route is active
@@ -73,7 +74,10 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <SearchDialog />
+          <SearchDialog 
+            open={searchOpen} 
+            onOpenChange={setSearchOpen} 
+          />
           <NavbarUserMenu />
           <NavbarMobileMenu cmsPages={cmsPages} />
         </div>

@@ -28,7 +28,8 @@ export function PageRenderer({ page }: PageRendererProps) {
   
   // Safely parse page content with sanitization
   const sanitizedTitle = DOMPurify.sanitize(page.title);
-  const sanitizedDescription = page.description ? DOMPurify.sanitize(page.description) : '';
+  const sanitizedDescription = page.description || page.metaDescription || '';
+  const description = DOMPurify.sanitize(sanitizedDescription);
   
   // Animation variants for staggered section animations
   const containerVariants = {
@@ -46,9 +47,9 @@ export function PageRenderer({ page }: PageRendererProps) {
     <div className="page-container min-h-screen">
       <Helmet>
         <title>{sanitizedTitle} | HealthTech Innovate</title>
-        <meta name="description" content={sanitizedDescription} />
+        <meta name="description" content={description} />
         <meta property="og:title" content={sanitizedTitle} />
-        <meta property="og:description" content={sanitizedDescription} />
+        <meta property="og:description" content={description} />
       </Helmet>
 
       {/* Render each section in the page content */}
