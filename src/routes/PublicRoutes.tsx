@@ -1,4 +1,3 @@
-
 import { Route } from 'react-router-dom';
 import HomePage from '@/pages/Index';
 import NotFound from '@/pages/NotFound';
@@ -11,6 +10,7 @@ import InvestmentPage from '@/pages/investment';
 import RegulatoryPage from '@/pages/regulatory';
 import KnowledgeHubPage from '@/pages/knowledge-hub';
 import PolicyPage from '@/pages/policy/index';
+import DynamicPage from '@/pages/DynamicPage';
 
 export const PublicRoutes = (
   <>
@@ -25,5 +25,8 @@ export const PublicRoutes = (
     <Route path="/regulatory" element={<RegulatoryPage />} />
     <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
     <Route path="/policy" element={<PolicyPage />} />
+    
+    {/* Dynamic CMS Page Route - Keep this at the end to avoid route conflicts */}
+    <Route path="/pages/:slug" element={<DynamicPage />} />
   </>
 );
