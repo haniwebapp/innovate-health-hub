@@ -1,21 +1,16 @@
 
 export interface AdminLog {
   id: string;
-  log_type: string;
+  log_type: "access" | "error" | "audit" | "event";
   source: string;
-  severity: 'info' | 'warning' | 'error' | 'critical';
-  details: Record<string, any> | string;
-  created_at: Date;
+  severity: "info" | "warning" | "error" | "critical";
+  details: any;
   user_id?: string;
+  created_at: Date;
 }
 
-export interface UserProfile {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  userType: string;
-  organization: string;
-  lastSignIn: string;
-  status: 'active' | 'inactive';
+// Add the DateRange type if it doesn't already exist
+export interface DateRange {
+  from: Date;
+  to?: Date;
 }
