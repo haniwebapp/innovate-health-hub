@@ -4,7 +4,7 @@ import { PublicRoutes } from './PublicRoutes';
 import { AuthRoutes } from './AuthRoutes';
 import { InnovationSubmissionRoutes } from './InnovationSubmissionRoutes';
 import { DashboardMainRoutes } from './DashboardMainRoutes';
-import adminRoutes from './AdminRoutes'; // Changed to import default export
+import AdminRoutes from './AdminRoutes'; // Import the component
 import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 
@@ -23,8 +23,8 @@ export function AppRoutes() {
       {/* Main Dashboard with nested routes */}
       {DashboardMainRoutes}
       
-      {/* Admin Routes */}
-      {adminRoutes}
+      {/* Admin Routes - use the component directly */}
+      <AdminRoutes />
       
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />

@@ -11,27 +11,58 @@ const AdminSettingsPage = lazy(() => import("@/pages/dashboard/AdminSettingsPage
 const AdminUsersPage = lazy(() => import("@/pages/dashboard/AdminUsersPage"));
 const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
 const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
+const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
-// We're fixing the import path here - removing the reference to the non-existent logs page
-// const AdminLogsPage = lazy(() => import("@/pages/admin/logs/index"));
-
-// Export as both default and named export for compatibility
+// Export default function that returns a Route element
 export default function AdminRoutes() {
   return (
-    <Route path="admin" element={<ProtectedRoute adminOnly={true} />}>
-      <Route index element={<AdminDashboardPage />} />
-      <Route path="analytics" element={<AdminAnalyticsPage />} />
-      <Route path="integrations" element={<AdminIntegrationsPage />} />
-      <Route path="settings" element={<AdminSettingsPage />} />
-      <Route path="users" element={<AdminUsersPage />} />
-      <Route path="sandbox" element={<AdminSandboxPage />} />
-      <Route path="sandbox/:id" element={<AdminSandboxDetailPage />} />
-      {/* Removing the logs route until we implement it
-      <Route path="logs" element={<AdminLogsPage />} /> */}
+    <Route path="admin">
+      <Route path="" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminDashboardPage />
+        </ProtectedRoute>
+      } />
+      <Route path="analytics" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminAnalyticsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="integrations" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminIntegrationsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="settings" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminSettingsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="users" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminUsersPage />
+        </ProtectedRoute>
+      } />
+      <Route path="sandbox" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminSandboxPage />
+        </ProtectedRoute>
+      } />
+      <Route path="sandbox/:id" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminSandboxDetailPage />
+        </ProtectedRoute>
+      } />
+      <Route path="ai-governance" element={
+        <ProtectedRoute adminOnly={true}>
+          <AIGovernancePage />
+        </ProtectedRoute>
+      } />
     </Route>
   );
 }
 
-// Named export for files importing as { AdminRoutes }
-export { AdminRoutes };
+// Named export for backwards compatibility
+export const AdminRoutes = AdminRoutes;
+
+// Export ready to use routes element
 export const adminRoutes = <AdminRoutes />;
