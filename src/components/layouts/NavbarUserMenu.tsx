@@ -17,7 +17,7 @@ import { NotificationBadge } from "@/components/notifications/NotificationBadge"
 
 export default function NavbarUserMenu() {
   const { user, signOut } = useAuth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   
   // Get user initials for avatar
   const getInitials = () => {
@@ -54,7 +54,7 @@ export default function NavbarUserMenu() {
             className="border-moh-green/20 text-moh-darkGreen hover:bg-moh-lightGreen/50 hover:text-moh-green rounded-full"
             asChild
           >
-            <Link to="/auth/login">Sign In</Link>
+            <Link to="/auth/login">{t('nav.login') || "Sign In"}</Link>
           </Button>
         </motion.div>
         
@@ -64,7 +64,7 @@ export default function NavbarUserMenu() {
             className="bg-moh-green hover:bg-moh-darkGreen rounded-full"
             asChild
           >
-            <Link to="/auth/register">Register</Link>
+            <Link to="/auth/register">{t('nav.signup') || "Register"}</Link>
           </Button>
         </motion.div>
       </div>
@@ -108,28 +108,28 @@ export default function NavbarUserMenu() {
         <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
           <Link to="/dashboard" className="cursor-pointer flex items-center gap-2">
             <Settings className="h-4 w-4 text-moh-green" />
-            <span>Dashboard</span>
+            <span>{t('nav.dashboard') || "Dashboard"}</span>
           </Link>
         </DropdownMenuItem>
         
         <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
           <Link to="/dashboard/profile" className="cursor-pointer flex items-center gap-2">
             <User className="h-4 w-4 text-moh-green" />
-            <span>My Profile</span>
+            <span>{t('nav.profile') || "My Profile"}</span>
           </Link>
         </DropdownMenuItem>
         
         <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
           <Link to="/dashboard/submissions" className="cursor-pointer flex items-center gap-2">
             <FileText className="h-4 w-4 text-moh-green" />
-            <span>My Submissions</span>
+            <span>{t('dashboard.my_submissions') || "My Submissions"}</span>
           </Link>
         </DropdownMenuItem>
         
         <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
           <Link to="/dashboard/notifications" className="cursor-pointer flex items-center gap-2">
             <Bell className="h-4 w-4 text-moh-green" />
-            <span>Notifications</span>
+            <span>{t('nav.notifications') || "Notifications"}</span>
             <NotificationBadge className="ml-auto !p-0 !h-auto !w-auto !bg-transparent hover:!bg-transparent" />
           </Link>
         </DropdownMenuItem>
@@ -139,7 +139,7 @@ export default function NavbarUserMenu() {
         <DropdownMenuItem asChild className="py-2 focus:bg-moh-lightGreen/50 focus:text-moh-darkGreen">
           <Link to="/help" className="cursor-pointer flex items-center gap-2">
             <HelpCircle className="h-4 w-4 text-moh-green" />
-            <span>Help & Support</span>
+            <span>{t('common.help') || "Help & Support"}</span>
           </Link>
         </DropdownMenuItem>
         
@@ -150,7 +150,7 @@ export default function NavbarUserMenu() {
           className="py-2 text-red-500 hover:text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Logout</span>
+          <span>{t('nav.logout') || "Logout"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
