@@ -137,7 +137,9 @@ class AdminLogService {
       
       const logs: AdminLog[] = data.map((log) => ({
         ...log,
-        created_at: new Date(log.created_at)
+        created_at: new Date(log.created_at),
+        log_type: log.log_type as "access" | "error" | "audit" | "event",
+        severity: log.severity as "info" | "warning" | "error" | "critical"
       })) as AdminLog[];
       
       return {
@@ -186,12 +188,16 @@ class AdminLogService {
     } = {}
   ): { logs: AdminLog[], totalCount: number } {
     // Mock data generation
+    const logTypes: ("access" | "error" | "audit" | "event")[] = ["access", "error", "audit", "event"];
+    const sources: string[] = ["api", "auth", "database", "user", "system"];
+    const severities: ("info" | "warning" | "error" | "critical")[] = ["info", "warning", "error", "critical"];
+    
     const mockLogs: AdminLog[] = Array(50).fill(null).map((_, index) => ({
       id: `log-${index + 1}`,
-      log_type: ['access', 'error', 'audit', 'event'][Math.floor(Math.random() * 4)],
-      source: ['api', 'auth', 'database', 'user', 'system'][Math.floor(Math.random() * 5)],
+      log_type: logTypes[Math.floor(Math.random() * 4)],
+      source: sources[Math.floor(Math.random() * 5)],
       details: { message: `Log message ${index + 1}`, path: `/api/endpoint/${index}` },
-      severity: ['info', 'warning', 'error', 'critical'][Math.floor(Math.random() * 4)] as any,
+      severity: severities[Math.floor(Math.random() * 4)],
       created_at: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)),
       user_id: Math.random() > 0.3 ? `user-${Math.floor(Math.random() * 10) + 1}` : undefined
     }));
