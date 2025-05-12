@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ClinicalRecord, ClinicalTag, ClinicalAnalysis } from "@/types/clinicalTypes";
 import { ClinicalService } from "@/services/clinical/ClinicalService";
-import { ClinicalAIService } from "@/services/ai/clinical/ClinicalAIService";
+import { ClinicalAIService, SimilarRecord } from "@/services/ai/clinical/ClinicalAIService";
 import { Loader2, Tag, RefreshCcw, ClipboardList, Activity, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -27,7 +26,7 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
     recommendations: string[];
     references: string[];
   }>({ recommendations: [], references: [] });
-  const [similarRecords, setSimilarRecords] = useState<ClinicalRecord[]>([]);
+  const [similarRecords, setSimilarRecords] = useState<SimilarRecord[]>([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
   const [loadingSimilar, setLoadingSimilar] = useState<boolean>(false);
 
@@ -65,7 +64,22 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
     try {
       const newTags = await ClinicalAIService.autoTagRecord(record.id);
       if (newTags.length > 0) {
-        setTags([...tags, ...newTags]);
+        // Fix: Convert string tags to ClinicalTag objects
+        const formattedTags: ClinicalTag[] = newTags.map(tag => {
+          if (typeof tag === 'string') {
+            // Create a proper ClinicalTag object for string tags
+            return {
+              id: `temp-${Date.now()}-${Math.random()}`,
+              record_id: record.id,
+              tag: tag,
+              source: 'ai',
+              created_at: new Date()
+            };
+          }
+          return tag as ClinicalTag;
+        });
+        
+        setTags(prevTags => [...prevTags, ...formattedTags]);
         toast.success(`Added ${newTags.length} new tags`);
       } else {
         toast.info("No new tags identified");
@@ -104,6 +118,7 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
     setLoadingSimilar(true);
     try {
       const similar = await ClinicalAIService.findSimilarRecords(record.id);
+      // Fix: Keep the records as SimilarRecord[] rather than trying to convert to ClinicalRecord[]
       setSimilarRecords(similar);
       if (similar.length > 0) {
         toast.success(`Found ${similar.length} similar records`);
@@ -158,23 +173,23 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-2xl">{record.title}</CardTitle>
+              <CardTitle className="text-2xl">{record?.title}</CardTitle>
               <CardDescription>
-                Record Type: <Badge variant="outline">{record.record_type}</Badge>
+                Record Type: <Badge variant="outline">{record?.record_type}</Badge>
               </CardDescription>
             </div>
             <Badge className="bg-moh-green hover:bg-moh-green/90">
-              {new Date(record.created_at).toLocaleDateString()}
+              {record && new Date(record.created_at).toLocaleDateString()}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <h3 className="font-medium">Description</h3>
-            <p className="text-muted-foreground">{record.description || "No description available"}</p>
+            <p className="text-muted-foreground">{record?.description || "No description available"}</p>
           </div>
 
-          {record.symptoms && record.symptoms.length > 0 && (
+          {record?.symptoms && record.symptoms.length > 0 && (
             <div className="space-y-2">
               <h3 className="font-medium">Symptoms</h3>
               <div className="flex flex-wrap gap-2">
@@ -187,7 +202,7 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
             </div>
           )}
 
-          {record.diagnosis && record.diagnosis.length > 0 && (
+          {record?.diagnosis && record.diagnosis.length > 0 && (
             <div className="space-y-2">
               <h3 className="font-medium">Diagnosis</h3>
               <div className="flex flex-wrap gap-2">
@@ -200,7 +215,7 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
             </div>
           )}
 
-          {record.medical_codes && Object.keys(record.medical_codes).length > 0 && (
+          {record?.medical_codes && Object.keys(record.medical_codes).length > 0 && (
             <div className="space-y-2">
               <h3 className="font-medium">Medical Codes</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -462,28 +477,28 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg">{record.title}</CardTitle>
                         <CardDescription>
-                          Type: {record.record_type} • Created: {
-                            format(new Date(record.created_at), 'MMM d, yyyy')
+                          Type: {record.record_type || 'Unknown'} • Created: {
+                            record.created_at ? format(new Date(record.created_at), 'MMM d, yyyy') : 'Unknown date'
                           }
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pb-3">
                         <p className="line-clamp-2 text-sm text-muted-foreground">
-                          {record.description}
+                          {record.description || 'No description available'}
                         </p>
                         
-                        {record.symptoms && record.symptoms.length > 0 && (
+                        {record.diagnosis && record.diagnosis.length > 0 && (
                           <div className="mt-3">
-                            <span className="text-xs text-muted-foreground">Symptoms: </span>
+                            <span className="text-xs text-muted-foreground">Diagnosis: </span>
                             <div className="flex flex-wrap gap-1 mt-1">
-                              {record.symptoms.slice(0, 3).map((symptom, idx) => (
+                              {record.diagnosis.slice(0, 3).map((diagnosis, idx) => (
                                 <Badge key={idx} variant="secondary" className="text-xs">
-                                  {symptom}
+                                  {diagnosis}
                                 </Badge>
                               ))}
-                              {record.symptoms.length > 3 && (
+                              {record.diagnosis.length > 3 && (
                                 <Badge variant="outline" className="text-xs">
-                                  +{record.symptoms.length - 3} more
+                                  +{record.diagnosis.length - 3} more
                                 </Badge>
                               )}
                             </div>
