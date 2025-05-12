@@ -13,8 +13,8 @@ const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
 const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
 const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
-// Export default function that returns a Route element
-export default function AdminRoutes() {
+// Define the AdminRoutes component
+function AdminRoutesComponent() {
   return (
     <Route path="admin">
       <Route path="" element={
@@ -61,8 +61,9 @@ export default function AdminRoutes() {
   );
 }
 
-// Named export for backwards compatibility
-export const AdminRoutes = AdminRoutes;
+// Default export
+export default AdminRoutesComponent;
 
-// Export ready to use routes element
-export const adminRoutes = <AdminRoutes />;
+// Named exports
+export const AdminRoutes = AdminRoutesComponent;
+export const adminRoutes = <AdminRoutesComponent />;
