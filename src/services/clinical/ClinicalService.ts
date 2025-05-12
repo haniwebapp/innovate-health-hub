@@ -122,11 +122,11 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Convert date strings to string format (not Date objects) to match ClinicalRecord type
       return data ? {
         ...data,
-        created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at)
+        created_at: data.created_at,
+        updated_at: data.updated_at
       } as ClinicalRecord : null;
     } catch (error) {
       console.error(`Error updating clinical record with ID ${id}:`, error);
