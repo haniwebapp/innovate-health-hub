@@ -42,7 +42,7 @@ const EventsSection = () => {
       <div className="container mx-auto px-4">
         <ScrollFadeIn>
           <div className="text-center mb-16">
-            <span className="text-blue-600 font-semibold text-sm uppercase tracking-wider">Connect & Learn</span>
+            <span className="text-moh-green font-semibold text-sm uppercase tracking-wider">Connect & Learn</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2 mb-4">
               Healthcare Innovation Events
             </h2>
@@ -69,30 +69,30 @@ const EventsSection = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 right-3">
-                  <Badge variant="secondary" className="bg-white text-blue-600 font-medium">
+                  <Badge variant="secondary" className="bg-white text-moh-green font-medium">
                     {event.type}
                   </Badge>
                 </div>
               </div>
               
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold mb-2 group-hover:text-moh-green transition-colors">
                   {event.title}
                 </h3>
                 
                 <div className="space-y-3 mb-4">
                   <div className="flex items-center text-gray-600">
-                    <CalendarDays className="h-5 w-5 text-blue-600 mr-2" />
+                    <CalendarDays className="h-5 w-5 text-moh-green mr-2" />
                     <span>{event.date}</span>
                   </div>
                   
                   <div className="flex items-center text-gray-600">
-                    <MapPin className="h-5 w-5 text-blue-600 mr-2" />
+                    <MapPin className="h-5 w-5 text-moh-green mr-2" />
                     <span>{event.location}</span>
                   </div>
                   
                   <div className="flex items-center text-gray-600">
-                    <Users className="h-5 w-5 text-blue-600 mr-2" />
+                    <Users className="h-5 w-5 text-moh-green mr-2" />
                     <span>{event.attendees}</span>
                   </div>
                 </div>
@@ -100,7 +100,7 @@ const EventsSection = () => {
                 <Button 
                   onClick={() => navigate("/dashboard/collaboration/events")}
                   variant="outline"
-                  className="w-full mt-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                  className="w-full mt-2 border-moh-green text-moh-green hover:bg-moh-green hover:text-white"
                 >
                   Learn More
                 </Button>
@@ -109,7 +109,7 @@ const EventsSection = () => {
           ))}
         </div>
 
-        <div className="bg-blue-50 rounded-xl p-8">
+        <div className="bg-moh-lightGreen rounded-xl p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl font-bold mb-4">Host Your Event</h3>
@@ -118,7 +118,7 @@ const EventsSection = () => {
               </p>
               <Button 
                 onClick={() => navigate("/dashboard/collaboration/events")} 
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-moh-green hover:bg-moh-darkGreen text-white"
               >
                 Submit Event Proposal
               </Button>
@@ -126,25 +126,25 @@ const EventsSection = () => {
             
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white p-5 rounded-lg text-center shadow-sm">
-                <Calendar className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                <Calendar className="h-8 w-8 text-moh-green mx-auto mb-2" />
                 <p className="font-semibold">30+ Events</p>
                 <p className="text-sm text-gray-500">Annual Calendar</p>
               </div>
               
               <div className="bg-white p-5 rounded-lg text-center shadow-sm">
-                <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                <Users className="h-8 w-8 text-moh-green mx-auto mb-2" />
                 <p className="font-semibold">10,000+</p>
                 <p className="text-sm text-gray-500">Attendees</p>
               </div>
               
               <div className="bg-white p-5 rounded-lg text-center shadow-sm">
-                <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                <MapPin className="h-8 w-8 text-moh-green mx-auto mb-2" />
                 <p className="font-semibold">12+ Cities</p>
                 <p className="text-sm text-gray-500">Across KSA</p>
               </div>
               
               <div className="bg-white p-5 rounded-lg text-center shadow-sm">
-                <Calendar className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                <Calendar className="h-8 w-8 text-moh-green mx-auto mb-2" />
                 <p className="font-semibold">4 Major</p>
                 <p className="text-sm text-gray-500">Annual Conferences</p>
               </div>

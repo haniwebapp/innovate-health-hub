@@ -1,3 +1,4 @@
+
 import { useRef } from "react";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
