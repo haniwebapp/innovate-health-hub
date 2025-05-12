@@ -1,12 +1,9 @@
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { format } from 'date-fns';
-import { StatusBadge } from './StatusBadge';
-import { RiskLevelBadge } from './RiskLevelBadge';
-import { SandboxApplication } from '@/types/sandboxTypes';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { SandboxApplication } from "@/types/sandboxTypes";
+import { formatDistanceToNow } from "date-fns";
+import { StatusBadge } from "./StatusBadge";
+import { RiskLevelBadge } from "./RiskLevelBadge";
 
 interface ApplicationsTableProps {
   applications: SandboxApplication[];
@@ -15,59 +12,47 @@ interface ApplicationsTableProps {
 
 export function ApplicationsTable({ applications, onViewApplication }: ApplicationsTableProps) {
   return (
-    <Card>
-      <CardHeader className="px-6 py-4">
-        <CardTitle>Applications</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Innovator</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Risk</TableHead>
+            <TableHead>Submitted</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {applications.length === 0 ? (
             <TableRow>
-              <TableHead className="w-[300px]">Application Name</TableHead>
-              <TableHead>Innovator</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Date Submitted</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Risk Level</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableCell colSpan={6} className="h-24 text-center">
+                No applications found
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {applications.length > 0 ? (
-              applications.map(application => (
-                <TableRow key={application.id}>
-                  <TableCell className="font-medium">{application.name}</TableCell>
-                  <TableCell>{application.innovator}</TableCell>
-                  <TableCell>{application.innovationType}</TableCell>
-                  <TableCell>{format(new Date(application.submittedAt), 'MMM d, yyyy')}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={application.status} />
-                  </TableCell>
-                  <TableCell>
-                    <RiskLevelBadge level={application.riskLevel} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onViewApplication(application.id)}
-                    >
-                      <Eye className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                  No applications match your filters
+          ) : (
+            applications.map((app) => (
+              <TableRow 
+                key={app.id} 
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => onViewApplication(app.id)}
+              >
+                <TableCell className="font-medium">{app.name}</TableCell>
+                <TableCell>{app.innovator}</TableCell>
+                <TableCell>{app.innovationType}</TableCell>
+                <TableCell>
+                  <StatusBadge status={app.status} />
                 </TableCell>
+                <TableCell>
+                  <RiskLevelBadge level={app.riskLevel} />
+                </TableCell>
+                <TableCell>{formatDistanceToNow(new Date(app.submittedAt), { addSuffix: true })}</TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

@@ -1824,6 +1824,7 @@ export type Database = {
       }
       sandbox_applications: {
         Row: {
+          clinical_validation_status: string | null
           created_at: string
           description: string
           end_date: string | null
@@ -1839,11 +1840,14 @@ export type Database = {
           start_date: string | null
           status: string
           submitted_at: string | null
+          target_audience: string | null
+          technical_details: Json | null
           testing_duration: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          clinical_validation_status?: string | null
           created_at?: string
           description: string
           end_date?: string | null
@@ -1859,11 +1863,14 @@ export type Database = {
           start_date?: string | null
           status?: string
           submitted_at?: string | null
+          target_audience?: string | null
+          technical_details?: Json | null
           testing_duration: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          clinical_validation_status?: string | null
           created_at?: string
           description?: string
           end_date?: string | null
@@ -1879,6 +1886,8 @@ export type Database = {
           start_date?: string | null
           status?: string
           submitted_at?: string | null
+          target_audience?: string | null
+          technical_details?: Json | null
           testing_duration?: string
           updated_at?: string
           user_id?: string
@@ -1932,6 +1941,13 @@ export type Database = {
             referencedRelation: "sandbox_applications"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sandbox_compliance_requirements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications_summary"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sandbox_feedback: {
@@ -1968,6 +1984,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "sandbox_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sandbox_feedback_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications_summary"
             referencedColumns: ["id"]
           },
         ]
@@ -2018,6 +2041,54 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "regulatory_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sandbox_testing_protocols: {
+        Row: {
+          application_id: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          protocol_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          protocol_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          protocol_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sandbox_testing_protocols_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sandbox_testing_protocols_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications_summary"
             referencedColumns: ["id"]
           },
         ]
@@ -2585,7 +2656,22 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      sandbox_applications_summary: {
+        Row: {
+          completed_requirements_count: number | null
+          id: string | null
+          innovation_type: string | null
+          innovator: string | null
+          name: string | null
+          progress: number | null
+          requirements_count: number | null
+          risk_level: string | null
+          status: string | null
+          submitted_at: string | null
+          test_results_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       analyze_application_compliance: {

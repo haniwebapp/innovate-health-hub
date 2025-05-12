@@ -1,34 +1,32 @@
 
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import AdminDashboardPage from "@/pages/dashboard/AdminDashboardPage";
-import AdminUsersPage from "@/pages/dashboard/AdminUsersPage";
-import AdminSettingsPage from "@/pages/admin/SettingsPage";
-import AdminIntegrationsPage from "@/pages/dashboard/AdminIntegrationsPage";
-import AdminAnalyticsPage from "@/pages/dashboard/AdminAnalyticsPage";
-import AiGovernancePage from "@/pages/admin/ai-governance/index";
-import ClinicalAdminPage from "@/pages/admin/clinical/index";
-import AdminLogsPage from "@/pages/admin/logs/index";
-import AdminSandboxPage from "@/pages/admin/sandbox/index";
-import AdminSandboxDetailPage from "@/pages/admin/sandbox/[id]";
-import AdminCmsPage from "@/pages/admin/cms/index";
+import { lazy } from "react";
+import { Route } from "react-router-dom";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
-export const AdminRoutes = () => {
+// Lazy loaded pages
+const AdminDashboardPage = lazy(() => import("@/pages/dashboard/AdminDashboardPage"));
+const AdminAnalyticsPage = lazy(() => import("@/pages/dashboard/AdminAnalyticsPage"));
+const AdminIntegrationsPage = lazy(() => import("@/pages/dashboard/AdminIntegrationsPage"));
+const AdminSettingsPage = lazy(() => import("@/pages/dashboard/AdminSettingsPage"));
+const AdminUsersPage = lazy(() => import("@/pages/dashboard/AdminUsersPage"));
+const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
+const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
+
+// We're fixing the import path here - removing the reference to the non-existent logs page
+// const AdminLogsPage = lazy(() => import("@/pages/admin/logs/index"));
+
+export default function AdminRoutes() {
   return (
-    <Routes>
+    <Route path="admin" element={<ProtectedRoute allowedRoles={["admin"]} />}>
       <Route index element={<AdminDashboardPage />} />
-      <Route path="users" element={<AdminUsersPage />} />
-      <Route path="settings" element={<AdminSettingsPage />} />
       <Route path="analytics" element={<AdminAnalyticsPage />} />
       <Route path="integrations" element={<AdminIntegrationsPage />} />
-      <Route path="logs" element={<AdminLogsPage />} />
-      <Route path="ai-governance" element={<AiGovernancePage />} />
-      <Route path="clinical" element={<ClinicalAdminPage />} />
+      <Route path="settings" element={<AdminSettingsPage />} />
+      <Route path="users" element={<AdminUsersPage />} />
       <Route path="sandbox" element={<AdminSandboxPage />} />
       <Route path="sandbox/:id" element={<AdminSandboxDetailPage />} />
-      <Route path="cms" element={<AdminCmsPage />} />
-    </Routes>
+      {/* Removing the logs route until we implement it
+      <Route path="logs" element={<AdminLogsPage />} /> */}
+    </Route>
   );
-};
-
-export const adminRoutes = <Route path="admin/*" element={<AdminRoutes />} />;
+}

@@ -1,18 +1,28 @@
 
-import { Search } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DateRangePicker } from '@/components/ui/date-range-picker';
-import { DateRange } from 'react-day-picker';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SandboxFilterState } from "@/types/sandboxTypes";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 interface SearchAndFilterSectionProps {
   searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  setSearchQuery: (value: string) => void;
   statusFilter: string;
-  setStatusFilter: (status: string) => void;
+  setStatusFilter: (value: string) => void;
   typeFilter: string;
-  setTypeFilter: (type: string) => void;
+  setTypeFilter: (value: string) => void;
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
 }
@@ -25,66 +35,84 @@ export function SearchAndFilterSection({
   typeFilter,
   setTypeFilter,
   date,
-  setDate
+  setDate,
 }: SearchAndFilterSectionProps) {
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                type="search"
-                placeholder="Search applications or innovators..."
-                className="pl-9"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
-            <Select
-              value={statusFilter}
-              onValueChange={setStatusFilter}
-            >
-              <SelectTrigger className="min-w-[150px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="in-review">In Review</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <Select
-              value={typeFilter}
-              onValueChange={setTypeFilter}
-            >
-              <SelectTrigger className="min-w-[180px]">
-                <SelectValue placeholder="Innovation Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Medical Device">Medical Device</SelectItem>
-                <SelectItem value="Digital Health">Digital Health</SelectItem>
-                <SelectItem value="Mobile Health App">Mobile Health App</SelectItem>
-                <SelectItem value="Software as Medical Device">Software as Medical Device</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <DateRangePicker
-              dateRange={date}
-              onDateRangeChange={setDate}
-              className="w-full"
-            />
-          </div>
+    <div className="flex flex-col space-y-4">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex-1">
+          <Input
+            placeholder="Search applications..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-md"
+          />
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="in-review">In Review</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Digital Health">Digital Health</SelectItem>
+              <SelectItem value="Medical Device">Medical Device</SelectItem>
+              <SelectItem value="Software as Medical Device">Software as Medical Device</SelectItem>
+              <SelectItem value="Mobile Health App">Mobile Health App</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "justify-start text-left font-normal w-52",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "LLL dd, y")} -{" "}
+                      {format(date.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(date.from, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Date Range</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+    </div>
   );
 }
