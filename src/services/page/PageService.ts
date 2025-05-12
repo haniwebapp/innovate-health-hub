@@ -105,7 +105,7 @@ export class PageService {
         throw new Error("User must be authenticated to create a page");
       }
       
-      // Fix: Convert PageContent to a plain object that can be serialized to JSON
+      // Convert PageContent to a plain object that can be serialized to JSON
       const dbPage = {
         slug: pageData.slug,
         title: pageData.title,
