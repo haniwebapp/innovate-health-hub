@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
@@ -29,7 +30,7 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   
-  // Updated navigation links with icons but no submenus - removed the new links
+  // Navigation links for mobile menu with icons
   const navigationLinks = [
     { path: "/innovations", label: "Innovations", icon: Lightbulb },
     { path: "/challenges", label: "Challenges", icon: Award },

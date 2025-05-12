@@ -24,7 +24,7 @@ interface NavbarMainLinksProps {
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
   
-  // Updated main links with icons - removed the new links
+  // Main navigation links with icons
   const mainLinks = [
     { path: "/innovations", label: "Innovations", icon: Lightbulb },
     { path: "/challenges", label: "Challenges", icon: Award },
