@@ -13,7 +13,7 @@ const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
 const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
 const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
-// Define the AdminRoutes as a Fragment containing Route elements
+// Define the AdminRoutes as a collection of routes
 const AdminRoutes = () => (
   <>
     <Route path="admin" element={
