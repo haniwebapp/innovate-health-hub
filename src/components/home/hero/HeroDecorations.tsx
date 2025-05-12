@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Dna, BrainCircuit, Stethoscope } from "lucide-react";
 
 export function HeroDecorations() {
   // Generate a set of random positions for animated elements
@@ -16,6 +16,33 @@ export function HeroDecorations() {
 
   // Background particles
   const particles = generateRandomPositions(12, { width: 100, height: 100 });
+
+  // DNA genetic code letters
+  const geneticLetters = ['A', 'T', 'G', 'C'];
+  
+  // AI symbols and binary sequences
+  const aiSymbols = ['01', '10', '00', '11', '{AI}', '{}', '<>', '[]'];
+  
+  // Medical terms and symbols
+  const medicalSymbols = ['+', 'Rx', 'Hz', 'mg', 'DNA', 'RNA'];
+
+  // Generate sequences for flowing animations
+  const generateSequences = (count: number, symbols: string[]) => {
+    return Array.from({ length: count }, () => ({
+      symbol: symbols[Math.floor(Math.random() * symbols.length)],
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      opacity: Math.random() * 0.3 + 0.1,
+      size: Math.random() * 14 + 8,
+      duration: Math.random() * 30 + 20,
+      delay: Math.random() * 10,
+      direction: Math.random() > 0.5 ? 1 : -1
+    }));
+  };
+
+  const dnaSequences = generateSequences(15, geneticLetters);
+  const aiSequences = generateSequences(12, aiSymbols);
+  const medicalSequences = generateSequences(10, medicalSymbols);
 
   return (
     <>
@@ -88,6 +115,102 @@ export function HeroDecorations() {
             delay: particle.delay,
           }}
         />
+      ))}
+      
+      {/* DNA sequence flowing animations */}
+      {dnaSequences.map((sequence, index) => (
+        <motion.div
+          key={`dna-${index}`}
+          className="absolute hidden md:flex items-center justify-center backdrop-blur-sm"
+          style={{
+            left: `${sequence.x}%`,
+            top: `${sequence.y}%`,
+            fontSize: `${sequence.size}px`,
+            opacity: sequence.opacity,
+            color: 'rgba(0, 129, 74, 0.6)',
+          }}
+          initial={{ x: sequence.direction > 0 ? -100 : 100 }}
+          animate={{
+            x: sequence.direction > 0 ? "100vw" : "-100vw",
+          }}
+          transition={{
+            duration: sequence.duration,
+            repeat: Infinity,
+            delay: sequence.delay,
+            ease: "linear",
+          }}
+        >
+          <div className="flex items-center bg-white/20 backdrop-blur-sm px-1 rounded-md">
+            <Dna className="mr-1 opacity-70" size={sequence.size} strokeWidth={1} />
+            <span>{sequence.symbol}</span>
+          </div>
+        </motion.div>
+      ))}
+      
+      {/* AI sequence flowing animations */}
+      {aiSequences.map((sequence, index) => (
+        <motion.div
+          key={`ai-${index}`}
+          className="absolute hidden md:flex items-center justify-center backdrop-blur-sm"
+          style={{
+            left: `${sequence.x}%`,
+            top: `${sequence.y}%`,
+            fontSize: `${sequence.size}px`,
+            opacity: sequence.opacity,
+            color: 'rgba(195, 168, 107, 0.6)',
+          }}
+          initial={{ 
+            y: sequence.direction > 0 ? -100 : 100 
+          }}
+          animate={{
+            y: sequence.direction > 0 ? "100vh" : "-100vh",
+          }}
+          transition={{
+            duration: sequence.duration,
+            repeat: Infinity,
+            delay: sequence.delay,
+            ease: "linear",
+          }}
+        >
+          <div className="flex items-center bg-white/20 backdrop-blur-sm px-1 rounded-md">
+            <BrainCircuit className="mr-1 opacity-70" size={sequence.size} strokeWidth={1} />
+            <span>{sequence.symbol}</span>
+          </div>
+        </motion.div>
+      ))}
+      
+      {/* Medical sequence flowing animations */}
+      {medicalSequences.map((sequence, index) => (
+        <motion.div
+          key={`med-${index}`}
+          className="absolute hidden md:flex items-center justify-center backdrop-blur-sm"
+          style={{
+            left: `${sequence.x}%`,
+            top: `${sequence.y}%`,
+            fontSize: `${sequence.size}px`,
+            opacity: sequence.opacity,
+            color: sequence.direction > 0 ? 'rgba(0, 129, 74, 0.6)' : 'rgba(195, 168, 107, 0.6)',
+          }}
+          initial={{ 
+            x: sequence.direction > 0 ? -100 : 100,
+            y: sequence.direction > 0 ? -50 : 50
+          }}
+          animate={{
+            x: sequence.direction > 0 ? "100vw" : "-100vw",
+            y: sequence.direction > 0 ? "50vh" : "-50vh"
+          }}
+          transition={{
+            duration: sequence.duration,
+            repeat: Infinity,
+            delay: sequence.delay,
+            ease: "linear",
+          }}
+        >
+          <div className="flex items-center bg-white/20 backdrop-blur-sm px-1 rounded-md">
+            <Stethoscope className="mr-1 opacity-70" size={sequence.size} strokeWidth={1} />
+            <span>{sequence.symbol}</span>
+          </div>
+        </motion.div>
       ))}
       
       {/* Sparkle icon animations */}
