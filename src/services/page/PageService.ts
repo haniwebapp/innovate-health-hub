@@ -105,12 +105,12 @@ export class PageService {
         throw new Error("User must be authenticated to create a page");
       }
       
-      // The key change here is to explicitly convert the content object to a JSON string
-      // and then back when retrieving it, to ensure proper typing
+      // Fix: Convert PageContent to a plain object that can be serialized to JSON
       const dbPage = {
         slug: pageData.slug,
         title: pageData.title,
-        content: pageData.content, // Supabase will handle the JSON serialization
+        // Convert the content object to a JSON-compatible format
+        content: pageData.content as unknown as Record<string, any>,
         meta_description: pageData.metaDescription,
         published: pageData.published || false,
         last_updated_by: user.data.user.id
@@ -142,11 +142,11 @@ export class PageService {
         throw new Error("User must be authenticated to update a page");
       }
       
-      const dbPage: any = {};
+      const dbPage: Record<string, any> = {};
       
       if (pageData.slug) dbPage.slug = pageData.slug;
       if (pageData.title) dbPage.title = pageData.title;
-      if (pageData.content) dbPage.content = pageData.content; // Supabase will handle the JSON serialization
+      if (pageData.content) dbPage.content = pageData.content as unknown as Record<string, any>;
       if (pageData.metaDescription !== undefined) dbPage.meta_description = pageData.metaDescription;
       if (pageData.published !== undefined) dbPage.published = pageData.published;
       
@@ -221,11 +221,14 @@ export class PageService {
    * Map a single database page object to client-side object
    */
   private static mapDbPageToClient(dbPage: any): WebsitePage {
+    // When retrieving from the database, ensure the content is properly typed
+    const content = dbPage.content as unknown as PageContent;
+    
     return {
       id: dbPage.id,
       slug: dbPage.slug,
       title: dbPage.title,
-      content: dbPage.content as PageContent, // Explicitly cast to PageContent
+      content: content || { sections: [] }, // Provide a default if null/undefined
       metaDescription: dbPage.meta_description,
       lastUpdatedBy: dbPage.last_updated_by,
       published: dbPage.published,
