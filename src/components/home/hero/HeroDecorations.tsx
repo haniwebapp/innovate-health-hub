@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, Stethoscope, Pill, Microscope, Dna, HeartPulse, Syringe } from "lucide-react";
+import { Heart, Stethoscope, Pill, Microscope, Dna, HeartPulse, Syringe, Sparkles } from "lucide-react";
 import {
   FloatingParticles,
   GradientBlobs,
