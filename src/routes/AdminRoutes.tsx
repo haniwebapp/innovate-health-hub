@@ -13,50 +13,52 @@ const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
 const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
 const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
-// Define the AdminRoutes as a proper React component returning routes
-const AdminRoutes = () => (
-  <>
-    <Route path="admin" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminDashboardPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/analytics" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminAnalyticsPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/integrations" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminIntegrationsPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/settings" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminSettingsPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/users" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminUsersPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/sandbox" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminSandboxPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/sandbox/:id" element={
-      <ProtectedRoute adminOnly={true}>
-        <AdminSandboxDetailPage />
-      </ProtectedRoute>
-    } />
-    <Route path="admin/ai-governance" element={
-      <ProtectedRoute adminOnly={true}>
-        <AIGovernancePage />
-      </ProtectedRoute>
-    } />
-  </>
-);
+// Export the routes directly without wrapping in a component
+const AdminRoutes = () => {
+  return (
+    <>
+      <Route path="admin" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminDashboardPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/analytics" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminAnalyticsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/integrations" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminIntegrationsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/settings" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminSettingsPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/users" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminUsersPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/sandbox" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminSandboxPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/sandbox/:id" element={
+        <ProtectedRoute adminOnly={true}>
+          <AdminSandboxDetailPage />
+        </ProtectedRoute>
+      } />
+      <Route path="admin/ai-governance" element={
+        <ProtectedRoute adminOnly={true}>
+          <AIGovernancePage />
+        </ProtectedRoute>
+      } />
+    </>
+  );
+};
 
 export default AdminRoutes;
