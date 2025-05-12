@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { PageService } from '@/services/page/PageService';
 import { WebsitePage } from '@/types/pageTypes';
 import { NavbarMainLinks } from './NavbarMainLinks';
@@ -11,6 +11,14 @@ import { SearchDialog } from './SearchDialog';
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [cmsPages, setCmsPages] = useState<WebsitePage[]>([]);
+  const location = useLocation();
+  
+  // Function to check if a route is active
+  const isRouteActive = (path: string): boolean => {
+    // Check if current path exactly matches the given path or if it starts with the path (for nested routes)
+    return location.pathname === path || 
+           (path !== '/' && location.pathname.startsWith(path));
+  };
   
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +56,7 @@ const Navbar = () => {
               HealthTech Innovate
             </span>
           </Link>
-          <NavbarMainLinks />
+          <NavbarMainLinks isRouteActive={isRouteActive} />
           
           {/* CMS Pages in Navigation */}
           <div className="hidden md:flex items-center gap-6">

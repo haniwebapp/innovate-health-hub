@@ -1,18 +1,21 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import { PageService } from '@/services/page/PageService';
 import { WebsitePage } from '@/types/pageTypes';
 import { PageRenderer } from '@/components/cms/pages/PageRenderer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useToast } from '@/components/ui/use-toast';
 
 const DynamicPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [page, setPage] = useState<WebsitePage | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -34,17 +37,29 @@ const DynamicPage = () => {
           setError('This page is not published yet');
         } else {
           setPage(pageData);
+          // Set page title
+          document.title = `${pageData.title} | HealthTech Innovate`;
         }
       } catch (err) {
         console.error('Error fetching page:', err);
         setError('Failed to load page');
+        toast({
+          title: "Error",
+          description: "There was a problem loading the page. Please try again later.",
+          variant: "destructive"
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchPage();
-  }, [slug]);
+    
+    // Reset page title when unmounting
+    return () => {
+      document.title = 'HealthTech Innovate';
+    };
+  }, [slug, toast]);
 
   if (loading) {
     return (
@@ -58,7 +73,12 @@ const DynamicPage = () => {
 
   if (error || !page) {
     return (
-      <div className="container mx-auto py-12">
+      <motion.div 
+        className="container mx-auto py-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
@@ -66,11 +86,19 @@ const DynamicPage = () => {
             {error || 'Page not found'}
           </AlertDescription>
         </Alert>
-      </div>
+      </motion.div>
     );
   }
 
-  return <PageRenderer page={page} />;
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      <PageRenderer page={page} />
+    </motion.div>
+  );
 };
 
 export default DynamicPage;
