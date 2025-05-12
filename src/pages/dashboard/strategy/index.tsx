@@ -8,7 +8,8 @@ import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { Vision2030AlignmentChecker } from '@/components/policy/vision-alignment/Vision2030AlignmentChecker';
 import { PolicyImpactSimulator } from '@/components/policy/PolicyImpactSimulator';
 import { StrategyAnalytics } from '@/components/policy/strategy/StrategyAnalytics';
-import { BarChart3, BookOpen, LucideFolder, Settings, ShieldCheck } from 'lucide-react';
+import { StrategyGapAnalyzer } from '@/components/policy/strategy/StrategyGapAnalyzer';
+import { BarChart3, BookOpen, LucideFolder, Settings, ShieldCheck, TrendingUp } from 'lucide-react';
 
 export default function StrategyDashboard() {
   const [activeTab, setActiveTab] = React.useState("overview");
@@ -35,6 +36,7 @@ export default function StrategyDashboard() {
           <TabsTrigger value="alignment">Vision 2030</TabsTrigger>
           <TabsTrigger value="simulation">Impact Simulation</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="gap-analyzer">Gap Analyzer</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
         </TabsList>
         
@@ -73,6 +75,13 @@ export default function StrategyDashboard() {
                     onClick={() => setActiveTab("analytics")}
                   >
                     <Settings className="h-4 w-4" /> Strategy Analytics
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex items-center justify-start gap-2"
+                    onClick={() => setActiveTab("gap-analyzer")}
+                  >
+                    <TrendingUp className="h-4 w-4" /> Gap Analysis
                   </Button>
                   <Button 
                     variant="outline" 
@@ -170,6 +179,10 @@ export default function StrategyDashboard() {
         
         <TabsContent value="analytics">
           <StrategyAnalytics />
+        </TabsContent>
+        
+        <TabsContent value="gap-analyzer">
+          <StrategyGapAnalyzer />
         </TabsContent>
         
         <TabsContent value="resources">

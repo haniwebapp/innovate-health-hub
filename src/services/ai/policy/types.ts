@@ -173,3 +173,69 @@ export interface PolicyQAResult {
   suggestions: string[];
   error?: string;
 }
+
+/**
+ * Interface for benchmark data
+ */
+export interface BenchmarkData {
+  id: string;
+  name: string;
+  source: string;
+  scope: "global" | "regional" | "national";
+  metrics: BenchmarkMetric[];
+}
+
+/**
+ * Interface for an individual benchmark metric
+ */
+export interface BenchmarkMetric {
+  id: string;
+  name: string;
+  category: string;
+  value: number;
+  unit: string;
+  description?: string;
+}
+
+/**
+ * Interface for strategy metric
+ */
+export interface StrategyMetric {
+  id: string;
+  name: string;
+  category: string;
+  currentValue: number;
+  targetValue: number;
+  unit: string;
+  description?: string;
+}
+
+/**
+ * Interface for strategy gap analysis results
+ */
+export interface StrategyGapAnalysisResult {
+  overallScore: number;
+  categoryScores: {
+    category: string;
+    score: number;
+    benchmarkComparison: number; // Percentage relative to benchmark
+  }[];
+  gaps: {
+    metricId: string;
+    metricName: string;
+    category: string;
+    currentValue: number;
+    benchmarkValue: number;
+    gap: number;
+    gapPercentage: number;
+    priority: "critical" | "high" | "medium" | "low";
+  }[];
+  recommendations: {
+    category: string;
+    description: string;
+    expectedImpact: string;
+    timeframe: "short" | "medium" | "long";
+  }[];
+  benchmarkSource: string;
+  error?: string;
+}

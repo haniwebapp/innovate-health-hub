@@ -3,6 +3,7 @@ import { VisionAlignmentService } from "./policy/VisionAlignmentService";
 import { ImpactSimulationService } from "./policy/ImpactSimulationService";
 import { BestPracticesService } from "./policy/BestPracticesService";
 import { PolicyAnnotationService } from "./policy/PolicyAnnotationService";
+import { StrategyGapService } from "./policy/StrategyGapService";
 
 // Re-export types from the policy types file
 export * from "./policy/types";
@@ -27,4 +28,9 @@ export class PolicyAIService {
   static annotatePolicy = PolicyAnnotationService.annotatePolicy;
   static getImplementationGuidance = PolicyAnnotationService.getImplementationGuidance;
   static askPolicyQuestion = PolicyAnnotationService.askQuestion;
+  
+  // Strategy Gap Analysis services
+  static getAvailableBenchmarks = StrategyGapService.getAvailableBenchmarks;
+  static getCurrentStrategyMetrics = StrategyGapService.getCurrentStrategyMetrics;
+  static analyzeStrategyGaps = StrategyGapService.analyzeStrategyGaps;
 }

@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.feedback-summarizer]
 verify_jwt = false
+
+[functions.strategy-gap-analysis]
+verify_jwt = false

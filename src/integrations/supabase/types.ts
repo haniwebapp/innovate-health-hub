@@ -39,6 +39,175 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_analytics: {
+        Row: {
+          created_at: string
+          dimension: string | null
+          end_date: string
+          id: string
+          metric_name: string
+          metric_value: number
+          start_date: string
+          time_period: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dimension?: string | null
+          end_date: string
+          id?: string
+          metric_name: string
+          metric_value: number
+          start_date: string
+          time_period: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dimension?: string | null
+          end_date?: string
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          start_date?: string
+          time_period?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      admin_logs: {
+        Row: {
+          created_at: string
+          details: Json
+          duration_ms: number | null
+          environment: string | null
+          id: string
+          ip_address: string | null
+          log_type: string
+          request_path: string | null
+          resource_id: string | null
+          session_id: string | null
+          severity: string
+          source: string
+          status_code: number | null
+          tags: string[] | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details: Json
+          duration_ms?: number | null
+          environment?: string | null
+          id?: string
+          ip_address?: string | null
+          log_type: string
+          request_path?: string | null
+          resource_id?: string | null
+          session_id?: string | null
+          severity: string
+          source: string
+          status_code?: number | null
+          tags?: string[] | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          duration_ms?: number | null
+          environment?: string | null
+          id?: string
+          ip_address?: string | null
+          log_type?: string
+          request_path?: string | null
+          resource_id?: string | null
+          session_id?: string | null
+          severity?: string
+          source?: string
+          status_code?: number | null
+          tags?: string[] | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ai_call_traces: {
+        Row: {
+          duration: number | null
+          endpoint: string | null
+          id: string
+          operation_log_id: string
+          request_data: Json | null
+          response_data: Json | null
+          service_name: string
+          timestamp: string
+          trace_type: string
+        }
+        Insert: {
+          duration?: number | null
+          endpoint?: string | null
+          id?: string
+          operation_log_id: string
+          request_data?: Json | null
+          response_data?: Json | null
+          service_name: string
+          timestamp?: string
+          trace_type: string
+        }
+        Update: {
+          duration?: number | null
+          endpoint?: string | null
+          id?: string
+          operation_log_id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          service_name?: string
+          timestamp?: string
+          trace_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_call_traces_operation_log_id_fkey"
+            columns: ["operation_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_operations_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_feedback: {
+        Row: {
+          created_at: string
+          feedback_text: string | null
+          id: string
+          operation_log_id: string
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          operation_log_id: string
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          operation_log_id?: string
+          rating?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_feedback_operation_log_id_fkey"
+            columns: ["operation_log_id"]
+            isOneToOne: false
+            referencedRelation: "ai_operations_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_match_scores: {
         Row: {
           analyzed_at: string
@@ -79,6 +248,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_monitoring_logs: {
+        Row: {
+          created_at: string
+          endpoint: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          request_payload: Json | null
+          response_payload: Json | null
+          service_name: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          request_payload?: Json | null
+          response_payload?: Json | null
+          service_name: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          request_payload?: Json | null
+          response_payload?: Json | null
+          service_name?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ai_operations_logs: {
+        Row: {
+          created_at: string
+          duration: number | null
+          error_details: string | null
+          id: string
+          input_summary: Json | null
+          metadata: Json | null
+          operation_name: string
+          output_summary: Json | null
+          service_name: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration?: number | null
+          error_details?: string | null
+          id?: string
+          input_summary?: Json | null
+          metadata?: Json | null
+          operation_name: string
+          output_summary?: Json | null
+          service_name: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration?: number | null
+          error_details?: string | null
+          id?: string
+          input_summary?: Json | null
+          metadata?: Json | null
+          operation_name?: string
+          output_summary?: Json | null
+          service_name?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       application_compliance: {
         Row: {
@@ -330,6 +580,121 @@ export type Database = {
         }
         Relationships: []
       }
+      clinical_analyses: {
+        Row: {
+          analysis_type: string
+          confidence: number | null
+          created_at: string
+          created_by: string
+          id: string
+          record_id: string
+          results: Json
+        }
+        Insert: {
+          analysis_type: string
+          confidence?: number | null
+          created_at?: string
+          created_by: string
+          id?: string
+          record_id: string
+          results: Json
+        }
+        Update: {
+          analysis_type?: string
+          confidence?: number | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          record_id?: string
+          results?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_analyses_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinical_records: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          diagnosis: string[] | null
+          id: string
+          medical_codes: Json | null
+          record_type: string
+          related_innovation_id: string | null
+          symptoms: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          diagnosis?: string[] | null
+          id?: string
+          medical_codes?: Json | null
+          record_type: string
+          related_innovation_id?: string | null
+          symptoms?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          diagnosis?: string[] | null
+          id?: string
+          medical_codes?: Json | null
+          record_type?: string
+          related_innovation_id?: string | null
+          symptoms?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      clinical_tags: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          id: string
+          record_id: string
+          source: string
+          tag: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          record_id: string
+          source: string
+          tag: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          record_id?: string
+          source?: string
+          tag?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_tags_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           content: string
@@ -370,6 +735,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      compliance_records: {
+        Row: {
+          applicable_regulations: string[] | null
+          compliance_type: string
+          created_at: string
+          created_by: string
+          description: string
+          evidence_links: string[] | null
+          id: string
+          resource_id: string | null
+          resource_type: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          standard_name: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          applicable_regulations?: string[] | null
+          compliance_type: string
+          created_at?: string
+          created_by: string
+          description: string
+          evidence_links?: string[] | null
+          id?: string
+          resource_id?: string | null
+          resource_type?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          standard_name: string
+          status: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          applicable_regulations?: string[] | null
+          compliance_type?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          evidence_links?: string[] | null
+          id?: string
+          resource_id?: string | null
+          resource_type?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          standard_name?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       compliance_requirements: {
         Row: {
@@ -1405,6 +1824,7 @@ export type Database = {
       }
       sandbox_applications: {
         Row: {
+          clinical_validation_status: string | null
           created_at: string
           description: string
           end_date: string | null
@@ -1420,11 +1840,14 @@ export type Database = {
           start_date: string | null
           status: string
           submitted_at: string | null
+          target_audience: string | null
+          technical_details: Json | null
           testing_duration: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          clinical_validation_status?: string | null
           created_at?: string
           description: string
           end_date?: string | null
@@ -1440,11 +1863,14 @@ export type Database = {
           start_date?: string | null
           status?: string
           submitted_at?: string | null
+          target_audience?: string | null
+          technical_details?: Json | null
           testing_duration: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          clinical_validation_status?: string | null
           created_at?: string
           description?: string
           end_date?: string | null
@@ -1460,6 +1886,8 @@ export type Database = {
           start_date?: string | null
           status?: string
           submitted_at?: string | null
+          target_audience?: string | null
+          technical_details?: Json | null
           testing_duration?: string
           updated_at?: string
           user_id?: string
@@ -1513,6 +1941,13 @@ export type Database = {
             referencedRelation: "sandbox_applications"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sandbox_compliance_requirements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications_summary"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sandbox_feedback: {
@@ -1549,6 +1984,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "sandbox_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sandbox_feedback_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications_summary"
             referencedColumns: ["id"]
           },
         ]
@@ -1599,6 +2041,54 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "regulatory_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sandbox_testing_protocols: {
+        Row: {
+          application_id: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          protocol_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          protocol_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          protocol_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sandbox_testing_protocols_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sandbox_testing_protocols_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "sandbox_applications_summary"
             referencedColumns: ["id"]
           },
         ]
@@ -1896,6 +2386,45 @@ export type Database = {
           },
         ]
       }
+      user_activity_summary: {
+        Row: {
+          comment_count: number | null
+          created_at: string
+          event_participation_count: number | null
+          id: string
+          last_login_at: string | null
+          login_count: number | null
+          resource_view_count: number | null
+          submission_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment_count?: number | null
+          created_at?: string
+          event_participation_count?: number | null
+          id?: string
+          last_login_at?: string | null
+          login_count?: number | null
+          resource_view_count?: number | null
+          submission_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment_count?: number | null
+          created_at?: string
+          event_participation_count?: number | null
+          id?: string
+          last_login_at?: string | null
+          login_count?: number | null
+          resource_view_count?: number | null
+          submission_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_learning_progress: {
         Row: {
           completed_at: string | null
@@ -2127,7 +2656,22 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      sandbox_applications_summary: {
+        Row: {
+          completed_requirements_count: number | null
+          id: string | null
+          innovation_type: string | null
+          innovator: string | null
+          name: string | null
+          progress: number | null
+          requirements_count: number | null
+          risk_level: string | null
+          status: string | null
+          submitted_at: string | null
+          test_results_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       analyze_application_compliance: {
@@ -2147,6 +2691,17 @@ export type Database = {
         Args: { "": string } | { "": unknown }
         Returns: unknown
       }
+      detect_log_anomalies: {
+        Args: { hours_window?: number }
+        Returns: {
+          log_type: string
+          source: string
+          normal_count: number
+          current_count: number
+          percent_change: number
+          is_anomaly: boolean
+        }[]
+      }
       get_challenge_submissions: {
         Args: { input_challenge_id: string }
         Returns: {
@@ -2165,6 +2720,27 @@ export type Database = {
           user_first_name: string
           user_last_name: string
           user_organization: string
+        }[]
+      }
+      get_logs_by_date_range_and_environment: {
+        Args: { start_date: string; end_date: string; env?: string }
+        Returns: {
+          id: string
+          log_type: string
+          source: string
+          severity: string
+          details: Json
+          created_at: string
+          user_id: string
+          environment: string
+          count: number
+        }[]
+      }
+      get_logs_by_source: {
+        Args: { start_date: string; end_date: string }
+        Returns: {
+          source: string
+          count: number
         }[]
       }
       halfvec_avg: {
@@ -2252,6 +2828,13 @@ export type Database = {
       sparsevec_typmod_in: {
         Args: { "": unknown[] }
         Returns: number
+      }
+      summarize_logs_by_severity: {
+        Args: { start_date: string; end_date: string }
+        Returns: {
+          severity: string
+          count: number
+        }[]
       }
       vector_avg: {
         Args: { "": number[] }
