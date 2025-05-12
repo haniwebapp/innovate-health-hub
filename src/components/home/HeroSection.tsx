@@ -6,7 +6,8 @@ import { HeroButtons } from "./hero/HeroButtons";
 import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 import { HeroBackgroundEffect } from "./hero/HeroBackgroundEffect";
-import { ChevronDown, Dna, Atom } from "lucide-react";
+import { FloatingIcons } from "./hero/FloatingIcons";
+import { ChevronDown } from "lucide-react";
 import { useRef } from "react";
 
 export default function HeroSection() {
@@ -47,20 +48,6 @@ export default function HeroSection() {
     }
   };
 
-  // DNA icon animation
-  const dnaIconAnimation = {
-    initial: { scale: 0.8, opacity: 0 },
-    animate: { 
-      scale: [0.8, 1.2, 1],
-      opacity: [0, 1, 0.8],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        repeatType: "reverse" as const  // Fixed: Using as const to make it a literal type
-      }
-    }
-  };
-
   return (
     <motion.section
       ref={sectionRef}
@@ -71,32 +58,8 @@ export default function HeroSection() {
     >
       <HeroBackgroundEffect />
       
-      {/* Floating DNA icon */}
-      <motion.div
-        className="absolute top-24 left-8 hidden md:block"
-        initial={dnaIconAnimation.initial}
-        animate={dnaIconAnimation.animate}
-      >
-        <Dna className="text-moh-green/30" size={36} strokeWidth={1} />
-      </motion.div>
-      
-      {/* Floating Atom icon */}
-      <motion.div
-        className="absolute top-28 right-14 hidden md:block"
-        initial={dnaIconAnimation.initial}
-        animate={{
-          scale: [0.8, 1.1, 0.8],
-          opacity: [0, 0.7, 0],
-          rotate: [0, 360],
-          transition: {
-            duration: 8,
-            repeat: Infinity,
-            repeatType: "reverse" as const  // Fixed: Using as const to make it a literal type
-          }
-        }}
-      >
-        <Atom className="text-moh-gold/30" size={32} strokeWidth={1} />
-      </motion.div>
+      {/* Floating DNA and Atom icons */}
+      <FloatingIcons />
       
       <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10 bg-repeat"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
