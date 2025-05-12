@@ -11,7 +11,10 @@ import {
   BrainCircuit,
   Activity,
   Stethoscope,
-  BoxSelect
+  BoxSelect,
+  FolderKanban,
+  CalendarDays,
+  ImageIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -61,6 +64,19 @@ export function SidebarAdminNav({ className, isCollapsed = false }: SidebarAdmin
       >
         <Users className="h-4 w-4" />
         {!isCollapsed && <span>Users</span>}
+      </NavLink>
+
+      <NavLink
+        to="/dashboard/admin/cms"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+            isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+          )
+        }
+      >
+        <FolderKanban className="h-4 w-4" />
+        {!isCollapsed && <span>Content</span>}
       </NavLink>
 
       <NavLink

@@ -11,6 +11,7 @@ import ClinicalAdminPage from "@/pages/admin/clinical/index";
 import AdminLogsPage from "@/pages/admin/logs/index";
 import AdminSandboxPage from "@/pages/admin/sandbox/index";
 import AdminSandboxDetailPage from "@/pages/admin/sandbox/[id]";
+import AdminCmsPage from "@/pages/admin/cms/index";
 
 export const AdminRoutes = () => {
   return (
@@ -25,6 +26,7 @@ export const AdminRoutes = () => {
       <Route path="clinical" element={<ClinicalAdminPage />} />
       <Route path="sandbox" element={<AdminSandboxPage />} />
       <Route path="sandbox/:id" element={<AdminSandboxDetailPage />} />
+      <Route path="cms" element={<AdminCmsPage />} />
     </Routes>
   );
 };
