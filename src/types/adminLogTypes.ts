@@ -15,6 +15,8 @@ export interface AdminLog {
   environment: string;
   duration_ms: number;
   created_at: Date;
+  source?: string;
+  severity?: string;
 }
 
 export type LogSeverity = 'info' | 'warning' | 'error' | 'critical';
