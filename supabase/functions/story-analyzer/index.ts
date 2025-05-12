@@ -68,7 +68,7 @@ serve(async (req) => {
     // Engagement score based on story structure elements
     const hasHeadings = content.includes('#');
     const hasBulletPoints = content.includes('• ') || content.includes('* ');
-    const hasQuotes = content.includes('"') || content.includes(''');
+    const hasQuotes = content.includes('"') || content.includes("'");
     const hasNumbers = /\d+%|\d+ percent|\d+ patients/i.test(content);
     
     // Calculate engagement score (0-100)
