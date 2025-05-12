@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Heart, Stethoscope, Pill, Microscope, Dna, HeartPulse, Syringe, Sparkles } from "lucide-react";
 import {
@@ -176,30 +177,8 @@ export function HeroDecorations() {
         ))}
       </svg>
       
-      {/* Sparkle icon animations - enhanced visibility */}
-      <motion.div
-        className="absolute top-1/4 left-1/5 lg:block" // Removed 'hidden' to make visible on all screen sizes
-        animate={{
-          y: [-10, 10, -10],
-          opacity: [0.8, 1, 0.8],
-          scale: [0.8, 1, 0.8],
-        }}
-        transition={{ duration: 5, repeat: Infinity }}
-      >
-        <Sparkles className="text-moh-gold/60 w-8 h-8" /> {/* Increased opacity */}
-      </motion.div>
-      
-      <motion.div
-        className="absolute bottom-1/4 right-1/5 lg:block" // Removed 'hidden' to make visible on all screen sizes
-        animate={{
-          y: [10, -10, 10],
-          opacity: [0.8, 1, 0.8],
-          scale: [0.8, 1, 0.8],
-        }}
-        transition={{ duration: 6, repeat: Infinity, delay: 2 }}
-      >
-        <Sparkles className="text-moh-green/60 w-8 h-8" /> {/* Increased opacity */}
-      </motion.div>
+      {/* Using SparkleEffects component instead of inline code */}
+      <SparkleEffects />
       
       {/* Heartbeat line animation - Enhanced visibility */}
       <div className="absolute bottom-1/3 right-1/4 w-40 lg:block"> {/* Removed 'hidden' to make visible on all screen sizes */}
