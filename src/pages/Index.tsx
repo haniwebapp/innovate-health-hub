@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import Navbar from "@/components/layouts/Navbar";
 import HeroSection from "@/components/home/HeroSection";
-import AboutSection from "@/components/home/AboutSection";
 import PlatformHighlights from "@/components/home/PlatformHighlights";
 import AIDrivenSection from "@/components/home/AIDrivenSection";
 import HealthcareAnimation from "@/components/home/HealthcareAnimation";
@@ -11,6 +10,12 @@ import ChallengesSection from "@/components/home/ChallengesSection";
 import InnovationJourney from "@/components/home/InnovationJourney";
 import ProcessFlowSection from "@/components/home/ProcessFlowSection";
 import InnovationGallery from "@/components/home/InnovationGallery";
+import GuidedPathwaysSection from "@/components/home/GuidedPathwaysSection";
+import RegulatorySandboxSection from "@/components/home/RegulatorySandboxSection";
+import StartupResourcesSection from "@/components/home/StartupResourcesSection";
+import FundingOpportunitiesSection from "@/components/home/FundingOpportunitiesSection";
+import AboutSection from "@/components/home/AboutSection";
+import EventsSection from "@/components/home/EventsSection";
 import Footer from "@/components/home/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,11 +59,16 @@ const Index = () => {
         
         <main className="flex-grow pt-0 my-0 rounded-none py-0">
           <TooltipProvider>
-            {/* Enhanced home page section order for better user engagement */}
+            {/* Reorganized sections with new guidance components */}
             <HeroSection />
             <PlatformHighlights />
+            <GuidedPathwaysSection />
             <InnovationGallery />
             <ChallengesSection />
+            <RegulatorySandboxSection />
+            <StartupResourcesSection />
+            <FundingOpportunitiesSection />
+            <EventsSection />
             <AIDrivenSection />
             <InnovationJourney />
             <HealthcareAnimation />
