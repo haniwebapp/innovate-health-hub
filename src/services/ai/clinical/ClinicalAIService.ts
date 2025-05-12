@@ -43,6 +43,11 @@ export interface SimilarRecord {
   title: string;
   similarity: number;
   diagnosis: string[];
+  record_type?: string;
+  created_by?: string;
+  created_at?: string;
+  updated_at?: string;
+  description?: string;
 }
 
 export interface ClinicalTextAnalysisResult {
@@ -58,6 +63,10 @@ export interface ClinicalTextAnalysisResult {
     system: string;
   }[];
   keyFindings: string[];
+  // Adding the properties needed by ClinicalRecordForm
+  medicalCodes?: Record<string, any>;
+  symptoms?: string[];
+  diagnosis?: string[];
 }
 
 /**
@@ -261,7 +270,7 @@ export class ClinicalAIService {
    */
   static async generateRecommendations(
     recordId: string
-  ): Promise<string[]> {
+  ): Promise<{recommendations: string[], references: string[]}> {
     try {
       const { data: record, error } = await supabase
         .from('clinical_records')
@@ -278,7 +287,11 @@ export class ClinicalAIService {
         clinicalNotes: record.description
       });
 
-      return analysis.recommendedActions;
+      // Return both recommendations and references
+      return {
+        recommendations: analysis.recommendedActions,
+        references: [] // In a real app, this would contain reference data
+      };
     } catch (error: any) {
       console.error("Error generating recommendations:", error);
       throw AIService.handleError(error, "generateRecommendations", "clinical");
