@@ -9,6 +9,8 @@ import AdminAnalyticsPage from "@/pages/dashboard/AdminAnalyticsPage";
 import AiGovernancePage from "@/pages/admin/ai-governance/index";
 import ClinicalAdminPage from "@/pages/admin/clinical/index";
 import AdminLogsPage from "@/pages/admin/logs/index";
+import AdminSandboxPage from "@/pages/admin/sandbox/index";
+import AdminSandboxDetailPage from "@/pages/admin/sandbox/[id]";
 
 export const AdminRoutes = () => {
   return (
@@ -21,6 +23,8 @@ export const AdminRoutes = () => {
       <Route path="logs" element={<AdminLogsPage />} />
       <Route path="ai-governance" element={<AiGovernancePage />} />
       <Route path="clinical" element={<ClinicalAdminPage />} />
+      <Route path="sandbox" element={<AdminSandboxPage />} />
+      <Route path="sandbox/:id" element={<AdminSandboxDetailPage />} />
     </Routes>
   );
 };
