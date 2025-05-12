@@ -1,6 +1,5 @@
 
 import { MockPageService } from "./MockPageService";
-import { MockInnovationService } from "./MockInnovationService";
 import { toast } from "sonner";
 
 export class MockDataService {
@@ -14,8 +13,9 @@ export class MockDataService {
       // Generate mock pages
       const pagesCount = await MockPageService.generateMockPages();
       
-      // Generate mock innovations (commented out until the table is created)
+      // Add more mock data generators here as needed
       // const innovationsCount = await MockInnovationService.generateMockInnovations();
+      // const challengesCount = await MockChallengeService.generateMockChallenges();
       
       toast.success(`Mock data generated successfully! Created ${pagesCount} pages.`, { duration: 5000 });
     } catch (error) {
