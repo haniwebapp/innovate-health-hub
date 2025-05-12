@@ -7,15 +7,62 @@ import AdminLayout from "@/components/layouts/AdminLayout";
 import { ClinicalRecordViewer } from "@/components/clinical/ClinicalRecordViewer";
 import { ClinicalRecordForm } from "@/components/clinical/ClinicalRecordForm";
 import { FileText, Plus, Activity } from "lucide-react";
+import { ClinicalRecord } from '@/types/clinicalTypes';
+
+// Mock clinical record for demo purposes
+const mockRecord: ClinicalRecord = {
+  id: "cr-123",
+  title: "Cardiac Monitoring Device",
+  description: "Wearable device for continuous cardiac monitoring with real-time alerts and data analysis",
+  record_type: "Medical Device",
+  symptoms: ["Arrhythmia", "Chest Pain", "Palpitations"],
+  diagnosis: ["Atrial Fibrillation", "Heart Failure"],
+  created_by: "user-1",
+  created_at: "2025-05-10T08:30:00Z",
+  updated_at: "2025-05-11T14:45:00Z",
+  medical_codes: {
+    "ICD-10": "I48.91",
+    "CPT": "93224"
+  }
+};
 
 export default function AdminClinicalPage() {
   const [activeTab, setActiveTab] = useState("records");
   const [showNewRecordForm, setShowNewRecordForm] = useState(false);
-  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<ClinicalRecord | null>(mockRecord);
 
-  const handleRecordCreated = (recordId: string) => {
+  const handleRecordCreated = (data: {
+    title?: string;
+    description?: string;
+    diagnosis?: string[];
+    record_type?: string;
+    symptoms?: string[];
+  }) => {
+    // In a real implementation, this would save to the database
+    console.log("Creating record:", data);
+    
+    // Create a mock record with the submitted data
+    const newRecord: ClinicalRecord = {
+      id: `cr-${Date.now()}`,
+      title: data.title || "",
+      description: data.description,
+      record_type: data.record_type || "",
+      symptoms: data.symptoms,
+      diagnosis: data.diagnosis,
+      created_by: "user-1",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    setSelectedRecord(newRecord);
     setShowNewRecordForm(false);
-    setSelectedRecordId(recordId);
+  };
+
+  const handleUpdateRecord = () => {
+    // This would show the edit form in a real implementation
+    console.log("Update record requested");
+    // For this demo, we'll just toggle the form
+    setShowNewRecordForm(true);
   };
 
   return (
@@ -50,11 +97,12 @@ export default function AdminClinicalPage() {
             <ClinicalRecordForm 
               onSubmit={handleRecordCreated} 
               onCancel={() => setShowNewRecordForm(false)} 
+              initialData={selectedRecord || undefined}
             />
-          ) : selectedRecordId ? (
+          ) : selectedRecord ? (
             <ClinicalRecordViewer 
-              recordId={selectedRecordId} 
-              onUpdate={() => {}} 
+              record={selectedRecord} 
+              onUpdate={handleUpdateRecord} 
             />
           ) : (
             <Card className="border-dashed">

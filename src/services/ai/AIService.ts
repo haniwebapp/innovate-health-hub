@@ -1,6 +1,7 @@
 
 import { checkAIServices } from "./utils/AIServiceHealth";
 import { createTrace } from "./utils/AIServiceTracing";
+import { handleError } from "./utils/AIServiceErrors";
 
 export enum AIServiceType {
   INVESTMENT = "investment",
@@ -83,5 +84,42 @@ export class AIService {
    */
   static async checkAIServices(): Promise<void> {
     return checkAIServices();
+  }
+
+  /**
+   * Handle errors from AI service operations in a standardized way
+   * @param error Original error
+   * @param operation Operation being performed
+   * @param context Context in which the error occurred
+   * @returns Error with standardized properties
+   */
+  static handleError = handleError;
+
+  /**
+   * Create a trace for AI operations
+   */
+  static createTrace = createTrace;
+
+  /**
+   * Log AI operations for monitoring
+   */
+  static logAIOperation = async (
+    operation: string,
+    context: string,
+    input: any,
+    output: any,
+    userId?: string
+  ): Promise<void> => {
+    try {
+      console.log(`AI Operation: ${operation}`, {
+        context,
+        input: JSON.stringify(input),
+        output: JSON.stringify(output),
+        userId,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error logging AI operation:", error);
+    }
   }
 }

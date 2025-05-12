@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -232,7 +233,7 @@ export function PredictiveAnalytics() {
             </CardHeader>
             <CardContent className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <ReBarChart
+                <BarChart
                   data={mockRegulatoryTrends}
                   margin={{
                     top: 5,
@@ -248,7 +249,7 @@ export function PredictiveAnalytics() {
                   <Legend />
                   <Bar dataKey="changes" fill="#8884d8" name="Regulatory Changes" />
                   <Bar dataKey="impact" fill="#82ca9d" name="Estimated Impact Score" />
-                </ReBarChart>
+                </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>

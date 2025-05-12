@@ -12,6 +12,14 @@ export interface SimilarRecord {
   similarity?: number;
 }
 
+export interface TextAnalysisResult {
+  tags: string[];
+  categories: string[];
+  entities: string[];
+  summary?: string;
+  confidence: number;
+}
+
 export class ClinicalAIService {
   /**
    * Automatically generate tags for a clinical record
@@ -33,6 +41,27 @@ export class ClinicalAIService {
       "Telemonitoring",
       "Remote Care"
     ];
+  }
+
+  /**
+   * Analyze text content to extract clinical information
+   * @param text The text to analyze
+   * @returns Analysis results
+   */
+  static async analyzeText(text: string): Promise<TextAnalysisResult> {
+    console.log(`Analyzing clinical text: ${text.substring(0, 50)}...`);
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    // Return mock analysis results
+    return {
+      tags: ["Cardiovascular", "Device", "Monitoring", "Remote"],
+      categories: ["Medical Device", "Healthcare Technology"],
+      entities: ["ECG", "Heart Rate", "Arrhythmia"],
+      summary: "Text describes a cardiovascular monitoring device for remote patient care",
+      confidence: 0.92
+    };
   }
 
   /**

@@ -1,248 +1,300 @@
 
 import React, { useState } from 'react';
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Loader2, Tag, Sparkles } from "lucide-react";
+import { ClinicalAIService, TextAnalysisResult } from "@/services/ai/clinical/ClinicalAIService";
 import { toast } from "sonner";
-import { ClinicalAIService } from '@/services/ai/clinical/ClinicalAIService';
-import type { ClinicalRecord } from '@/types/clinicalTypes';
-
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-  record_type: z.string().min(1, "Record type is required"),
-  symptoms: z.array(z.string()).optional(),
-  diagnosis: z.array(z.string()).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
 
 interface ClinicalRecordFormProps {
-  initialData?: Partial<ClinicalRecord>;
-  onSubmit: (data: FormValues) => void;
-  onCancel?: () => void;
+  onSubmit: (data: {
+    title?: string;
+    description?: string;
+    diagnosis?: string[];
+    record_type?: string;
+    symptoms?: string[];
+  }) => void;
+  onCancel: () => void;
+  initialData?: {
+    id?: string;
+    title: string;
+    description?: string;
+    record_type: string;
+    symptoms?: string[];
+    diagnosis?: string[];
+  };
 }
 
-export function ClinicalRecordForm({ initialData, onSubmit, onCancel }: ClinicalRecordFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export function ClinicalRecordForm({ onSubmit, onCancel, initialData }: ClinicalRecordFormProps) {
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  const [recordType, setRecordType] = useState(initialData?.record_type || '');
+  const [symptoms, setSymptoms] = useState<string[]>(initialData?.symptoms || []);
+  const [diagnosis, setDiagnosis] = useState<string[]>(initialData?.diagnosis || []);
+  const [symptomInput, setSymptomInput] = useState('');
+  const [diagnosisInput, setDiagnosisInput] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: initialData?.title || "",
-      description: initialData?.description || "",
-      record_type: initialData?.record_type || "",
-      symptoms: initialData?.symptoms || [],
-      diagnosis: initialData?.diagnosis || [],
-    },
-  });
-  
-  const handleSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
-    try {
-      onSubmit(data);
-    } catch (error) {
-      console.error('Error submitting clinical record:', error);
-      toast.error('Failed to save clinical record');
-    } finally {
-      setIsSubmitting(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSymptomAdd = () => {
+    if (symptomInput.trim()) {
+      setSymptoms([...symptoms, symptomInput.trim()]);
+      setSymptomInput('');
     }
   };
 
-  const handleAnalyze = async () => {
-    const description = form.getValues('description');
+  const handleDiagnosisAdd = () => {
+    if (diagnosisInput.trim()) {
+      setDiagnosis([...diagnosis, diagnosisInput.trim()]);
+      setDiagnosisInput('');
+    }
+  };
+
+  const handleRemoveSymptom = (index: number) => {
+    const newSymptoms = [...symptoms];
+    newSymptoms.splice(index, 1);
+    setSymptoms(newSymptoms);
+  };
+
+  const handleRemoveDiagnosis = (index: number) => {
+    const newDiagnosis = [...diagnosis];
+    newDiagnosis.splice(index, 1);
+    setDiagnosis(newDiagnosis);
+  };
+
+  const handleAnalyzeText = async () => {
     if (!description) {
-      toast.error('Please enter a description to analyze');
+      toast.error("Please add a description to analyze");
       return;
     }
     
     setIsAnalyzing(true);
     try {
-      const result = await ClinicalAIService.analyzeText(description);
+      const analysis = await ClinicalAIService.analyzeText(description);
       
-      // Update the form with the analysis results
-      form.setValue('symptoms', result.symptoms);
-      form.setValue('diagnosis', result.diagnosis);
+      // Add any new tags found
+      if (analysis.tags) {
+        const newTags = analysis.tags.filter(
+          tag => !symptoms.some(s => s.toLowerCase() === tag.toLowerCase())
+        );
+        if (newTags.length > 0) {
+          setSymptoms([...symptoms, ...newTags]);
+        }
+      }
       
-      toast.success('Text analyzed successfully');
+      // Add any entity mentions as diagnoses
+      if (analysis.entities) {
+        const newEntities = analysis.entities.filter(
+          entity => !diagnosis.some(d => d.toLowerCase() === entity.toLowerCase())
+        );
+        if (newEntities.length > 0) {
+          setDiagnosis([...diagnosis, ...newEntities]);
+        }
+      }
+      
+      toast.success("Text analyzed successfully");
     } catch (error) {
-      console.error('Error analyzing text:', error);
-      toast.error('Failed to analyze text');
+      toast.error("Failed to analyze text");
+      console.error("Error analyzing text:", error);
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  const recordTypes = [
-    "Medical Device", 
-    "Digital Health Solution", 
-    "Wearable Tech", 
-    "Clinical Protocol", 
-    "Treatment Procedure",
-    "Health App",
-    "Diagnostic Tool"
-  ];
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!title || !recordType) {
+      toast.error("Title and record type are required");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      onSubmit({
+        title,
+        description,
+        record_type: recordType,
+        symptoms,
+        diagnosis
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to save record");
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{initialData ? 'Edit Clinical Record' : 'Create Clinical Record'}</CardTitle>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <CardContent className="space-y-4">
-            {/* Basic Information */}
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter clinical record title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <form onSubmit={handleSubmit}>
+      <Card>
+        <CardHeader>
+          <CardTitle>{initialData ? 'Edit Clinical Record' : 'New Clinical Record'}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="title">Title *</Label>
+            <Input 
+              id="title" 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter a title for the clinical record"
+              required
             />
-            
-            <FormField
-              control={form.control}
-              name="record_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Record Type</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select record type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {recordTypes.map((type) => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex justify-between items-center">
-                    <FormLabel>Description</FormLabel>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleAnalyze}
-                      disabled={isAnalyzing}
-                    >
-                      {isAnalyzing ? 'Analyzing...' : 'Analyze Text'}
-                    </Button>
-                  </div>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Enter detailed description" 
-                      rows={5}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Symptoms and Diagnosis */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="symptoms"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Symptoms</FormLabel>
-                    <div className="flex flex-wrap gap-2 border rounded-md p-3 min-h-[80px]">
-                      {field.value && field.value.length > 0 ? (
-                        field.value.map((symptom, index) => (
-                          <Badge 
-                            key={index} 
-                            variant="secondary"
-                            className="cursor-pointer"
-                            onClick={() => {
-                              const newSymptoms = field.value?.filter((_, i) => i !== index);
-                              form.setValue('symptoms', newSymptoms);
-                            }}
-                          >
-                            {symptom}
-                          </Badge>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground">No symptoms added</p>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="recordType">Record Type *</Label>
+            <Select value={recordType} onValueChange={setRecordType} required>
+              <SelectTrigger id="recordType">
+                <SelectValue placeholder="Select a record type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Medical Device">Medical Device</SelectItem>
+                <SelectItem value="Digital Health">Digital Health</SelectItem>
+                <SelectItem value="Pharmaceutical">Pharmaceutical</SelectItem>
+                <SelectItem value="Diagnostic">Diagnostic</SelectItem>
+                <SelectItem value="Treatment Protocol">Treatment Protocol</SelectItem>
+                <SelectItem value="Clinical Study">Clinical Study</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="description">Description</Label>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={handleAnalyzeText}
+                disabled={isAnalyzing || !description}
+                className="flex items-center gap-1"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span>Analyzing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-3 w-3" />
+                    <span>Analyze Text</span>
+                  </>
                 )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="diagnosis"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Diagnosis</FormLabel>
-                    <div className="flex flex-wrap gap-2 border rounded-md p-3 min-h-[80px]">
-                      {field.value && field.value.length > 0 ? (
-                        field.value.map((diagnosis, index) => (
-                          <Badge 
-                            key={index}
-                            className="cursor-pointer"
-                            onClick={() => {
-                              const newDiagnosis = field.value?.filter((_, i) => i !== index);
-                              form.setValue('diagnosis', newDiagnosis);
-                            }}
-                          >
-                            {diagnosis}
-                          </Badge>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground">No diagnosis added</p>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            {onCancel && (
-              <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
               </Button>
+            </div>
+            <Textarea 
+              id="description" 
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter a detailed description"
+              rows={5}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="symptoms">Symptoms/Tags</Label>
+            <div className="flex gap-2">
+              <Input 
+                id="symptoms" 
+                value={symptomInput}
+                onChange={(e) => setSymptomInput(e.target.value)}
+                placeholder="Add a symptom or tag"
+                className="flex-1"
+              />
+              <Button 
+                type="button" 
+                onClick={handleSymptomAdd}
+                disabled={!symptomInput.trim()}
+                className="flex-shrink-0"
+              >
+                Add
+              </Button>
+            </div>
+            {symptoms.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {symptoms.map((symptom, index) => (
+                  <div 
+                    key={index} 
+                    className="flex items-center bg-muted rounded-full px-3 py-1 text-sm"
+                  >
+                    <Tag className="h-3 w-3 mr-1 opacity-70" />
+                    {symptom}
+                    <button 
+                      type="button" 
+                      onClick={() => handleRemoveSymptom(index)}
+                      className="ml-2 text-muted-foreground hover:text-foreground"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : initialData ? 'Update Record' : 'Create Record'}
-            </Button>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="diagnosis">Diagnosis</Label>
+            <div className="flex gap-2">
+              <Input 
+                id="diagnosis" 
+                value={diagnosisInput}
+                onChange={(e) => setDiagnosisInput(e.target.value)}
+                placeholder="Add a diagnosis"
+                className="flex-1"
+              />
+              <Button 
+                type="button" 
+                onClick={handleDiagnosisAdd}
+                disabled={!diagnosisInput.trim()}
+                className="flex-shrink-0"
+              >
+                Add
+              </Button>
+            </div>
+            {diagnosis.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {diagnosis.map((item, index) => (
+                  <div 
+                    key={index} 
+                    className="flex items-center bg-blue-50 rounded-full px-3 py-1 text-sm"
+                  >
+                    {item}
+                    <button 
+                      type="button" 
+                      onClick={() => handleRemoveDiagnosis(index)}
+                      className="ml-2 text-muted-foreground hover:text-foreground"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </CardContent>
+        <CardFooter className="border-t pt-4 flex justify-between">
+          <Button variant="outline" type="button" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={isSubmitting || !title || !recordType}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              initialData ? 'Update Record' : 'Save Record'
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
+    </form>
   );
 }

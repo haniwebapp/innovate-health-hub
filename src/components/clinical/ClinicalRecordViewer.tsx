@@ -1,328 +1,234 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Tag, Zap, Lightbulb, LinkIcon } from "lucide-react";
-import { ClinicalAIService, SimilarRecord } from '@/services/ai/clinical/ClinicalAIService';
+import { ClinicalAIService } from "@/services/ai/clinical/ClinicalAIService";
+import { ClinicalRecord } from "@/types/clinicalTypes";
+import { FileText, Tag, Activity, Clock } from "lucide-react";
 import { toast } from "sonner";
-import type { ClinicalRecord, ClinicalTag } from '@/types/clinicalTypes';
 
-interface ClinicalRecordViewerProps {
+export interface ClinicalRecordViewerProps {
   record: ClinicalRecord;
-  onBack?: () => void;
-  onEdit?: () => void;
+  onUpdate: () => void;
 }
 
-export function ClinicalRecordViewer({ record, onBack, onEdit }: ClinicalRecordViewerProps) {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(false);
-  const [loadingSimilar, setLoadingSimilar] = useState(false);
-  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
-  const [tags, setTags] = useState<ClinicalTag[]>([]);
+export function ClinicalRecordViewer({ record, onUpdate }: ClinicalRecordViewerProps) {
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
+  const [isGeneratingRecommendations, setIsGeneratingRecommendations] = useState(false);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [references, setReferences] = useState<string[]>([]);
-  const [similarRecords, setSimilarRecords] = useState<SimilarRecord[]>([]);
-
-  useEffect(() => {
-    // Reset state when record changes
-    setTags([]);
-    setRecommendations([]);
-    setReferences([]);
-    setSimilarRecords([]);
-  }, [record.id]);
 
   const handleGenerateTags = async () => {
-    setLoading(true);
+    setIsGeneratingTags(true);
     try {
-      const generatedTags = await ClinicalAIService.autoTagRecord(record.id);
+      if (!record.id) {
+        toast.error("Record ID is required");
+        return;
+      }
       
-      // Convert string tags to ClinicalTag objects
-      const formattedTags: ClinicalTag[] = generatedTags.map(tag => {
-        if (typeof tag === 'string') {
-          return {
-            id: `temp-${Math.random().toString(36).substring(2, 11)}`,
-            tag: tag,
-            record_id: record.id,
-            source: 'ai-generated',
-            created_at: new Date().toISOString()
-          };
-        }
-        return tag;
-      });
-      
-      setTags(formattedTags);
-      toast.success('Tags generated successfully');
+      const tags = await ClinicalAIService.autoTagRecord(record.id);
+      toast.success("Tags generated successfully");
+      onUpdate();
     } catch (error) {
-      console.error('Error generating tags:', error);
-      toast.error('Failed to generate tags');
+      toast.error("Failed to generate tags");
+      console.error("Error generating tags:", error);
     } finally {
-      setLoading(false);
+      setIsGeneratingTags(false);
     }
   };
 
   const handleGenerateRecommendations = async () => {
-    setLoadingRecommendations(true);
+    setIsGeneratingRecommendations(true);
     try {
+      if (!record.id) {
+        toast.error("Record ID is required");
+        return;
+      }
+      
       const result = await ClinicalAIService.generateRecommendations(record.id);
       setRecommendations(result.recommendations);
       setReferences(result.references);
-      toast.success('Recommendations generated successfully');
+      toast.success("Recommendations generated successfully");
     } catch (error) {
-      console.error('Error generating recommendations:', error);
-      toast.error('Failed to generate recommendations');
+      toast.error("Failed to generate recommendations");
+      console.error("Error generating recommendations:", error);
     } finally {
-      setLoadingRecommendations(false);
-    }
-  };
-
-  const handleFindSimilarRecords = async () => {
-    setLoadingSimilar(true);
-    try {
-      const similar = await ClinicalAIService.findSimilarRecords(record.id);
-      setSimilarRecords(similar);
-      toast.success('Found similar records');
-    } catch (error) {
-      console.error('Error finding similar records:', error);
-      toast.error('Failed to find similar records');
-    } finally {
-      setLoadingSimilar(false);
+      setIsGeneratingRecommendations(false);
     }
   };
 
   return (
-    <Card className="border-0 shadow-none mb-6">
-      <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-xl font-bold">{record.title}</CardTitle>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-              <Clock className="h-4 w-4" />
-              <span>Created {new Date(record.created_at).toLocaleDateString()}</span>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle>{record.title}</CardTitle>
+              <CardDescription>{record.record_type}</CardDescription>
+            </div>
+            <div>
+              <Badge variant="outline">{new Date(record.created_at).toLocaleDateString()}</Badge>
             </div>
           </div>
-          <div className="flex gap-2">
-            {onEdit && (
-              <Button variant="outline" onClick={onEdit}>
-                Edit
-              </Button>
-            )}
-            {onBack && (
-              <Button variant="default" onClick={onBack}>
-                Back to List
-              </Button>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full grid grid-cols-3">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="ai-analysis">AI Analysis</TabsTrigger>
-          <TabsTrigger value="similar-records">Similar Records</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="overview" className="space-y-4 pt-4">
-          <CardContent className="space-y-4 px-6">
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {record.description && (
             <div>
-              <h3 className="font-medium mb-2">Record Type</h3>
-              <Badge variant="outline">{record.record_type}</Badge>
+              <h3 className="text-sm font-medium">Description</h3>
+              <p className="text-sm text-muted-foreground mt-1">{record.description}</p>
             </div>
+          )}
 
+          {record.symptoms && record.symptoms.length > 0 && (
             <div>
-              <h3 className="font-medium mb-2">Description</h3>
-              <p className="text-muted-foreground">{record.description || 'No description provided'}</p>
-            </div>
-
-            {record.symptoms && record.symptoms.length > 0 && (
-              <div>
-                <h3 className="font-medium mb-2">Symptoms</h3>
-                <div className="flex flex-wrap gap-2">
-                  {record.symptoms.map((symptom, index) => (
-                    <Badge key={index} variant="secondary">{symptom}</Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {record.diagnosis && record.diagnosis.length > 0 && (
-              <div>
-                <h3 className="font-medium mb-2">Diagnosis</h3>
-                <div className="flex flex-wrap gap-2">
-                  {record.diagnosis.map((diagnosis, index) => (
-                    <Badge key={index}>{diagnosis}</Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {record.medical_codes && (
-              <div>
-                <h3 className="font-medium mb-2">Medical Codes</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {Object.entries(record.medical_codes).map(([codeType, code]) => (
-                    <div key={codeType} className="flex items-center gap-2">
-                      <span className="font-medium">{codeType}:</span>
-                      <span>{code}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </TabsContent>
-        
-        <TabsContent value="ai-analysis" className="space-y-4 pt-4">
-          <CardContent className="px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-base flex items-center gap-2">
-                      <Tag className="h-4 w-4" />
-                      <span>Auto-Generated Tags</span>
-                    </CardTitle>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleGenerateTags}
-                      disabled={loading}
-                    >
-                      {loading ? "Generating..." : "Generate Tags"}
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {tags.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {tags.map((tag, index) => (
-                        <Badge key={index} variant="outline">
-                          {typeof tag === 'string' ? tag : tag.tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      {loading ? "Generating tags..." : "No tags generated yet. Click the button to generate AI tags."}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-base flex items-center gap-2">
-                      <Lightbulb className="h-4 w-4" />
-                      <span>Recommendations</span>
-                    </CardTitle>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={handleGenerateRecommendations}
-                      disabled={loadingRecommendations}
-                    >
-                      {loadingRecommendations ? "Generating..." : "Get Recommendations"}
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {recommendations.length > 0 ? (
-                    <div className="space-y-4">
-                      <ul className="list-disc pl-5 space-y-1">
-                        {recommendations.map((rec, index) => (
-                          <li key={index}>{rec}</li>
-                        ))}
-                      </ul>
-                      
-                      {references.length > 0 && (
-                        <>
-                          <Separator />
-                          <div>
-                            <h4 className="font-medium mb-2 text-sm">References</h4>
-                            <ul className="list-decimal pl-5 space-y-1 text-sm text-muted-foreground">
-                              {references.map((ref, index) => (
-                                <li key={index}>{ref}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      {loadingRecommendations ? "Generating recommendations..." : "No recommendations generated yet. Click the button to get AI recommendations."}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </CardContent>
-        </TabsContent>
-        
-        <TabsContent value="similar-records" className="space-y-4 pt-4">
-          <CardContent className="px-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-medium">Similar Clinical Records</h3>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleFindSimilarRecords}
-                disabled={loadingSimilar}
-              >
-                {loadingSimilar ? "Searching..." : "Find Similar Records"}
-              </Button>
-            </div>
-            
-            {similarRecords.length > 0 ? (
-              <div className="space-y-4">
-                {similarRecords.map((similar) => (
-                  <Card key={similar.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium">{similar.title}</h4>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {similar.description && similar.description.substring(0, 100)}
-                            {similar.description && similar.description.length > 100 ? '...' : ''}
-                          </p>
-                          
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {similar.record_type && (
-                              <Badge variant="outline">{similar.record_type}</Badge>
-                            )}
-                            
-                            {similar.symptoms && similar.symptoms.map((symptom, i) => (
-                              <Badge key={i} variant="secondary">{symptom}</Badge>
-                            ))}
-                            
-                            {similar.diagnosis && similar.diagnosis.map((diag, i) => (
-                              <Badge key={i}>{diag}</Badge>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <Badge className="bg-green-500">
-                            {similar.similarity ? `${(similar.similarity * 100).toFixed(0)}% match` : 'Similar'}
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+              <h3 className="text-sm font-medium">Symptoms</h3>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {record.symptoms.map((symptom, index) => (
+                  <Badge key={index} variant="secondary">{symptom}</Badge>
                 ))}
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {loadingSimilar ? "Searching for similar records..." : "No similar records found yet. Click the button to search."}
-              </p>
+            </div>
+          )}
+
+          {record.diagnosis && record.diagnosis.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium">Diagnosis</h3>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {record.diagnosis.map((diagnosis, index) => (
+                  <Badge key={index} variant="outline" className="bg-blue-50">{diagnosis}</Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {record.medical_codes && Object.keys(record.medical_codes).length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium">Medical Codes</h3>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {Object.entries(record.medical_codes).map(([code, value], index) => (
+                  <div key={index} className="text-xs">
+                    <span className="font-medium">{code}:</span> {value}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+        <CardFooter className="border-t pt-4 flex justify-between">
+          <div className="flex items-center text-xs text-muted-foreground">
+            <Clock className="h-3 w-3 mr-1" />
+            Last updated: {new Date(record.updated_at).toLocaleString()}
+          </div>
+          <Button variant="outline" size="sm" onClick={onUpdate}>
+            Edit Record
+          </Button>
+        </CardFooter>
+      </Card>
+
+      <Tabs defaultValue="ai-tools">
+        <TabsList>
+          <TabsTrigger value="ai-tools" className="flex items-center gap-1">
+            <Activity className="h-4 w-4" />
+            AI Tools
+          </TabsTrigger>
+          <TabsTrigger value="related" className="flex items-center gap-1">
+            <FileText className="h-4 w-4" />
+            Related Records
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="ai-tools" className="space-y-4 mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">AI Recommendations</CardTitle>
+              <CardDescription>Generate clinical recommendations based on this record</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recommendations.length > 0 ? (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-2">Recommendations</h3>
+                    <ul className="list-disc pl-5 space-y-1">
+                      {recommendations.map((recommendation, index) => (
+                        <li key={index} className="text-sm">{recommendation}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  {references.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">References</h3>
+                      <ul className="space-y-1">
+                        {references.map((reference, index) => (
+                          <li key={index} className="text-xs text-muted-foreground">{reference}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center py-4">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    No recommendations generated yet. Click the button below to generate AI recommendations.
+                  </p>
+                  <Button
+                    onClick={handleGenerateRecommendations}
+                    disabled={isGeneratingRecommendations}
+                    className="w-full sm:w-auto"
+                  >
+                    {isGeneratingRecommendations ? "Generating..." : "Generate Recommendations"}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+            {recommendations.length > 0 && (
+              <CardFooter className="border-t pt-4">
+                <Button
+                  variant="outline"
+                  onClick={handleGenerateRecommendations}
+                  disabled={isGeneratingRecommendations}
+                  className="w-full"
+                >
+                  {isGeneratingRecommendations ? "Regenerating..." : "Regenerate Recommendations"}
+                </Button>
+              </CardFooter>
             )}
-          </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">AI Tagging</CardTitle>
+              <CardDescription>Automatically generate tags for this record</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center py-4">
+              <Button
+                className="flex items-center gap-2"
+                onClick={handleGenerateTags}
+                disabled={isGeneratingTags}
+              >
+                <Tag className="h-4 w-4" />
+                {isGeneratingTags ? "Generating Tags..." : "Generate Tags"}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="related" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Related Records</CardTitle>
+              <CardDescription>Find similar records based on content</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-center py-8 text-muted-foreground">
+                Related records functionality will be available in the next release.
+              </p>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
-    </Card>
+    </div>
   );
 }
