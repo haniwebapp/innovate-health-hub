@@ -11,6 +11,7 @@ import InvestmentPage from '@/pages/investment';
 import RegulatoryPage from '@/pages/regulatory';
 import KnowledgeHubPage from '@/pages/knowledge-hub';
 import PolicyPage from '@/pages/policy/index';
+import DynamicPage from '@/pages/[slug]';
 
 export const PublicRoutes = (
   <>
@@ -25,5 +26,8 @@ export const PublicRoutes = (
     <Route path="/regulatory" element={<RegulatoryPage />} />
     <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
     <Route path="/policy" element={<PolicyPage />} />
+    
+    {/* Dynamic page route - must be after all specific routes to avoid conflicts */}
+    <Route path="/:slug" element={<DynamicPage />} />
   </>
 );
