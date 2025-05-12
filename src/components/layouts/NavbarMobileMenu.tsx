@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp, Award, LineChart, ScrollText, BookOpen, AlertCircle } from "lucide-react";
+import { LogOut, User, Settings, FileUp, Award, LineChart, ScrollText, BookOpen, AlertCircle, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +26,7 @@ export function NavbarMobileMenu({
     { path: "/investment", label: "Investment", icon: LineChart },
     { path: "/regulatory", label: "Regulatory", icon: ScrollText },
     { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
+    { path: "/ai-solutions", label: "AI Solutions", icon: Sparkles },
     { path: "/about", label: "About", icon: AlertCircle },
   ];
   

@@ -1,6 +1,8 @@
 
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export default function JoinCommunitySection() {
   const fadeInVariants = {
@@ -31,21 +33,24 @@ export default function JoinCommunitySection() {
             Be part of the healthcare transformation journey in Saudi Arabia. Connect with innovators, investors, and healthcare professionals.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <motion.button 
+            <Button 
               className="bg-moh-green hover:bg-moh-darkGreen text-white px-6 py-3 rounded-md font-medium inline-flex items-center"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              asChild
             >
-              Register Now
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </motion.button>
-            <motion.button 
+              <Link to="/auth/register">
+                Register Now
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button 
               className="border border-moh-green text-moh-green hover:bg-moh-lightGreen px-6 py-3 rounded-md font-medium"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              variant="outline"
+              asChild
             >
-              Learn More
-            </motion.button>
+              <Link to="/about">
+                Learn More
+              </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

@@ -44,15 +44,15 @@ export default function QuickLinksSection() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Collaboration Tools</CardTitle>
-          <CardDescription>Connect with peers and experts</CardDescription>
+          <CardTitle>AI Solutions</CardTitle>
+          <CardDescription>Access advanced AI tools for healthcare innovation</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Join discussions, participate in forums, and network with healthcare innovation community members.</p>
+          <p className="text-sm text-muted-foreground">Leverage AI-powered tools for innovation matching, market analysis, regulatory compliance, and more.</p>
         </CardContent>
         <CardFooter>
           <Button asChild>
-            <Link to="/dashboard/collaboration">Start Collaborating</Link>
+            <Link to="/ai-solutions">Explore AI Tools</Link>
           </Button>
         </CardFooter>
       </Card>

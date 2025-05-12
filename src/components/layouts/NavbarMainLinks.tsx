@@ -14,7 +14,8 @@ import {
   DollarSign,
   ShieldCheck,
   BookOpen,
-  HelpCircle
+  HelpCircle,
+  Sparkles
 } from "lucide-react";
 
 interface NavbarMainLinksProps {
@@ -31,6 +32,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     { path: "/investment", label: "Investment", icon: DollarSign },
     { path: "/regulatory", label: "Regulatory", icon: ShieldCheck },
     { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
+    { path: "/ai-solutions", label: "AI Solutions", icon: Sparkles },
     { path: "/about", label: "About", icon: HelpCircle },
   ];
 

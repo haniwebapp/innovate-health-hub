@@ -20,7 +20,7 @@ export default function InnovationCallToAction() {
       });
       navigate("/auth/login", { state: { from: "/innovations/submit" } });
     } else {
-      navigate("/dashboard");
+      navigate("/innovations/submit");
     }
   };
   
@@ -85,14 +85,15 @@ export default function InnovationCallToAction() {
                   className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md hover:shadow-lg transition-all"
                   onClick={handleInnovationClick}
                 >
-                  {user ? "Go to Dashboard" : "Submit Your Innovation"}
+                  {user ? "Submit Your Innovation" : "Submit Your Innovation"}
                 </Button>
                 
                 <Button 
                   variant="outline" 
                   className="border-2 border-moh-darkGreen text-moh-darkGreen hover:bg-white/50 shadow-sm hover:shadow-md transition-all"
+                  asChild
                 >
-                  Learn About the Process
+                  <Link to="/features">Learn About the Process</Link>
                 </Button>
               </motion.div>
             </div>

@@ -46,7 +46,7 @@ export function HighlightsCallToAction() {
         transition={{ duration: 0.6, delay: 0.8 }}
       >
         <div>
-          <p className="text-2xl font-bold text-moh-green">5+</p>
+          <p className="text-2xl font-bold text-moh-green">7+</p>
           <p className="text-sm text-gray-600">Core Features</p>
         </div>
         <div>
