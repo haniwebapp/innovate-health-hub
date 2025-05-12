@@ -3,70 +3,25 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { PageService } from "@/services/page/PageService";
-import { WebsitePage, PageSection, PageContent, WebsitePageFormData } from "@/types/pageTypes";
+import { PageSection, PageContent, WebsitePage, WebsitePageFormData } from "@/types/pageTypes";
 import { supabase } from "@/integrations/supabase/client";
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Plus,
-  Trash2,
-  MoveUp,
-  MoveDown,
-  Save,
-  Eye,
-  CheckCircle2,
-  Loader2,
-  AlertCircle
-} from "lucide-react";
-import { SectionEditor } from "./SectionEditor";
-import { PageValidationIssues } from "./PageValidationIssues";
-
-// Enhanced validation schema with more specific constraints
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required").max(100, "Title must be 100 characters or less"),
-  slug: z
-    .string()
-    .min(1, "Slug is required")
-    .max(100, "Slug must be 100 characters or less")
-    .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens")
-    .refine((s) => !s.startsWith("-") && !s.endsWith("-"), "Slug cannot start or end with a hyphen"),
-  metaDescription: z.string().max(160, "Meta description should be 160 characters or less").optional(),
-  published: z.boolean().default(false),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+// Import refactored components
+import { pageFormSchema, PageFormValues, PageForm } from "./editor/PageForm";
+import { ContentTabs } from "./editor/ContentTabs";
+import { ActionButtons } from "./editor/ActionButtons";
+import { ErrorDisplay } from "./editor/ErrorDisplay";
+import { LoadingState } from "./editor/LoadingState";
 
 export function PageEditor() {
   const { id } = useParams<{ id: string }>();
   const isNewPage = !id || id === "new";
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // State management
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [validating, setValidating] = useState(false);
@@ -87,8 +42,9 @@ export function PageEditor() {
   }]);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  // Form handling
+  const form = useForm<PageFormValues>({
+    resolver: zodResolver(pageFormSchema),
     defaultValues: {
       title: "",
       slug: "",
@@ -97,6 +53,7 @@ export function PageEditor() {
     },
   });
 
+  // Load page data
   const loadPage = useCallback(async () => {
     if (isNewPage) return;
 
@@ -141,6 +98,7 @@ export function PageEditor() {
     loadPage();
   }, [loadPage]);
 
+  // Content validation
   const validatePageContent = async (content: PageContent, slug: string) => {
     try {
       setValidating(true);
@@ -191,7 +149,8 @@ export function PageEditor() {
     }
   };
 
-  const onSubmit = async (values: FormValues) => {
+  // Form submission handler
+  const onSubmit = async (values: PageFormValues) => {
     try {
       setSaving(true);
       setServerError(null);
@@ -268,364 +227,58 @@ export function PageEditor() {
     }
   };
 
-  const handleAddSection = (type: PageSection["type"]) => {
-    const newSection: PageSection = {
-      type,
-      title: "",
-      content: ""
-    };
-    setSections([...sections, newSection]);
+  // Handler functions
+  const handleValidateContent = () => {
+    return validatePageContent({ sections }, form.getValues().slug);
   };
 
-  const handleRemoveSection = (index: number) => {
-    const newSections = [...sections];
-    newSections.splice(index, 1);
-    setSections(newSections);
+  const handleNavigateBack = () => {
+    navigate("/dashboard/admin/cms");
   };
 
-  const handleMoveSection = (index: number, direction: 'up' | 'down') => {
-    if (
-      (direction === 'up' && index === 0) || 
-      (direction === 'down' && index === sections.length - 1)
-    ) {
-      return;
-    }
-    
-    const newSections = [...sections];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
-    [newSections[index], newSections[newIndex]] = [newSections[newIndex], newSections[index]];
-    setSections(newSections);
-  };
-
-  const handleUpdateSection = (index: number, updatedSection: PageSection) => {
-    const newSections = [...sections];
-    newSections[index] = updatedSection;
-    setSections(newSections);
-  };
-
+  // Show loading state
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-64">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-moh-green" />
-          <p>Loading page data...</p>
-        </div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (
     <div className="space-y-6">
-      {serverError && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md flex items-center">
-          <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
-          <p>{serverError}</p>
-        </div>
-      )}
+      <ErrorDisplay error={serverError} />
 
-      <div className="flex items-center justify-between">
-        <Button 
-          variant="outline" 
-          onClick={() => navigate("/dashboard/admin/cms")}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Pages
-        </Button>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline"
-            onClick={() => validatePageContent({ sections }, form.getValues().slug)}
-            disabled={validating}
-            className="gap-2"
-          >
-            {validating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
-            Validate Content
-          </Button>
-          <Button 
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={saving}
-            className="gap-2"
-          >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            {isNewPage ? "Create Page" : "Save Changes"}
-          </Button>
-        </div>
-      </div>
+      <ActionButtons 
+        isNewPage={isNewPage}
+        saving={saving}
+        validating={validating}
+        onBack={handleNavigateBack}
+        onSave={form.handleSubmit(onSubmit)}
+        onValidate={handleValidateContent}
+      />
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Page Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Page Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter page title" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      The main title of the page that will be displayed in the browser tab.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <PageForm 
+        form={form} 
+        defaultValues={form.getValues()} 
+        onSubmit={onSubmit} 
+      />
 
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL Slug</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center">
-                        <span className="text-sm text-muted-foreground mr-2">/</span>
-                        <Input placeholder="page-url-slug" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      The URL-friendly version of the page title (e.g., "about-us").
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <ContentTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        sections={sections}
+        setSections={setSections}
+        formValues={form.getValues()}
+        validating={validating}
+        validationIssues={validationIssues}
+        onValidateContent={handleValidateContent}
+      />
 
-              <FormField
-                control={form.control}
-                name="metaDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Meta Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Enter a brief description for search engines" 
-                        className="resize-none"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      A short description that appears in search engine results (max 160 characters).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="published"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">
-                        Published
-                      </FormLabel>
-                      <FormDescription>
-                        When enabled, the page will be visible to all users.
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="content">Content</TabsTrigger>
-              <TabsTrigger value="preview">Preview</TabsTrigger>
-              <TabsTrigger value="validation" className="relative">
-                Validation
-                {(validationIssues.errors.length > 0 || validationIssues.warnings.length > 0) && (
-                  <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1 absolute -top-1 -right-1 rounded-full">
-                    {validationIssues.errors.length + validationIssues.warnings.length}
-                  </Badge>
-                )}
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="content" className="space-y-4 mt-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Page Sections</h3>
-                <div className="flex gap-2 items-center">
-                  <Select
-                    onValueChange={(value: PageSection["type"]) => handleAddSection(value as PageSection["type"])}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <div className="flex items-center gap-2">
-                        <Plus className="h-4 w-4" />
-                        <span>Add Section</span>
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hero">Hero Section</SelectItem>
-                      <SelectItem value="content">Content Section</SelectItem>
-                      <SelectItem value="cards">Cards Section</SelectItem>
-                      <SelectItem value="image-text">Image + Text</SelectItem>
-                      <SelectItem value="cta">Call to Action</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {sections.length === 0 ? (
-                  <div className="flex items-center justify-center border rounded-lg p-8">
-                    <div className="text-center">
-                      <p className="text-muted-foreground mb-4">
-                        No sections added yet. Add your first section to get started.
-                      </p>
-                      <Select
-                        onValueChange={(value: PageSection["type"]) => handleAddSection(value as PageSection["type"])}
-                      >
-                        <SelectTrigger className="w-[180px] mx-auto">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            <span>Add Section</span>
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="hero">Hero Section</SelectItem>
-                          <SelectItem value="content">Content Section</SelectItem>
-                          <SelectItem value="cards">Cards Section</SelectItem>
-                          <SelectItem value="image-text">Image + Text</SelectItem>
-                          <SelectItem value="cta">Call to Action</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                ) : (
-                  sections.map((section, index) => (
-                    <Card key={index} className="relative border">
-                      <CardHeader className="bg-slate-50 flex flex-row items-center justify-between py-3">
-                        <CardTitle className="text-sm font-medium capitalize flex gap-2 items-center">
-                          Section {index + 1}: {section.type}
-                        </CardTitle>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleMoveSection(index, 'up')}
-                            disabled={index === 0}
-                            className="h-8 w-8"
-                          >
-                            <MoveUp className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleMoveSection(index, 'down')}
-                            disabled={index === sections.length - 1}
-                            className="h-8 w-8"
-                          >
-                            <MoveDown className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleRemoveSection(index)}
-                            className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-4">
-                        <SectionEditor 
-                          section={section}
-                          onChange={(updatedSection) => handleUpdateSection(index, updatedSection)}
-                        />
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="preview" className="mt-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="border rounded-lg p-6 bg-white min-h-[500px]">
-                    <h1 className="text-2xl font-bold mb-4">{form.getValues().title || "Page Title"}</h1>
-                    <div className="space-y-8">
-                      {sections.map((section, index) => (
-                        <div key={index} className="border-b pb-6 last:border-0">
-                          {section.title && (
-                            <h2 className="text-xl font-semibold mb-2">{section.title}</h2>
-                          )}
-                          {section.content && (
-                            <div className="prose max-w-none">
-                              <p className="whitespace-pre-wrap">{section.content}</p>
-                            </div>
-                          )}
-                          {section.type === 'image-text' && section.imageUrl && (
-                            <div className={`flex flex-col md:flex-row gap-4 mt-4 ${section.alignment === 'right' ? 'md:flex-row-reverse' : ''}`}>
-                              <div className="md:w-1/2">
-                                <img src={section.imageUrl} alt={section.title || "Section image"} className="rounded-md w-full h-auto" />
-                              </div>
-                              <div className="md:w-1/2">
-                                <p className="whitespace-pre-wrap">{section.content}</p>
-                              </div>
-                            </div>
-                          )}
-                          {section.type === 'cta' && (
-                            <div className="mt-4 flex justify-center">
-                              <Button disabled>
-                                {section.buttonText || "Call to Action"}
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="validation" className="mt-4">
-              <PageValidationIssues 
-                validating={validating}
-                validationIssues={validationIssues}
-                onRunValidation={() => validatePageContent({ sections }, form.getValues().slug)}
-              />
-            </TabsContent>
-          </Tabs>
-
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/dashboard/admin/cms")}
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit"
-              disabled={saving}
-              className="gap-2"
-            >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              {isNewPage ? "Create Page" : "Save Changes"}
-            </Button>
-          </div>
-        </form>
-      </Form>
+      <ActionButtons 
+        isNewPage={isNewPage}
+        saving={saving}
+        validating={validating}
+        onBack={handleNavigateBack}
+        onSave={form.handleSubmit(onSubmit)}
+        onValidate={handleValidateContent}
+      />
     </div>
   );
 }

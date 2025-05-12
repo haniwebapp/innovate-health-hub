@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ScrollFadeIn } from '@/components/animations/ScrollFadeIn';
-import { Briefcase, LightbulbOn, Users, BookOpen } from 'lucide-react';
+import { Briefcase, Lightbulb, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ const StartupResourcesSection = () => {
     {
       title: "Idea Validation",
       description: "Tools and methodologies to validate your healthcare innovation with real users and experts",
-      icon: <LightbulbOn className="h-10 w-10 text-moh-gold" />,
+      icon: <Lightbulb className="h-10 w-10 text-moh-gold" />,
       color: "bg-amber-50",
       link: "/challenges"
     },
