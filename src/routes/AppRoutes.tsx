@@ -4,7 +4,7 @@ import { PublicRoutes } from './PublicRoutes';
 import { AuthRoutes } from './AuthRoutes';
 import { InnovationSubmissionRoutes } from './InnovationSubmissionRoutes';
 import { DashboardMainRoutes } from './DashboardMainRoutes';
-import AdminRoutes from './AdminRoutes'; // Import the default export component
+import AdminRoutes from './AdminRoutes';
 import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 
@@ -23,7 +23,7 @@ export function AppRoutes() {
       {/* Main Dashboard with nested routes */}
       {DashboardMainRoutes}
       
-      {/* Admin Routes - include the routes directly */}
+      {/* Admin Routes */}
       <AdminRoutes />
       
       {/* Policy Page */}
