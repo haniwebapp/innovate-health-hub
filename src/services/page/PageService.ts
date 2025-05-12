@@ -1,6 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { WebsitePage, WebsitePageFormData, PageContent } from "@/types/pageTypes";
+import { WebsitePage, WebsitePageFormData, PageContent, PageSection } from "@/types/pageTypes";
 
 export class PageService {
   /**
