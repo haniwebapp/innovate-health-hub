@@ -1,330 +1,702 @@
-
-import React from 'react';
-import MedicalDashboard from "@/components/layouts/MedicalDashboard";
-import { MedicalCard, MedicalCardHeader, MedicalCardTitle, MedicalCardDescription, MedicalCardContent } from "@/components/ui/medical-card";
-import { MedicalButton } from "@/components/ui/medical-button";
+import { useState, useEffect } from "react";
+import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { AIAnalysisSection } from "@/components/investment/AIAnalysisSection";
+import { AIInsightsCard } from "@/components/investment/AIInsightsCard";
 import { motion } from "framer-motion";
-import { TrendingUp, BarChart3, Users, Calendar, ChevronRight, Zap, LineChart, ArrowUpRight, PieChart } from "lucide-react";
+import { 
+  DollarSign, Calendar, Users, BadgeCheck, BarChart3, 
+  Lightbulb, ChevronRight, Search, Brain, TrendingUp, 
+  FileText, Building, Filter, Download, PieChart 
+} from "lucide-react";
+
+// Sample insights data
+const aiInsights = [
+  "Digital health solutions with remote monitoring features have a 34% higher chance of securing investment.",
+  "Investors are prioritizing solutions that integrate with existing healthcare systems in Saudi Arabia.",
+  "Healthcare startups with clear regulatory pathways receive funding decisions 40% faster.",
+  "Solutions addressing chronic disease management have seen a 28% increase in funding in the past quarter."
+];
+
+// Sample AI match scores for investment opportunities
+const aiMatchScores = [
+  {
+    name: "Healthcare Seed Fund",
+    score: 92,
+    reason: "Excellent match for your digital health solution's stage and focus.",
+    additionalInfo: [
+      { label: "Fund Size", value: "$50M" },
+      { label: "Focus", value: "Digital Health" },
+      { label: "Stage", value: "Seed to Series A" }
+    ]
+  },
+  {
+    name: "Saudi MedTech Ventures",
+    score: 85,
+    reason: "Strong alignment with your medical device innovation and target market.",
+    additionalInfo: [
+      { label: "Fund Size", value: "$120M" },
+      { label: "Focus", value: "Medical Devices" },
+      { label: "Stage", value: "Early Stage" }
+    ]
+  },
+  {
+    name: "Vision Health Capital",
+    score: 79,
+    reason: "Good fit for your healthcare solution's growth objectives.",
+    additionalInfo: [
+      { label: "Fund Size", value: "$80M" },
+      { label: "Focus", value: "Healthcare Tech" },
+      { label: "Stage", value: "Series A" }
+    ]
+  }
+];
+
+// Define the trend type
+type TrendType = "increasing" | "rapidly-increasing" | "steady" | "decreasing" | "rapidly-decreasing";
+
+// Define the AIMarketTrend interface
+interface AIMarketTrend {
+  category: string;
+  title: string;
+  description: string;
+  trend: TrendType;
+  data: number[];
+}
+
+// Sample market trends data
+const aiMarketTrends: AIMarketTrend[] = [
+  {
+    category: "Digital Health",
+    title: "Telehealth Expansion",
+    description: "Telehealth solutions continue to see strong investment growth with 45% YoY increase in funding.",
+    trend: "increasing",
+    data: [20, 25, 35, 42, 55, 62]
+  },
+  {
+    category: "Medical Devices",
+    title: "Remote Monitoring Devices",
+    description: "IoT-enabled monitoring devices are attracting significant investor attention, particularly those with AI integration.",
+    trend: "increasing",
+    data: [15, 22, 28, 35, 42, 48]
+  },
+  {
+    category: "AI in Healthcare",
+    title: "Diagnostic AI Solutions",
+    description: "AI-powered diagnostic tools are the fastest growing segment with 52% funding increase in the past year.",
+    trend: "rapidly-increasing",
+    data: [10, 18, 25, 40, 60, 85]
+  },
+];
+
+// Mock investor matches data
+const investorMatches = [
+  {
+    id: "1",
+    name: "Healthcare Venture Partners",
+    focus: "Digital Health",
+    matchScore: 92,
+    status: "interested",
+  },
+  {
+    id: "2",
+    name: "Medtech Growth Fund",
+    focus: "Medical Devices",
+    matchScore: 85,
+    status: "pending",
+  },
+  {
+    id: "3",
+    name: "Pharmaceutical Innovations LLC",
+    focus: "Biotech",
+    matchScore: 78,
+    status: "pending",
+  },
+];
+
+// Mock funding rounds data
+const fundingRounds = [
+  {
+    id: "1",
+    name: "Healthcare Seed Fund 2025",
+    type: "Equity",
+    amount: "$250,000 - $500,000",
+    deadline: "2025-07-30",
+    status: "open",
+    daysLeft: 35,
+  },
+  {
+    id: "2",
+    name: "Digital Health Innovation Grant",
+    type: "Grant",
+    amount: "$50,000 - $150,000",
+    deadline: "2025-06-15",
+    status: "open",
+    daysLeft: 12,
+  },
+  {
+    id: "3",
+    name: "MedTech Accelerator Program",
+    type: "Accelerator",
+    amount: "$75,000 + mentorship",
+    deadline: "2025-08-20",
+    status: "upcoming",
+    daysLeft: 62,
+  },
+];
+
+// Mock pitch events data
+const pitchEvents = [
+  {
+    id: "1",
+    name: "Healthcare Innovations Showcase",
+    date: "2025-05-25",
+    location: "Riyadh",
+    status: "upcoming",
+    registered: true,
+  },
+  {
+    id: "2",
+    name: "MedTech Investor Day",
+    date: "2025-06-10",
+    location: "Jeddah",
+    status: "upcoming",
+    registered: false,
+  },
+  {
+    id: "3",
+    name: "Digital Health Summit",
+    date: "2025-07-15",
+    location: "Virtual",
+    status: "registration-open",
+    registered: false,
+  },
+];
 
 export default function DashboardInvestmentPage() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+  const [activeTab, setActiveTab] = useState("matches");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedSector, setSelectedSector] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
+  const { t } = useLanguage();
+  
+  const handleConnectionRequest = (investorId: string) => {
+    toast({
+      title: "Connection request sent",
+      description: "The investor will be notified of your interest",
+    });
+  };
+
+  const handleRegisterEvent = (eventId: string) => {
+    toast({
+      title: "Registration successful",
+      description: "You've been registered for this pitch event",
+    });
+  };
+
+  const handleApplyFunding = (fundingId: string) => {
+    toast({
+      title: "Application initiated",
+      description: "You've started an application for this funding opportunity",
+    });
+  };
+  
+  const handleAnalyzeClick = () => {
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      toast({
+        title: "Analysis complete",
+        description: "AI has analyzed the latest investment data and market trends"
+      });
+    }, 2000);
+  };
+  
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6 } 
     }
   };
   
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-  
   return (
-    <MedicalDashboard>
-      <motion.div 
-        className="space-y-6"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Page Header */}
-        <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-moh-darkGreen">Healthcare Investment</h1>
-            <p className="text-muted-foreground mt-1">Manage your investment opportunities and portfolio in healthcare innovation</p>
-          </div>
-          <MedicalButton variant="gold" className="self-start">
-            <Zap className="h-4 w-4" />
-            New Investment
-          </MedicalButton>
-        </motion.div>
-        
-        {/* Summary Cards */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {/* Total Portfolio Value */}
-          <MedicalCard className="border-moh-green/20">
-            <MedicalCardHeader className="flex flex-row items-center justify-between pb-2">
-              <MedicalCardTitle className="text-lg font-medium">Portfolio Value</MedicalCardTitle>
-              <DollarSign className="h-5 w-5 text-moh-green opacity-70" />
-            </MedicalCardHeader>
-            <MedicalCardContent>
-              <div className="text-3xl font-bold text-moh-darkGreen">$3.4M</div>
-              <p className="text-xs text-muted-foreground mt-1">Across 5 investments</p>
-              <div className="flex items-center mt-4">
-                <div className="text-xs flex items-center text-green-600">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  +12.5%
-                </div>
-                <div className="text-xs text-muted-foreground ml-2">
-                  from last month
-                </div>
-              </div>
-            </MedicalCardContent>
-          </MedicalCard>
-          
-          {/* Opportunities */}
-          <MedicalCard className="border-moh-green/20">
-            <MedicalCardHeader className="flex flex-row items-center justify-between pb-2">
-              <MedicalCardTitle className="text-lg font-medium">Opportunities</MedicalCardTitle>
-              <LineChart className="h-5 w-5 text-moh-gold opacity-70" />
-            </MedicalCardHeader>
-            <MedicalCardContent>
-              <div className="text-3xl font-bold text-moh-darkGreen">42</div>
-              <p className="text-xs text-muted-foreground mt-1">Active investment opportunities</p>
-              <div className="flex items-center mt-4">
-                <div className="text-xs flex items-center text-moh-green">
-                  <ArrowUpRight className="h-3 w-3 mr-1" />
-                  8 new this week
-                </div>
-                <div className="text-xs text-muted-foreground ml-2">
-                  in your focus areas
-                </div>
-              </div>
-            </MedicalCardContent>
-          </MedicalCard>
-          
-          {/* AI Matches */}
-          <MedicalCard className="border-moh-green/20">
-            <MedicalCardHeader className="flex flex-row items-center justify-between pb-2">
-              <MedicalCardTitle className="text-lg font-medium">AI Matches</MedicalCardTitle>
-              <Zap className="h-5 w-5 text-amber-500 opacity-70" />
-            </MedicalCardHeader>
-            <MedicalCardContent>
-              <div className="text-3xl font-bold text-moh-darkGreen">16</div>
-              <p className="text-xs text-muted-foreground mt-1">High-quality match recommendations</p>
-              <div className="flex items-center mt-4">
-                <div className="text-xs flex items-center text-moh-gold">
-                  <Users className="h-3 w-3 mr-1" />
-                  3 perfect matches
-                </div>
-                <div className="text-xs text-muted-foreground ml-2">
-                  above 90% compatibility
-                </div>
-              </div>
-            </MedicalCardContent>
-          </MedicalCard>
-          
-          {/* Upcoming Deadlines */}
-          <MedicalCard className="border-moh-green/20">
-            <MedicalCardHeader className="flex flex-row items-center justify-between pb-2">
-              <MedicalCardTitle className="text-lg font-medium">Deadlines</MedicalCardTitle>
-              <Calendar className="h-5 w-5 text-moh-darkGreen opacity-70" />
-            </MedicalCardHeader>
-            <MedicalCardContent>
-              <div className="text-3xl font-bold text-moh-darkGreen">5</div>
-              <p className="text-xs text-muted-foreground mt-1">Upcoming funding deadlines</p>
-              <div className="flex items-center mt-4">
-                <div className="text-xs flex items-center text-amber-500">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  2 this week
-                </div>
-                <div className="text-xs text-muted-foreground ml-2">
-                  requiring immediate action
-                </div>
-              </div>
-            </MedicalCardContent>
-          </MedicalCard>
-        </motion.div>
-        
-        {/* Middle Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Activity */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <MedicalCard className="border-moh-green/20">
-              <MedicalCardHeader>
-                <div className="flex justify-between items-center">
-                  <MedicalCardTitle>Investment Opportunities</MedicalCardTitle>
-                  <MedicalButton variant="outline" size="sm">
-                    View All
-                    <ChevronRight className="h-4 w-4" />
-                  </MedicalButton>
-                </div>
-                <MedicalCardDescription>Recent healthcare investment opportunities matching your profile</MedicalCardDescription>
-              </MedicalCardHeader>
-              <MedicalCardContent>
-                <div className="space-y-5">
-                  {[
-                    {
-                      title: "Remote Patient Monitoring Platform",
-                      type: "Digital Health",
-                      stage: "Series A",
-                      amount: "$2.5M",
-                      match: "94%",
-                      deadline: "May 30, 2025"
-                    },
-                    {
-                      title: "AI-Driven Medical Diagnostics Solution",
-                      type: "MedTech/AI",
-                      stage: "Seed",
-                      amount: "$500K",
-                      match: "89%",
-                      deadline: "June 15, 2025"
-                    },
-                    {
-                      title: "Wearable Health Monitoring Device",
-                      type: "Medical Devices",
-                      stage: "Series B",
-                      amount: "$4M",
-                      match: "82%",
-                      deadline: "June 5, 2025"
-                    },
-                  ].map((opportunity, i) => (
-                    <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                      <div className="mb-3 sm:mb-0">
-                        <h3 className="font-medium text-moh-darkGreen">{opportunity.title}</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="bg-moh-lightGreen text-moh-darkGreen text-xs px-2 py-1 rounded">
-                            {opportunity.type}
-                          </span>
-                          <span className="bg-moh-lightGold/50 text-moh-darkGold text-xs px-2 py-1 rounded">
-                            {opportunity.stage}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {opportunity.amount}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="bg-moh-lightGreen p-2 rounded text-center min-w-[70px]">
-                          <div className="text-xs text-moh-darkGreen">Match</div>
-                          <div className="font-medium text-moh-green flex items-center justify-center">
-                            {opportunity.match}
-                            <TrendingUp className="h-3 w-3 ml-1" />
-                          </div>
-                        </div>
-                        <MedicalButton size="sm" variant="outline">
-                          View
-                        </MedicalButton>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </MedicalCardContent>
-            </MedicalCard>
-          </motion.div>
-          
-          {/* Investment Breakdown */}
-          <motion.div variants={itemVariants}>
-            <MedicalCard className="border-moh-green/20">
-              <MedicalCardHeader>
-                <MedicalCardTitle>Portfolio Breakdown</MedicalCardTitle>
-                <MedicalCardDescription>Allocation across healthcare sectors</MedicalCardDescription>
-              </MedicalCardHeader>
-              <MedicalCardContent>
-                <div className="flex justify-center pb-4">
-                  <PieChart className="h-32 w-32 text-moh-green opacity-80" />
-                </div>
-                
-                <div className="space-y-3 mt-4">
-                  {[
-                    { label: "Digital Health", value: "42%", color: "bg-moh-green" },
-                    { label: "Medical Devices", value: "28%", color: "bg-moh-gold" },
-                    { label: "Biotech", value: "16%", color: "bg-blue-500" },
-                    { label: "Health AI", value: "14%", color: "bg-purple-500" },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className={`h-3 w-3 rounded-full ${item.color} mr-2`}></div>
-                        <span className="text-sm">{item.label}</span>
-                      </div>
-                      <span className="font-medium">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-                
-                <MedicalButton variant="outline" className="w-full mt-6" size="sm">
-                  View Portfolio Details
-                </MedicalButton>
-              </MedicalCardContent>
-            </MedicalCard>
-          </motion.div>
+    <div className="space-y-6">
+      <BreadcrumbNav 
+        currentPage={t('investment.title')} 
+        items={[
+          { label: t('nav.dashboard'), href: "/dashboard" },
+        ]}
+      />
+      
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Investment Hub</h1>
+          <p className="text-muted-foreground">
+            Connect with investors and explore funding opportunities tailored to your healthcare innovations
+          </p>
         </div>
         
-        {/* Bottom Section */}
-        <motion.div variants={itemVariants}>
-          <MedicalCard className="border-moh-green/20" gradient>
-            <MedicalCardHeader>
-              <div className="flex justify-between items-center">
-                <MedicalCardTitle>Market Analysis</MedicalCardTitle>
-                <MedicalButton variant="outline" size="sm">
-                  Full Report
-                  <ChevronRight className="h-4 w-4" />
-                </MedicalButton>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
+          <Button size="sm" asChild>
+            <Link to="/dashboard/profile/investment-preferences" className="flex items-center gap-2">
+              <Building className="h-4 w-4" />
+              Complete Profile
+            </Link>
+          </Button>
+        </div>
+      </div>
+      
+      <AIInsightsCard 
+        insights={aiInsights} 
+        title="Investment Intelligence" 
+        icon={<Brain className="h-5 w-5 text-moh-green" />}
+        bgColor="bg-moh-lightGreen"
+        borderColor="border-moh-green/30" 
+      />
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="md:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center">
+              <Users className="h-5 w-5 mr-2 text-moh-green" />
+              Investor Matches
+            </CardTitle>
+            <CardDescription>AI-matched investors for your healthcare innovations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="relative w-full">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                <Input
+                  placeholder="Search matches..."
+                  className="pl-9"
+                />
               </div>
-              <MedicalCardDescription>Healthcare investment trends and opportunities</MedicalCardDescription>
-            </MedicalCardHeader>
-            <MedicalCardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white/60 p-4 rounded shadow-sm">
-                  <div className="flex items-center mb-2">
-                    <TrendingUp className="h-5 w-5 text-moh-green mr-2" />
-                    <h3 className="font-medium">Growth Areas</h3>
+              <Button variant="outline" size="icon" className="flex-shrink-0">
+                <Filter className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {investorMatches.map((investor) => (
+                <div key={investor.id} className="border rounded-md p-4 hover:border-moh-green/20 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-medium">{investor.name}</h3>
+                      <p className="text-sm text-muted-foreground">{investor.focus}</p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <Badge className="bg-moh-green mb-1">Match: {investor.matchScore}%</Badge>
+                      {investor.status === "interested" && (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <BadgeCheck className="w-3 h-3 mr-1" />
+                          Interested
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  <ul className="text-sm space-y-2">
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-green"></span>
-                      Remote patient monitoring (+24%)
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-green"></span>
-                      AI-driven diagnostics (+19%)
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-green"></span>
-                      Mental health tech (+16%)
-                    </li>
-                  </ul>
+                  
+                  <Progress
+                    value={investor.matchScore}
+                    className="h-2 mt-2"
+                    indicatorClassName="bg-moh-green"
+                  />
+                  
+                  <div className="mt-4 flex justify-end">
+                    <Button 
+                      size="sm"
+                      variant={investor.status === "interested" ? "outline" : "default"}
+                      onClick={() => handleConnectionRequest(investor.id)}
+                      disabled={investor.status === "interested"}
+                      className="bg-moh-green hover:bg-moh-darkGreen"
+                    >
+                      {investor.status === "interested" ? (
+                        <>
+                          <BadgeCheck className="w-4 h-4 mr-1" />
+                          Connected
+                        </>
+                      ) : (
+                        "Request Connection"
+                      )}
+                    </Button>
+                  </div>
                 </div>
-                
-                <div className="bg-white/60 p-4 rounded shadow-sm">
-                  <div className="flex items-center mb-2">
-                    <BarChart3 className="h-5 w-5 text-moh-gold mr-2" />
-                    <h3 className="font-medium">Investment Stages</h3>
-                  </div>
-                  <ul className="text-sm space-y-2">
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-gold"></span>
-                      Seed stage focus in Q3 2025
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-gold"></span>
-                      Series A rounds increasing 12%
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-gold"></span>
-                      Strategic acquisitions rising
-                    </li>
-                  </ul>
+              ))}
+            </div>
+            
+            <div className="flex justify-end mt-4">
+              <Button variant="outline" size="sm">View All Matches</Button>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center">
+              <PieChart className="h-5 w-5 mr-2 text-moh-green" />
+              Match Statistics
+            </CardTitle>
+            <CardDescription>Your investor matching summary</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="bg-moh-lightGreen p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium">Match Quality</h4>
+                  <span className="text-sm text-moh-darkGreen">Excellent</span>
                 </div>
-                
-                <div className="bg-white/60 p-4 rounded shadow-sm">
-                  <div className="flex items-center mb-2">
-                    <Users className="h-5 w-5 text-moh-darkGreen mr-2" />
-                    <h3 className="font-medium">Investor Activity</h3>
-                  </div>
-                  <ul className="text-sm space-y-2">
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-darkGreen"></span>
-                      New Saudi healthcare fund launched
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-darkGreen"></span>
-                      International partnerships up 8%
-                    </li>
-                    <li className="flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-moh-darkGreen"></span>
-                      Strategic corporate investing
-                    </li>
-                  </ul>
+                <div className="w-full bg-moh-green/20 rounded-full h-2.5">
+                  <div className="bg-moh-green h-2.5 rounded-full" style={{ width: '85%' }}></div>
                 </div>
               </div>
-            </MedicalCardContent>
-          </MedicalCard>
-        </motion.div>
-      </motion.div>
-    </MedicalDashboard>
+              
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm">Total Matches</span>
+                  <span className="font-medium">24</span>
+                </div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm">High Quality ({'>'}80%)</span>
+                  <span className="font-medium">9</span>
+                </div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm">Medium Quality (60-80%)</span>
+                  <span className="font-medium">11</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Connections Made</span>
+                  <span className="font-medium">5</span>
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t">
+                <h4 className="text-sm font-medium mb-2">Top Matching Categories</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Digital Health</span>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">92%</Badge>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Telemedicine</span>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">88%</Badge>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Health Monitoring</span>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">76%</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="bg-muted grid w-full grid-cols-3 h-11 items-stretch">
+          <TabsTrigger value="funding" className="data-[state=active]:bg-moh-green data-[state=active]:text-white">
+            Funding Rounds
+          </TabsTrigger>
+          <TabsTrigger value="pitches" className="data-[state=active]:bg-moh-green data-[state=active]:text-white">
+            Pitch Events
+          </TabsTrigger>
+          <TabsTrigger value="analysis" className="data-[state=active]:bg-moh-green data-[state=active]:text-white">
+            AI Analysis
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="funding">
+          <Card>
+            <CardHeader>
+              <CardTitle>Available Funding Rounds</CardTitle>
+              <CardDescription>Open funding opportunities aligned with your profile</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-1 items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search funding rounds..."
+                      className="pl-9 max-w-sm"
+                    />
+                  </div>
+                  <Select defaultValue="all">
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filter by type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="equity">Equity</SelectItem>
+                      <SelectItem value="grant">Grant</SelectItem>
+                      <SelectItem value="accelerator">Accelerator</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button size="sm" variant="outline" className="gap-1">
+                  <Filter className="h-3.5 w-3.5" />
+                  Filters
+                </Button>
+              </div>
+              
+              {fundingRounds.map((funding) => (
+                <motion.div 
+                  key={funding.id}
+                  variants={fadeInUp}
+                  initial="hidden"
+                  animate="visible"
+                  className="border rounded-md p-4 mb-4 last:mb-0 hover:border-moh-green/20 transition-colors"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-medium">{funding.name}</h3>
+                      <div className="flex items-center gap-4 mt-1">
+                        <span className="text-sm">{funding.type}</span>
+                        <span className="text-sm font-medium">{funding.amount}</span>
+                      </div>
+                    </div>
+                    <div>
+                      {funding.status === "open" ? (
+                        <Badge className="bg-green-500">Open</Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          Upcoming
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center mt-3 text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4 mr-1" /> 
+                    <span>
+                      {funding.status === "open" ? (
+                        <>Deadline: {new Date(funding.deadline).toLocaleDateString()} ({funding.daysLeft} days left)</>
+                      ) : (
+                        <>Opens on: {new Date(funding.deadline).toLocaleDateString()}</>
+                      )}
+                    </span>
+                  </div>
+                  
+                  <div className="mt-4 flex justify-end">
+                    {funding.status === "open" ? (
+                      <Button 
+                        size="sm"
+                        onClick={() => handleApplyFunding(funding.id)}
+                        className="bg-moh-green hover:bg-moh-darkGreen"
+                      >
+                        Apply Now
+                      </Button>
+                    ) : (
+                      <Button 
+                        size="sm"
+                        variant="outline"
+                      >
+                        Set Reminder
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+              
+              <div className="flex justify-center mt-6">
+                <Button variant="outline" asChild>
+                  <Link to="/investment" className="flex items-center gap-1">
+                    View All Funding Rounds
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="pitches">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pitch Events</CardTitle>
+              <CardDescription>Schedule and prepare for investor pitches</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center mb-4">
+                <div className="relative max-w-sm">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                  <Input
+                    placeholder="Search events..."
+                    className="pl-9"
+                  />
+                </div>
+                <Select defaultValue="upcoming">
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Filter events" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Events</SelectItem>
+                    <SelectItem value="upcoming">Upcoming</SelectItem>
+                    <SelectItem value="registered">Registered</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {pitchEvents.map((event) => (
+                <motion.div 
+                  key={event.id}
+                  variants={fadeInUp}
+                  initial="hidden"
+                  animate="visible"
+                  className="border rounded-md p-4 mb-4 last:mb-0 hover:border-moh-green/20 transition-colors"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-medium">{event.name}</h3>
+                      <div className="flex items-center gap-2 mt-1 text-sm">
+                        <Calendar className="h-4 w-4" /> 
+                        <span>{new Date(event.date).toLocaleDateString()}</span>
+                        <span className="text-muted-foreground">• {event.location}</span>
+                      </div>
+                    </div>
+                    {event.registered && (
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        <BadgeCheck className="w-3 h-3 mr-1" />
+                        Registered
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="mt-4 flex justify-end">
+                    {event.registered ? (
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          asChild
+                        >
+                          <Link to="/dashboard/pitches/prepare">
+                            Prepare Pitch
+                            <ChevronRight className="w-4 h-4 ml-1" />
+                          </Link>
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button 
+                        size="sm"
+                        onClick={() => handleRegisterEvent(event.id)}
+                        className="bg-moh-green hover:bg-moh-darkGreen"
+                      >
+                        Register
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+              
+              <div className="flex justify-center mt-6">
+                <Button variant="outline">
+                  View All Events
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="analysis">
+          <AIAnalysisSection 
+            aiMatchScores={aiMatchScores}
+            aiMarketTrends={aiMarketTrends}
+            isAnalyzing={isAnalyzing}
+            selectedSector={selectedSector}
+            onSectorChange={setSelectedSector}
+            onAnalyzeClick={handleAnalyzeClick}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+        </TabsContent>
+      </Tabs>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <FileText className="h-5 w-5 mr-2 text-moh-green" />
+            Investment Resources
+          </CardTitle>
+          <CardDescription>Tools and guidance to support your investment journey</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <motion.div 
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              className="border rounded-md p-4 hover:border-moh-green/20 transition-colors"
+            >
+              <div className="bg-moh-lightGreen w-10 h-10 rounded flex items-center justify-center mb-3">
+                <FileText className="h-5 w-5 text-moh-green" />
+              </div>
+              <h3 className="font-medium mb-1">Pitch Deck Templates</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Download professionally designed pitch deck templates tailored for healthcare innovations.
+              </p>
+              <Button size="sm" variant="outline">
+                Access Templates
+              </Button>
+            </motion.div>
+            
+            <motion.div 
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.1 }}
+              className="border rounded-md p-4 hover:border-moh-green/20 transition-colors"
+            >
+              <div className="bg-moh-lightGreen w-10 h-10 rounded flex items-center justify-center mb-3">
+                <Users className="h-5 w-5 text-moh-green" />
+              </div>
+              <h3 className="font-medium mb-1">Investor Database</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Browse our comprehensive database of healthcare investors with detailed profiles.
+              </p>
+              <Button size="sm" variant="outline">
+                Explore Database
+              </Button>
+            </motion.div>
+            
+            <motion.div 
+              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: 0.2 }}
+              className="border rounded-md p-4 hover:border-moh-green/20 transition-colors"
+            >
+              <div className="bg-moh-lightGreen w-10 h-10 rounded flex items-center justify-center mb-3">
+                <BarChart3 className="h-5 w-5 text-moh-green" />
+              </div>
+              <h3 className="font-medium mb-1">Market Reports</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Access expert analysis and reports on healthcare investment trends in Saudi Arabia.
+              </p>
+              <Button size="sm" variant="outline">
+                View Reports
+              </Button>
+            </motion.div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

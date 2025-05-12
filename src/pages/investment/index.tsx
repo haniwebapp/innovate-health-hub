@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import MedicalNavbar from "@/components/layouts/MedicalNavbar";
+import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { motion } from "framer-motion";
 import { InvestmentHero } from '@/components/investment/InvestmentHero';
@@ -12,8 +12,6 @@ import { InvestmentCTA } from '@/components/investment/InvestmentCTA';
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ChevronRight, TrendingUp } from "lucide-react";
-import { AnimatedWavesDivider } from '@/components/animations/AnimatedWavesDivider';
-import { MedicalButton } from '@/components/ui/medical-button';
 
 export default function InvestmentPage() {
   const [activeTab, setActiveTab] = useState('startups');
@@ -21,7 +19,7 @@ export default function InvestmentPage() {
   
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGreen">
-      <MedicalNavbar />
+      <Navbar />
       <ScrollProgress />
       
       <main className="flex-grow pt-0 my-0 rounded-none py-0">
@@ -35,7 +33,7 @@ export default function InvestmentPage() {
           </div>
           
           {/* Animated grid pattern */}
-          <div className="absolute inset-0 bg-[url('/medical-dna-pattern.svg')] opacity-10 bg-repeat"></div>
+          <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-5"></div>
           
           <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -78,17 +76,13 @@ export default function InvestmentPage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <MedicalButton variant="gold" asChild>
-                    <a href="/dashboard/investment" className="flex items-center justify-center">
-                      Get Started
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </a>
-                  </MedicalButton>
-                  <MedicalButton variant="outline" asChild>
-                    <a href="#investment-opportunities" className="border-moh-gold/50 text-moh-lightGold hover:bg-moh-darkGreen/20">
-                      Explore Opportunities
-                    </a>
-                  </MedicalButton>
+                  <a href="/dashboard/investment" className="bg-moh-gold hover:bg-moh-darkGold text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center">
+                    Get Started
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </a>
+                  <a href="#investment-opportunities" className="border border-moh-gold/50 text-moh-lightGold hover:bg-moh-darkGreen/20 font-medium py-3 px-6 rounded-lg flex items-center justify-center">
+                    Explore Opportunities
+                  </a>
                 </motion.div>
               </motion.div>
               
@@ -96,7 +90,12 @@ export default function InvestmentPage() {
             </div>
           </div>
           
-          <AnimatedWavesDivider color="text-moh-lightGreen" secondaryColor="text-white" />
+          {/* Wave divider */}
+          <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-12">
+              <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.92,130.83,141.41,214.86,114.72,271.78,97.31,328.1,64.46,392.73,38.81" fill="currentColor" className="text-moh-lightGreen"></path>
+            </svg>
+          </div>
         </section>
         
         {/* Investment Metrics */}
@@ -187,12 +186,10 @@ export default function InvestmentPage() {
                           </div>
                         </div>
                       </div>
-                      <MedicalButton variant="default" className="mt-5 w-full" asChild>
-                        <a href="/dashboard/investment">
-                          View Details
-                          <ChevronRight className="ml-2 h-4 w-4" />
-                        </a>
-                      </MedicalButton>
+                      <a href="/dashboard/investment" className="mt-5 w-full bg-moh-green hover:bg-moh-darkGreen text-white py-2 px-4 rounded flex items-center justify-center">
+                        View Details
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </a>
                     </div>
                   </div>
                 </motion.div>
@@ -200,12 +197,10 @@ export default function InvestmentPage() {
             </div>
             
             <div className="text-center mt-10">
-              <MedicalButton variant="outline" asChild>
-                <a href="/dashboard/investment" className="inline-flex items-center">
-                  View All Opportunities
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </a>
-              </MedicalButton>
+              <a href="/dashboard/investment" className="inline-flex items-center border border-moh-green text-moh-green hover:bg-moh-lightGreen font-medium py-2 px-5 rounded-lg">
+                View All Opportunities
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </a>
             </div>
           </div>
         </section>
