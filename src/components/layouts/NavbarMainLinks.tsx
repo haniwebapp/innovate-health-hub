@@ -15,7 +15,11 @@ import {
   ShieldCheck,
   BookOpen,
   HelpCircle,
-  Sparkles
+  Navigation,
+  Hospital,
+  Goal,
+  LayoutDashboard,
+  ArrowRight
 } from "lucide-react";
 
 interface NavbarMainLinksProps {
@@ -25,14 +29,17 @@ interface NavbarMainLinksProps {
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
   
-  // Main links with icons
+  // Updated main links with icons
   const mainLinks = [
+    { path: "/journey", label: "Start Your Journey", icon: Navigation },
+    { path: "/healthcare-solutions", label: "Healthcare Solutions", icon: Hospital },
+    { path: "/vision-2030", label: "Vision 2030 Goals", icon: Goal },
+    { path: "/health-strategy", label: "Health Sector Strategy", icon: LayoutDashboard },
     { path: "/innovations", label: "Innovations", icon: Lightbulb },
     { path: "/challenges", label: "Challenges", icon: Award },
     { path: "/investment", label: "Investment", icon: DollarSign },
     { path: "/regulatory", label: "Regulatory", icon: ShieldCheck },
     { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
-    { path: "/ai-solutions", label: "AI Solutions", icon: Sparkles },
     { path: "/about", label: "About", icon: HelpCircle },
   ];
 
@@ -71,7 +78,7 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
         animate="visible"
         className="flex"
       >
-        <NavigationMenuList className="flex justify-center space-x-2 lg:space-x-6">
+        <NavigationMenuList className="flex justify-center space-x-2 lg:space-x-4">
           {mainLinks.map((link) => (
             <NavigationMenuItem key={link.path}>
               <motion.div variants={itemVariants}>

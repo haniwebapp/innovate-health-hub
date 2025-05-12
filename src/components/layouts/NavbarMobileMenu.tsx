@@ -1,8 +1,22 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { LogOut, User, Settings, FileUp, Award, LineChart, ScrollText, BookOpen, AlertCircle, Sparkles } from "lucide-react";
+import { 
+  LogOut, 
+  User, 
+  Settings, 
+  FileUp, 
+  Award, 
+  LineChart, 
+  ScrollText, 
+  BookOpen, 
+  AlertCircle,
+  Navigation,
+  Hospital,
+  Goal,
+  LayoutDashboard,
+  ArrowRight
+} from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,14 +33,17 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   
-  // Simplified navigation links with icons but no submenus
+  // Updated navigation links with icons but no submenus
   const navigationLinks = [
+    { path: "/journey", label: "Start Your Journey", icon: Navigation },
+    { path: "/healthcare-solutions", label: "Healthcare Solutions", icon: Hospital },
+    { path: "/vision-2030", label: "Vision 2030 Goals", icon: Goal },
+    { path: "/health-strategy", label: "Health Sector Strategy", icon: LayoutDashboard },
     { path: "/innovations", label: "Innovations", icon: FileUp },
     { path: "/challenges", label: "Challenges", icon: Award },
     { path: "/investment", label: "Investment", icon: LineChart },
     { path: "/regulatory", label: "Regulatory", icon: ScrollText },
     { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
-    { path: "/ai-solutions", label: "AI Solutions", icon: Sparkles },
     { path: "/about", label: "About", icon: AlertCircle },
   ];
   

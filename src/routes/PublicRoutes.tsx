@@ -12,7 +12,10 @@ import RegulatoryPage from '@/pages/regulatory';
 import KnowledgeHubPage from '@/pages/knowledge-hub';
 import PolicyPage from '@/pages/policy/index';
 import FeaturesPage from '@/pages/features';
-import AISolutionsPage from '@/pages/ai-solutions';
+import JourneyPage from '@/pages/journey';
+import HealthcareSolutionsPage from '@/pages/healthcare-solutions';
+import Vision2030Page from '@/pages/vision-2030';
+import HealthStrategyPage from '@/pages/health-strategy';
 import DynamicPage from '@/pages/[slug]';
 
 export const PublicRoutes = (
@@ -29,7 +32,12 @@ export const PublicRoutes = (
     <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
     <Route path="/policy" element={<PolicyPage />} />
     <Route path="/features" element={<FeaturesPage />} />
-    <Route path="/ai-solutions" element={<AISolutionsPage />} />
+    
+    {/* New Routes */}
+    <Route path="/journey" element={<JourneyPage />} />
+    <Route path="/healthcare-solutions" element={<HealthcareSolutionsPage />} />
+    <Route path="/vision-2030" element={<Vision2030Page />} />
+    <Route path="/health-strategy" element={<HealthStrategyPage />} />
     
     {/* Dynamic page route - must be after all specific routes to avoid conflicts */}
     <Route path="/:slug" element={<DynamicPage />} />
