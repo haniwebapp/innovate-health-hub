@@ -30,7 +30,7 @@ export function HeroBackgroundEffect() {
       {/* Glowing circles and overlays */}
       <GlowingCircles />
       
-      {/* Sparkle effects */}
+      {/* Enhanced sparkle effects (8 different sparkles) */}
       <SparkleEffects />
     </div>
   );
