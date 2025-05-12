@@ -1,71 +1,56 @@
 
-import { ReactNode, useRef } from "react";
+import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 interface ScrollFadeInProps {
-  children: ReactNode;
+  children: React.ReactNode;
   delay?: number;
   threshold?: number;
-  direction?: "up" | "down" | "left" | "right" | "none";
   className?: string;
+  direction?: "up" | "down" | "left" | "right";
 }
 
 export function ScrollFadeIn({ 
   children, 
   delay = 0, 
   threshold = 0.2,
-  direction = "up",
-  className = ""
+  className = "",
+  direction = "up"
 }: ScrollFadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: threshold });
   
-  // Set initial and animate properties based on direction
-  const getDirectionalVariants = () => {
-    switch (direction) {
+  const getInitialPosition = () => {
+    switch(direction) {
+      case "down": return { opacity: 0, y: -20 };
+      case "left": return { opacity: 0, x: 20 };
+      case "right": return { opacity: 0, x: -20 };
       case "up":
-        return {
-          hidden: { opacity: 0, y: 30 },
-          visible: { opacity: 1, y: 0 }
-        };
-      case "down":
-        return {
-          hidden: { opacity: 0, y: -30 },
-          visible: { opacity: 1, y: 0 }
-        };
-      case "left":
-        return {
-          hidden: { opacity: 0, x: 30 },
-          visible: { opacity: 1, x: 0 }
-        };
-      case "right":
-        return {
-          hidden: { opacity: 0, x: -30 },
-          visible: { opacity: 1, x: 0 }
-        };
-      case "none":
-      default:
-        return {
-          hidden: { opacity: 0 },
-          visible: { opacity: 1 }
-        };
+      default: return { opacity: 0, y: 20 };
     }
   };
-  
-  const variants = getDirectionalVariants();
-  
+
+  const variants = {
+    hidden: getInitialPosition(),
+    visible: { 
+      opacity: 1,
+      y: 0,
+      x: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        delay: delay
+      }
+    }
+  };
+
   return (
     <motion.div
       ref={ref}
-      className={className}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={variants}
-      transition={{
-        duration: 0.8,
-        delay: delay,
-        ease: [0.22, 1, 0.36, 1]
-      }}
+      className={className}
     >
       {children}
     </motion.div>

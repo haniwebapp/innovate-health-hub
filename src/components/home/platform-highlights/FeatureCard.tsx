@@ -1,8 +1,10 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ChevronRight, HeartPulse, Lightbulb, Stethoscope, Coins, GraduationCap } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getIconByName } from "./features";
+import { ParallaxCard } from "@/components/animations/ParallaxCard";
 
 interface FeatureCardProps {
   iconName: string;
@@ -23,82 +25,102 @@ export function FeatureCard({
   ctaLink,
   onHover,
   isActive,
-  color
+  color = "green"
 }: FeatureCardProps) {
-  // Map icon name to component
-  const getIcon = () => {
-    switch (iconName) {
-      case "HeartPulse":
-        return <HeartPulse className="h-5 w-5" />;
-      case "Lightbulb":
-        return <Lightbulb className="h-5 w-5" />;
-      case "Stethoscope":
-        return <Stethoscope className="h-5 w-5" />;
-      case "Coins":
-        return <Coins className="h-5 w-5" />;
-      case "GraduationCap":
-        return <GraduationCap className="h-5 w-5" />;
-      default:
-        return <Lightbulb className="h-5 w-5" />;
-    }
-  };
+  // Get icon component from name
+  const IconComponent = getIconByName(iconName);
 
-  const cardVariants = {
+  // Determine color classes based on the color prop
+  const getColorClasses = () => {
+    const colorMap: {[key: string]: {bg: string, text: string, border: string, hover: string}} = {
+      green: {
+        bg: "bg-moh-lightGreen/50",
+        text: "text-moh-green",
+        border: "border-moh-green/20",
+        hover: "hover:bg-moh-lightGreen/80"
+      },
+      gold: {
+        bg: "bg-moh-lightGold/50",
+        text: "text-moh-darkGold",
+        border: "border-moh-gold/20",
+        hover: "hover:bg-moh-lightGold/80"
+      },
+      darkGreen: {
+        bg: "bg-moh-lightGreen/60",
+        text: "text-moh-darkGreen",
+        border: "border-moh-darkGreen/20",
+        hover: "hover:bg-moh-lightGreen/90"
+      },
+      darkGold: {
+        bg: "bg-moh-lightGold/60",
+        text: "text-moh-darkGold",
+        border: "border-moh-darkGold/20",
+        hover: "hover:bg-moh-lightGold/90"
+      }
+    };
+    
+    return colorMap[color] || colorMap.green;
+  };
+  
+  const colorClasses = getColorClasses();
+  
+  // Item animation variant
+  const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
-        delay: 0.2 + (delay * 0.1),
-        ease: [0.22, 1, 0.36, 1]
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+        delay: 0.1 * delay
       }
     }
   };
 
   return (
     <motion.div
-      variants={cardVariants}
-      className={`group rounded-xl bg-white/70 backdrop-blur-md border border-white/60 shadow-md p-6 transition-all duration-500 hover:shadow-xl hover:bg-white/90 hover:-translate-y-1 relative overflow-hidden ${isActive ? "ring-2 ring-moh-gold/30" : ""}`}
-      onMouseEnter={onHover}
+      className="xl:col-span-1"
+      variants={itemVariants}
+      onHoverStart={onHover}
     >
-      {/* Card content */}
-      <div className="flex flex-col h-full">
-        <div className={`w-12 h-12 rounded-lg ${isActive ? "bg-gradient-to-br from-moh-green to-moh-darkGreen" : "bg-moh-green/10"} flex items-center justify-center transition-colors duration-300`}>
-          <motion.div
-            className={`${isActive ? "text-white" : "text-moh-green"} transition-colors duration-300`}
-            animate={{ 
-              rotate: isActive ? [0, 5, -5, 0] : 0,
-              scale: isActive ? [1, 1.2, 1] : 1
-            }}
-            transition={{ duration: 0.5 }}
-          >
-            {getIcon()}
-          </motion.div>
+      <ParallaxCard 
+        onHover={onHover}
+        depth={15}
+        className={`h-full bg-white/60 backdrop-blur-sm rounded-xl border ${colorClasses.border} shadow-sm overflow-hidden transition-all duration-300 ${isActive ? 'ring-2 ring-moh-green/20 shadow-lg' : ''}`}
+      >
+        <div className="p-5 flex flex-col h-full">
+          {/* Icon container with dynamic background */}
+          <div className={`w-12 h-12 rounded-lg ${colorClasses.bg} ${colorClasses.hover} flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110`}>
+            <IconComponent className={`w-6 h-6 ${colorClasses.text}`} />
+          </div>
+          
+          <h3 className={`text-lg font-semibold mb-2 ${colorClasses.text}`}>
+            {title}
+          </h3>
+          
+          <p className="text-gray-600 text-sm mb-4 flex-grow">{description}</p>
+          
+          <div className="mt-auto">
+            <Button
+              asChild
+              variant="ghost"
+              className={`${colorClasses.text} hover:bg-transparent hover:opacity-80 p-0 h-auto font-medium text-sm group`}
+            >
+              <a href={ctaLink}>
+                Learn More
+                <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            </Button>
+          </div>
+          
+          {/* Decorative elements */}
+          <div className="absolute -right-3 -top-3 w-16 h-16 opacity-10">
+            <IconComponent className={`w-full h-full ${colorClasses.text}`} />
+          </div>
         </div>
-        
-        <h3 className="mt-4 text-lg font-medium text-moh-darkGreen">{title}</h3>
-        <p className="mt-2 text-sm text-gray-600 flex-grow">{description}</p>
-        
-        <Link 
-          to={ctaLink} 
-          className="mt-4 inline-flex items-center text-sm font-medium text-moh-green hover:text-moh-darkGreen group-hover:underline transition-colors"
-        >
-          Learn more
-          <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Link>
-      </div>
-      
-      {/* Background decoration */}
-      <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-moh-lightGreen/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* Top decoration line */}
-      <motion.div 
-        className={`absolute top-0 left-0 h-1 bg-gradient-to-r ${isActive ? "from-moh-green to-moh-gold" : "from-transparent to-transparent"} transition-all duration-500`}
-        initial={{ width: "0%" }}
-        animate={{ width: isActive ? "100%" : "0%" }}
-        transition={{ duration: 0.5 }}
-      />
+      </ParallaxCard>
     </motion.div>
   );
 }

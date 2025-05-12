@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import React from "react";
 
 interface ArabicVerticalTextProps {
   text: string;
@@ -7,34 +8,57 @@ interface ArabicVerticalTextProps {
   delay?: number;
 }
 
-export function ArabicVerticalText({ text, className = "", delay = 0 }: ArabicVerticalTextProps) {
-  const charVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
+export function ArabicVerticalText({
+  text,
+  className = "",
+  delay = 0
+}: ArabicVerticalTextProps) {
+  const containerVariants = {
+    hidden: {
+      opacity: 0
+    },
+    visible: {
       opacity: 1,
-      y: 0,
       transition: {
-        delay: delay + i * 0.1,
-        duration: 0.6,
-        ease: [0.455, 0.03, 0.515, 0.955]
+        staggerChildren: 0.1,
+        delayChildren: delay
       }
-    })
+    }
   };
-
+  
+  const itemVariants = {
+    hidden: {
+      y: 20,
+      opacity: 0
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    }
+  };
+  
+  // Split the text into characters and render each one vertically
   return (
-    <div className={`flex flex-col items-center ${className}`}>
-      {text.split("").map((char, index) => (
-        <motion.div
-          key={index}
-          custom={index}
-          variants={charVariants}
-          initial="hidden"
-          animate="visible"
-          className="font-arabic text-3xl text-moh-green/10 font-bold"
+    <motion.div 
+      className={`flex flex-col items-center ${className}`}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {text.split('').map((char, index) => (
+        <motion.div 
+          key={index} 
+          variants={itemVariants}
+          className="my-1 text-center"
         >
           {char}
         </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

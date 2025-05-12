@@ -1,56 +1,83 @@
 
-import { useEffect, useState } from "react";
-import { animate } from "framer-motion";
-import { cn } from "@/lib/utils";
+import React, { useState, useEffect, useRef } from 'react';
+import { animate } from 'framer-motion';
 
-export interface AnimatedCounterProps {
+interface AnimatedCounterProps {
   value: number;
   suffix?: string;
   duration?: number;
   delay?: number;
-  importance?: "low" | "medium" | "high";
+  importance?: 'low' | 'medium' | 'high';
   scaleDuration?: boolean;
 }
 
-export function AnimatedCounter({
-  value,
-  suffix = "",
-  duration = 2,
+export function AnimatedCounter({ 
+  value, 
+  suffix = "", 
+  duration = 2, 
   delay = 0,
-  importance = "medium",
+  importance = 'medium',
   scaleDuration = false
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0);
-  
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      // Optionally scale duration based on value size
-      const finalDuration = scaleDuration ? Math.min(Math.max(duration * (value / 100), 1), 4) : duration;
-      
-      const controls = animate(0, value, {
-        duration: finalDuration,
-        onUpdate: (value) => {
-          setDisplayValue(Math.floor(value));
-        },
-        ease: "easeOut"
-      });
-      
-      return () => controls.stop();
-    }, delay * 1000);
+  const nodeRef = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
+
+  // Adjust duration based on importance and scaleDuration flag
+  const getAdjustedDuration = () => {
+    if (!scaleDuration) return duration;
     
-    return () => clearTimeout(timeout);
-  }, [value, duration, delay, scaleDuration]);
-  
-  const importanceClasses = {
-    low: "text-xl md:text-2xl font-medium",
-    medium: "text-2xl md:text-3xl font-semibold",
-    high: "text-3xl md:text-5xl font-bold text-moh-darkGreen"
+    if (importance === 'high') return duration * 0.8; // Faster for high importance
+    if (importance === 'low') return duration * 1.2; // Slower for low importance
+    return duration; // Default for medium importance
   };
-  
+
+  useEffect(() => {
+    if (hasAnimated.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated.current) {
+            hasAnimated.current = true;
+            
+            setTimeout(() => {
+              animate(0, value, {
+                duration: getAdjustedDuration(),
+                onUpdate: (latest) => {
+                  setDisplayValue(latest);
+                },
+                ease: "easeOut"
+              });
+            }, delay * 1000);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (nodeRef.current) {
+      observer.observe(nodeRef.current);
+    }
+
+    return () => {
+      if (nodeRef.current) {
+        observer.unobserve(nodeRef.current);
+      }
+    };
+  }, [value, duration, delay, scaleDuration, importance]);
+
+  // Format the display value
+  let formattedValue: string;
+  if (Number.isInteger(value)) {
+    formattedValue = Math.round(displayValue).toString();
+  } else {
+    formattedValue = displayValue.toFixed(1);
+  }
+
   return (
-    <span className={cn("font-playfair transition-all", importanceClasses[importance])}>
-      <span className="tabular-nums">{displayValue.toLocaleString()}</span>
-      <span className="ml-1 text-moh-gold">{suffix}</span>
+    <span ref={nodeRef} className="tabular-nums">
+      {formattedValue}{suffix}
     </span>
   );
 }

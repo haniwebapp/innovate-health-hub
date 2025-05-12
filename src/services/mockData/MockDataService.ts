@@ -1,83 +1,26 @@
-import { supabase } from '@/integrations/supabase/client';
+
+import { MockPageService } from "./MockPageService";
+import { toast } from "sonner";
 
 export class MockDataService {
-  private tables: string[] = [
-    'challenges',
-    'submissions',
-    'events',
-    'regulatory_frameworks',
-    'sandbox_applications',
-    'knowledge_resources'
-  ];
-  
-  public async ensureTablesExist(): Promise<void> {
+  /**
+   * Generates all mock data for the application
+   */
+  static async generateAllMockData(): Promise<void> {
     try {
-      console.log('Checking if tables exist...');
+      toast.info("Generating mock data...", { duration: 2000 });
       
-      // Instead of using a custom migrations table, we'll query each table directly
-      for (const table of this.tables) {
-        await this.ensureTableExists(table);
-      }
-
-      console.log('All tables exist or were created successfully');
-    } catch (error) {
-      console.error('Error ensuring tables exist:', error);
-    }
-  }
-  
-  private async ensureTableExists(tableName: string): Promise<void> {
-    try {
-      // Try to query the table - if it errors, the table likely doesn't exist
-      const { error } = await supabase
-        .from(tableName)
-        .select('id')
-        .limit(1);
-        
-      if (error) {
-        console.log(`Table ${tableName} might not exist. Error:`, error.message);
-        await this.createTable(tableName);
-      } else {
-        console.log(`Table ${tableName} exists`);
-      }
-    } catch (error) {
-      console.error(`Error checking if ${tableName} exists:`, error);
-    }
-  }
-  
-  private async createTable(tableName: string): Promise<void> {
-    try {
-      console.log(`Creating table ${tableName}...`);
+      // Generate mock pages
+      const pagesCount = await MockPageService.generateMockPages();
       
-      // Instead of direct SQL queries, we'll use the RPC function if available
-      // Otherwise fall back to mock data directly
+      // Add more mock data generators here as needed
+      // const innovationsCount = await MockInnovationService.generateMockInnovations();
+      // const challengesCount = await MockChallengeService.generateMockChallenges();
       
-      switch (tableName) {
-        case 'challenges':
-          await this.createChallengesTable();
-          break;
-        case 'submissions':
-          await this.createSubmissionsTable();
-          break;
-        // Add cases for other tables as needed
-        default:
-          console.log(`No create function for table ${tableName}, it will be created as needed`);
-      }
+      toast.success(`Mock data generated successfully! Created ${pagesCount} pages.`, { duration: 5000 });
     } catch (error) {
-      console.error(`Error creating table ${tableName}:`, error);
+      console.error("Error generating mock data:", error);
+      toast.error("Failed to generate mock data. See console for details.");
     }
-  }
-  
-  private async createChallengesTable(): Promise<void> {
-    // This is just a fallback - in production, tables should be created via proper migrations
-    console.log('Using fallback method for challenges table');
-    // We'll rely on the MockChallengeService to handle this instead of direct SQL
-  }
-  
-  private async createSubmissionsTable(): Promise<void> {
-    // This is just a fallback - in production, tables should be created via proper migrations
-    console.log('Using fallback method for submissions table');
-    // We'll rely on the corresponding service to handle this
   }
 }
-
-export const mockDataService = new MockDataService();

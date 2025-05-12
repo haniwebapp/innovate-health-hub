@@ -1,5 +1,5 @@
 
-import { motion } from "framer-motion";
+import React from "react";
 import { ArabicVerticalText } from "@/components/animations/ArabicVerticalText";
 
 interface BackgroundDecorationsProps {
@@ -9,72 +9,29 @@ interface BackgroundDecorationsProps {
 export function BackgroundDecorations({ verticalTexts }: BackgroundDecorationsProps) {
   return (
     <>
-      {/* Vertical text decorations */}
-      <div className="absolute top-10 left-10 hidden xl:block">
-        <ArabicVerticalText text="الابتكار" className="text-moh-green/5" delay={0.5} />
-      </div>
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-moh-lightGreen opacity-10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-moh-lightGold opacity-10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
       
-      <div className="absolute bottom-10 right-10 hidden xl:block">
-        <ArabicVerticalText text="الصحة" className="text-moh-gold/5" delay={0.7} />
-      </div>
-      
-      {/* English vertical text */}
-      <div className="hidden lg:flex absolute top-20 right-10 flex-col items-center">
-        {verticalTexts.map((text, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 0.07, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 + (index * 0.2) }}
-            className="text-2xl font-bold text-moh-darkGreen tracking-widest"
-            style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
-          >
-            {text}
-          </motion.div>
-        ))}
-      </div>
-      
-      {/* Decorative shapes */}
-      <motion.div
-        className="absolute top-1/4 left-[10%] w-16 h-16 opacity-10"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 0.1, scale: 1, rotate: 45 }}
-        transition={{ duration: 1, delay: 1 }}
-      >
-        <div className="absolute inset-0 border-2 border-moh-gold rounded-md" />
-      </motion.div>
-      
-      <motion.div
-        className="absolute bottom-1/4 right-[15%] w-20 h-20 opacity-10"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1, delay: 1.2 }}
-      >
-        <div className="absolute inset-0 border-2 border-moh-green rounded-full" />
-      </motion.div>
-      
-      {/* Animated particles */}
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 rounded-full bg-moh-green/20"
-          initial={{ 
-            x: Math.random() * 100 + 50, 
-            y: Math.random() * 500,
-            opacity: 0
-          }}
-          animate={{
-            y: [0, -300],
-            opacity: [0, 0.5, 0],
-            scale: [0.5, 1, 0.5]
-          }}
-          transition={{
-            duration: 10 + (i * 2),
-            repeat: Infinity,
-            delay: i * 2
-          }}
+      {/* Decorative vertical text elements */}
+      <div className="absolute left-2 top-1/3 hidden lg:block">
+        <ArabicVerticalText 
+          text={verticalTexts[0]} 
+          className="text-moh-green/10 font-bold tracking-widest"
         />
-      ))}
+      </div>
+      <div className="absolute right-4 top-1/4 hidden lg:block">
+        <ArabicVerticalText 
+          text={verticalTexts[1]} 
+          className="text-moh-gold/10 font-bold tracking-widest"
+        />
+      </div>
+      <div className="absolute left-1/2 bottom-12 hidden lg:block">
+        <ArabicVerticalText 
+          text={verticalTexts[2]} 
+          className="text-moh-darkGreen/10 font-bold tracking-widest"
+        />
+      </div>
     </>
   );
 }

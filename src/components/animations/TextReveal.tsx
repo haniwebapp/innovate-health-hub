@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import React from "react";
 
 interface TextRevealProps {
   text: string;
@@ -10,41 +10,65 @@ interface TextRevealProps {
   splitBy?: "chars" | "words";
 }
 
-export const TextReveal = ({
+export function TextReveal({
   text,
   className = "",
   delay = 0,
   staggerDelay = 0.03,
   splitBy = "chars"
-}: TextRevealProps) => {
-  const [elements, setElements] = useState<string[]>([]);
+}: TextRevealProps) {
+  // Split text either by characters or words
+  const items = splitBy === "chars" 
+    ? text.split("")
+    : text.split(" ");
   
-  useEffect(() => {
-    if (splitBy === "chars") {
-      setElements(text.split(""));
-    } else {
-      setElements(text.split(" "));
-    }
-  }, [text, splitBy]);
+  // Animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { 
+        staggerChildren: staggerDelay, 
+        delayChildren: delay,
+      },
+    }),
+  };
+  
+  const child = {
+    hidden: {
+      y: 20,
+      opacity: 0,
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 200,
+      },
+    },
+  };
   
   return (
-    <span className={className}>
-      {elements.map((element, index) => (
+    <motion.span
+      className={className}
+      variants={container}
+      initial="hidden"
+      animate="visible"
+    >
+      {items.map((item, index) => (
         <motion.span
           key={index}
-          style={{ display: splitBy === "chars" ? "inline-block" : "inline" }}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          transition={{
-            duration: 0.5,
-            delay: delay + index * staggerDelay,
-            ease: [0.455, 0.03, 0.515, 0.955]
+          variants={child}
+          style={{ 
+            display: splitBy === "chars" ? "inline-block" : "inline-block",
+            marginRight: splitBy === "chars" ? "0" : "0.3em",
           }}
         >
-          {element}
-          {splitBy === "words" && index < elements.length - 1 ? " " : ""}
+          {item === " " ? "\u00A0" : item}
         </motion.span>
       ))}
-    </span>
+    </motion.span>
   );
-};
+}

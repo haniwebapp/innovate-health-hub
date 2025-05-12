@@ -1,38 +1,65 @@
 
-export const features = [
+import { Brain, FlaskConical, TrendingUp, BookOpen, Award, Users, HeartPulse, Globe } from "lucide-react";
+import React from "react";
+
+export interface Feature {
+  iconName: string;
+  title: string;
+  description: string;
+  ctaLink: string;
+  color?: string;
+}
+
+export const features: Feature[] = [
   {
-    iconName: "HeartPulse",
-    title: "Health Innovation Directory",
-    description: "Discover cutting-edge healthcare solutions from across Saudi Arabia and globally.",
+    iconName: "Brain",
+    title: "AI-Powered Matching",
+    description: "Advanced algorithms connect innovations with the right investors and opportunities.",
     ctaLink: "/innovations",
-    color: "#00814A"
+    color: "green"
   },
   {
-    iconName: "Lightbulb",
-    title: "Healthcare Challenges",
-    description: "Participate in healthcare challenges from the Ministry of Health and partner organizations.",
-    ctaLink: "/challenges",
-    color: "#C3A86B"
-  },
-  {
-    iconName: "Stethoscope",
+    iconName: "FlaskConical",
     title: "Regulatory Sandbox",
-    description: "Test and validate your healthcare innovation in a controlled regulatory environment.",
+    description: "Test your healthcare innovations in a safe and compliant environment.",
     ctaLink: "/regulatory",
-    color: "#00814A"
+    color: "gold"
   },
   {
-    iconName: "Coins",
-    title: "Investment Hub",
-    description: "Connect with investors interested in healthcare innovation and secure funding.",
+    iconName: "TrendingUp",
+    title: "Investment Marketplace",
+    description: "Connect with investors looking to fund the next healthcare breakthrough.",
     ctaLink: "/investment",
-    color: "#C3A86B"
+    color: "darkGreen"
   },
   {
-    iconName: "GraduationCap",
-    title: "Knowledge Resources",
-    description: "Access research, guides, and healthcare innovation best practices.",
-    ctaLink: "/knowledge",
-    color: "#00814A"
+    iconName: "BookOpen",
+    title: "Knowledge Hub",
+    description: "Access curated resources and expertise to accelerate your innovation journey.",
+    ctaLink: "/knowledge-hub",
+    color: "darkGold"
+  },
+  {
+    iconName: "Award",
+    title: "Challenge Platform",
+    description: "Participate in healthcare challenges and drive meaningful innovation.",
+    ctaLink: "/challenges",
+    color: "green"
   }
 ];
+
+// Function to get the appropriate icon component
+export function getIconByName(name: string) {
+  const icons: { [key: string]: React.ElementType } = {
+    Brain,
+    FlaskConical,
+    TrendingUp,
+    BookOpen,
+    Award,
+    Users,
+    HeartPulse,
+    Globe
+  };
+  
+  return icons[name] || Award;
+}
