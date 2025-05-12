@@ -1,52 +1,29 @@
 
-import React, { lazy } from 'react';
 import { Route } from 'react-router-dom';
-import { DynamicPageLoader } from '@/components/common/DynamicPageLoader';
+import HomePage from '@/pages/Index';
+import NotFound from '@/pages/NotFound';
+import AboutPage from '@/pages/about';
+import ChallengesPage from '@/pages/challenges';
+import ChallengeDetails from '@/pages/challenges/[id]';
+import InnovationsPage from '@/pages/innovations';
+import InnovationDetails from '@/pages/innovations/[id]';
+import InvestmentPage from '@/pages/investment';
+import RegulatoryPage from '@/pages/regulatory';
+import KnowledgeHubPage from '@/pages/knowledge-hub';
+import PolicyPage from '@/pages/policy/index';
 
-// Lazy load pages for better performance
-const HomePage = lazy(() => import('@/pages/Index'));
-const AboutPage = lazy(() => import('@/pages/about/index'));
-const InnovationsPage = lazy(() => import('@/pages/innovations/index'));
-const InnovationDetailPage = lazy(() => import('@/pages/innovations/[id]'));
-const KnowledgeHubPage = lazy(() => import('@/pages/knowledge-hub/index'));
-const InvestmentPage = lazy(() => import('@/pages/investment/index'));
-const RegulatoryPage = lazy(() => import('@/pages/regulatory/index'));
-const DynamicPage = lazy(() => import('@/pages/DynamicPage'));
-
-// Create the public routes
 export const PublicRoutes = (
   <>
-    <Route 
-      path="/" 
-      element={<DynamicPageLoader><HomePage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/about" 
-      element={<DynamicPageLoader><AboutPage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/innovations" 
-      element={<DynamicPageLoader><InnovationsPage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/innovations/:id" 
-      element={<DynamicPageLoader><InnovationDetailPage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/knowledge-hub" 
-      element={<DynamicPageLoader><KnowledgeHubPage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/investment" 
-      element={<DynamicPageLoader><InvestmentPage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/regulatory" 
-      element={<DynamicPageLoader><RegulatoryPage /></DynamicPageLoader>} 
-    />
-    <Route 
-      path="/pages/:slug" 
-      element={<DynamicPageLoader><DynamicPage /></DynamicPageLoader>} 
-    />
+    {/* Public Routes */}
+    <Route path="/" element={<HomePage />} />
+    <Route path="/about" element={<AboutPage />} />
+    <Route path="/challenges" element={<ChallengesPage />} />
+    <Route path="/challenges/:id" element={<ChallengeDetails />} />
+    <Route path="/innovations" element={<InnovationsPage />} />
+    <Route path="/innovations/:id" element={<InnovationDetails />} />
+    <Route path="/investment" element={<InvestmentPage />} />
+    <Route path="/regulatory" element={<RegulatoryPage />} />
+    <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
+    <Route path="/policy" element={<PolicyPage />} />
   </>
 );
