@@ -23,8 +23,8 @@ export function AppRoutes() {
       {/* Main Dashboard with nested routes */}
       {DashboardMainRoutes}
       
-      {/* Admin Routes */}
-      <AdminRoutes />
+      {/* Admin Routes - directly include the routes, not as a component */}
+      {AdminRoutes}
       
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />
