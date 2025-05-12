@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { PageService } from "@/services/page/PageService";
 import { Files, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { AdminPageState } from "../../ui/AdminPageState";
+import { AdminLoading, AdminError, AdminEmpty } from "../../ui/AdminPageState";
 import { MockDataGenerator } from "../../MockDataGenerator";
 
 export function ContentTab() {
@@ -35,17 +35,13 @@ export function ContentTab() {
             </Button>
           </CardHeader>
           <CardContent className="pt-6">
-            <AdminPageState 
-              isLoading={isLoading}
-              error={error}
-              data={pages}
-              emptyMessage="No content pages found"
-              loadingMessage="Loading content pages..."
-              errorMessage="Failed to load content pages"
-            >
+            {isLoading && <AdminLoading loadingMessage="Loading content pages..." />}
+            {error && <AdminError title="Failed to load content pages" description={error.toString()} />}
+            {pages && pages.length === 0 && <AdminEmpty message="No content pages found" />}
+            {pages && pages.length > 0 && (
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground mb-4">
-                  {pages?.length || 0} content page(s) available
+                  {pages.length || 0} content page(s) available
                 </p>
                 <Button asChild variant="outline">
                   <Link to="/dashboard/admin/cms/pages">
@@ -54,7 +50,7 @@ export function ContentTab() {
                   </Link>
                 </Button>
               </div>
-            </AdminPageState>
+            )}
           </CardContent>
         </Card>
       </motion.div>

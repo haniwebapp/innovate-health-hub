@@ -239,11 +239,12 @@ export class MockPageService {
         return 0;
       }
       
-      // Convert to database format
+      // Convert to database format - fix the type issue with content
       const dbPages = pagesToInsert.map(page => ({
         slug: page.slug,
         title: page.title,
-        content: page.content,
+        // Convert the content object to a JSON-compatible format
+        content: page.content as unknown as Record<string, any>,
         meta_description: page.metaDescription,
         published: page.published || false,
         last_updated_by: null // Will be updated if user is authenticated
