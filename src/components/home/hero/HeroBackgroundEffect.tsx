@@ -5,7 +5,8 @@ import {
   GeneticIcons, 
   BackgroundPatterns,
   GradientOrbs,
-  GlowingCircles
+  GlowingCircles,
+  SparkleEffects
 } from './background';
 
 export function HeroBackgroundEffect() {
@@ -28,6 +29,9 @@ export function HeroBackgroundEffect() {
       
       {/* Glowing circles and overlays */}
       <GlowingCircles />
+      
+      {/* Sparkle effects */}
+      <SparkleEffects />
     </div>
   );
 }

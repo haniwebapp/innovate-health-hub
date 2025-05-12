@@ -5,3 +5,4 @@ export * from './GeneticIcons';
 export * from './BackgroundPatterns';
 export * from './GradientOrbs';
 export * from './GlowingCircles';
+export * from './SparkleEffects';

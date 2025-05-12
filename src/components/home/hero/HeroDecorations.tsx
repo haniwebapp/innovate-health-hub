@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Sparkles, Dna, BrainCircuit, Stethoscope } from "lucide-react";
+import { Dna, BrainCircuit, Stethoscope, Sparkles } from "lucide-react";
 
 export function HeroDecorations() {
   // Generate a set of random positions for animated elements
@@ -16,7 +16,7 @@ export function HeroDecorations() {
 
   // Background particles
   const particles = generateRandomPositions(12, { width: 100, height: 100 });
-
+  
   // DNA genetic code letters
   const geneticLetters = ['A', 'T', 'G', 'C'];
   
@@ -212,31 +212,6 @@ export function HeroDecorations() {
           </div>
         </motion.div>
       ))}
-      
-      {/* Sparkle icon animations */}
-      <motion.div
-        className="absolute top-1/4 left-1/5 hidden lg:block"
-        animate={{
-          y: [-10, 10, -10],
-          opacity: [0.7, 1, 0.7],
-          scale: [0.8, 1, 0.8],
-        }}
-        transition={{ duration: 5, repeat: Infinity }}
-      >
-        <Sparkles className="text-moh-gold/30 w-6 h-6" />
-      </motion.div>
-      
-      <motion.div
-        className="absolute bottom-1/4 right-1/5 hidden lg:block"
-        animate={{
-          y: [10, -10, 10],
-          opacity: [0.7, 1, 0.7],
-          scale: [0.8, 1, 0.8],
-        }}
-        transition={{ duration: 6, repeat: Infinity, delay: 2 }}
-      >
-        <Sparkles className="text-moh-green/30 w-6 h-6" />
-      </motion.div>
       
       {/* Pulse rings */}
       <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block">
