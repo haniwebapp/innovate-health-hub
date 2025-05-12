@@ -1,5 +1,5 @@
 
-import { CallTrace } from "../types/AIServiceTypes";
+import { CallTrace } from "@/types/ai";
 
 /**
  * Creates a standardized trace object for AI operation tracking

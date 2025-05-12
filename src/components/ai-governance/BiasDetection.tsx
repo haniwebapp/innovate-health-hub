@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -99,7 +98,7 @@ export function BiasDetection() {
       case 'high':
         return <Badge variant="destructive">High</Badge>;
       case 'medium':
-        return <Badge variant="warning">Medium</Badge>;
+        return <Badge variant="destructive" className="bg-amber-500">Medium</Badge>;
       case 'low':
         return <Badge variant="outline">Low</Badge>;
       default:
@@ -112,9 +111,9 @@ export function BiasDetection() {
       case 'active':
         return <Badge variant="destructive">Active</Badge>;
       case 'investigating':
-        return <Badge variant="warning">Investigating</Badge>;
+        return <Badge variant="destructive" className="bg-amber-500">Investigating</Badge>;
       case 'resolved':
-        return <Badge variant="success" className="bg-green-500">Resolved</Badge>;
+        return <Badge variant="secondary" className="bg-green-500">Resolved</Badge>;
       default:
         return <Badge>Unknown</Badge>;
     }

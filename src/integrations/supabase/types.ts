@@ -225,6 +225,45 @@ export type Database = {
           },
         ]
       }
+      ai_monitoring_logs: {
+        Row: {
+          created_at: string
+          endpoint: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          request_payload: Json | null
+          response_payload: Json | null
+          service_name: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          request_payload?: Json | null
+          response_payload?: Json | null
+          service_name: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          request_payload?: Json | null
+          response_payload?: Json | null
+          service_name?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_operations_logs: {
         Row: {
           created_at: string

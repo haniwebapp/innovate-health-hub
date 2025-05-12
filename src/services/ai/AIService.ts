@@ -1,8 +1,6 @@
 
-import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
-import { createTrace, logAIOperation, recordFeedback } from "./utils/AIServiceTracing";
-import { handleError } from "./utils/AIServiceErrors";
 import { checkAIServices } from "./utils/AIServiceHealth";
+import { createTrace } from "./utils/AIServiceTracing";
 
 export enum AIServiceType {
   INVESTMENT = "investment",
@@ -17,6 +15,21 @@ export enum AIServiceType {
   ADMIN = "admin",
   COMPLIANCE = "compliance",
   COMMUNITY = "community"
+}
+
+export interface AIServiceStaticReferences {
+  investment: any;
+  regulatory: any;
+  innovation: any;
+  knowledge: any;
+  policy: any;
+  challenge: any;
+  support: any;
+  clinical: any;
+  events: any;
+  admin: any;
+  compliance: any;
+  community: any;
 }
 
 export class AIService {
@@ -63,11 +76,12 @@ export class AIService {
   static set admin(service: any) { this.services.admin = service; }
   static set compliance(service: any) { this.services.compliance = service; }
   static set community(service: any) { this.services.community = service; }
-
-  // Re-export utility methods
-  static createTrace = createTrace;
-  static logAIOperation = logAIOperation;
-  static recordFeedback = recordFeedback;
-  static handleError = handleError;
-  static checkAIServices = checkAIServices;
+  
+  /**
+   * Check the health of all AI services
+   * @returns Promise that resolves when all health checks are complete
+   */
+  static async checkAIServices(): Promise<void> {
+    return checkAIServices();
+  }
 }

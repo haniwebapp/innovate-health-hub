@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -106,7 +105,7 @@ export function AIMonitoring() {
       case 'healthy':
         return <Badge className="bg-green-500">Healthy</Badge>;
       case 'warning':
-        return <Badge variant="warning">Warning</Badge>;
+        return <Badge variant="destructive" className="bg-amber-500">Warning</Badge>;
       case 'critical':
         return <Badge variant="destructive">Critical</Badge>;
       default:

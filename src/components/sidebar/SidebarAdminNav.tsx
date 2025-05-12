@@ -12,7 +12,12 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function SidebarAdminNav({ className }: { className?: string }) {
+interface SidebarAdminNavProps {
+  className?: string;
+  isCollapsed?: boolean;
+}
+
+export function SidebarAdminNav({ className, isCollapsed = false }: SidebarAdminNavProps) {
   return (
     <nav className={cn("flex flex-col space-y-1", className)}>
       <NavLink
@@ -25,7 +30,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <LayoutDashboard className="h-4 w-4" />
-        <span>Dashboard</span>
+        {!isCollapsed && <span>Dashboard</span>}
       </NavLink>
 
       <NavLink
@@ -38,7 +43,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <BarChart2 className="h-4 w-4" />
-        <span>Analytics</span>
+        {!isCollapsed && <span>Analytics</span>}
       </NavLink>
 
       <NavLink
@@ -51,7 +56,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <Users className="h-4 w-4" />
-        <span>Users</span>
+        {!isCollapsed && <span>Users</span>}
       </NavLink>
 
       <NavLink
@@ -64,7 +69,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <Settings className="h-4 w-4" />
-        <span>Settings</span>
+        {!isCollapsed && <span>Settings</span>}
       </NavLink>
 
       <NavLink
@@ -77,7 +82,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <Plug className="h-4 w-4" />
-        <span>Integrations</span>
+        {!isCollapsed && <span>Integrations</span>}
       </NavLink>
 
       <NavLink
@@ -90,7 +95,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <FileText className="h-4 w-4" />
-        <span>Logs</span>
+        {!isCollapsed && <span>Logs</span>}
       </NavLink>
       
       <NavLink
@@ -103,7 +108,7 @@ export function SidebarAdminNav({ className }: { className?: string }) {
         }
       >
         <BrainCircuit className="h-4 w-4" />
-        <span>AI Governance</span>
+        {!isCollapsed && <span>AI Governance</span>}
       </NavLink>
     </nav>
   );

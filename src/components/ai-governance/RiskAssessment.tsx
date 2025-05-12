@@ -143,7 +143,7 @@ export function RiskAssessment() {
       case 'high':
         return <Badge variant="destructive">High</Badge>;
       case 'medium':
-        return <Badge variant="warning">Medium</Badge>;
+        return <Badge variant="destructive" className="bg-amber-500">Medium</Badge>;
       case 'low':
         return <Badge variant="outline">Low</Badge>;
       default:

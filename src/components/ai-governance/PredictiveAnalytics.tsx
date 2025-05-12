@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { BarChart, LineChart, PieChart, Activity } from "lucide-react";
-import { LineChart as ReLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart as ReBarChart, Bar } from "recharts";
+import { BarChart as BarChartIcon, LineChart as LineChartIcon, PieChart as PieChartIcon, Activity } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { toast } from "sonner";
 
 const mockAdoptionData = [
@@ -214,11 +213,11 @@ export function PredictiveAnalytics() {
             Innovation Predictions
           </TabsTrigger>
           <TabsTrigger value="investment" className="flex items-center gap-2">
-            <BarChart className="h-4 w-4" />
+            <BarChartIcon className="h-4 w-4" />
             Investment Trends
           </TabsTrigger>
           <TabsTrigger value="regulatory" className="flex items-center gap-2">
-            <LineChart className="h-4 w-4" />
+            <LineChartIcon className="h-4 w-4" />
             Regulatory Trends
           </TabsTrigger>
         </TabsList>
