@@ -1,16 +1,17 @@
 
 import React from 'react';
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 
 interface MedicalCardProps extends React.HTMLAttributes<HTMLDivElement> {
   gradient?: boolean;
 }
 
-// Create type that omits onAnimationStart to avoid conflicts
-type MotionDivProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationStart'>;
+// Combine React div props with Framer Motion props
+type CombinedCardProps = Omit<MedicalCardProps, keyof HTMLMotionProps<"div">> & 
+  HTMLMotionProps<"div">;
 
-const MedicalCard = React.forwardRef<HTMLDivElement, MedicalCardProps>(
+const MedicalCard = React.forwardRef<HTMLDivElement, CombinedCardProps>(
   ({ className, gradient = false, ...props }, ref) => {
     return (
       <motion.div
@@ -23,7 +24,7 @@ const MedicalCard = React.forwardRef<HTMLDivElement, MedicalCardProps>(
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        {...props as MotionDivProps}
+        {...props}
       />
     );
   }
