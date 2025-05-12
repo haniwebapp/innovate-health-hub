@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -80,6 +81,32 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Medical Theme Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair text-moh-darkGreen;
+  }
+  
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+  }
+  
+  h2 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+  
+  h3 {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+  
+  h4 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+  
+  a {
+    @apply text-moh-green hover:text-moh-darkGreen transition-colors;
   }
 }
 
@@ -136,24 +163,61 @@
     @apply text-transparent bg-clip-text bg-gradient-to-r from-moh-green to-moh-darkGreen;
   }
   
-  /* Notification Badge Animation */
-  @keyframes notification-pulse {
+  .text-gradient-gold {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-moh-gold to-moh-darkGold;
+  }
+  
+  /* Glass Effect */
+  .glass-panel {
+    @apply bg-white/30 backdrop-blur-md border border-white/50 shadow-md;
+  }
+  
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/30 shadow-sm;
+  }
+  
+  /* Medical Pulse Animation */
+  @keyframes medical-pulse {
     0% {
-      transform: scale(1);
-      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(0, 129, 74, 0.4);
     }
-    50% {
-      transform: scale(1.1);
-      opacity: 0.8;
+    70% {
+      box-shadow: 0 0 0 15px rgba(0, 129, 74, 0);
     }
     100% {
-      transform: scale(1);
-      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(0, 129, 74, 0);
     }
   }
   
-  .animate-notification-pulse {
-    animation: notification-pulse 2s ease-in-out infinite;
+  .animate-medical-pulse {
+    animation: medical-pulse 2s infinite;
+  }
+  
+  /* Custom Scrollbar */
+  .medical-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .medical-scrollbar::-webkit-scrollbar-track {
+    @apply bg-moh-lightGreen;
+  }
+  
+  .medical-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-moh-green/40 rounded-full;
+  }
+  
+  .medical-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-moh-green/60;
+  }
+  
+  /* Background Gradient */
+  .bg-gradient-medical {
+    @apply bg-gradient-to-br from-white via-moh-lightGreen to-white;
+  }
+  
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
   }
 }
 
@@ -172,14 +236,6 @@
   --tw-space-x-reverse: 1;
 }
 
-[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 1;
-}
-
-[dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 1;
-}
-
 /* RTL margin adjustments */
 [dir="rtl"] .mr-2 {
   margin-right: 0;
@@ -189,21 +245,6 @@
 [dir="rtl"] .ml-2 {
   margin-left: 0;
   margin-right: 0.5rem;
-}
-
-[dir="rtl"] .ml-1 {
-  margin-left: 0;
-  margin-right: 0.25rem;
-}
-
-[dir="rtl"] .mr-4 {
-  margin-right: 0;
-  margin-left: 1rem;
-}
-
-[dir="rtl"] .ml-4 {
-  margin-left: 0;
-  margin-right: 1rem;
 }
 
 /* RTL text alignment */

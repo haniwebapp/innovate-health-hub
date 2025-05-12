@@ -12,6 +12,7 @@ interface FeatureCardProps {
   ctaLink: string;
   onHover: () => void;
   isActive: boolean;
+  color?: string;
 }
 
 export function FeatureCard({
@@ -21,7 +22,8 @@ export function FeatureCard({
   delay,
   ctaLink,
   onHover,
-  isActive
+  isActive,
+  color
 }: FeatureCardProps) {
   // Map icon name to component
   const getIcon = () => {

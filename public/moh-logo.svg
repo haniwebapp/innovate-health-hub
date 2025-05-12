@@ -1,0 +1,11 @@
+
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="#00814A" d="M100 20c44.183 0 80 35.817 80 80s-35.817 80-80 80-80-35.817-80-80 35.817-80 80-80zm0 10c-38.66 0-70 31.34-70 70s31.34 70 70 70 70-31.34 70-70-31.34-70-70-70z"/>
+    <path fill="#C3A86B" d="M100 50c2.76 0 5 2.24 5 5v40h40c2.76 0 5 2.24 5 5s-2.24 5-5 5h-40v40c0 2.76-2.24 5-5 5s-5-2.24-5-5v-40H55c-2.76 0-5-2.24-5-5s2.24-5 5-5h40V55c0-2.76 2.24-5 5-5z"/>
+    <path stroke="#00814A" stroke-width="2" d="M75 58.66L125 58.66" stroke-linecap="round"/>
+    <path stroke="#00814A" stroke-width="2" d="M75 141.34L125 141.34" stroke-linecap="round"/>
+    <path stroke="#C3A86B" stroke-width="2" d="M58.66 75L58.66 125" stroke-linecap="round"/>
+    <path stroke="#C3A86B" stroke-width="2" d="M141.34 75L141.34 125" stroke-linecap="round"/>
+  </g>
+</svg>

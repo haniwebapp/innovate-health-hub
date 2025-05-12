@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 export const MedicalBackgroundEffect = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -13,14 +14,28 @@ export const MedicalBackgroundEffect = () => {
       });
     };
     
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
   
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
       {/* DNA Helix Pattern - Subtle background effect */}
-      <div className="absolute inset-0 opacity-5 bg-[url('/pattern.svg')]"></div>
+      <div className="absolute inset-0 bg-[url('/dna-pattern.svg')] opacity-[0.03] bg-repeat"></div>
+      
+      {/* Medical grid pattern */}
+      <div 
+        className="absolute inset-0 bg-[url('/medical-grid.svg')] opacity-[0.025] bg-repeat"
+        style={{ transform: `translateY(${scrollY * 0.05}px)` }}
+      ></div>
       
       {/* Animated Gradient Overlay */}
       <div 
@@ -31,10 +46,10 @@ export const MedicalBackgroundEffect = () => {
         }}
       ></div>
       
-      {/* Medical Particles */}
+      {/* Medical Particles - Green */}
       {[...Array(8)].map((_, i) => (
         <motion.div
-          key={i}
+          key={`green-${i}`}
           className="absolute w-4 h-4 rounded-full bg-moh-green/10"
           initial={{ 
             x: Math.random() * window.innerWidth, 
@@ -94,9 +109,23 @@ export const MedicalBackgroundEffect = () => {
         />
       ))}
       
+      {/* DNA Strand animation */}
+      <div className="absolute right-0 h-full w-20 overflow-hidden opacity-20">
+        <motion.div 
+          className="absolute h-[6000px] w-16 bg-[url('/dna-strand.svg')] bg-repeat-y"
+          initial={{ y: 0 }}
+          animate={{ y: -3000 }}
+          transition={{ 
+            duration: 180,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+      
       {/* Radial gradients */}
       <div 
-        className="absolute w-[800px] h-[800px] rounded-full radial-gradient-green opacity-30"
+        className="absolute w-[800px] h-[800px] rounded-full bg-gradient-radial from-moh-green/5 to-transparent opacity-30"
         style={{ 
           top: `${mousePosition.y * 100 - 40}%`,
           left: `${mousePosition.x * 100 - 40}%`,
@@ -106,7 +135,7 @@ export const MedicalBackgroundEffect = () => {
       />
       
       <div 
-        className="absolute w-[600px] h-[600px] rounded-full radial-gradient-gold opacity-20"
+        className="absolute w-[600px] h-[600px] rounded-full bg-gradient-radial from-moh-gold/5 to-transparent opacity-20"
         style={{ 
           bottom: `${(1 - mousePosition.y) * 100 - 40}%`,
           right: `${(1 - mousePosition.x) * 100 - 40}%`,

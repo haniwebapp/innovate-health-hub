@@ -1,205 +1,149 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
+
+interface Challenge {
+  id?: string;
+  title: string;
+  description: string;
+  long_description?: string;
+  category: string;
+  image_url?: string;
+  organizer?: string;
+  start_date: string;
+  end_date: string;
+  status: string;
+  prize?: string;
+  eligibility?: string;
+  requirements?: string | null;
+}
 
 export class MockChallengeService {
   /**
-   * Generates and inserts mock challenges into the database
+   * Checks if challenges table exists by attempting to query it
    */
-  static async generateMockChallenges(): Promise<number> {
+  public async checkIfChallengesTableExists(): Promise<boolean> {
     try {
-      // Check if challenges already exist in the migrations table
-      let existingChallenges;
-      try {
-        const { data, error: checkError } = await supabase
-          .from('_custom_migrations')
-          .select('*')
-          .eq('name', 'mock_challenges_inserted');
-          
-        existingChallenges = data && data.length > 0;
-        
-        if (checkError) {
-          console.log('Error checking migrations table:', checkError);
-        }
-      } catch (e) {
-        console.log('Error querying migrations table:', e);
+      const { error } = await supabase
+        .from('challenges')
+        .select('id')
+        .limit(1);
+      
+      return !error;
+    } catch (error) {
+      console.error('Error checking challenges table:', error);
+      return false;
+    }
+  }
+  
+  /**
+   * Creates challenges from mock data
+   */
+  public async createChallenges(): Promise<void> {
+    try {
+      const tableExists = await this.checkIfChallengesTableExists();
+      
+      if (!tableExists) {
+        console.log('Challenges table does not exist or is not accessible.');
+        return;
       }
       
-      if (existingChallenges) {
-        console.log('Mock challenges already exist in the database');
-        return 0;
+      // Check if there are already challenges
+      const { data: existingChallenges } = await supabase
+        .from('challenges')
+        .select('id')
+        .limit(1);
+      
+      if (existingChallenges && existingChallenges.length > 0) {
+        console.log('Challenges already exist, skipping creation');
+        return;
       }
       
-      const mockChallenges = [
+      // Create challenge data with proper date handling
+      const challenges: Challenge[] = [
         {
-          title: "Digital Health Solutions for Remote Communities",
-          description: "Develop innovative digital health solutions that can reach remote and underserved communities in Saudi Arabia.",
-          long_description: "This challenge aims to identify and develop digital health solutions that can effectively address healthcare access barriers in remote and underserved communities across Saudi Arabia. We're looking for innovative approaches that leverage technology to provide quality healthcare services to regions with limited physical healthcare infrastructure.",
+          title: "AI-Driven Remote Patient Monitoring Solutions",
+          description: "Develop innovative solutions for remote monitoring of patients using artificial intelligence.",
+          long_description: "We are seeking solutions that leverage AI to improve remote monitoring of patients, particularly those with chronic conditions. Solutions should demonstrate improved patient outcomes, reduced hospital readmissions, and enhanced quality of life for patients.",
           category: "Digital Health",
-          image_url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=800&auto=format&fit=crop",
+          image_url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 3, 1).toISOString(), // April 1, 2025
-          end_date: new Date(2025, 6, 30).toISOString(), // July 30, 2025
+          start_date: new Date().toISOString(),
+          end_date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
           status: "active",
-          prize: "500,000 SAR and implementation support",
-          eligibility: "Open to Saudi-based startups, universities, and research institutions",
+          prize: "SAR 500,000",
+          eligibility: "Open to all healthcare technology companies and research institutions",
           requirements: JSON.stringify({
-            criteria: [
-              "Technical feasibility",
-              "Potential impact",
-              "Sustainability",
-              "Scalability"
-            ],
-            deliverables: [
-              "Detailed solution proposal",
-              "Prototype or proof of concept",
-              "Implementation plan",
-              "Budget estimation"
-            ]
+            technical: ["Scalable solution", "AI integration", "Data security"],
+            clinical: ["Evidence-based", "Patient-centered"]
           })
         },
         {
-          title: "AI for Early Disease Detection",
-          description: "Leverage artificial intelligence to develop tools for early detection of chronic diseases prevalent in Saudi Arabia.",
-          long_description: "This challenge focuses on harnessing the power of artificial intelligence to develop innovative tools for early detection of chronic diseases prevalent in Saudi Arabia, such as diabetes, cardiovascular diseases, and cancer. We're seeking solutions that can analyze medical data, identify risk patterns, and provide early warnings to healthcare providers.",
-          category: "AI & Healthcare",
-          image_url: "https://images.unsplash.com/photo-1576091160110-aa486e7f895e?q=80&w=800&auto=format&fit=crop",
+          title: "Innovations in Medical Waste Management",
+          description: "Create sustainable solutions for managing medical waste in healthcare facilities.",
+          long_description: "Medical waste management is a critical challenge for healthcare facilities. We are looking for innovative, sustainable approaches that reduce environmental impact while ensuring safety and compliance with regulations.",
+          category: "Environmental Health",
+          image_url: "https://images.unsplash.com/photo-1563477710521-5def7fbd8bd4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 2, 15).toISOString(), // March 15, 2025
-          end_date: new Date(2025, 5, 15).toISOString(), // June 15, 2025
+          start_date: new Date().toISOString(),
+          end_date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
           status: "active",
-          prize: "750,000 SAR and clinical validation support",
-          eligibility: "Open globally with preference for Saudi-based teams",
+          prize: "SAR 300,000",
+          eligibility: "Open to environmental and healthcare technology companies",
           requirements: JSON.stringify({
-            criteria: [
-              "Algorithm accuracy",
-              "Data privacy compliance",
-              "Integration with existing healthcare systems",
-              "User experience for healthcare providers"
-            ],
-            deliverables: [
-              "Machine learning model",
-              "Technical documentation",
-              "Privacy impact assessment",
-              "Validation study design"
-            ]
+            environmental: ["Reduced carbon footprint", "Compliance with regulations"],
+            operational: ["Cost-effectiveness", "Ease of implementation"]
           })
         },
         {
-          title: "Mental Health Tech Innovation",
-          description: "Create technology-based solutions to improve mental health support and accessibility in Saudi communities.",
-          long_description: "This challenge aims to identify innovative technology-based solutions that can enhance mental health support and accessibility in Saudi communities. We're looking for approaches that can break down barriers to mental healthcare, reduce stigma, and provide effective support tools for both patients and healthcare providers.",
+          title: "Mental Health Digital Interventions",
+          description: "Develop digital solutions to improve access to mental health support and services.",
+          long_description: "Mental health is a growing concern globally. This challenge seeks digital solutions that improve access to mental health support, reduce stigma, and provide effective interventions for people with various mental health conditions.",
           category: "Mental Health",
-          image_url: "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?q=80&w=800&auto=format&fit=crop",
+          image_url: "https://images.unsplash.com/photo-1493836512294-502baa1986e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
           organizer: "Ministry of Health",
-          start_date: new Date(2025, 4, 10).toISOString(), // May 10, 2025
-          end_date: new Date(2025, 7, 10).toISOString(), // August 10, 2025
-          status: "upcoming",
-          prize: "350,000 SAR and pilot implementation",
-          eligibility: "Open to Saudi citizens, residents, and entities",
-          requirements: JSON.stringify({
-            criteria: [
-              "Cultural sensitivity",
-              "Evidence-based approach",
-              "User engagement",
-              "Privacy and confidentiality"
-            ],
-            deliverables: [
-              "Solution prototype",
-              "Research validation plan",
-              "Implementation roadmap",
-              "Evaluation metrics"
-            ]
-          })
-        },
-        {
-          title: "Healthcare IoT Solutions",
-          description: "Develop IoT solutions for healthcare settings to improve patient monitoring and hospital efficiency.",
-          long_description: "This challenge focuses on developing innovative Internet of Things (IoT) solutions for healthcare settings that can significantly improve patient monitoring capabilities and overall hospital efficiency. We're seeking technologies that can transform healthcare delivery through smart, connected devices while ensuring data security and patient privacy.",
-          category: "IoT & Healthcare",
-          image_url: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=800&auto=format&fit=crop",
-          organizer: "Ministry of Health",
-          start_date: new Date(2025, 1, 1).toISOString(), // February 1, 2025
-          end_date: new Date(2025, 4, 1).toISOString(), // May 1, 2025
+          start_date: new Date().toISOString(),
+          end_date: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toISOString(),
           status: "active",
-          prize: "600,000 SAR and hospital implementation partnership",
-          eligibility: "Open to all innovators, startups, and established companies",
+          prize: "SAR 400,000",
+          eligibility: "Open to digital health companies and mental health specialists",
           requirements: JSON.stringify({
-            criteria: [
-              "Device reliability",
-              "Data security",
-              "Scalability",
-              "Healthcare workflow integration"
-            ],
-            deliverables: [
-              "Working prototype",
-              "Technical specifications",
-              "Security assessment",
-              "User testing results"
-            ]
-          })
-        },
-        {
-          title: "Preventive Healthcare Gamification",
-          description: "Create engaging gamified solutions to encourage preventive healthcare practices among Saudi citizens.",
-          long_description: "This challenge aims to harness the power of gamification to create engaging solutions that encourage preventive healthcare practices among Saudi citizens. We're looking for innovative approaches that can motivate positive health behaviors, increase health literacy, and make preventive healthcare an enjoyable part of daily life.",
-          category: "Digital Health",
-          image_url: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=800&auto=format&fit=crop",
-          organizer: "Ministry of Health",
-          start_date: new Date(2024, 11, 15).toISOString(), // December 15, 2024
-          end_date: new Date(2025, 2, 28).toISOString(), // February 28, 2025
-          status: "draft",
-          prize: "400,000 SAR and national rollout support",
-          eligibility: "Open to game developers, health tech startups, and university teams",
-          requirements: JSON.stringify({
-            criteria: [
-              "Engagement mechanics",
-              "Health education accuracy",
-              "User retention",
-              "Behavior change potential"
-            ],
-            deliverables: [
-              "Functional game or application",
-              "User testing results",
-              "Content validation from health experts",
-              "Deployment plan"
-            ]
+            clinical: ["Evidence-based approaches", "User-centric design"],
+            technical: ["Privacy-focused", "Accessible to all"]
           })
         }
       ];
+
+      // Insert challenges into the database
+      const { error } = await supabase
+        .from('challenges')
+        .insert(challenges);
       
-      // Insert challenges using a direct API call as a workaround
-      let insertedCount = 0;
-      try {
-        const response = await fetch('/api/insert-challenges', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ challenges: mockChallenges })
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Failed to insert challenges: ${response.statusText}`);
-        }
-        
-        const result = await response.json();
-        insertedCount = result.count || mockChallenges.length;
-        
-        // Mark challenges as inserted
-        await supabase
-          .from('_custom_migrations')
-          .insert({
-            name: 'mock_challenges_inserted',
-            applied_at: new Date().toISOString()
-          });
-      } catch (error) {
-        console.error("Error inserting mock challenges:", error);
-        throw error;
+      if (error) {
+        console.error('Error creating challenges:', error);
+      } else {
+        console.log('Successfully created challenges');
       }
-      
-      console.log(`Successfully inserted ${insertedCount} mock challenges`);
-      return insertedCount;
     } catch (error) {
-      console.error("Error generating mock challenges:", error);
-      throw error;
+      console.error('Error in createChallenges:', error);
+    }
+  }
+  
+  /**
+   * Gets all challenges from the database
+   */
+  public async getAllChallenges() {
+    try {
+      const { data, error } = await supabase
+        .from('challenges')
+        .select('*');
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error getting challenges:', error);
+      return [];
     }
   }
 }
+
+export const mockChallengeService = new MockChallengeService();

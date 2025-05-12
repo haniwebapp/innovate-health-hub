@@ -1,62 +1,71 @@
 
-import { ReactNode } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { ReactNode, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
 interface ScrollFadeInProps {
   children: ReactNode;
   delay?: number;
-  direction?: "up" | "down" | "left" | "right";
-  once?: boolean;
-  amount?: number;
+  threshold?: number;
+  direction?: "up" | "down" | "left" | "right" | "none";
   className?: string;
 }
 
-export function ScrollFadeIn({
-  children,
-  delay = 0,
+export function ScrollFadeIn({ 
+  children, 
+  delay = 0, 
+  threshold = 0.2,
   direction = "up",
-  once = true,
-  amount = 0.2,
   className = ""
 }: ScrollFadeInProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once, amount });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: threshold });
   
-  // Set initial animation values based on direction
-  const getInitialValues = () => {
+  // Set initial and animate properties based on direction
+  const getDirectionalVariants = () => {
     switch (direction) {
       case "up":
-        return { y: 40, opacity: 0 };
+        return {
+          hidden: { opacity: 0, y: 30 },
+          visible: { opacity: 1, y: 0 }
+        };
       case "down":
-        return { y: -40, opacity: 0 };
+        return {
+          hidden: { opacity: 0, y: -30 },
+          visible: { opacity: 1, y: 0 }
+        };
       case "left":
-        return { x: 40, opacity: 0 };
+        return {
+          hidden: { opacity: 0, x: 30 },
+          visible: { opacity: 1, x: 0 }
+        };
       case "right":
-        return { x: -40, opacity: 0 };
+        return {
+          hidden: { opacity: 0, x: -30 },
+          visible: { opacity: 1, x: 0 }
+        };
+      case "none":
       default:
-        return { y: 40, opacity: 0 };
+        return {
+          hidden: { opacity: 0 },
+          visible: { opacity: 1 }
+        };
     }
   };
   
-  // Set animation values
-  const initialValues = getInitialValues();
-  const animateValues = direction === "up" || direction === "down" 
-    ? { y: 0, opacity: 1 } 
-    : { x: 0, opacity: 1 };
-    
+  const variants = getDirectionalVariants();
+  
   return (
     <motion.div
       ref={ref}
-      initial={initialValues}
-      animate={isInView ? animateValues : initialValues}
+      className={className}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={variants}
       transition={{
         duration: 0.8,
-        delay,
+        delay: delay,
         ease: [0.22, 1, 0.36, 1]
       }}
-      className={className}
     >
       {children}
     </motion.div>

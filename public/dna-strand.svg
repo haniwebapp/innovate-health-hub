@@ -1,0 +1,54 @@
+
+<svg width="40" height="2000" viewBox="0 0 40 2000" xmlns="http://www.w3.org/2000/svg">
+  <!-- DNA double helix pattern -->
+  <path d="M 20 0 C 0 50, 40 100, 20 150 C 0 200, 40 250, 20 300 C 0 350, 40 400, 20 450 C 0 500, 40 550, 20 600 C 0 650, 40 700, 20 750 C 0 800, 40 850, 20 900 C 0 950, 40 1000, 20 1050 C 0 1100, 40 1150, 20 1200 C 0 1250, 40 1300, 20 1350 C 0 1400, 40 1450, 20 1500 C 0 1550, 40 1600, 20 1650 C 0 1700, 40 1750, 20 1800 C 0 1850, 40 1900, 20 1950 C 0 2000" stroke="#00814A" stroke-width="1" fill="none" opacity="0.6"/>
+  
+  <path d="M 20 0 C 40 50, 0 100, 20 150 C 40 200, 0 250, 20 300 C 40 350, 0 400, 20 450 C 40 500, 0 550, 20 600 C 40 650, 0 700, 20 750 C 40 800, 0 850, 20 900 C 40 950, 0 1000, 20 1050 C 40 1100, 0 1150, 20 1200 C 40 1250, 0 1300, 20 1350 C 40 1400, 0 1450, 20 1500 C 40 1550, 0 1600, 20 1650 C 40 1700, 0 1750, 20 1800 C 40 1850, 0 1900, 20 1950 C 40 2000" stroke="#C3A86B" stroke-width="1" fill="none" opacity="0.6"/>
+
+  <!-- DNA nucleotide pairs (connections between strands) -->
+  <g opacity="0.3">
+    <line x1="10" y1="25" x2="30" y2="25" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="75" x2="32" y2="75" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="125" x2="30" y2="125" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="175" x2="32" y2="175" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="225" x2="30" y2="225" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="275" x2="32" y2="275" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="325" x2="30" y2="325" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="375" x2="32" y2="375" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="425" x2="30" y2="425" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="475" x2="32" y2="475" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="525" x2="30" y2="525" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="575" x2="32" y2="575" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="625" x2="30" y2="625" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="675" x2="32" y2="675" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="725" x2="30" y2="725" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="775" x2="32" y2="775" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="825" x2="30" y2="825" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="875" x2="32" y2="875" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="925" x2="30" y2="925" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="975" x2="32" y2="975" stroke="#C3A86B" stroke-width="1"/>
+  </g>
+
+  <g opacity="0.3">
+    <line x1="10" y1="1025" x2="30" y2="1025" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1075" x2="32" y2="1075" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1125" x2="30" y2="1125" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1175" x2="32" y2="1175" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1225" x2="30" y2="1225" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1275" x2="32" y2="1275" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1325" x2="30" y2="1325" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1375" x2="32" y2="1375" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1425" x2="30" y2="1425" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1475" x2="32" y2="1475" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1525" x2="30" y2="1525" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1575" x2="32" y2="1575" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1625" x2="30" y2="1625" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1675" x2="32" y2="1675" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1725" x2="30" y2="1725" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1775" x2="32" y2="1775" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1825" x2="30" y2="1825" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1875" x2="32" y2="1875" stroke="#C3A86B" stroke-width="1"/>
+    <line x1="10" y1="1925" x2="30" y2="1925" stroke="#00814A" stroke-width="1"/>
+    <line x1="8" y1="1975" x2="32" y2="1975" stroke="#C3A86B" stroke-width="1"/>
+  </g>
+</svg>
