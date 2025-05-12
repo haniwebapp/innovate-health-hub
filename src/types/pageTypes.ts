@@ -39,7 +39,7 @@ export interface WebsitePageFormData {
   published?: boolean;
 }
 
-// Define the AIComplianceAnalysis interface
+// Define the AIComplianceRequirement interface
 export interface AIComplianceRequirement {
   id: string;
   title: string;
