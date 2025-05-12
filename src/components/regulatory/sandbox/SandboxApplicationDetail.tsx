@@ -107,7 +107,7 @@ const mockApplication = {
     },
     {
       id: '2',
-      message: 'We've updated our security protocol to include end-to-end encryption for all data transmission. Additional details provided in the updated technical documentation.',
+      message: "We've updated our security protocol to include end-to-end encryption for all data transmission. Additional details provided in the updated technical documentation.",
       author: 'Thomas Chen',
       authorRole: 'MediTech Solutions',
       createdAt: '2023-12-19T10:45:00Z',
