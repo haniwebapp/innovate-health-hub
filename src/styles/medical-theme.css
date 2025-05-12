@@ -1,0 +1,35 @@
+
+:root {
+  /* MOH Colors */
+  --moh-green: 0, 129, 74; /* #00814A */
+  --moh-gold: 195, 168, 107; /* #C3A86B */
+  
+  /* Extended palette */
+  --moh-darkGreen: 0, 92, 53; /* #005C35 - darker shade for depth */
+  --moh-lightGreen: 230, 245, 237; /* #E6F5ED - light green for backgrounds */
+  --moh-darkGold: 155, 133, 84; /* #9B8554 - darker gold for contrast */
+  --moh-lightGold: 245, 239, 224; /* #F5EFE0 - light gold for subtle accents */
+  
+  /* Functional colors */
+  --success: 34, 197, 94; /* green-500 */
+  --warning: 245, 158, 11; /* amber-500 */
+  --error: 239, 68, 68; /* red-500 */
+  --info: 59, 130, 246; /* blue-500 */
+  
+  /* Animation timing */
+  --animation-fast: 0.2s;
+  --animation-normal: 0.3s;
+  --animation-slow: 0.5s;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
