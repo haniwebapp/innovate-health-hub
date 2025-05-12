@@ -1,136 +1,151 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { ClinicalRecord, ClinicalTag } from "@/types/clinicalTypes";
+import { AIService } from "../AIService";
 
+export interface ClinicalAnalysisRequest {
+  patientData?: string;
+  clinicalNotes?: string;
+  medicalImages?: string[];
+  labResults?: Record<string, any>;
+  vitalSigns?: Record<string, any>;
+  previousDiagnoses?: string[];
+}
+
+export interface ClinicalAnalysisResult {
+  summary: string;
+  possibleDiagnoses: {
+    condition: string;
+    confidence: number;
+    reasoning: string;
+  }[];
+  recommendedActions: string[];
+  differentialDiagnosis: string[];
+  riskFactors: string[];
+  notes: string;
+}
+
+export interface TreatmentPlan {
+  recommendations: string[];
+  medicationSuggestions: {
+    name: string;
+    dosage: string;
+    frequency: string;
+    duration: string;
+    precautions: string[];
+  }[];
+  followUpRecommendation: string;
+  lifestyle: string[];
+  monitoringPlan: string;
+}
+
+/**
+ * Service for healthcare clinical AI operations
+ */
 export class ClinicalAIService {
   /**
-   * Analyze medical text to extract relevant clinical information
+   * Analyze clinical data and generate insights
    */
-  static async analyzeText(text: string): Promise<{
-    medicalCodes?: Record<string, any>,
-    symptoms?: string[],
-    diagnosis?: string[],
-    tags?: string[]
-  }> {
+  static async analyzeClinicalData(
+    request: ClinicalAnalysisRequest
+  ): Promise<ClinicalAnalysisResult> {
     try {
-      const { data, error } = await supabase.functions.invoke('clinical-text-analysis', {
-        body: { text }
+      const { data, error } = await supabase.functions.invoke("clinical-analyzer", {
+        body: request
       });
-      
+
       if (error) throw error;
-      
-      return data || { 
-        medicalCodes: {},
-        symptoms: [],
-        diagnosis: [],
-        tags: []
-      };
-    } catch (error) {
-      console.error("Error analyzing clinical text:", error);
-      return { 
-        medicalCodes: {},
-        symptoms: [],
-        diagnosis: [],
-        tags: []
-      };
+      return data as ClinicalAnalysisResult;
+    } catch (error: any) {
+      console.error("Error analyzing clinical data:", error);
+      throw AIService.handleError(error, "analyzeClinicalData", "clinical");
     }
   }
-  
+
   /**
-   * Auto-tag a clinical record with relevant terms
+   * Generate treatment plan suggestions based on diagnosis
    */
-  static async autoTagRecord(recordId: string): Promise<ClinicalTag[]> {
+  static async generateTreatmentPlan(
+    diagnosis: string,
+    patientInfo: Record<string, any>
+  ): Promise<TreatmentPlan> {
     try {
-      // First get the record
-      const record = await supabase
-        .from('clinical_records')
-        .select('*')
-        .eq('id', recordId)
-        .single();
-      
-      if (record.error) throw record.error;
-      
-      // Combine text content for analysis
-      const textToAnalyze = `${record.data.title}. ${record.data.description || ''}`;
-      const analysisResult = await this.analyzeText(textToAnalyze);
-      
-      if (!analysisResult.tags || analysisResult.tags.length === 0) {
-        return [];
-      }
-      
-      // Create tags in the database
-      const tags: ClinicalTag[] = [];
-      for (const tag of analysisResult.tags) {
-        const tagData = {
-          record_id: recordId,
-          tag,
-          confidence: 0.85, // Default confidence for AI-generated tags
-          source: 'ai-auto-tagging'
-        };
-        
-        const { data, error } = await supabase
-          .from('clinical_tags')
-          .insert(tagData)
-          .select()
-          .single();
-        
-        if (!error && data) {
-          // Convert string dates to Date objects
-          tags.push({
-            ...data,
-            created_at: new Date(data.created_at)
-          } as ClinicalTag);
+      const { data, error } = await supabase.functions.invoke("treatment-plan-generator", {
+        body: { 
+          diagnosis,
+          patientInfo
         }
-      }
-      
-      return tags;
-    } catch (error) {
-      console.error(`Error auto-tagging clinical record ${recordId}:`, error);
-      return [];
-    }
-  }
-  
-  /**
-   * Generate related records based on symptoms or diagnosis
-   */
-  static async findSimilarRecords(recordId: string): Promise<ClinicalRecord[]> {
-    try {
-      const { data, error } = await supabase.functions.invoke('clinical-similarity-search', {
-        body: { recordId }
       });
-      
+
       if (error) throw error;
-      
-      // Convert string dates to Date objects in the returned records
-      return data?.similarRecords ? data.similarRecords.map((record: any) => ({
-        ...record,
-        created_at: new Date(record.created_at),
-        updated_at: new Date(record.updated_at)
-      })) : [];
-    } catch (error) {
-      console.error(`Error finding similar clinical records to ${recordId}:`, error);
-      return [];
+      return data as TreatmentPlan;
+    } catch (error: any) {
+      console.error("Error generating treatment plan:", error);
+      throw AIService.handleError(error, "generateTreatmentPlan", "clinical");
     }
   }
-  
+
   /**
-   * Generate clinical recommendations based on a record
+   * Extract structured data from unstructured clinical notes
    */
-  static async generateRecommendations(recordId: string): Promise<{
-    recommendations: string[],
-    references: string[]
+  static async extractStructuredData(
+    clinicalNotes: string
+  ): Promise<Record<string, any>> {
+    try {
+      const { data, error } = await supabase.functions.invoke("clinical-data-extractor", {
+        body: { clinicalNotes }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error: any) {
+      console.error("Error extracting structured data:", error);
+      throw AIService.handleError(error, "extractStructuredData", "clinical");
+    }
+  }
+
+  /**
+   * Check for drug interactions in medication list
+   */
+  static async checkDrugInteractions(
+    medications: string[]
+  ): Promise<{
+    interactions: { drugs: string[], severity: string, description: string }[],
+    warnings: string[],
+    recommendations: string[]
   }> {
     try {
-      const { data, error } = await supabase.functions.invoke('clinical-recommendations', {
-        body: { recordId }
+      const { data, error } = await supabase.functions.invoke("drug-interaction-checker", {
+        body: { medications }
       });
-      
+
       if (error) throw error;
-      
-      return data || { recommendations: [], references: [] };
-    } catch (error) {
-      console.error(`Error generating recommendations for clinical record ${recordId}:`, error);
-      return { recommendations: [], references: [] };
+      return data;
+    } catch (error: any) {
+      console.error("Error checking drug interactions:", error);
+      throw AIService.handleError(error, "checkDrugInteractions", "clinical");
+    }
+  }
+
+  /**
+   * Generate clinical documentation from structured data
+   */
+  static async generateClinicalDocumentation(
+    patientData: Record<string, any>,
+    documentType: "soap" | "discharge" | "referral" | "prescription"
+  ): Promise<string> {
+    try {
+      const { data, error } = await supabase.functions.invoke("clinical-documentation-generator", {
+        body: { 
+          patientData,
+          documentType
+        }
+      });
+
+      if (error) throw error;
+      return data.document;
+    } catch (error: any) {
+      console.error("Error generating clinical documentation:", error);
+      throw AIService.handleError(error, "generateClinicalDocumentation", "clinical");
     }
   }
 }

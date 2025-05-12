@@ -1,136 +1,134 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { StoryGenerationPrompt, StoryGenerationResult, StoryAnalysisResult } from "./types";
+import { AIService } from "../AIService";
 
-// Use 'export type' for re-exporting types when isolatedModules is enabled
-export type { StoryGenerationPrompt, StoryGenerationResult, StoryAnalysisResult };
+export interface StoryGenerationPrompt {
+  title: string;
+  innovationType: string;
+  organization: string;
+  challenge: string;
+  solution: string;
+  outcome: string;
+  quotes?: string[];
+  keywords?: string[];
+}
 
+export interface StoryGenerationResult {
+  title: string;
+  content: string;
+  summary: string;
+  highlights: string[];
+  suggestedImages: string[];
+  socialMediaSnippets: {
+    twitter: string;
+    linkedin: string;
+    facebook: string;
+  };
+}
+
+export interface StoryAnalysisResult {
+  readabilityScore: number;
+  sentimentScore: number;
+  tone: "professional" | "casual" | "inspirational" | "technical";
+  targetAudience: string[];
+  keyMessages: string[];
+  improvementSuggestions: string[];
+  strengths: string[];
+}
+
+/**
+ * Service for AI-powered success story generation and analysis
+ */
 export class SuccessStoryAIService {
   /**
-   * Generate a success story based on provided information
+   * Generate a success story based on provided details
    */
   static async generateSuccessStory(
-    organization: string,
-    category: string,
-    keyPoints: string[]
-  ): Promise<{
-    title: string,
-    summary: string,
-    content: string,
-    impactMetrics?: Record<string, any>,
-    suggestedTags?: string[]
-  }> {
+    prompt: StoryGenerationPrompt
+  ): Promise<StoryGenerationResult> {
     try {
-      const { data, error } = await supabase.functions.invoke('success-story-generation', {
-        body: { organization, category, keyPoints }
+      const { data, error } = await supabase.functions.invoke("story-generator", {
+        body: { prompt }
       });
-      
+
       if (error) throw error;
-      
-      return data || {
-        title: '',
-        summary: '',
-        content: '',
-        impactMetrics: {},
-        suggestedTags: []
-      };
-    } catch (error) {
+      return data as StoryGenerationResult;
+    } catch (error: any) {
       console.error("Error generating success story:", error);
-      return {
-        title: '',
-        summary: '',
-        content: '',
-        impactMetrics: {},
-        suggestedTags: []
-      };
+      throw AIService.handleError(error, "generateSuccessStory", "success");
     }
   }
-  
+
   /**
-   * Enhance an existing success story with AI
+   * Analyze a success story for quality and improvement suggestions
    */
-  static async enhanceSuccessStory(
-    storyId: string,
-    enhancementOptions: { 
-      improveSummary?: boolean,
-      addImpactMetrics?: boolean,
-      expandContent?: boolean,
-      suggestTags?: boolean
-    }
-  ): Promise<{
-    enhancedSummary?: string,
-    enhancedContent?: string,
-    impactMetrics?: Record<string, any>,
-    suggestedTags?: string[]
-  }> {
+  static async analyzeStory(
+    title: string,
+    content: string
+  ): Promise<StoryAnalysisResult> {
     try {
-      const { data, error } = await supabase.functions.invoke('success-story-enhancement', {
-        body: { storyId, enhancementOptions }
+      const { data, error } = await supabase.functions.invoke("story-analyzer", {
+        body: { 
+          title,
+          content
+        }
       });
-      
+
       if (error) throw error;
-      
-      return data || {};
-    } catch (error) {
-      console.error(`Error enhancing success story ${storyId}:`, error);
-      return {};
+      return data as StoryAnalysisResult;
+    } catch (error: any) {
+      console.error("Error analyzing story:", error);
+      throw AIService.handleError(error, "analyzeStory", "success");
     }
   }
-  
+
   /**
-   * Suggest similar success stories based on content similarity
+   * Generate social media content from a success story
    */
-  static async suggestSimilarStories(
-    storyId: string,
-    limit: number = 3
-  ): Promise<{ id: string, title: string, similarity: number }[]> {
+  static async generateSocialContent(
+    storyTitle: string,
+    storyContent: string,
+    platforms: string[] = ["twitter", "linkedin", "facebook"]
+  ): Promise<Record<string, string[]>> {
     try {
-      const { data, error } = await supabase.functions.invoke('success-story-similarity', {
-        body: { storyId, limit }
+      const { data, error } = await supabase.functions.invoke("social-content-generator", {
+        body: { 
+          storyTitle,
+          storyContent,
+          platforms
+        }
       });
-      
+
       if (error) throw error;
-      
-      return data?.similarStories || [];
-    } catch (error) {
-      console.error(`Error finding similar success stories to ${storyId}:`, error);
-      return [];
+      return data;
+    } catch (error: any) {
+      console.error("Error generating social content:", error);
+      throw AIService.handleError(error, "generateSocialContent", "success");
     }
   }
-  
+
   /**
-   * Extract key insights from a collection of success stories
+   * Generate image prompts for success story illustrations
    */
-  static async extractInsightsFromStories(
-    categoryFilter?: string,
-    limit: number = 10
-  ): Promise<{
-    commonThemes: string[],
-    successFactors: string[],
-    challenges: string[],
-    impactSummary: string
-  }> {
+  static async generateImagePrompts(
+    storyTitle: string,
+    storyContent: string,
+    count: number = 3
+  ): Promise<string[]> {
     try {
-      const { data, error } = await supabase.functions.invoke('success-story-insights', {
-        body: { categoryFilter, limit }
+      const { data, error } = await supabase.functions.invoke("image-prompt-generator", {
+        body: { 
+          storyTitle,
+          storyContent,
+          count
+        }
       });
-      
+
       if (error) throw error;
-      
-      return data || {
-        commonThemes: [],
-        successFactors: [],
-        challenges: [],
-        impactSummary: ''
-      };
-    } catch (error) {
-      console.error("Error extracting insights from success stories:", error);
-      return {
-        commonThemes: [],
-        successFactors: [],
-        challenges: [],
-        impactSummary: ''
-      };
+      return data;
+    } catch (error: any) {
+      console.error("Error generating image prompts:", error);
+      throw AIService.handleError(error, "generateImagePrompts", "success");
     }
   }
 }

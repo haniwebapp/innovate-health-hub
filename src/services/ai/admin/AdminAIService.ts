@@ -2,136 +2,156 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AIService } from "../AIService";
 
-export interface LogAnalysisResult {
-  anomalies: {
-    timestamp: string;
-    description: string;
-    severity: "low" | "medium" | "high";
-    suggestedAction: string;
-  }[];
-  patterns: {
-    description: string;
-    frequency: number;
-    examples: string[];
-  }[];
-  summary: string;
+export interface AdminInsight {
+  title: string;
+  description: string;
+  impact: "high" | "medium" | "low";
+  category: string;
+  actionItems: string[];
 }
 
-export interface EcosystemSentiment {
-  overallSentiment: number;
-  trendDirection: "improving" | "stable" | "declining";
-  topicSentiments: Record<string, number>;
-  influentialFactors: string[];
-  recommendations: string[];
+export interface AnomalyDetection {
+  anomalyType: string;
+  description: string;
+  severity: "critical" | "warning" | "info";
+  detectedAt: Date;
+  relatedEntities: string[];
+  potentialCauses: string[];
+  recommendedActions: string[];
 }
 
-export interface UserBehaviorPrediction {
-  churnRisk: {
-    score: number;
-    factors: string[];
-  };
-  engagementOpportunities: string[];
-  recommendedInterventions: string[];
+export interface PerformanceMetrics {
+  category: string;
+  current: number;
+  previous: number;
+  trend: "up" | "down" | "stable";
+  percentChange: number;
 }
 
 /**
- * Service for handling admin-related AI operations
+ * AI Service for Admin capabilities
  */
 export class AdminAIService {
   /**
-   * Analyze AI system logs for anomalies and patterns
+   * Generate admin-focused insights from platform data
    */
-  static async analyzeSystemLogs(
-    logData: any[],
-    timeRange?: { start: string; end: string }
-  ): Promise<LogAnalysisResult> {
+  static async generateAdminInsights(
+    dataSource: string,
+    timeframe: string = "7days"
+  ): Promise<AdminInsight[]> {
     try {
-      const { data, error } = await supabase.functions.invoke("log-analyzer", {
+      const { data, error } = await supabase.functions.invoke("admin-analytics", {
         body: { 
-          logData,
-          timeRange
+          dataSource,
+          timeframe,
+          operation: "insights"
         }
       });
 
       if (error) throw error;
-      return data as LogAnalysisResult;
+      return data as AdminInsight[];
     } catch (error: any) {
-      console.error("Error analyzing system logs:", error);
-      throw AIService.handleError(error, "analyzeSystemLogs", "admin");
+      console.error("Error generating admin insights:", error);
+      throw AIService.handleError(error, "generateAdminInsights", "admin");
     }
   }
 
   /**
-   * Analyze ecosystem sentiment from user interactions and feedback
+   * Detect anomalies in system data
    */
-  static async analyzeEcosystemSentiment(
-    timeRange: { start: string; end: string }
-  ): Promise<EcosystemSentiment> {
+  static async detectAnomalies(
+    systems: string[] = ["all"],
+    sensitivity: number = 0.8
+  ): Promise<AnomalyDetection[]> {
     try {
-      const { data, error } = await supabase.functions.invoke("ecosystem-sentiment-analyzer", {
-        body: { timeRange }
-      });
-
-      if (error) throw error;
-      return data as EcosystemSentiment;
-    } catch (error: any) {
-      console.error("Error analyzing ecosystem sentiment:", error);
-      throw AIService.handleError(error, "analyzeEcosystemSentiment", "admin");
-    }
-  }
-
-  /**
-   * Predict user drop-off and churn
-   */
-  static async predictUserBehavior(
-    userId: string,
-    activityHistory: any[]
-  ): Promise<UserBehaviorPrediction> {
-    try {
-      const { data, error } = await supabase.functions.invoke("user-behavior-predictor", {
+      const { data, error } = await supabase.functions.invoke("admin-analytics", {
         body: { 
-          userId,
-          activityHistory
+          systems,
+          sensitivity,
+          operation: "anomalies"
         }
       });
 
       if (error) throw error;
-      return data as UserBehaviorPrediction;
+      return data as AnomalyDetection[];
     } catch (error: any) {
-      console.error("Error predicting user behavior:", error);
-      throw AIService.handleError(error, "predictUserBehavior", "admin");
+      console.error("Error detecting anomalies:", error);
+      throw AIService.handleError(error, "detectAnomalies", "admin");
     }
   }
 
   /**
-   * Generate a report comparing the platform against global benchmarks
+   * Generate performance metrics for the admin dashboard
    */
-  static async generateBenchmarkReport(
-    metrics: any[],
-    benchmarkCategories: string[]
+  static async getPerformanceMetrics(
+    categories: string[] = ["users", "content", "engagement", "processing"],
+    timeframe: string = "30days"
+  ): Promise<PerformanceMetrics[]> {
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-analytics", {
+        body: { 
+          categories,
+          timeframe,
+          operation: "metrics"
+        }
+      });
+
+      if (error) throw error;
+      return data as PerformanceMetrics[];
+    } catch (error: any) {
+      console.error("Error getting performance metrics:", error);
+      throw AIService.handleError(error, "getPerformanceMetrics", "admin");
+    }
+  }
+
+  /**
+   * Generate recommendations for system improvements
+   */
+  static async getSystemRecommendations(): Promise<{
+    recommendations: string[];
+    priority: "high" | "medium" | "low";
+    impact: string;
+    effort: string;
+  }[]> {
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-analytics", {
+        body: { operation: "recommendations" }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error: any) {
+      console.error("Error getting system recommendations:", error);
+      throw AIService.handleError(error, "getSystemRecommendations", "admin");
+    }
+  }
+
+  /**
+   * Analyze admin logs for patterns and insights
+   */
+  static async analyzeAdminLogs(
+    timeframe: string = "7days", 
+    logTypes: string[] = ["error", "warning", "info"]
   ): Promise<{
-    summary: string;
-    benchmarkComparisons: Record<string, {
-      platformScore: number;
-      benchmarkScore: number;
-      percentDifference: number;
-      recommendations: string[];
-    }>;
-    overallAssessment: string;
+    patterns: { description: string; frequency: number; severity: string }[];
+    totalErrors: number;
+    criticalIssues: number;
+    recommendations: string[];
   }> {
     try {
-      const { data, error } = await supabase.functions.invoke("benchmark-report-generator", {
+      const { data, error } = await supabase.functions.invoke("admin-analytics", {
         body: { 
-          metrics,
-          benchmarkCategories
+          timeframe,
+          logTypes,
+          operation: "logAnalysis"
         }
       });
 
       if (error) throw error;
       return data;
     } catch (error: any) {
-      console.error("Error generating benchmark report:", error);
-      throw AIService.handleError(error, "generateBenchmarkReport", "admin");
+      console.error("Error analyzing admin logs:", error);
+      throw AIService.handleError(error, "analyzeAdminLogs", "admin");
     }
   }
 }
