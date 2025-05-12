@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -13,8 +14,7 @@ import {
   DollarSign,
   ShieldCheck,
   BookOpen,
-  HelpCircle,
-  BrainCircuit
+  HelpCircle
 } from "lucide-react";
 
 interface NavbarMainLinksProps {
@@ -31,7 +31,6 @@ export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
     { path: "/investment", label: "Investment", icon: DollarSign },
     { path: "/regulatory", label: "Regulatory", icon: ShieldCheck },
     { path: "/knowledge-hub", label: "Knowledge Hub", icon: BookOpen },
-    { path: "/ai-solutions", label: "AI Solutions", icon: BrainCircuit },
     { path: "/about", label: "About", icon: HelpCircle },
   ];
 

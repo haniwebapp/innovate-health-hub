@@ -12,7 +12,6 @@ import RegulatoryPage from '@/pages/regulatory';
 import KnowledgeHubPage from '@/pages/knowledge-hub';
 import PolicyPage from '@/pages/policy/index';
 import FeaturesPage from '@/pages/features';
-import AISolutionsPage from '@/pages/ai-solutions';
 import DynamicPage from '@/pages/[slug]';
 
 export const PublicRoutes = (
@@ -29,7 +28,6 @@ export const PublicRoutes = (
     <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
     <Route path="/policy" element={<PolicyPage />} />
     <Route path="/features" element={<FeaturesPage />} />
-    <Route path="/ai-solutions" element={<AISolutionsPage />} />
     
     {/* Dynamic page route - must be after all specific routes to avoid conflicts */}
     <Route path="/:slug" element={<DynamicPage />} />

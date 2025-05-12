@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, ExternalLink, BrainCircuit } from "lucide-react";
+import { ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -30,9 +30,9 @@ export function HighlightsCallToAction() {
           className="border-moh-green text-moh-darkGreen hover:bg-moh-lightGreen/20 px-8 py-3 rounded-md font-medium group"
           asChild
         >
-          <Link to="/ai-solutions" className="flex items-center">
-            <span>Explore AI Solutions</span>
-            <BrainCircuit className="ml-1 h-4 w-4 transition-opacity duration-300 opacity-70 group-hover:opacity-100" />
+          <Link to="/about" className="flex items-center">
+            <span>Learn About Our Mission</span>
+            <ExternalLink className="ml-1 h-4 w-4 transition-opacity duration-300 opacity-70 group-hover:opacity-100" />
           </Link>
         </Button>
       </div>
