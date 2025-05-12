@@ -4,7 +4,7 @@ import { PublicRoutes } from './PublicRoutes';
 import { AuthRoutes } from './AuthRoutes';
 import { InnovationSubmissionRoutes } from './InnovationSubmissionRoutes';
 import { DashboardMainRoutes } from './DashboardMainRoutes';
-import { adminRoutes } from './AdminRoutes';
+import adminRoutes from './AdminRoutes'; // Changed to import default export
 import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 
