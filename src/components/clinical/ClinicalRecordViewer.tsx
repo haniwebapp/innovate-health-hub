@@ -64,7 +64,7 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
     try {
       const newTags = await ClinicalAIService.autoTagRecord(record.id);
       if (newTags.length > 0) {
-        // Fix: Convert string tags to ClinicalTag objects
+        // Convert string tags to ClinicalTag objects
         const formattedTags: ClinicalTag[] = newTags.map(tag => {
           if (typeof tag === 'string') {
             // Create a proper ClinicalTag object for string tags
@@ -118,7 +118,6 @@ export function ClinicalRecordViewer({ recordId, onUpdate }: ClinicalRecordViewe
     setLoadingSimilar(true);
     try {
       const similar = await ClinicalAIService.findSimilarRecords(record.id);
-      // Fix: Keep the records as SimilarRecord[] rather than trying to convert to ClinicalRecord[]
       setSimilarRecords(similar);
       if (similar.length > 0) {
         toast.success(`Found ${similar.length} similar records`);
