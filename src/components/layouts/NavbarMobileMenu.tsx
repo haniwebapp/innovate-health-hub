@@ -11,11 +11,7 @@ import {
   ScrollText, 
   BookOpen, 
   AlertCircle,
-  Navigation,
-  Hospital,
-  Goal,
-  LayoutDashboard,
-  ArrowRight
+  Lightbulb,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Separator } from "../ui/separator";
@@ -33,13 +29,9 @@ export function NavbarMobileMenu({
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   
-  // Updated navigation links with icons but no submenus
+  // Updated navigation links with icons but no submenus - removed the new links
   const navigationLinks = [
-    { path: "/journey", label: "Start Your Journey", icon: Navigation },
-    { path: "/healthcare-solutions", label: "Healthcare Solutions", icon: Hospital },
-    { path: "/vision-2030", label: "Vision 2030 Goals", icon: Goal },
-    { path: "/health-strategy", label: "Health Sector Strategy", icon: LayoutDashboard },
-    { path: "/innovations", label: "Innovations", icon: FileUp },
+    { path: "/innovations", label: "Innovations", icon: Lightbulb },
     { path: "/challenges", label: "Challenges", icon: Award },
     { path: "/investment", label: "Investment", icon: LineChart },
     { path: "/regulatory", label: "Regulatory", icon: ScrollText },

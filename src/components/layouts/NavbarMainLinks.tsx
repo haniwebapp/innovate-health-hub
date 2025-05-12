@@ -15,11 +15,6 @@ import {
   ShieldCheck,
   BookOpen,
   HelpCircle,
-  Navigation,
-  Hospital,
-  Goal,
-  LayoutDashboard,
-  ArrowRight
 } from "lucide-react";
 
 interface NavbarMainLinksProps {
@@ -29,12 +24,8 @@ interface NavbarMainLinksProps {
 export function NavbarMainLinks({ isRouteActive }: NavbarMainLinksProps) {
   const { language } = useLanguage();
   
-  // Updated main links with icons
+  // Updated main links with icons - removed the new links
   const mainLinks = [
-    { path: "/journey", label: "Start Your Journey", icon: Navigation },
-    { path: "/healthcare-solutions", label: "Healthcare Solutions", icon: Hospital },
-    { path: "/vision-2030", label: "Vision 2030 Goals", icon: Goal },
-    { path: "/health-strategy", label: "Health Sector Strategy", icon: LayoutDashboard },
     { path: "/innovations", label: "Innovations", icon: Lightbulb },
     { path: "/challenges", label: "Challenges", icon: Award },
     { path: "/investment", label: "Investment", icon: DollarSign },
