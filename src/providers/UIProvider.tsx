@@ -17,7 +17,7 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export function UIProvider({ children }: { children: ReactNode }) {
   const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const [screenHeight, setScreenHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Setting initial value to false for light mode
   
   // Detect screen size
   useEffect(() => {
@@ -36,17 +36,10 @@ export function UIProvider({ children }: { children: ReactNode }) {
     };
   }, []);
   
-  // Check for system dark mode preference
+  // Modified to NOT check for system dark mode preference
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(mediaQuery.matches);
-    
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-    
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    // Force light mode on initial load
+    document.documentElement.classList.remove('dark');
   }, []);
   
   // Toggle dark mode

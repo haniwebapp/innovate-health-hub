@@ -38,14 +38,14 @@ export class ComplianceMatcherService {
   public async matchCompliance(options: ComplianceMatchOptions): Promise<ComplianceResult[]> {
     try {
       // Use standards or default ones if not provided
-      const standards = options.standards || ["ISO 13485", "HIPAA", "GDPR", "MOH Standards"];
+      const standardsToCheck = options.standards || ["ISO 13485", "HIPAA", "GDPR", "MOH Standards"];
       
       // Call Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('compliance-matcher', {
         body: {
           innovationDescription: options.innovationDescription,
           innovationType: options.innovationType,
-          standards
+          standards: standardsToCheck
         }
       });
       
@@ -60,7 +60,8 @@ export class ComplianceMatcherService {
     } catch (error) {
       console.error('Error in compliance matching:', error);
       // Fallback data in case of error
-      return standards.map(standard => ({
+      const standardsToCheck = options.standards || ["ISO 13485", "HIPAA", "GDPR", "MOH Standards"];
+      return standardsToCheck.map(standard => ({
         standardName: standard,
         matchScore: 0,
         requiredActions: ["Unable to analyze compliance requirements at this time."],

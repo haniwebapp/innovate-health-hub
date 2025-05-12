@@ -12,7 +12,7 @@ import { debounce } from "./performanceUtils";
 export function showNotification(
   title: string, 
   description?: string, 
-  variant: "default" | "destructive" | "success" = "default"
+  variant: "default" | "destructive" = "default"
 ): void {
   toast({
     title,
