@@ -19,6 +19,7 @@ import { DashboardRegulatoryRoutes } from './DashboardRegulatoryRoutes';
 import { DashboardKnowledgeRoutes } from './DashboardKnowledgeRoutes';
 import { DashboardCollaborationRoutes } from './DashboardCollaborationRoutes';
 import { AdminRoutes } from './AdminRoutes';
+import React from 'react';
 
 export const DashboardMainRoutes = (
   <Route path="/dashboard" element={
@@ -44,6 +45,6 @@ export const DashboardMainRoutes = (
     {DashboardRegulatoryRoutes}
     {DashboardKnowledgeRoutes}
     {DashboardCollaborationRoutes}
-    {AdminRoutes}
+    <Route path="admin/*" element={<AdminRoutes />} />
   </Route>
 );
