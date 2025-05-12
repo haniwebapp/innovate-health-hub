@@ -12,7 +12,7 @@ interface ContentTabsProps {
   setActiveTab: (value: string) => void;
   sections: PageSection[];
   setSections: React.Dispatch<React.SetStateAction<PageSection[]>>;
-  formValues: { title: string };
+  formValues: { title?: string; slug?: string; metaDescription?: string; published?: boolean; };
   validating: boolean;
   validationIssues: { 
     errors: string[], 
@@ -95,7 +95,7 @@ export const ContentTabs: React.FC<ContentTabsProps> = ({
 
       <TabsContent value="preview" className="mt-4">
         <PagePreview 
-          title={formValues.title} 
+          title={formValues.title || "Untitled Page"} 
           sections={sections} 
         />
       </TabsContent>
