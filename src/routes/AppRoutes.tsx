@@ -24,7 +24,7 @@ export function AppRoutes() {
       {DashboardMainRoutes}
       
       {/* Admin Routes */}
-      <AdminRoutes />
+      {AdminRoutes}
       
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />

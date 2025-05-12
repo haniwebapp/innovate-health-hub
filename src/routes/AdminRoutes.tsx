@@ -1,5 +1,5 @@
 
-import { lazy } from "react";
+import { lazy, ReactNode } from "react";
 import { Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
@@ -14,7 +14,7 @@ const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
 const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
 // Define the AdminRoutes as a collection of routes
-const AdminRoutes = () => (
+const AdminRoutes: ReactNode = (
   <>
     <Route path="admin" element={
       <ProtectedRoute adminOnly={true}>
