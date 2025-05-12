@@ -12,6 +12,9 @@ export interface SimilarRecord {
   similarity?: number;
 }
 
+// Re-export the TextAnalysisResult interface
+export { TextAnalysisResult };
+
 export class ClinicalAIService {
   /**
    * Automatically generate tags for a clinical record

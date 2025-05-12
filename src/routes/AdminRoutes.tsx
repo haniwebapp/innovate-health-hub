@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Route } from 'react-router-dom';
 import AdminDashboardPage from '@/pages/dashboard/AdminDashboardPage';
@@ -8,8 +7,23 @@ import AdminUsersPage from '@/pages/dashboard/AdminUsersPage';
 import AdminIntegrationsPage from '@/pages/dashboard/AdminIntegrationsPage';
 import AIGovernancePage from '@/pages/admin/ai-governance/index';
 import AdminClinicalPage from '@/pages/admin/clinical/index';
+import AdminLogsPage from '@/pages/admin/logs/AdminLogsPage';
 
-// Create an array of admin routes instead of a component
+// Create admin routes component to be used in DashboardMainRoutes
+export const AdminRoutes = () => (
+  <>
+    <Route index element={<AdminDashboardPage />} />
+    <Route path="analytics" element={<AdminAnalyticsPage />} />
+    <Route path="settings" element={<AdminSettingsPage />} />
+    <Route path="users" element={<AdminUsersPage />} />
+    <Route path="integrations" element={<AdminIntegrationsPage />} />
+    <Route path="ai-governance" element={<AIGovernancePage />} />
+    <Route path="clinical" element={<AdminClinicalPage />} />
+    <Route path="logs" element={<AdminLogsPage />} />
+  </>
+);
+
+// Also keep the existing array export for AppRoutes.tsx
 export const adminRoutes = (
   <>
     <Route path="/dashboard/admin" element={<AdminDashboardPage />} />
@@ -19,5 +33,6 @@ export const adminRoutes = (
     <Route path="/dashboard/admin/integrations" element={<AdminIntegrationsPage />} />
     <Route path="/dashboard/admin/ai-governance" element={<AIGovernancePage />} />
     <Route path="/dashboard/admin/clinical" element={<AdminClinicalPage />} />
+    <Route path="/dashboard/admin/logs" element={<AdminLogsPage />} />
   </>
 );

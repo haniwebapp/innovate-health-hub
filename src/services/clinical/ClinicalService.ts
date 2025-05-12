@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ClinicalRecord, ClinicalTag, ClinicalAnalysis } from "@/types/clinicalTypes";
 
@@ -27,11 +26,11 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalRecord type
       return data ? {
         ...data,
-        created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at)
+        created_at: data.created_at,
+        updated_at: data.updated_at
       } as ClinicalRecord : null;
     } catch (error) {
       console.error("Error creating clinical record:", error);
@@ -69,11 +68,11 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalRecord type
       return (data || []).map(record => ({
         ...record,
-        created_at: new Date(record.created_at),
-        updated_at: new Date(record.updated_at)
+        created_at: record.created_at,
+        updated_at: record.updated_at
       })) as ClinicalRecord[];
     } catch (error) {
       console.error("Error getting clinical records:", error);
@@ -94,11 +93,11 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalRecord type
       return data ? {
         ...data,
-        created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at)
+        created_at: data.created_at,
+        updated_at: data.updated_at
       } as ClinicalRecord : null;
     } catch (error) {
       console.error(`Error getting clinical record with ID ${id}:`, error);
@@ -148,10 +147,10 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalTag type
       return data ? {
         ...data,
-        created_at: new Date(data.created_at)
+        created_at: data.created_at
       } as ClinicalTag : null;
     } catch (error) {
       console.error("Error adding clinical tag:", error);
@@ -171,10 +170,10 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalTag type
       return (data || []).map(tag => ({
         ...tag,
-        created_at: new Date(tag.created_at)
+        created_at: tag.created_at
       })) as ClinicalTag[];
     } catch (error) {
       console.error(`Error getting tags for clinical record ${recordId}:`, error);
@@ -195,10 +194,10 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalAnalysis type
       return data ? {
         ...data,
-        created_at: new Date(data.created_at)
+        created_at: data.created_at
       } as ClinicalAnalysis : null;
     } catch (error) {
       console.error("Error adding clinical analysis:", error);
@@ -218,10 +217,10 @@ export class ClinicalService {
       
       if (error) throw error;
       
-      // Convert string dates to Date objects
+      // Return data with proper string dates as expected by ClinicalAnalysis type
       return (data || []).map(analysis => ({
         ...analysis,
-        created_at: new Date(analysis.created_at)
+        created_at: analysis.created_at
       })) as ClinicalAnalysis[];
     } catch (error) {
       console.error(`Error getting analyses for clinical record ${recordId}:`, error);
