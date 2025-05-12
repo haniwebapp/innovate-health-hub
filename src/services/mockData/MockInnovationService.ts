@@ -8,20 +8,24 @@ export class MockInnovationService {
    */
   static async generateMockInnovations(): Promise<number> {
     try {
-      // We need to create the innovations table first if it doesn't exist
-      await supabase.rpc('create_innovations_table_if_not_exists');
-      
       // Check if innovations already exist
-      const { data: existingInnovations, error: checkError } = await supabase
-        .from('innovations')
-        .select('id');
-      
-      if (checkError) {
-        console.log('Error checking innovations table, it may not exist yet:', checkError);
-        return 0;
+      let existingInnovations;
+      try {
+        const { data, error: checkError } = await supabase
+          .from('_custom_migrations')
+          .select('*')
+          .eq('name', 'mock_innovations_inserted');
+          
+        existingInnovations = data && data.length > 0;
+        
+        if (checkError) {
+          console.log('Error checking migrations table:', checkError);
+        }
+      } catch (e) {
+        console.log('Error querying migrations table:', e);
       }
       
-      if (existingInnovations && existingInnovations.length > 0) {
+      if (existingInnovations) {
         console.log('Mock innovations already exist in the database');
         return 0;
       }
@@ -43,19 +47,36 @@ export class MockInnovationService {
         impact_metrics: innovation.impactMetrics ? JSON.stringify(innovation.impactMetrics) : null
       }));
       
-      // Insert innovations
-      const { data, error } = await supabase
-        .from('innovations')
-        .insert(dbInnovations)
-        .select();
+      // Insert innovations using a direct API call as a workaround
+      let insertedCount = 0;
+      try {
+        const response = await fetch('/api/insert-innovations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ innovations: dbInnovations })
+        });
         
-      if (error) {
+        if (!response.ok) {
+          throw new Error(`Failed to insert innovations: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        insertedCount = result.count || dbInnovations.length;
+        
+        // Mark innovations as inserted
+        await supabase
+          .from('_custom_migrations')
+          .insert({
+            name: 'mock_innovations_inserted',
+            applied_at: new Date().toISOString()
+          });
+      } catch (error) {
         console.error("Error inserting mock innovations:", error);
         throw error;
       }
       
-      console.log(`Successfully inserted ${data?.length || 0} mock innovations`);
-      return data?.length || 0;
+      console.log(`Successfully inserted ${insertedCount} mock innovations`);
+      return insertedCount;
     } catch (error) {
       console.error("Error generating mock innovations:", error);
       throw error;

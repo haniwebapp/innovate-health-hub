@@ -1,59 +1,37 @@
 
-import React from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 export function HighlightsCallToAction() {
   return (
-    <motion.div
-      className="mt-16 text-center"
+    <motion.div 
+      className="mt-12 text-center"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.6 }}
+      transition={{ duration: 0.6 }}
     >
-      <div className="inline-flex flex-wrap justify-center gap-6">
-        <Button 
-          className="bg-gradient-to-r from-moh-green to-moh-darkGreen text-white px-8 py-3 rounded-md font-medium hover:shadow-lg transition-all group"
-        >
-          <span>Explore All Features</span>
-          <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-        </Button>
-        
-        <Button 
-          variant="outline"
-          className="border-moh-green text-moh-darkGreen hover:bg-moh-lightGreen/20 px-8 py-3 rounded-md font-medium group"
-          asChild
-        >
-          <a href="/about" className="flex items-center">
-            <span>Learn About Our Mission</span>
-            <ExternalLink className="ml-1 h-4 w-4 transition-opacity duration-300 opacity-70 group-hover:opacity-100" />
-          </a>
-        </Button>
-      </div>
-      
-      {/* Feature stats counter */}
-      <motion.div 
-        className="flex flex-wrap justify-center gap-8 mt-12 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.8 }}
+      <Button 
+        className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group"
+        size="lg"
+        asChild
       >
-        <div>
-          <p className="text-2xl font-bold text-moh-green">5+</p>
-          <p className="text-sm text-gray-600">Core Features</p>
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-moh-gold">24/7</p>
-          <p className="text-sm text-gray-600">Platform Access</p>
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-moh-darkGreen">100%</p>
-          <p className="text-sm text-gray-600">MOH Compliance</p>
-        </div>
-      </motion.div>
+        <Link to="/dashboard">
+          <span>Explore All Features</span>
+          <motion.div 
+            animate={{ x: [0, 5, 0] }}
+            transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 1 }}
+          >
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </motion.div>
+        </Link>
+      </Button>
+      
+      <div className="mt-4 text-sm text-gray-500">
+        <span className="text-moh-darkGreen font-medium">Vision 2030 Aligned</span> • Enabling healthcare transformation across Saudi Arabia
+      </div>
     </motion.div>
   );
 }

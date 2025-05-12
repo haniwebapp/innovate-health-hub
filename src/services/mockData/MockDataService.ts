@@ -13,40 +13,105 @@ export class MockDataService {
    */
   private static async ensureTablesExist(): Promise<void> {
     try {
-      // Create function to check and create innovations table
-      await supabase.rpc('create_innovations_table_if_not_exists').catch(async () => {
-        // If the function doesn't exist, create it
-        const { error } = await supabase.rpc('create_rpc_function_for_innovations');
-        if (error) {
-          console.error("Error creating innovations RPC function:", error);
-          
-          // Fallback: try direct table creation
-          const createTableQuery = `
-            CREATE TABLE IF NOT EXISTS public.innovations (
-              id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-              title TEXT NOT NULL,
-              description TEXT NOT NULL,
-              image_url TEXT,
-              category TEXT NOT NULL,
-              tags TEXT[] DEFAULT '{}',
-              status TEXT NOT NULL,
-              organization TEXT,
-              website TEXT,
-              contact TEXT,
-              rating DECIMAL,
-              created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-              regulatory_status JSONB,
-              impact_metrics JSONB
-            );
-          `;
-          
-          const { error: tableError } = await supabase.rpc('exec_sql', { sql_query: createTableQuery });
-          if (tableError) {
-            console.error("Error creating innovations table:", tableError);
-            throw tableError;
+      // Create innovations table if it doesn't exist
+      const createTableQuery = `
+        CREATE TABLE IF NOT EXISTS public.innovations (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          image_url TEXT,
+          category TEXT NOT NULL,
+          tags TEXT[] DEFAULT '{}',
+          status TEXT NOT NULL,
+          organization TEXT,
+          website TEXT,
+          contact TEXT,
+          rating DECIMAL,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+          regulatory_status JSONB,
+          impact_metrics JSONB
+        );
+      `;
+      
+      const { error: tableError } = await supabase.from('_custom_migrations').select('*')
+        .eq('name', 'create_innovations_table')
+        .then(async ({ data }) => {
+          if (!data || data.length === 0) {
+            // Table hasn't been created yet, create it
+            const { error } = await supabase.rpc('exec_sql', { 
+              sql_query: createTableQuery 
+            }).catch(() => ({ error: new Error("Failed to execute SQL") }));
+            
+            if (!error) {
+              // Log that we created the table
+              await supabase.from('_custom_migrations').insert({ 
+                name: 'create_innovations_table',
+                applied_at: new Date().toISOString()
+              });
+            }
+            
+            return { error };
           }
+          return { error: null };
+        });
+      
+      if (tableError) {
+        console.error("Error creating innovations table:", tableError);
+        // Fallback: Try direct approach
+        try {
+          // This is a workaround when RPC isn't available
+          await fetch('/api/execute-sql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: createTableQuery })
+          });
+        } catch (err) {
+          console.error("Fallback approach failed:", err);
         }
-      });
+      }
+      
+      // Repeat similar approach for challenges table
+      const createChallengesTableQuery = `
+        CREATE TABLE IF NOT EXISTS public.challenges (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          long_description TEXT,
+          category TEXT NOT NULL,
+          image_url TEXT,
+          organizer TEXT,
+          start_date TIMESTAMP WITH TIME ZONE,
+          end_date TIMESTAMP WITH TIME ZONE,
+          status TEXT NOT NULL,
+          prize TEXT,
+          eligibility TEXT,
+          requirements JSONB,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+        );
+      `;
+      
+      await supabase.from('_custom_migrations').select('*')
+        .eq('name', 'create_challenges_table')
+        .then(async ({ data }) => {
+          if (!data || data.length === 0) {
+            // Try to create the table
+            try {
+              await fetch('/api/execute-sql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: createChallengesTableQuery })
+              });
+              
+              // Log that we created the table
+              await supabase.from('_custom_migrations').insert({ 
+                name: 'create_challenges_table',
+                applied_at: new Date().toISOString()
+              });
+            } catch (err) {
+              console.error("Failed to create challenges table:", err);
+            }
+          }
+        });
       
       console.log("Required tables check completed");
     } catch (error) {

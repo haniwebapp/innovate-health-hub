@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import React from "react";
+import { useState, useEffect } from "react";
 
 interface TextRevealProps {
   text: string;
@@ -10,65 +10,41 @@ interface TextRevealProps {
   splitBy?: "chars" | "words";
 }
 
-export function TextReveal({
+export const TextReveal = ({
   text,
   className = "",
   delay = 0,
   staggerDelay = 0.03,
   splitBy = "chars"
-}: TextRevealProps) {
-  // Split text either by characters or words
-  const items = splitBy === "chars" 
-    ? text.split("")
-    : text.split(" ");
+}: TextRevealProps) => {
+  const [elements, setElements] = useState<string[]>([]);
   
-  // Animation variants
-  const container = {
-    hidden: { opacity: 0 },
-    visible: (i = 1) => ({
-      opacity: 1,
-      transition: { 
-        staggerChildren: staggerDelay, 
-        delayChildren: delay,
-      },
-    }),
-  };
-  
-  const child = {
-    hidden: {
-      y: 20,
-      opacity: 0,
-    },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 200,
-      },
-    },
-  };
+  useEffect(() => {
+    if (splitBy === "chars") {
+      setElements(text.split(""));
+    } else {
+      setElements(text.split(" "));
+    }
+  }, [text, splitBy]);
   
   return (
-    <motion.span
-      className={className}
-      variants={container}
-      initial="hidden"
-      animate="visible"
-    >
-      {items.map((item, index) => (
+    <span className={className}>
+      {elements.map((element, index) => (
         <motion.span
           key={index}
-          variants={child}
-          style={{ 
-            display: splitBy === "chars" ? "inline-block" : "inline-block",
-            marginRight: splitBy === "chars" ? "0" : "0.3em",
+          style={{ display: splitBy === "chars" ? "inline-block" : "inline" }}
+          initial={{ y: "100%", opacity: 0 }}
+          animate={{ y: "0%", opacity: 1 }}
+          transition={{
+            duration: 0.5,
+            delay: delay + index * staggerDelay,
+            ease: [0.455, 0.03, 0.515, 0.955]
           }}
         >
-          {item === " " ? "\u00A0" : item}
+          {element}
+          {splitBy === "words" && index < elements.length - 1 ? " " : ""}
         </motion.span>
       ))}
-    </motion.span>
+    </span>
   );
-}
+};

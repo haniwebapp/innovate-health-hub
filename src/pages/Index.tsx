@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
 
 const Index = () => {
-  // Page transition animations
+  // Enhanced page transition animations
   const pageVariants = {
     initial: {
       opacity: 0
@@ -25,13 +25,28 @@ const Index = () => {
     animate: {
       opacity: 1,
       transition: {
-        duration: 0.5,
-        staggerChildren: 0.2
+        duration: 0.8,
+        staggerChildren: 0.3,
+        when: "beforeChildren"
       }
     },
     exit: {
-      opacity: 0
+      opacity: 0,
+      transition: {
+        duration: 0.5
+      }
     }
+  };
+
+  // Child elements animation
+  const childVariants = {
+    initial: { y: 20, opacity: 0 },
+    animate: { 
+      y: 0, 
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 12 }
+    },
+    exit: { y: -20, opacity: 0 }
   };
 
   // Scroll to top on page load
@@ -55,16 +70,45 @@ const Index = () => {
         <main className="flex-grow pt-0 my-0 rounded-none py-0">
           <TooltipProvider>
             {/* Enhanced home page section order for better user engagement */}
-            <HeroSection />
-            <PlatformHighlights />
-            <InnovationGallery />
-            <ChallengesSection />
-            <AIDrivenSection />
-            <InnovationJourney />
-            <HealthcareAnimation />
-            <ProcessFlowSection />
-            <AboutSection />
-            <FeaturedSection />
+            <motion.div variants={childVariants}>
+              <HeroSection />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <PlatformHighlights />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <InnovationGallery />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <ChallengesSection />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <AIDrivenSection />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <InnovationJourney />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <HealthcareAnimation />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <ProcessFlowSection />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <AboutSection />
+            </motion.div>
+            
+            <motion.div variants={childVariants}>
+              <FeaturedSection />
+            </motion.div>
           </TooltipProvider>
         </main>
         <Footer />

@@ -7,12 +7,24 @@ export class MockChallengeService {
    */
   static async generateMockChallenges(): Promise<number> {
     try {
-      // Check if challenges already exist
-      const { data: existingChallenges } = await supabase
-        .from('challenges')
-        .select('id');
+      // Check if challenges already exist in the migrations table
+      let existingChallenges;
+      try {
+        const { data, error: checkError } = await supabase
+          .from('_custom_migrations')
+          .select('*')
+          .eq('name', 'mock_challenges_inserted');
+          
+        existingChallenges = data && data.length > 0;
+        
+        if (checkError) {
+          console.log('Error checking migrations table:', checkError);
+        }
+      } catch (e) {
+        console.log('Error querying migrations table:', e);
+      }
       
-      if (existingChallenges && existingChallenges.length > 0) {
+      if (existingChallenges) {
         console.log('Mock challenges already exist in the database');
         return 0;
       }
@@ -155,19 +167,36 @@ export class MockChallengeService {
         }
       ];
       
-      // Insert all mock challenges
-      const { data, error } = await supabase
-        .from('challenges')
-        .insert(mockChallenges)
-        .select();
+      // Insert challenges using a direct API call as a workaround
+      let insertedCount = 0;
+      try {
+        const response = await fetch('/api/insert-challenges', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ challenges: mockChallenges })
+        });
         
-      if (error) {
+        if (!response.ok) {
+          throw new Error(`Failed to insert challenges: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        insertedCount = result.count || mockChallenges.length;
+        
+        // Mark challenges as inserted
+        await supabase
+          .from('_custom_migrations')
+          .insert({
+            name: 'mock_challenges_inserted',
+            applied_at: new Date().toISOString()
+          });
+      } catch (error) {
         console.error("Error inserting mock challenges:", error);
         throw error;
       }
       
-      console.log(`Successfully inserted ${data?.length || 0} mock challenges`);
-      return data?.length || 0;
+      console.log(`Successfully inserted ${insertedCount} mock challenges`);
+      return insertedCount;
     } catch (error) {
       console.error("Error generating mock challenges:", error);
       throw error;
