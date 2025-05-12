@@ -10,6 +10,7 @@ import { CellDivision } from "./CellDivision";
 import { PulseRings } from "./PulseRings";
 import { MedicalCross } from "./MedicalCross";
 import { AnimatedFlask } from "./AnimatedFlask";
+import { GeneticSequence } from "./GeneticSequence";
 
 export {
   FloatingParticles,
@@ -21,5 +22,6 @@ export {
   CellDivision,
   PulseRings,
   MedicalCross,
-  AnimatedFlask
+  AnimatedFlask,
+  GeneticSequence
 };

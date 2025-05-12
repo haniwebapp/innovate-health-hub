@@ -10,7 +10,8 @@ import {
   CellDivision,
   PulseRings,
   MedicalCross,
-  AnimatedFlask
+  AnimatedFlask,
+  GeneticSequence
 } from "./decorations";
 
 export function HeroDecorations() {
@@ -26,6 +27,7 @@ export function HeroDecorations() {
       <PulseRings />
       <MedicalCross />
       <AnimatedFlask />
+      <GeneticSequence />
     </>
   );
 }
