@@ -23,7 +23,7 @@ export function AppRoutes() {
       {/* Main Dashboard with nested routes */}
       {DashboardMainRoutes}
       
-      {/* Admin Routes - use the component directly */}
+      {/* Admin Routes */}
       <AdminRoutesComponent />
       
       {/* Policy Page */}

@@ -13,51 +13,51 @@ const AdminSandboxPage = lazy(() => import("@/pages/admin/sandbox"));
 const AdminSandboxDetailPage = lazy(() => import("@/pages/admin/sandbox/[id]"));
 const AIGovernancePage = lazy(() => import("@/pages/admin/ai-governance"));
 
-// Define the AdminRoutes component
+// Define the AdminRoutes component - now returning a fragment of routes
 function AdminRoutesComponent() {
   return (
-    <Route path="admin">
-      <Route path="" element={
+    <>
+      <Route path="admin" element={
         <ProtectedRoute adminOnly={true}>
           <AdminDashboardPage />
         </ProtectedRoute>
       } />
-      <Route path="analytics" element={
+      <Route path="admin/analytics" element={
         <ProtectedRoute adminOnly={true}>
           <AdminAnalyticsPage />
         </ProtectedRoute>
       } />
-      <Route path="integrations" element={
+      <Route path="admin/integrations" element={
         <ProtectedRoute adminOnly={true}>
           <AdminIntegrationsPage />
         </ProtectedRoute>
       } />
-      <Route path="settings" element={
+      <Route path="admin/settings" element={
         <ProtectedRoute adminOnly={true}>
           <AdminSettingsPage />
         </ProtectedRoute>
       } />
-      <Route path="users" element={
+      <Route path="admin/users" element={
         <ProtectedRoute adminOnly={true}>
           <AdminUsersPage />
         </ProtectedRoute>
       } />
-      <Route path="sandbox" element={
+      <Route path="admin/sandbox" element={
         <ProtectedRoute adminOnly={true}>
           <AdminSandboxPage />
         </ProtectedRoute>
       } />
-      <Route path="sandbox/:id" element={
+      <Route path="admin/sandbox/:id" element={
         <ProtectedRoute adminOnly={true}>
           <AdminSandboxDetailPage />
         </ProtectedRoute>
       } />
-      <Route path="ai-governance" element={
+      <Route path="admin/ai-governance" element={
         <ProtectedRoute adminOnly={true}>
           <AIGovernancePage />
         </ProtectedRoute>
       } />
-    </Route>
+    </>
   );
 }
 
