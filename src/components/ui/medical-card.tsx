@@ -7,6 +7,9 @@ interface MedicalCardProps extends React.HTMLAttributes<HTMLDivElement> {
   gradient?: boolean;
 }
 
+// Create type that omits onAnimationStart to avoid conflicts
+type MotionDivProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationStart'>;
+
 const MedicalCard = React.forwardRef<HTMLDivElement, MedicalCardProps>(
   ({ className, gradient = false, ...props }, ref) => {
     return (
@@ -20,7 +23,7 @@ const MedicalCard = React.forwardRef<HTMLDivElement, MedicalCardProps>(
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        {...props}
+        {...props as MotionDivProps}
       />
     );
   }

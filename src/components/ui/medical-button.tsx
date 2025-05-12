@@ -34,6 +34,9 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {}
 
+// Create type that omits onAnimationStart to avoid conflicts
+type MotionButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onAnimationStart'>;
+
 const MedicalButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
@@ -43,7 +46,7 @@ const MedicalButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.2 }}
-        {...props}
+        {...props as MotionButtonProps}
       />
     );
   }
