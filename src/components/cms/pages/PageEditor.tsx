@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,12 +45,15 @@ import {
   AlertCircle
 } from "lucide-react";
 import { SectionEditor } from "./SectionEditor";
+import { PageValidationIssues } from "./PageValidationIssues";
 
+// Enhanced validation schema with more specific constraints
 const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, "Title is required").max(100, "Title must be 100 characters or less"),
   slug: z
     .string()
     .min(1, "Slug is required")
+    .max(100, "Slug must be 100 characters or less")
     .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens")
     .refine((s) => !s.startsWith("-") && !s.endsWith("-"), "Slug cannot start or end with a hyphen"),
   metaDescription: z.string().max(160, "Meta description should be 160 characters or less").optional(),
@@ -66,7 +70,11 @@ export function PageEditor() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [validating, setValidating] = useState(false);
-  const [validationIssues, setValidationIssues] = useState<{ errors: string[], warnings: string[], seoSuggestions: string[] }>({
+  const [validationIssues, setValidationIssues] = useState<{ 
+    errors: string[], 
+    warnings: string[], 
+    seoSuggestions: string[] 
+  }>({
     errors: [],
     warnings: [],
     seoSuggestions: []
@@ -77,6 +85,7 @@ export function PageEditor() {
     title: "",
     content: ""
   }]);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -93,6 +102,7 @@ export function PageEditor() {
 
     try {
       setLoading(true);
+      setServerError(null);
       const page = await PageService.getPageById(id!);
       
       if (!page) {
@@ -112,9 +122,11 @@ export function PageEditor() {
         published: page.published,
       });
 
+      // Ensure sections are properly initialized
       setSections(page.content.sections || []);
     } catch (error) {
       console.error("Failed to load page:", error);
+      setServerError("Failed to load page data. Please try again or contact support.");
       toast({
         title: "Error",
         description: "Failed to load page data. Please try again.",
@@ -133,24 +145,31 @@ export function PageEditor() {
     try {
       setValidating(true);
       setValidationIssues({ errors: [], warnings: [], seoSuggestions: [] });
+      setServerError(null);
 
       const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.access_token) {
+        throw new Error("Authentication required");
+      }
       
       const response = await fetch(`https://ntgrokpnwizohtfkcfec.supabase.co/functions/v1/page-validator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${session?.access_token ?? ""}`,
+          "Authorization": `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ content, slug }),
       });
 
-      const result = await response.json();
-      
       if (!response.ok) {
-        throw new Error(result.error || "Validation failed");
+        const errorText = await response.text();
+        console.error("Validation API error:", errorText);
+        throw new Error(`Validation failed: ${response.status} ${response.statusText}`);
       }
 
+      const result = await response.json();
+      
       setValidationIssues({
         errors: result.errors || [],
         warnings: result.warnings || [],
@@ -160,12 +179,13 @@ export function PageEditor() {
       return result.isValid !== false;
     } catch (error) {
       console.error("Validation error:", error);
+      setServerError("Validation service unavailable. You can still save, but we recommend validating before publishing.");
       toast({
         title: "Validation Error",
-        description: "Failed to validate page content. Please try again.",
+        description: "Failed to validate page content. You can still save the page.",
         variant: "destructive",
       });
-      return false;
+      return true; // Allow saving despite validation failure
     } finally {
       setValidating(false);
     }
@@ -174,6 +194,17 @@ export function PageEditor() {
   const onSubmit = async (values: FormValues) => {
     try {
       setSaving(true);
+      setServerError(null);
+      
+      if (sections.length === 0) {
+        toast({
+          title: "Error",
+          description: "At least one content section is required.",
+          variant: "destructive",
+        });
+        setSaving(false);
+        return;
+      }
       
       const pageContent: PageContent = {
         sections: sections,
@@ -182,12 +213,12 @@ export function PageEditor() {
       // Validate content before saving
       const isValid = await validatePageContent(pageContent, values.slug);
 
-      if (!isValid) {
-        // Show a toast but allow saving anyway (just a warning)
+      // Allow saving with warnings, but notify the user
+      if (validationIssues.errors.length > 0) {
         toast({
           title: "Content Issues Detected",
           description: "Please review the validation issues before publishing.",
-          variant: "destructive",
+          variant: "warning",
         });
       }
 
@@ -226,6 +257,7 @@ export function PageEditor() {
       
     } catch (error) {
       console.error("Error saving page:", error);
+      setServerError("Failed to save page. Please check your connection and try again.");
       toast({
         title: "Error",
         description: "Failed to save page. Please try again.",
@@ -285,6 +317,13 @@ export function PageEditor() {
 
   return (
     <div className="space-y-6">
+      {serverError && (
+        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md flex items-center">
+          <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
+          <p>{serverError}</p>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <Button 
           variant="outline" 
@@ -531,8 +570,17 @@ export function PageEditor() {
                           )}
                           {section.content && (
                             <div className="prose max-w-none">
-                              {/* In a real implementation, you'd use a rich text renderer here */}
                               <p className="whitespace-pre-wrap">{section.content}</p>
+                            </div>
+                          )}
+                          {section.type === 'image-text' && section.imageUrl && (
+                            <div className={`flex flex-col md:flex-row gap-4 mt-4 ${section.alignment === 'right' ? 'md:flex-row-reverse' : ''}`}>
+                              <div className="md:w-1/2">
+                                <img src={section.imageUrl} alt={section.title || "Section image"} className="rounded-md w-full h-auto" />
+                              </div>
+                              <div className="md:w-1/2">
+                                <p className="whitespace-pre-wrap">{section.content}</p>
+                              </div>
                             </div>
                           )}
                           {section.type === 'cta' && (
@@ -551,108 +599,11 @@ export function PageEditor() {
             </TabsContent>
 
             <TabsContent value="validation" className="mt-4">
-              <Card>
-                <CardContent className="pt-6 space-y-4">
-                  {validating ? (
-                    <div className="flex items-center justify-center min-h-64">
-                      <div className="flex flex-col items-center space-y-4">
-                        <Loader2 className="h-8 w-8 animate-spin text-moh-green" />
-                        <p>Validating page content...</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div>
-                        <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-red-500" />
-                          Errors
-                        </h3>
-                        {validationIssues.errors.length === 0 ? (
-                          <div className="flex items-center gap-2 text-green-600 mb-4">
-                            <CheckCircle2 className="h-5 w-5" />
-                            <span>No errors found</span>
-                          </div>
-                        ) : (
-                          <ul className="list-disc pl-5 space-y-1 mb-4">
-                            {validationIssues.errors.map((error, i) => (
-                              <li key={i} className="text-red-500">
-                                {error}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-amber-500" />
-                          Warnings
-                        </h3>
-                        {validationIssues.warnings.length === 0 ? (
-                          <div className="flex items-center gap-2 text-green-600 mb-4">
-                            <CheckCircle2 className="h-5 w-5" />
-                            <span>No warnings found</span>
-                          </div>
-                        ) : (
-                          <ul className="list-disc pl-5 space-y-1 mb-4">
-                            {validationIssues.warnings.map((warning, i) => (
-                              <li key={i} className="text-amber-500">
-                                {warning}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-blue-500" />
-                          SEO Suggestions
-                        </h3>
-                        {validationIssues.seoSuggestions.length === 0 ? (
-                          <div className="flex items-center gap-2 text-green-600">
-                            <CheckCircle2 className="h-5 w-5" />
-                            <span>No SEO suggestions</span>
-                          </div>
-                        ) : (
-                          <ul className="list-disc pl-5 space-y-1">
-                            {validationIssues.seoSuggestions.map((suggestion, i) => (
-                              <li key={i} className="text-blue-600">
-                                {suggestion}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                      
-                      {(validationIssues.errors.length === 0 && 
-                       validationIssues.warnings.length === 0 &&
-                       validationIssues.seoSuggestions.length === 0) && (
-                        <div className="flex flex-col items-center justify-center py-8">
-                          <div className="bg-green-100 rounded-full p-3">
-                            <CheckCircle2 className="h-8 w-8 text-green-600" />
-                          </div>
-                          <h3 className="mt-4 text-lg font-medium text-green-700">Content Looks Good!</h3>
-                          <p className="text-green-600 text-center mt-2">
-                            Your page content passed all validation checks.
-                          </p>
-                        </div>
-                      )}
-                      
-                      <div className="mt-4 pt-4 border-t flex justify-end">
-                        <Button
-                          variant="outline"
-                          onClick={() => validatePageContent({ sections }, form.getValues().slug)}
-                          className="gap-2"
-                        >
-                          <Eye className="h-4 w-4" />
-                          Run Validation Again
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
+              <PageValidationIssues 
+                validating={validating}
+                validationIssues={validationIssues}
+                onRunValidation={() => validatePageContent({ sections }, form.getValues().slug)}
+              />
             </TabsContent>
           </Tabs>
 

@@ -105,12 +105,14 @@ export class PageService {
         throw new Error("User must be authenticated to create a page");
       }
       
+      // Ensure content is properly formatted
+      const content = this.sanitizeContent(pageData.content);
+      
       // Convert PageContent to a plain object that can be serialized to JSON
       const dbPage = {
         slug: pageData.slug,
         title: pageData.title,
-        // Convert the content object to a JSON-compatible format
-        content: pageData.content as unknown as Record<string, any>,
+        content: content as unknown as Record<string, any>,
         meta_description: pageData.metaDescription,
         published: pageData.published || false,
         last_updated_by: user.data.user.id
@@ -146,7 +148,7 @@ export class PageService {
       
       if (pageData.slug) dbPage.slug = pageData.slug;
       if (pageData.title) dbPage.title = pageData.title;
-      if (pageData.content) dbPage.content = pageData.content as unknown as Record<string, any>;
+      if (pageData.content) dbPage.content = this.sanitizeContent(pageData.content) as unknown as Record<string, any>;
       if (pageData.metaDescription !== undefined) dbPage.meta_description = pageData.metaDescription;
       if (pageData.published !== undefined) dbPage.published = pageData.published;
       
@@ -222,18 +224,65 @@ export class PageService {
    */
   private static mapDbPageToClient(dbPage: any): WebsitePage {
     // When retrieving from the database, ensure the content is properly typed
-    const content = dbPage.content as unknown as PageContent;
+    let content: PageContent;
+    
+    try {
+      // Handle case where content might be stored as a string
+      if (typeof dbPage.content === 'string') {
+        content = JSON.parse(dbPage.content);
+      } else {
+        content = dbPage.content as PageContent;
+      }
+      
+      // Ensure content has a sections array
+      if (!content || !content.sections) {
+        content = { sections: [] };
+      }
+    } catch (error) {
+      console.error("Error parsing page content:", error);
+      content = { sections: [] };
+    }
     
     return {
       id: dbPage.id,
       slug: dbPage.slug,
       title: dbPage.title,
-      content: content || { sections: [] }, // Provide a default if null/undefined
+      content: content,
       metaDescription: dbPage.meta_description,
       lastUpdatedBy: dbPage.last_updated_by,
       published: dbPage.published,
       createdAt: new Date(dbPage.created_at),
       updatedAt: new Date(dbPage.updated_at)
     };
+  }
+  
+  /**
+   * Sanitize and normalize content before saving to database
+   */
+  private static sanitizeContent(content: PageContent): PageContent {
+    // Create a deep copy to avoid mutating the original
+    const sanitized = JSON.parse(JSON.stringify(content));
+    
+    // Ensure sections is an array
+    if (!Array.isArray(sanitized.sections)) {
+      sanitized.sections = [];
+    }
+    
+    // Process each section
+    sanitized.sections = sanitized.sections.map((section: PageSection) => {
+      // Ensure type property exists
+      if (!section.type) {
+        section.type = 'content';
+      }
+      
+      // For cards sections, ensure items is an array
+      if (section.type === 'cards' && !Array.isArray(section.items)) {
+        section.items = [];
+      }
+      
+      return section;
+    });
+    
+    return sanitized;
   }
 }

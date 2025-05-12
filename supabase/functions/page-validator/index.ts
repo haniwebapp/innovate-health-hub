@@ -27,7 +27,19 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     );
 
-    const { content, slug } = await req.json();
+    // Parse the request body
+    let body;
+    try {
+      body = await req.json();
+    } catch (error) {
+      console.error("Error parsing request body:", error);
+      return new Response(
+        JSON.stringify({ error: "Invalid request body" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+
+    const { content, slug } = body;
 
     if (!content) {
       return new Response(
@@ -36,13 +48,17 @@ serve(async (req) => {
       );
     }
 
+    // Log validation attempt
+    console.log(`Validating page with slug: ${slug}`);
+    console.log(`Content has ${content.sections?.length || 0} sections`);
+
     // Validate page content structure
     const validationResults = validatePageContent(content);
     
-    // Check for broken links - simplified check for demonstration
+    // Check for broken links
     const brokenLinks = checkForBrokenLinks(content);
     
-    // Simple SEO analysis
+    // SEO analysis
     const seoSuggestions = analyzeSEO(content, slug);
 
     const result = {
@@ -52,11 +68,19 @@ serve(async (req) => {
       seoSuggestions
     };
 
+    console.log("Validation results:", {
+      isValid: result.isValid,
+      errorCount: result.errors.length,
+      warningCount: result.warnings.length,
+      seoSuggestionsCount: result.seoSuggestions.length
+    });
+
     return new Response(
       JSON.stringify(result),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
+    console.error("Validation error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
@@ -78,6 +102,11 @@ function validatePageContent(content: PageContent): {
     return { isValid: false, errors, warnings };
   }
 
+  if (content.sections.length === 0) {
+    errors.push("Page must have at least one section");
+    return { isValid: false, errors, warnings };
+  }
+
   // Check each section
   content.sections.forEach((section, index) => {
     // Check if section has a type
@@ -86,19 +115,33 @@ function validatePageContent(content: PageContent): {
     }
 
     // Check for valid section types
-    const validTypes = ['hero', 'content', 'cards', 'cta', 'image-text'];
+    const validTypes = ['hero', 'content', 'cards', 'cta', 'image-text', 'divider'];
     if (!validTypes.includes(section.type)) {
       warnings.push(`Section ${index + 1} has an uncommon type: '${section.type}'`);
     }
 
-    // Check for empty content
-    if (section.content === "") {
-      warnings.push(`Section ${index + 1} has empty content`);
+    // Check for empty content in text-based sections
+    if ((section.type === 'content' || section.type === 'hero' || section.type === 'image-text') 
+        && (section.content === "" || section.content === undefined)) {
+      warnings.push(`Section ${index + 1} (${section.type}) should have content`);
     }
 
     // Title is recommended for most section types except special ones
     if (!section.title && section.type !== 'cta' && section.type !== 'divider') {
       warnings.push(`Section ${index + 1} (${section.type}) should have a title`);
+    }
+    
+    // Check for required properties based on section type
+    if (section.type === 'image-text' && !section.imageUrl) {
+      warnings.push(`Image+Text section ${index + 1} is missing an image URL`);
+    }
+    
+    if (section.type === 'cta' && !section.buttonText) {
+      warnings.push(`CTA section ${index + 1} should have button text`);
+    }
+    
+    if (section.type === 'cards' && (!section.items || !Array.isArray(section.items) || section.items.length === 0)) {
+      warnings.push(`Cards section ${index + 1} should have at least one card item`);
     }
   });
 
@@ -113,7 +156,6 @@ function checkForBrokenLinks(content: PageContent): string[] {
   const warnings: string[] = [];
   
   // Simple check for links that may be problematic
-  // In a real implementation, you would make HTTP requests to verify links
   const checkText = JSON.stringify(content);
   
   if (checkText.includes("http://localhost")) {
@@ -122,6 +164,23 @@ function checkForBrokenLinks(content: PageContent): string[] {
   
   if (checkText.includes(".html") || checkText.includes(".htm")) {
     warnings.push("Content contains direct HTML file references which may not be compatible with your routing");
+  }
+  
+  const suspiciousUrls = [
+    "example.com", 
+    "placeholder", 
+    "yourwebsite", 
+    "your-site",
+    "your_image",
+    "image.jpg",
+    "image.png"
+  ];
+  
+  for (const term of suspiciousUrls) {
+    if (checkText.includes(term)) {
+      warnings.push(`Content contains '${term}' which appears to be a placeholder URL`);
+      break; // Only show this warning once
+    }
   }
   
   return warnings;
@@ -143,9 +202,13 @@ function analyzeSEO(content: PageContent, slug: string): string[] {
   }
   
   // Check if slug matches content
-  const contentText = JSON.stringify(content).toLowerCase();
-  if (slug && !contentText.includes(slug.replace(/-/g, ' ').toLowerCase())) {
-    suggestions.push("Slug keywords don't appear in the page content");
+  if (slug) {
+    const contentText = JSON.stringify(content).toLowerCase();
+    const slugKeywords = slug.replace(/-/g, ' ').toLowerCase();
+    
+    if (!contentText.includes(slugKeywords)) {
+      suggestions.push("The page URL slug keywords don't appear in the page content");
+    }
   }
   
   // Check for heading structure
@@ -158,6 +221,18 @@ function analyzeSEO(content: PageContent, slug: string): string[] {
   
   if (!hasHeadings) {
     suggestions.push("Page doesn't have any headings which are important for SEO");
+  }
+  
+  // Check for image alt text
+  const hasImages = content.sections.some(section => 
+    section.type === 'image-text' || 
+    section.imageUrl || 
+    section.backgroundImage);
+  
+  const hasAltText = content.sections.some(section => section.altText);
+  
+  if (hasImages && !hasAltText) {
+    suggestions.push("Images should have alt text for better accessibility and SEO");
   }
   
   return suggestions;
