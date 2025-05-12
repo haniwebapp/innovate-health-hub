@@ -15,7 +15,15 @@ class AdminLogService {
           source: logData.source,
           severity: logData.severity,
           details: logData.details,
-          user_id: logData.user_id
+          user_id: logData.user_id,
+          resource_id: logData.resource_id,
+          session_id: logData.session_id,
+          ip_address: logData.ip_address,
+          request_path: logData.request_path,
+          status_code: logData.status_code,
+          duration_ms: logData.duration_ms,
+          environment: logData.environment,
+          tags: logData.tags
         })
         .select()
         .single();
@@ -85,7 +93,10 @@ class AdminLogService {
       logType?: string,
       fromDate?: Date,
       toDate?: Date,
-      search?: string
+      search?: string,
+      environment?: string,
+      resourceId?: string,
+      tags?: string[]
     } = {}
   ): Promise<{ logs: AdminLog[], totalCount: number }> {
     try {
@@ -104,6 +115,18 @@ class AdminLogService {
       
       if (filters.logType) {
         query = query.eq('log_type', filters.logType);
+      }
+      
+      if (filters.environment) {
+        query = query.eq('environment', filters.environment);
+      }
+      
+      if (filters.resourceId) {
+        query = query.eq('resource_id', filters.resourceId);
+      }
+      
+      if (filters.tags && filters.tags.length > 0) {
+        query = query.overlaps('tags', filters.tags);
       }
       
       if (filters.fromDate) {
@@ -155,6 +178,47 @@ class AdminLogService {
   }
   
   /**
+   * Get logs by date range and environment using the new function
+   */
+  static async getLogsByDateRangeAndEnvironment(
+    startDate: Date, 
+    endDate: Date, 
+    environment?: string
+  ): Promise<{ logs: AdminLog[], count: number }> {
+    try {
+      const { data, error } = await supabase
+        .rpc('get_logs_by_date_range_and_environment', {
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+          env: environment || null
+        });
+      
+      if (error) throw error;
+      
+      const count = data && data.length > 0 ? data[0].count : 0;
+      
+      const logs: AdminLog[] = data.map((log) => ({
+        ...log,
+        created_at: new Date(log.created_at),
+        log_type: log.log_type as "access" | "error" | "audit" | "event",
+        severity: log.severity as "info" | "warning" | "error" | "critical"
+      })) as AdminLog[];
+      
+      return {
+        logs,
+        count
+      };
+      
+    } catch (error) {
+      console.error("Error getting logs by date range and environment:", error);
+      return {
+        logs: [],
+        count: 0
+      };
+    }
+  }
+  
+  /**
    * Detect anomalies in logs over a time period
    */
   static async detectAnomalies(hoursWindow: number = 24): Promise<any[]> {
@@ -184,13 +248,17 @@ class AdminLogService {
       logType?: string,
       fromDate?: Date,
       toDate?: Date,
-      search?: string
+      search?: string,
+      environment?: string,
+      resourceId?: string,
+      tags?: string[]
     } = {}
   ): { logs: AdminLog[], totalCount: number } {
     // Mock data generation
     const logTypes: ("access" | "error" | "audit" | "event")[] = ["access", "error", "audit", "event"];
     const sources: string[] = ["api", "auth", "database", "user", "system"];
     const severities: ("info" | "warning" | "error" | "critical")[] = ["info", "warning", "error", "critical"];
+    const environments: string[] = ["production", "staging", "development", "test"];
     
     const mockLogs: AdminLog[] = Array(50).fill(null).map((_, index) => ({
       id: `log-${index + 1}`,
@@ -199,7 +267,13 @@ class AdminLogService {
       details: { message: `Log message ${index + 1}`, path: `/api/endpoint/${index}` },
       severity: severities[Math.floor(Math.random() * 4)],
       created_at: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)),
-      user_id: Math.random() > 0.3 ? `user-${Math.floor(Math.random() * 10) + 1}` : undefined
+      user_id: Math.random() > 0.3 ? `user-${Math.floor(Math.random() * 10) + 1}` : undefined,
+      environment: environments[Math.floor(Math.random() * 4)],
+      resource_id: Math.random() > 0.5 ? `resource-${Math.floor(Math.random() * 20) + 1}` : undefined,
+      request_path: `/api/v1/endpoint-${Math.floor(Math.random() * 10) + 1}`,
+      status_code: Math.random() > 0.2 ? 200 : [400, 401, 403, 404, 500][Math.floor(Math.random() * 5)],
+      duration_ms: Math.floor(Math.random() * 5000),
+      tags: Math.random() > 0.5 ? ['tag1', 'tag2'].slice(0, Math.floor(Math.random() * 3)) : undefined
     }));
     
     // Apply filters
@@ -215,6 +289,21 @@ class AdminLogService {
     
     if (filters.logType) {
       filteredLogs = filteredLogs.filter(log => log.log_type === filters.logType);
+    }
+    
+    if (filters.environment) {
+      filteredLogs = filteredLogs.filter(log => log.environment === filters.environment);
+    }
+    
+    if (filters.resourceId) {
+      filteredLogs = filteredLogs.filter(log => log.resource_id === filters.resourceId);
+    }
+    
+    if (filters.tags && filters.tags.length > 0) {
+      filteredLogs = filteredLogs.filter(log => {
+        if (!log.tags) return false;
+        return filters.tags!.some(tag => log.tags!.includes(tag));
+      });
     }
     
     if (filters.fromDate) {

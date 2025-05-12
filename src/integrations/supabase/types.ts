@@ -79,28 +79,52 @@ export type Database = {
         Row: {
           created_at: string
           details: Json
+          duration_ms: number | null
+          environment: string | null
           id: string
+          ip_address: string | null
           log_type: string
+          request_path: string | null
+          resource_id: string | null
+          session_id: string | null
           severity: string
           source: string
+          status_code: number | null
+          tags: string[] | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           details: Json
+          duration_ms?: number | null
+          environment?: string | null
           id?: string
+          ip_address?: string | null
           log_type: string
+          request_path?: string | null
+          resource_id?: string | null
+          session_id?: string | null
           severity: string
           source: string
+          status_code?: number | null
+          tags?: string[] | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           details?: Json
+          duration_ms?: number | null
+          environment?: string | null
           id?: string
+          ip_address?: string | null
           log_type?: string
+          request_path?: string | null
+          resource_id?: string | null
+          session_id?: string | null
           severity?: string
           source?: string
+          status_code?: number | null
+          tags?: string[] | null
           user_id?: string | null
         }
         Relationships: []
@@ -2610,6 +2634,20 @@ export type Database = {
           user_first_name: string
           user_last_name: string
           user_organization: string
+        }[]
+      }
+      get_logs_by_date_range_and_environment: {
+        Args: { start_date: string; end_date: string; env?: string }
+        Returns: {
+          id: string
+          log_type: string
+          source: string
+          severity: string
+          details: Json
+          created_at: string
+          user_id: string
+          environment: string
+          count: number
         }[]
       }
       get_logs_by_source: {
