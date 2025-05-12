@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function HighlightsCallToAction() {
   return (
@@ -16,9 +17,12 @@ export function HighlightsCallToAction() {
       <div className="inline-flex flex-wrap justify-center gap-6">
         <Button 
           className="bg-gradient-to-r from-moh-green to-moh-darkGreen text-white px-8 py-3 rounded-md font-medium hover:shadow-lg transition-all group"
+          asChild
         >
-          <span>Explore All Features</span>
-          <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          <Link to="/features">
+            <span>Explore All Features</span>
+            <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
         </Button>
         
         <Button 
@@ -26,10 +30,10 @@ export function HighlightsCallToAction() {
           className="border-moh-green text-moh-darkGreen hover:bg-moh-lightGreen/20 px-8 py-3 rounded-md font-medium group"
           asChild
         >
-          <a href="/about" className="flex items-center">
+          <Link to="/about" className="flex items-center">
             <span>Learn About Our Mission</span>
             <ExternalLink className="ml-1 h-4 w-4 transition-opacity duration-300 opacity-70 group-hover:opacity-100" />
-          </a>
+          </Link>
         </Button>
       </div>
       
