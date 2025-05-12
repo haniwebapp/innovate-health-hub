@@ -1,11 +1,10 @@
-
 import { useState } from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DatePickerWithRange } from '@/components/ui/date-range-picker';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -239,9 +238,10 @@ export default function AdminSandboxPage() {
                   </SelectContent>
                 </Select>
                 
-                <DatePickerWithRange
-                  date={date}
-                  onDateChange={setDate}
+                <DateRangePicker
+                  dateRange={date}
+                  onDateRangeChange={setDate}
+                  className="w-full"
                 />
               </div>
             </div>
