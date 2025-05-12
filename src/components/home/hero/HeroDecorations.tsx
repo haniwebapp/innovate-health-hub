@@ -1,6 +1,5 @@
-
 import { motion } from "framer-motion";
-import { Sparkles, Heart, Stethoscope, Pill, Flask, Microscope } from "lucide-react";
+import { Sparkles, Heart, Stethoscope, Pill, Microscope, Dna, HeartPulse, Syringe } from "lucide-react";
 
 export function HeroDecorations() {
   // Generate a set of random positions for animated elements
@@ -17,13 +16,15 @@ export function HeroDecorations() {
   // Background particles
   const particles = generateRandomPositions(15, { width: 100, height: 100 });
   
-  // Medical icons for floating animations
+  // Medical icons for floating animations - Replaced Flask with Syringe
   const medicalIcons = [
     { Icon: Heart, position: { top: '22%', left: '18%' }, size: 24, color: 'rgba(0, 129, 74, 0.6)' },
     { Icon: Stethoscope, position: { top: '65%', right: '25%' }, size: 28, color: 'rgba(195, 168, 107, 0.6)' },
     { Icon: Pill, position: { top: '35%', right: '15%' }, size: 26, color: 'rgba(0, 129, 74, 0.6)' },
-    { Icon: Flask, position: { top: '70%', left: '22%' }, size: 24, color: 'rgba(195, 168, 107, 0.6)' },
-    { Icon: Microscope, position: { top: '20%', right: '30%' }, size: 30, color: 'rgba(0, 129, 74, 0.6)' }
+    { Icon: Syringe, position: { top: '70%', left: '22%' }, size: 24, color: 'rgba(195, 168, 107, 0.6)' }, // Replaced Flask with Syringe
+    { Icon: Microscope, position: { top: '20%', right: '30%' }, size: 30, color: 'rgba(0, 129, 74, 0.6)' },
+    { Icon: HeartPulse, position: { top: '50%', left: '28%' }, size: 26, color: 'rgba(0, 129, 74, 0.6)' }, // Added new icon
+    { Icon: Dna, position: { top: '40%', right: '20%' }, size: 28, color: 'rgba(195, 168, 107, 0.6)' } // Added new icon
   ];
 
   return (
@@ -99,11 +100,11 @@ export function HeroDecorations() {
         />
       ))}
       
-      {/* Animated Medical Icons */}
+      {/* Animated Medical Icons - Updated to be more visible */}
       {medicalIcons.map((item, index) => (
         <motion.div 
           key={`medical-icon-${index}`}
-          className="absolute hidden md:block"
+          className="absolute md:block" // Removed 'hidden' to make icons visible on all screen sizes
           style={{
             ...item.position,
             color: item.color,
@@ -125,8 +126,8 @@ export function HeroDecorations() {
         </motion.div>
       ))}
       
-      {/* DNA helix animated path */}
-      <svg className="absolute top-1/4 left-1/5 w-16 h-32 hidden lg:block" viewBox="0 0 60 120">
+      {/* DNA helix animated path - Made more visible */}
+      <svg className="absolute top-1/4 left-1/5 w-16 h-32 lg:block" viewBox="0 0 60 120"> {/* Removed 'hidden' to make visible on all screen sizes */}
         <motion.path
           d="M30,10 C45,20 15,40 30,50 C45,60 15,80 30,90 C45,100 15,120 30,130"
           fill="none"
@@ -163,9 +164,9 @@ export function HeroDecorations() {
         ))}
       </svg>
       
-      {/* Sparkle icon animations - enhanced */}
+      {/* Sparkle icon animations - enhanced visibility */}
       <motion.div
-        className="absolute top-1/4 left-1/5 hidden lg:block"
+        className="absolute top-1/4 left-1/5 lg:block" // Removed 'hidden' to make visible on all screen sizes
         animate={{
           y: [-10, 10, -10],
           opacity: [0.8, 1, 0.8],
@@ -173,11 +174,11 @@ export function HeroDecorations() {
         }}
         transition={{ duration: 5, repeat: Infinity }}
       >
-        <Sparkles className="text-moh-gold/40 w-8 h-8" />
+        <Sparkles className="text-moh-gold/60 w-8 h-8" /> {/* Increased opacity */}
       </motion.div>
       
       <motion.div
-        className="absolute bottom-1/4 right-1/5 hidden lg:block"
+        className="absolute bottom-1/4 right-1/5 lg:block" // Removed 'hidden' to make visible on all screen sizes
         animate={{
           y: [10, -10, 10],
           opacity: [0.8, 1, 0.8],
@@ -185,17 +186,17 @@ export function HeroDecorations() {
         }}
         transition={{ duration: 6, repeat: Infinity, delay: 2 }}
       >
-        <Sparkles className="text-moh-green/40 w-8 h-8" />
+        <Sparkles className="text-moh-green/60 w-8 h-8" /> {/* Increased opacity */}
       </motion.div>
       
-      {/* Heartbeat line animation */}
-      <div className="absolute bottom-1/3 right-1/4 w-40 hidden lg:block">
+      {/* Heartbeat line animation - Enhanced visibility */}
+      <div className="absolute bottom-1/3 right-1/4 w-40 lg:block"> {/* Removed 'hidden' to make visible on all screen sizes */}
         <svg width="100%" height="40" viewBox="0 0 200 40">
           <motion.path
             d="M0,20 L20,20 L40,20 L50,0 L60,40 L70,20 L80,20 L100,20 L110,20 L120,0 L130,40 L140,20 L160,20 L180,20 L200,20"
             fill="none"
-            stroke="rgba(0, 129, 74, 0.5)"
-            strokeWidth="2"
+            stroke="rgba(0, 129, 74, 0.7)" // Increased opacity for better visibility
+            strokeWidth="2.5" // Increased stroke width
             strokeLinecap="round"
             strokeLinejoin="round"
             initial={{ pathLength: 0, opacity: 0 }}
@@ -214,15 +215,15 @@ export function HeroDecorations() {
         </svg>
       </div>
       
-      {/* Cell division animation */}
-      <div className="absolute top-2/3 left-1/4 hidden lg:block">
+      {/* Cell division animation - Enhanced visibility */}
+      <div className="absolute top-2/3 left-1/4 lg:block"> {/* Removed 'hidden' to make visible on all screen sizes */}
         <motion.div
           className="relative w-12 h-12"
           animate={{ rotate: 360 }}
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         >
           <motion.div
-            className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-moh-green/30"
+            className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-moh-green/50" // Increased opacity
             animate={{ 
               scale: [1, 0.5, 0.5, 1],
               x: [0, -15, -15, 0],
@@ -236,7 +237,7 @@ export function HeroDecorations() {
           />
           
           <motion.div
-            className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-moh-green/30"
+            className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-moh-green/50" // Increased opacity
             animate={{ 
               scale: [1, 0.5, 0.5, 1],
               x: [0, 15, 15, 0],
@@ -251,12 +252,12 @@ export function HeroDecorations() {
         </motion.div>
       </div>
       
-      {/* Pulse rings - brighter and more visible */}
-      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden lg:block">
+      {/* Pulse rings - brighter and more visible - Enhanced visibility */}
+      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 block"> {/* Removed 'hidden lg:' to make visible on all screen sizes */}
         {[...Array(4)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full border-2 border-moh-green/20"
+            className="absolute rounded-full border-2 border-moh-green/30" // Increased opacity
             initial={{ 
               width: 50, 
               height: 50, 
@@ -267,7 +268,7 @@ export function HeroDecorations() {
             animate={{ 
               width: [50, 400], 
               height: [50, 400], 
-              opacity: [0.4, 0],
+              opacity: [0.6, 0], // Increased starting opacity
               x: "-50%",
               y: "-50%",
             }}
@@ -281,17 +282,17 @@ export function HeroDecorations() {
         ))}
       </div>
       
-      {/* Medical cross pulses */}
-      <div className="absolute bottom-1/4 left-1/6 hidden lg:block">
+      {/* Medical cross pulses - Enhanced visibility */}
+      <div className="absolute bottom-1/4 left-1/6 lg:block"> {/* Removed 'hidden' to make visible on all screen sizes */}
         <div className="relative w-12 h-12">
           <motion.div
-            className="absolute top-0 left-4 h-12 w-4 bg-moh-gold/30 rounded-sm"
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            className="absolute top-0 left-4 h-12 w-4 bg-moh-gold/40 rounded-sm" // Increased opacity
+            animate={{ opacity: [0.4, 0.8, 0.4] }} // Increased opacity
             transition={{ duration: 2, repeat: Infinity }}
           />
           <motion.div
-            className="absolute top-4 left-0 h-4 w-12 bg-moh-gold/30 rounded-sm"
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            className="absolute top-4 left-0 h-4 w-12 bg-moh-gold/40 rounded-sm" // Increased opacity
+            animate={{ opacity: [0.4, 0.8, 0.4] }} // Increased opacity
             transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
           />
           {[...Array(3)].map((_, i) => (
@@ -309,7 +310,7 @@ export function HeroDecorations() {
                 height: [12, 36],
                 x: [-6, -18],
                 y: [-6, -18],
-                opacity: [0.5, 0],
+                opacity: [0.7, 0], // Increased starting opacity
               }}
               transition={{
                 duration: 2,
