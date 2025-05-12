@@ -1,239 +1,59 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { WebsitePage, WebsitePageFormData, PageContent } from "@/types/pageTypes";
+import { WebsitePage } from "@/types/pageTypes";
+import { CacheUtils } from "@/utils/cacheUtils";
+import { ErrorHandlingService } from "../errors/ErrorHandlingService";
+import { PerformanceMonitoringService } from "../monitoring/PerformanceMonitoringService";
 
 export class PageService {
-  /**
-   * Get all website pages
-   */
-  static async getAllPages(): Promise<WebsitePage[]> {
-    try {
-      const { data, error } = await supabase
-        .from('website_pages')
-        .select('*')
-        .order('title');
-        
-      if (error) throw error;
-      
-      return this.mapDbPagesToClient(data || []);
-    } catch (error) {
-      console.error("Error fetching pages:", error);
-      throw error;
-    }
-  }
+  private static readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
   
   /**
-   * Get only published pages
+   * Get all published pages with caching
    */
   static async getPublishedPages(): Promise<WebsitePage[]> {
-    try {
-      const { data, error } = await supabase
-        .from('website_pages')
-        .select('*')
-        .eq('published', true)
-        .order('title');
-        
-      if (error) throw error;
-      
-      return this.mapDbPagesToClient(data || []);
-    } catch (error) {
-      console.error("Error fetching published pages:", error);
-      throw error;
-    }
+    return PerformanceMonitoringService.measurePerformance('apiCall', async () => {
+      try {
+        return await CacheUtils.getOrCompute('published_pages', async () => {
+          const { data, error } = await supabase
+            .from('website_pages')
+            .select('*')
+            .eq('published', true)
+            .order('created_at', { ascending: false });
+            
+          if (error) throw error;
+          
+          return data as WebsitePage[];
+        }, this.CACHE_TTL);
+      } catch (error) {
+        ErrorHandlingService.handleError(error, 'PageService.getPublishedPages');
+        return [];
+      }
+    }, { service: 'PageService', method: 'getPublishedPages' });
   }
   
   /**
-   * Get a page by slug
+   * Get a single page by slug with caching
    */
   static async getPageBySlug(slug: string): Promise<WebsitePage | null> {
-    try {
-      const { data, error } = await supabase
-        .from('website_pages')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-        
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No rows returned
-          return null;
-        }
-        throw error;
+    return PerformanceMonitoringService.measurePerformance('apiCall', async () => {
+      try {
+        return await CacheUtils.getOrCompute(`page_${slug}`, async () => {
+          const { data, error } = await supabase
+            .from('website_pages')
+            .select('*')
+            .eq('slug', slug)
+            .eq('published', true)
+            .single();
+            
+          if (error) throw error;
+          
+          return data as WebsitePage;
+        }, this.CACHE_TTL);
+      } catch (error) {
+        ErrorHandlingService.handleError(error, 'PageService.getPageBySlug');
+        return null;
       }
-      
-      return data ? this.mapDbPageToClient(data) : null;
-    } catch (error) {
-      console.error(`Error fetching page with slug ${slug}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get a page by ID
-   */
-  static async getPageById(id: string): Promise<WebsitePage | null> {
-    try {
-      const { data, error } = await supabase
-        .from('website_pages')
-        .select('*')
-        .eq('id', id)
-        .single();
-        
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No rows returned
-          return null;
-        }
-        throw error;
-      }
-      
-      return data ? this.mapDbPageToClient(data) : null;
-    } catch (error) {
-      console.error(`Error fetching page with ID ${id}:`, error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Create a new page
-   */
-  static async createPage(pageData: WebsitePageFormData): Promise<WebsitePage> {
-    try {
-      const user = await supabase.auth.getUser();
-      
-      if (!user.data.user) {
-        throw new Error("User must be authenticated to create a page");
-      }
-      
-      // Fix: Convert PageContent to a plain object that can be serialized to JSON
-      const dbPage = {
-        slug: pageData.slug,
-        title: pageData.title,
-        // Convert the content object to a JSON-compatible format
-        content: pageData.content as unknown as Record<string, any>,
-        meta_description: pageData.metaDescription,
-        published: pageData.published || false,
-        last_updated_by: user.data.user.id
-      };
-      
-      const { data, error } = await supabase
-        .from('website_pages')
-        .insert(dbPage)
-        .select()
-        .single();
-        
-      if (error) throw error;
-      
-      return this.mapDbPageToClient(data);
-    } catch (error) {
-      console.error("Error creating page:", error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Update an existing page
-   */
-  static async updatePage(id: string, pageData: Partial<WebsitePageFormData>): Promise<WebsitePage> {
-    try {
-      const user = await supabase.auth.getUser();
-      
-      if (!user.data.user) {
-        throw new Error("User must be authenticated to update a page");
-      }
-      
-      const dbPage: Record<string, any> = {};
-      
-      if (pageData.slug) dbPage.slug = pageData.slug;
-      if (pageData.title) dbPage.title = pageData.title;
-      if (pageData.content) dbPage.content = pageData.content as unknown as Record<string, any>;
-      if (pageData.metaDescription !== undefined) dbPage.meta_description = pageData.metaDescription;
-      if (pageData.published !== undefined) dbPage.published = pageData.published;
-      
-      dbPage.last_updated_by = user.data.user.id;
-      dbPage.updated_at = new Date().toISOString();
-      
-      const { data, error } = await supabase
-        .from('website_pages')
-        .update(dbPage)
-        .eq('id', id)
-        .select()
-        .single();
-        
-      if (error) throw error;
-      
-      return this.mapDbPageToClient(data);
-    } catch (error) {
-      console.error(`Error updating page with ID ${id}:`, error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Toggle the published status of a page
-   */
-  static async togglePagePublished(id: string, published: boolean): Promise<WebsitePage> {
-    try {
-      const { data, error } = await supabase
-        .from('website_pages')
-        .update({
-          published,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .select()
-        .single();
-        
-      if (error) throw error;
-      
-      return this.mapDbPageToClient(data);
-    } catch (error) {
-      console.error(`Error updating publication status for page with ID ${id}:`, error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Delete a page
-   */
-  static async deletePage(id: string): Promise<void> {
-    try {
-      const { error } = await supabase
-        .from('website_pages')
-        .delete()
-        .eq('id', id);
-        
-      if (error) throw error;
-    } catch (error) {
-      console.error(`Error deleting page with ID ${id}:`, error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Map database page objects to client-side objects
-   */
-  private static mapDbPagesToClient(dbPages: any[]): WebsitePage[] {
-    return dbPages.map(page => this.mapDbPageToClient(page));
-  }
-  
-  /**
-   * Map a single database page object to client-side object
-   */
-  private static mapDbPageToClient(dbPage: any): WebsitePage {
-    // When retrieving from the database, ensure the content is properly typed
-    const content = dbPage.content as unknown as PageContent;
-    
-    return {
-      id: dbPage.id,
-      slug: dbPage.slug,
-      title: dbPage.title,
-      content: content || { sections: [] }, // Provide a default if null/undefined
-      metaDescription: dbPage.meta_description,
-      lastUpdatedBy: dbPage.last_updated_by,
-      published: dbPage.published,
-      createdAt: new Date(dbPage.created_at),
-      updatedAt: new Date(dbPage.updated_at)
-    };
+    }, { service: 'PageService', method: 'getPageBySlug', slug });
   }
 }

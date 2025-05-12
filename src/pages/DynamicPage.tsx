@@ -1,104 +1,66 @@
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { PageService } from '@/services/page/PageService';
-import { WebsitePage } from '@/types/pageTypes';
 import { PageRenderer } from '@/components/cms/pages/PageRenderer';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { WebsitePage } from '@/types/pageTypes';
+import { PageService } from '@/services/page/PageService';
+import { PageLoader } from '@/components/ui/page-loader';
+import { ErrorHandlingService } from '@/services/errors/ErrorHandlingService';
 import { useToast } from '@/components/ui/use-toast';
+import { PerformanceMonitoringService } from '@/services/monitoring/PerformanceMonitoringService';
 
-const DynamicPage = () => {
-  const { slug } = useParams<{ slug: string }>();
+export default function DynamicPage() {
   const [page, setPage] = useState<WebsitePage | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { slug } = useParams<{ slug: string }>();
   const { toast } = useToast();
-
+  
   useEffect(() => {
-    const fetchPage = async () => {
+    const loadPage = async () => {
+      if (!slug) {
+        setIsLoading(false);
+        return;
+      }
+      
+      setIsLoading(true);
+      
       try {
-        setLoading(true);
-        setError(null);
-        
-        if (!slug) {
-          setError('Page not found');
-          setLoading(false);
-          return;
-        }
-        
-        const pageData = await PageService.getPageBySlug(slug);
-        
-        if (!pageData) {
-          setError('Page not found');
-        } else if (!pageData.published) {
-          setError('This page is not published yet');
-        } else {
+        await PerformanceMonitoringService.measurePerformance('pageLoad', async () => {
+          const pageData = await PageService.getPageBySlug(slug);
           setPage(pageData);
-          // Set page title
-          document.title = `${pageData.title} | HealthTech Innovate`;
-        }
-      } catch (err) {
-        console.error('Error fetching page:', err);
-        setError('Failed to load page');
-        toast({
-          title: "Error",
-          description: "There was a problem loading the page. Please try again later.",
-          variant: "destructive"
-        });
+          
+          if (!pageData) {
+            toast({
+              title: "Page not found",
+              description: "The requested page does not exist or is not published.",
+              variant: "destructive"
+            });
+          }
+        }, { pageType: 'dynamic', slug });
+      } catch (error) {
+        ErrorHandlingService.handleError(error, 'DynamicPage');
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
-
-    fetchPage();
     
-    // Reset page title when unmounting
-    return () => {
-      document.title = 'HealthTech Innovate';
-    };
+    loadPage();
   }, [slug, toast]);
-
-  if (loading) {
+  
+  if (isLoading) {
+    return <PageLoader />;
+  }
+  
+  if (!page) {
     return (
-      <div className="container mx-auto py-12 space-y-6">
-        <Skeleton className="h-12 w-full max-w-xl mb-6" />
-        <Skeleton className="h-64 w-full mb-8" />
-        <Skeleton className="h-48 w-full" />
+      <div className="container mx-auto py-12 text-center">
+        <h1 className="text-2xl font-bold mb-4">Page Not Found</h1>
+        <p className="text-muted-foreground">
+          The page you are looking for does not exist or has been removed.
+        </p>
       </div>
     );
   }
-
-  if (error || !page) {
-    return (
-      <motion.div 
-        className="container mx-auto py-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error || 'Page not found'}
-          </AlertDescription>
-        </Alert>
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
-      <PageRenderer page={page} />
-    </motion.div>
-  );
-};
-
-export default DynamicPage;
+  
+  return <PageRenderer page={page} />;
+}

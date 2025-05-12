@@ -1,7 +1,7 @@
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy } from 'react';
 import { Route } from 'react-router-dom';
-import { PageLoader } from '@/components/ui/page-loader'; // Assuming there's a PageLoader component
+import { DynamicPageLoader } from '@/components/common/DynamicPageLoader';
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('@/pages/Index'));
@@ -16,45 +16,37 @@ const DynamicPage = lazy(() => import('@/pages/DynamicPage'));
 // Create the public routes
 export const PublicRoutes = (
   <>
-    <Route path="/" element={
-      <Suspense fallback={<PageLoader />}>
-        <HomePage />
-      </Suspense>
-    } />
-    <Route path="/about" element={
-      <Suspense fallback={<PageLoader />}>
-        <AboutPage />
-      </Suspense>
-    } />
-    <Route path="/innovations" element={
-      <Suspense fallback={<PageLoader />}>
-        <InnovationsPage />
-      </Suspense>
-    } />
-    <Route path="/innovations/:id" element={
-      <Suspense fallback={<PageLoader />}>
-        <InnovationDetailPage />
-      </Suspense>
-    } />
-    <Route path="/knowledge-hub" element={
-      <Suspense fallback={<PageLoader />}>
-        <KnowledgeHubPage />
-      </Suspense>
-    } />
-    <Route path="/investment" element={
-      <Suspense fallback={<PageLoader />}>
-        <InvestmentPage />
-      </Suspense>
-    } />
-    <Route path="/regulatory" element={
-      <Suspense fallback={<PageLoader />}>
-        <RegulatoryPage />
-      </Suspense>
-    } />
-    <Route path="/pages/:slug" element={
-      <Suspense fallback={<PageLoader />}>
-        <DynamicPage />
-      </Suspense>
-    } />
+    <Route 
+      path="/" 
+      element={<DynamicPageLoader><HomePage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/about" 
+      element={<DynamicPageLoader><AboutPage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/innovations" 
+      element={<DynamicPageLoader><InnovationsPage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/innovations/:id" 
+      element={<DynamicPageLoader><InnovationDetailPage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/knowledge-hub" 
+      element={<DynamicPageLoader><KnowledgeHubPage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/investment" 
+      element={<DynamicPageLoader><InvestmentPage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/regulatory" 
+      element={<DynamicPageLoader><RegulatoryPage /></DynamicPageLoader>} 
+    />
+    <Route 
+      path="/pages/:slug" 
+      element={<DynamicPageLoader><DynamicPage /></DynamicPageLoader>} 
+    />
   </>
 );

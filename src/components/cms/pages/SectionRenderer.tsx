@@ -1,153 +1,112 @@
 
 import React, { memo } from 'react';
 import { PageSection } from '@/types/pageTypes';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
 import DOMPurify from 'dompurify';
+import { motion } from 'framer-motion';
 
 interface SectionRendererProps {
   section: PageSection;
 }
 
-// Using memo for performance optimization
+// Using memo to prevent unnecessary rerenders
 export const SectionRenderer = memo(({ section }: SectionRendererProps) => {
-  // Animation variants
+  // Animation variants for sections
   const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
-
-  // Sanitize content
-  const sanitizeContent = (content: string) => {
-    return { __html: DOMPurify.sanitize(content) };
+  
+  // Safely sanitize content
+  const sanitizeContent = (content?: string) => {
+    return content ? DOMPurify.sanitize(content) : '';
   };
-
+  
   // Render different section types
-  switch (section.type) {
-    case 'hero':
-      return (
-        <motion.div 
-          className="relative w-full py-24 px-4 flex items-center justify-center text-center bg-cover bg-center min-h-[400px]"
-          style={section.backgroundImage ? { backgroundImage: `url(${section.backgroundImage})` } : {}}
-          variants={sectionVariants}
-        >
-          <div className="absolute inset-0 bg-black/50"></div>
-          <div className="relative z-10 max-w-3xl mx-auto">
-            {section.title && <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{section.title}</h1>}
-            {section.content && <p className="text-xl text-white/90 mb-8" dangerouslySetInnerHTML={sanitizeContent(section.content)} />}
-            {section.buttonText && (
-              <Button size="lg">
-                {section.buttonText}
-              </Button>
-            )}
+  const renderSection = () => {
+    switch (section.type) {
+      case 'hero':
+        return (
+          <div className={`py-16 px-4 ${section.backgroundImage ? 'bg-cover bg-center' : 'bg-primary/10'}`}
+               style={section.backgroundImage ? { backgroundImage: `url(${section.backgroundImage})` } : {}}>
+            <div className="container mx-auto max-w-4xl text-center">
+              {section.title && <h1 className="text-4xl md:text-5xl font-bold mb-6">{section.title}</h1>}
+              {section.content && <div className="text-xl mb-8" dangerouslySetInnerHTML={{ __html: sanitizeContent(section.content) }} />}
+              {section.buttonText && (
+                <button className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                  {section.buttonText}
+                </button>
+              )}
+            </div>
           </div>
-        </motion.div>
-      );
+        );
       
-    case 'text':
-      return (
-        <motion.section 
-          className="py-12 px-4"
-          variants={sectionVariants}
-        >
-          <div className="container mx-auto max-w-4xl">
-            {section.title && <h2 className="text-3xl font-bold mb-6">{section.title}</h2>}
-            {section.content && <div className="prose max-w-none" dangerouslySetInnerHTML={sanitizeContent(section.content)} />}
+      case 'text':
+        return (
+          <div className="py-12 px-4">
+            <div className="container mx-auto max-w-4xl">
+              {section.title && <h2 className="text-3xl font-bold mb-6">{section.title}</h2>}
+              {section.content && <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeContent(section.content) }} />}
+            </div>
           </div>
-        </motion.section>
-      );
+        );
       
-    case 'image-text':
-      return (
-        <motion.section 
-          className="py-16 px-4"
-          variants={sectionVariants}
-        >
-          <div className="container mx-auto">
-            <div className={`flex flex-col ${section.alignment === 'right' ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-center`}>
+      case 'image':
+        return (
+          <div className="py-12 px-4">
+            <div className="container mx-auto max-w-4xl">
+              {section.title && <h2 className="text-3xl font-bold mb-6 text-center">{section.title}</h2>}
               {section.imageUrl && (
-                <div className="w-full md:w-1/2">
-                  <motion.img 
-                    src={section.imageUrl} 
-                    alt={section.title || "Section image"} 
-                    className="rounded-lg shadow-lg w-full h-auto"
-                    loading="lazy"
-                    whileHover={{ scale: 1.03 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                <div className="rounded-lg overflow-hidden shadow-lg my-6">
+                  <img src={section.imageUrl} alt={section.title || 'Section image'} className="w-full h-auto" />
                 </div>
               )}
-              <div className="w-full md:w-1/2">
-                {section.title && <h2 className="text-3xl font-bold mb-4">{section.title}</h2>}
-                {section.content && <div dangerouslySetInnerHTML={sanitizeContent(section.content)} className="text-gray-700" />}
-              </div>
+              {section.content && <div className="mt-6 text-center" dangerouslySetInnerHTML={{ __html: sanitizeContent(section.content) }} />}
             </div>
           </div>
-        </motion.section>
-      );
+        );
       
-    case 'cta':
-      return (
-        <motion.section 
-          className="bg-primary/10 py-16 px-4"
-          variants={sectionVariants}
-        >
-          <div className="container mx-auto text-center max-w-3xl">
-            {section.title && <h2 className="text-3xl font-bold mb-4">{section.title}</h2>}
-            {section.content && <p className="text-xl mb-8" dangerouslySetInnerHTML={sanitizeContent(section.content)} />}
-            {section.buttonText && (
-              <Button size="lg">
-                {section.buttonText}
-              </Button>
-            )}
+      case 'features':
+        return (
+          <div className="py-12 px-4">
+            <div className="container mx-auto max-w-6xl">
+              {section.title && <h2 className="text-3xl font-bold mb-10 text-center">{section.title}</h2>}
+              {section.items && section.items.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {section.items.map((item, idx) => (
+                    <div key={idx} className="bg-white p-6 rounded-lg shadow-md">
+                      {item.title && <h3 className="text-xl font-semibold mb-3">{item.title}</h3>}
+                      {item.content && <div dangerouslySetInnerHTML={{ __html: sanitizeContent(item.content) }} />}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </motion.section>
-      );
+        );
+      
+      default:
+        return (
+          <div className="py-8 px-4">
+            <div className="container mx-auto border border-dashed border-gray-300 rounded-lg p-6 text-center text-gray-500">
+              <p>Unknown section type: {section.type}</p>
+            </div>
+          </div>
+        );
+    }
+  };
 
-    case 'cards':
-      return (
-        <motion.section 
-          className="py-16 px-4"
-          variants={sectionVariants}
-        >
-          <div className="container mx-auto">
-            {section.title && <h2 className="text-3xl font-bold mb-8 text-center">{section.title}</h2>}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {section.items?.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                >
-                  <Card className="h-full transition-shadow hover:shadow-md">
-                    {item.title && (
-                      <CardHeader>
-                        <CardTitle>{item.title}</CardTitle>
-                      </CardHeader>
-                    )}
-                    <CardContent>
-                      {item.content && <div dangerouslySetInnerHTML={sanitizeContent(item.content)} />}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-      );
-      
-    default:
-      return (
-        <div className="p-4 my-4 border border-gray-200 rounded">
-          <p className="text-sm text-gray-500">Unknown section type: {section.type}</p>
-        </div>
-      );
-  }
+  return (
+    <motion.section
+      variants={sectionVariants}
+      className={`section section-${section.type} ${section.alignment ? `text-${section.alignment}` : ''}`}
+    >
+      {renderSection()}
+    </motion.section>
+  );
+}, (prevProps, nextProps) => {
+  // Custom comparison logic for memoization
+  // Only re-render if the section actually changed
+  return JSON.stringify(prevProps.section) === JSON.stringify(nextProps.section);
 });
 
-// Add display name for better debugging
 SectionRenderer.displayName = 'SectionRenderer';
