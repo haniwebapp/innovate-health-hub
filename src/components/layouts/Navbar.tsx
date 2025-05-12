@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageService } from '@/services/page/PageService';
 import { WebsitePage } from '@/types/pageTypes';
-import NavbarMainLinks from './NavbarMainLinks';
+import { NavbarMainLinks } from './NavbarMainLinks';
 import NavbarMobileMenu from './NavbarMobileMenu';
 import NavbarUserMenu from './NavbarUserMenu';
-import SearchDialog from './SearchDialog';
+import { SearchDialog } from './SearchDialog';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
