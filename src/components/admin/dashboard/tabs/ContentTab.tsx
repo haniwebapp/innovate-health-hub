@@ -35,7 +35,7 @@ export function ContentTab() {
             </Button>
           </CardHeader>
           <CardContent className="pt-6">
-            {isLoading && <AdminLoading loadingMessage="Loading content pages..." />}
+            {isLoading && <AdminLoading message="Loading content pages..." />}
             {error && <AdminError title="Failed to load content pages" description={error.toString()} />}
             {pages && pages.length === 0 && <AdminEmpty message="No content pages found" />}
             {pages && pages.length > 0 && (
