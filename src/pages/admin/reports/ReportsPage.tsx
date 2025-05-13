@@ -1,269 +1,182 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { BarChart, LineChart, PieChart } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Download, FileSpreadsheet, BarChart, Calendar, UserRound, Activity } from 'lucide-react';
 
 export default function ReportsPage() {
+  const [activeTab, setActiveTab] = useState("analytics");
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('overview');
-  const [isLoading, setIsLoading] = useState(false);
-  const [reportData, setReportData] = useState<any>(null);
-
-  useEffect(() => {
-    loadReportData('overview');
-  }, []);
-
-  const loadReportData = (reportType: string) => {
-    setIsLoading(true);
+  
+  const handleGenerateReport = (reportType: string) => {
+    setIsGenerating(true);
     
-    // Simulate API call to fetch report data
-    const loadPromise = new Promise<void>((resolve) => {
-      // In a real implementation, this would be an API call
-      setTimeout(() => {
-        const mockData = generateMockData(reportType);
-        setReportData(mockData);
-        resolve();
-      }, 1500);
-    });
-
-    toast.promise(loadPromise, {
-      loading: 'Loading report data...',
-      success: 'Report data loaded!',
-      error: 'Failed to load report data',
-    });
-    
-    // Handle loading state separately
-    loadPromise.then(() => {
-      setIsLoading(false);
-    }).catch(() => {
-      setIsLoading(false);
-    });
+    // Simulate report generation
+    setTimeout(() => {
+      setIsGenerating(false);
+      toast({
+        title: "Report Generated",
+        description: `${reportType} report has been generated successfully.`,
+      });
+    }, 2000);
   };
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    loadReportData(value);
-  };
-
-  const generateMockData = (reportType: string) => {
-    switch (reportType) {
-      case 'overview':
-        return {
-          title: 'Platform Overview Report',
-          metrics: {
-            totalUsers: 1245,
-            activeUsers: 892,
-            totalInnovations: 87,
-            activeChallenges: 12,
-          },
-        };
-      case 'user':
-        return {
-          title: 'User Activity Report',
-          metrics: {
-            newUsers: 85,
-            returningUsers: 420,
-            averageSessionTime: '12m 30s',
-            topUserLocations: ['Riyadh', 'Jeddah', 'Dammam'],
-          },
-        };
-      case 'innovation':
-        return {
-          title: 'Innovation Metrics Report',
-          metrics: {
-            submissionRate: '23%',
-            approvalRate: '68%',
-            averageProcessingTime: '8 days',
-            topCategories: ['Digital Health', 'Medical Devices', 'Healthcare AI'],
-          },
-        };
-      default:
-        return null;
-    }
-  };
-
-  const generateDownloadReport = () => {
-    toast({
-      title: "Report generation started",
-      description: "Your report will be ready for download shortly.",
-    });
-    // In a real implementation, this would generate and download a PDF or Excel file
-  };
-
+  
   return (
     <AdminLayout
-      title="Reports & Analytics"
-      description="Generate and view platform reports"
-      actions={
-        <Button onClick={generateDownloadReport} disabled={isLoading}>
-          Export to Excel
-        </Button>
-      }
+      title="Reports Dashboard"
+      description="Generate and manage system reports"
     >
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">
-            <BarChart className="h-4 w-4 mr-2" />
-            Platform Overview
-          </TabsTrigger>
-          <TabsTrigger value="user">
-            <LineChart className="h-4 w-4 mr-2" />
-            User Activity
-          </TabsTrigger>
-          <TabsTrigger value="innovation">
-            <PieChart className="h-4 w-4 mr-2" />
-            Innovation Metrics
-          </TabsTrigger>
+      <Tabs defaultValue="analytics" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid grid-cols-4 mb-6">
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="users">User Reports</TabsTrigger>
+          <TabsTrigger value="innovations">Innovation Reports</TabsTrigger>
+          <TabsTrigger value="system">System Reports</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          {isLoading ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : reportData && (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle>{reportData.title}</CardTitle>
-                  <CardDescription>
-                    Summary of key platform metrics
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-muted p-4 rounded-lg text-center">
-                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.totalUsers}</h3>
-                      <p className="text-sm text-muted-foreground">Total Users</p>
-                    </div>
-                    <div className="bg-muted p-4 rounded-lg text-center">
-                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.activeUsers}</h3>
-                      <p className="text-sm text-muted-foreground">Active Users</p>
-                    </div>
-                    <div className="bg-muted p-4 rounded-lg text-center">
-                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.totalInnovations}</h3>
-                      <p className="text-sm text-muted-foreground">Total Innovations</p>
-                    </div>
-                    <div className="bg-muted p-4 rounded-lg text-center">
-                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.activeChallenges}</h3>
-                      <p className="text-sm text-muted-foreground">Active Challenges</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>User Growth</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[200px] flex items-center justify-center bg-muted text-muted-foreground">
-                      Chart visualization placeholder
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Activity Trends</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[200px] flex items-center justify-center bg-muted text-muted-foreground">
-                      Chart visualization placeholder
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </>
-          )}
+        
+        <TabsContent value="analytics">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ReportCard
+              title="Usage Analytics"
+              description="Comprehensive platform usage statistics"
+              icon={<BarChart className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Usage Analytics")}
+              isGenerating={isGenerating}
+            />
+            
+            <ReportCard
+              title="Monthly Performance"
+              description="Performance metrics for the current month"
+              icon={<Activity className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Monthly Performance")}
+              isGenerating={isGenerating}
+            />
+            
+            <ReportCard
+              title="Quarterly Statistics"
+              description="Key statistics for the current quarter"
+              icon={<FileSpreadsheet className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Quarterly Statistics")}
+              isGenerating={isGenerating}
+            />
+            
+            <ReportCard
+              title="Yearly Summary"
+              description="Annual report summarizing all platform activities"
+              icon={<Calendar className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Yearly Summary")}
+              isGenerating={isGenerating}
+            />
+          </div>
         </TabsContent>
-
-        <TabsContent value="user" className="space-y-4">
-          {isLoading ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : reportData && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{reportData.title}</CardTitle>
-                <CardDescription>User engagement and activity metrics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.newUsers}</h3>
-                    <p className="text-sm text-muted-foreground">New Users</p>
-                  </div>
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.returningUsers}</h3>
-                    <p className="text-sm text-muted-foreground">Returning Users</p>
-                  </div>
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.averageSessionTime}</h3>
-                    <p className="text-sm text-muted-foreground">Avg. Session Time</p>
-                  </div>
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.topUserLocations[0]}</h3>
-                    <p className="text-sm text-muted-foreground">Top Location</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+        
+        <TabsContent value="users">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ReportCard
+              title="User Activity"
+              description="Detailed user activity and engagement report"
+              icon={<UserRound className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("User Activity")}
+              isGenerating={isGenerating}
+            />
+            
+            <ReportCard
+              title="New Registrations"
+              description="Report on new user registrations and onboarding"
+              icon={<UserRound className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("New Registrations")}
+              isGenerating={isGenerating}
+            />
+          </div>
         </TabsContent>
-
-        <TabsContent value="innovation" className="space-y-4">
-          {isLoading ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ) : reportData && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{reportData.title}</CardTitle>
-                <CardDescription>Innovation submission and processing metrics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.submissionRate}</h3>
-                    <p className="text-sm text-muted-foreground">Submission Rate</p>
-                  </div>
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.approvalRate}</h3>
-                    <p className="text-sm text-muted-foreground">Approval Rate</p>
-                  </div>
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.averageProcessingTime}</h3>
-                    <p className="text-sm text-muted-foreground">Processing Time</p>
-                  </div>
-                  <div className="bg-muted p-4 rounded-lg text-center">
-                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.topCategories.length}</h3>
-                    <p className="text-sm text-muted-foreground">Categories</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+        
+        <TabsContent value="innovations">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ReportCard
+              title="Innovation Submissions"
+              description="Report on new innovation submissions"
+              icon={<FileSpreadsheet className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Innovation Submissions")}
+              isGenerating={isGenerating}
+            />
+            
+            <ReportCard
+              title="Innovation Performance"
+              description="Performance metrics for innovations"
+              icon={<BarChart className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Innovation Performance")}
+              isGenerating={isGenerating}
+            />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="system">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ReportCard
+              title="Error Logs"
+              description="System error logs and exceptions"
+              icon={<FileSpreadsheet className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Error Logs")}
+              isGenerating={isGenerating}
+            />
+            
+            <ReportCard
+              title="Performance Metrics"
+              description="System performance and resource utilization"
+              icon={<Activity className="h-5 w-5" />}
+              onGenerate={() => handleGenerateReport("Performance Metrics")}
+              isGenerating={isGenerating}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </AdminLayout>
+  );
+}
+
+interface ReportCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  onGenerate: () => void;
+  isGenerating: boolean;
+}
+
+function ReportCard({ title, description, icon, onGenerate, isGenerating }: ReportCardProps) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <div className="flex items-center space-x-2">
+          <div className="p-2 rounded-full bg-moh-green/10">
+            {icon}
+          </div>
+          <div>
+            <CardTitle className="text-lg">{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-muted-foreground">
+            Last generated: <span className="font-medium">Never</span>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={onGenerate}
+            disabled={isGenerating}
+          >
+            <Download className="h-4 w-4" />
+            <span>Generate</span>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

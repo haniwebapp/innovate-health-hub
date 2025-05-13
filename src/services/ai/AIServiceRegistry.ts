@@ -1,15 +1,15 @@
-import { InvestmentAIService } from "./investment/InvestmentAIService";
-import { RegulatoryAIService } from "./regulatory/RegulatoryAIService";
-import { InnovationAIService } from "./innovation/InnovationAIService";
-import { KnowledgeAIService } from "./knowledge/KnowledgeAIService";
-import { PolicyAIService } from "./policy/PolicyAIService";
-import { ChallengeAIService } from "./challenge/ChallengeAIService";
-import { SupportAIService } from "./support/SupportAIService";
-import { ClinicalAIService } from "./clinical/ClinicalAIService";
-import { EventsAIService } from "./events/EventsAIService";
-import { AdminAIService } from "./admin/AdminAIService";
-import { ComplianceAIService } from "./compliance/ComplianceAIService";
-import { CommunityAIService } from "./community/CommunityAIService";
+import { InvestmentAIService } from "./InvestmentAIService";
+import { RegulatoryAIService } from "./RegulatoryAIService";
+import { InnovationAIService } from "./InnovationAIService";
+import { KnowledgeAIService } from "./KnowledgeAIService";
+import { PolicyAIService } from "./PolicyAIService";
+import { ChallengeAIService } from "./ChallengeAIService";
+import { SupportAIService } from "./SupportAIService";
+import { ClinicalAIService } from "./ClinicalAIService";
+import { EventsAIService } from "./EventsAIService";
+import { AdminAIService } from "./AdminAIService";
+import { ComplianceAIService } from "./ComplianceAIService";
+import { CommunityAIService } from "./CommunityAIService";
 import { QuotationAIService } from "./quotation/QuotationAIService";
 
 import {

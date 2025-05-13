@@ -67,29 +67,29 @@ export const DashboardMainRoutes = (
     {DashboardKnowledgeRoutes}
     {DashboardCollaborationRoutes}
     
-    {/* Admin routes nested inside the DashboardLayout */}
-    <Route path="admin" element={<AdminLayout title="Admin Dashboard" description="Manage platform settings and users" />}>
-      <Route index element={<AdminDashboard />} />
-      <Route path="settings" element={<AdminSettingsPage />} />
-      <Route path="events" element={<AdminEventsPage />} />
-      <Route path="reports" element={<AdminReportsPage />} />
-      <Route path="users" element={<AdminUsersPage />} />
-      <Route path="users/edit/:id" element={<AdminEditUserPage />} />
-      <Route path="analytics" element={<AdminAnalyticsPage />} />
-      <Route path="activity" element={<AdminActivityPage />} />
-      <Route path="integrations" element={<AdminIntegrationsPage />} />
-      <Route path="integrations/:id" element={<AdminIntegrationDetailsPage />} />
-      <Route path="sandbox" element={<AdminSandboxPage />} />
-      <Route path="sandbox/:id" element={<AdminSandboxDetailsPage />} />
-      <Route path="innovations" element={<AdminInnovationsPage />} />
-      <Route path="challenges" element={<AdminChallengesPage />} />
-      <Route path="investment" element={<AdminInvestmentPage />} />
-      <Route path="knowledge" element={<AdminKnowledgePage />} />
-      <Route path="notifications" element={<AdminNotificationsPage />} />
-      <Route path="cms" element={<AdminCMSPage />} />
-      <Route path="cms/pages" element={<AdminCMSPagesPage />} />
-      <Route path="cms/pages/new" element={<AdminCMSNewPage />} />
-      <Route path="cms/pages/edit/:id" element={<AdminCMSEditPage />} />
+    {/* Admin routes with fixed children prop */}
+    <Route path="admin">
+      <Route index element={<AdminLayout title="Admin Dashboard" description="Manage platform settings and users">{<AdminDashboard />}</AdminLayout>} />
+      <Route path="settings" element={<AdminLayout title="Admin Settings" description="Configure platform settings">{<AdminSettingsPage />}</AdminLayout>} />
+      <Route path="events" element={<AdminLayout title="Event Management" description="Manage platform events">{<AdminEventsPage />}</AdminLayout>} />
+      <Route path="reports" element={<AdminLayout title="Reports" description="View and generate reports">{<AdminReportsPage />}</AdminLayout>} />
+      <Route path="users" element={<AdminLayout title="User Management" description="Manage platform users">{<AdminUsersPage />}</AdminLayout>} />
+      <Route path="users/edit/:id" element={<AdminLayout title="Edit User" description="Edit user details">{<AdminEditUserPage />}</AdminLayout>} />
+      <Route path="analytics" element={<AdminLayout title="Analytics" description="Platform analytics and insights">{<AdminAnalyticsPage />}</AdminLayout>} />
+      <Route path="activity" element={<AdminLayout title="Activity Log" description="View platform activity logs">{<AdminActivityPage />}</AdminLayout>} />
+      <Route path="integrations" element={<AdminLayout title="Integrations" description="Manage platform integrations">{<AdminIntegrationsPage />}</AdminLayout>} />
+      <Route path="integrations/:id" element={<AdminLayout title="Integration Details" description="View integration details">{<AdminIntegrationDetailsPage />}</AdminLayout>} />
+      <Route path="sandbox" element={<AdminLayout title="Sandbox" description="Test and experiment with features">{<AdminSandboxPage />}</AdminLayout>} />
+      <Route path="sandbox/:id" element={<AdminLayout title="Sandbox Details" description="View sandbox details">{<AdminSandboxDetailsPage />}</AdminLayout>} />
+      <Route path="innovations" element={<AdminLayout title="Innovations" description="Manage platform innovations">{<AdminInnovationsPage />}</AdminLayout>} />
+      <Route path="challenges" element={<AdminLayout title="Challenges" description="Manage platform challenges">{<AdminChallengesPage />}</AdminLayout>} />
+      <Route path="investment" element={<AdminLayout title="Investment" description="Manage investment opportunities">{<AdminInvestmentPage />}</AdminLayout>} />
+      <Route path="knowledge" element={<AdminLayout title="Knowledge Hub" description="Manage knowledge resources">{<AdminKnowledgePage />}</AdminLayout>} />
+      <Route path="notifications" element={<AdminLayout title="Notifications" description="Manage system notifications">{<AdminNotificationsPage />}</AdminLayout>} />
+      <Route path="cms" element={<AdminLayout title="Content Management" description="Manage platform content">{<AdminCMSPage />}</AdminLayout>} />
+      <Route path="cms/pages" element={<AdminLayout title="CMS Pages" description="Manage CMS pages">{<AdminCMSPagesPage />}</AdminLayout>} />
+      <Route path="cms/pages/new" element={<AdminLayout title="Create CMS Page" description="Create a new CMS page">{<AdminCMSNewPage />}</AdminLayout>} />
+      <Route path="cms/pages/edit/:id" element={<AdminLayout title="Edit CMS Page" description="Edit CMS page content">{<AdminCMSEditPage />}</AdminLayout>} />
     </Route>
   </Route>
 );
