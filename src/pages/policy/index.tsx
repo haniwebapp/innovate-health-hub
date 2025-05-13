@@ -1,10 +1,7 @@
 
 import React from 'react';
-import Navbar from '@/components/layouts/Navbar';
-import Footer from '@/components/home/Footer';
 import { Vision2030AlignmentChecker } from '@/components/policy/vision-alignment/Vision2030AlignmentChecker';
 import { StrategyAnalytics, StrategyGapAnalyzer } from '@/components/policy/strategy';
-import { Button } from '@/components/ui/button';
 import { ScrollProgress } from '@/components/animations/ScrollProgress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DocumentChangeNotifier } from '@/components/policy/DocumentChangeNotifier';
@@ -13,7 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 const PolicyPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <Navbar />
       <ScrollProgress />
       
       <main className="flex-grow py-10">
@@ -80,8 +76,6 @@ const PolicyPage = () => {
           </div>
         </div>
       </main>
-      
-      <Footer />
     </div>
   );
 };
