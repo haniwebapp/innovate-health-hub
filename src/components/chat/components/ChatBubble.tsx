@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 interface ChatBubbleProps {
   type: "user" | "assistant";
   content: string;
+  timestamp?: string;
 }
 
-export function ChatBubble({ type, content }: ChatBubbleProps) {
+export function ChatBubble({ type, content, timestamp }: ChatBubbleProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -18,6 +19,8 @@ export function ChatBubble({ type, content }: ChatBubbleProps) {
         "flex",
         type === "user" ? "justify-end" : "justify-start"
       )}
+      role="listitem"
+      aria-label={`${type === "user" ? "Your message" : "Assistant message"}`}
     >
       <div
         className={cn(
@@ -28,6 +31,11 @@ export function ChatBubble({ type, content }: ChatBubbleProps) {
         )}
       >
         <p className="whitespace-pre-wrap text-sm">{content}</p>
+        {timestamp && (
+          <span className="block text-[10px] opacity-70 mt-1 text-right">
+            {timestamp}
+          </span>
+        )}
       </div>
     </motion.div>
   );
