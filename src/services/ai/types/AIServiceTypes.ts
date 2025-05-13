@@ -14,7 +14,8 @@ export interface CallTrace {
   result?: string;
   success: boolean;
   error?: string;
-  operation?: string; // Add this to fix the AIServiceTracing error
+  operation?: string;
+  context?: string;
 }
 
 export interface ChatMessage {

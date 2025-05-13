@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIService } from "../AIService";
+import { AIServiceUtils } from "../AIService";
 
 export interface RecommendationItem {
   id: string;
@@ -56,7 +56,7 @@ export class RecommendationService {
       return data as UserRecommendations;
     } catch (error: any) {
       console.error("Error fetching personalized recommendations:", error);
-      throw AIService.handleError(error, "getPersonalizedRecommendations", "recommendation");
+      throw AIServiceUtils.handleError(error, "getPersonalizedRecommendations", "recommendation");
     }
   }
 
@@ -81,7 +81,7 @@ export class RecommendationService {
       return data as RecommendationItem[];
     } catch (error: any) {
       console.error("Error fetching learning recommendations:", error);
-      throw AIService.handleError(error, "getLearningRecommendations", "recommendation");
+      throw AIServiceUtils.handleError(error, "getLearningRecommendations", "recommendation");
     }
   }
   
@@ -97,7 +97,7 @@ export class RecommendationService {
       if (error) throw error;
     } catch (error: any) {
       console.error("Error submitting recommendation feedback:", error);
-      throw AIService.handleError(error, "submitRecommendationFeedback", "recommendation");
+      throw AIServiceUtils.handleError(error, "submitRecommendationFeedback", "recommendation");
     }
   }
 
@@ -122,7 +122,7 @@ export class RecommendationService {
       return data as RecommendationItem[];
     } catch (error: any) {
       console.error("Error fetching similar items:", error);
-      throw AIService.handleError(error, "getSimilarItems", "recommendation");
+      throw AIServiceUtils.handleError(error, "getSimilarItems", "recommendation");
     }
   }
 }

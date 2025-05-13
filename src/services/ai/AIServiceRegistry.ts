@@ -28,3 +28,4 @@ export class AIServiceRegistry {
 
 // Re-export AIServiceType for consistency
 export { AIServiceType } from './AIService';
+export type { AIService } from './AIService';

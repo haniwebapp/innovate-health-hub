@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIService } from "../AIService";
+import { AIServiceUtils } from "../AIService";
 import { 
   PolicyAnnotationResult, 
   PolicyQAResult, 
@@ -57,7 +57,7 @@ export class PolicyAnnotationService {
       return data as ImplementationGuidanceResult;
     } catch (error: any) {
       console.error("Error getting implementation guidance:", error);
-      throw AIService.handleError(error, "getImplementationGuidance", "policy");
+      throw AIServiceUtils.handleError(error, "getImplementationGuidance", "policy");
     }
   }
 

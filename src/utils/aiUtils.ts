@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Toast } from "@/components/ui/use-toast";
 
 // Standard error handling for AI functionality
 export class AIError extends Error {
@@ -10,8 +11,11 @@ export class AIError extends Error {
   }
 }
 
+// Import the AIMessage type from chatTypes
+import type { AIMessage } from "@/types/chatTypes";
+
 // Export AIMessage type as a type
-export type { AIMessage } from "@/types/chatTypes";
+export type { AIMessage };
 
 // Add AIResponse type
 export interface AIResponse<T = any> {

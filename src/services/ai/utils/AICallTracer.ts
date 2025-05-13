@@ -1,66 +1,70 @@
 
-import { AIServiceType, AIOperationType } from "../AIServiceRegistry";
+import { CallTrace } from "../AIService";
+import { AIOperationType } from "../types/AIServiceTypes";
 
+export interface TraceOptions {
+  includeInput?: boolean;
+  includeOutput?: boolean;
+  userId?: string;
+}
+
+/**
+ * Utility for tracing AI service calls
+ */
 export class AICallTracer {
-  private serviceType: AIServiceType;
+  private static traces: CallTrace[] = [];
+  private static maxTraces: number = 100;
   
-  constructor(serviceType: AIServiceType) {
-    this.serviceType = serviceType;
+  /**
+   * Record a trace for an AI operation
+   */
+  static recordTrace(trace: CallTrace): void {
+    // Add to in-memory store
+    AICallTracer.traces.unshift(trace);
+    
+    // Trim if exceeds max
+    if (AICallTracer.traces.length > AICallTracer.maxTraces) {
+      AICallTracer.traces = AICallTracer.traces.slice(0, AICallTracer.maxTraces);
+    }
+    
+    // Log for debugging
+    console.log(`AI Call Trace: ${trace.action}`, {
+      success: trace.success,
+      timestamp: trace.timestamp,
+      error: trace.error || 'none'
+    });
   }
   
   /**
-   * Trace an AI operation with context
+   * Create a trace
    */
-  public async traceOperation<T>(
-    operationType: AIOperationType,
-    context: Record<string, any>,
-    operationFn: () => Promise<T>
-  ): Promise<T> {
-    const startTime = Date.now();
-    const traceId = `${this.serviceType}-${operationType}-${startTime}-${Math.random().toString(36).substring(2, 9)}`;
-    
-    try {
-      console.log(`[AICallTracer] Starting operation ${operationType} for ${this.serviceType} (${traceId})`);
-      const result = await operationFn();
-      
-      const duration = Date.now() - startTime;
-      console.log(`[AICallTracer] Completed operation ${operationType} in ${duration}ms (${traceId})`);
-      
-      // In a production environment we would record this trace to a database
-      this.recordTrace({
-        traceId,
-        operationType,
-        serviceType: this.serviceType,
-        duration,
-        status: 'success',
-        timestamp: new Date().toISOString()
-      });
-      
-      return result;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      console.error(`[AICallTracer] Failed operation ${operationType} in ${duration}ms (${traceId})`, error);
-      
-      // Record error trace
-      this.recordTrace({
-        traceId,
-        operationType,
-        serviceType: this.serviceType,
-        duration,
-        status: 'error',
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString()
-      });
-      
-      throw error;
-    }
+  static createTrace(
+    service: string,
+    operation: AIOperationType, 
+    input?: any,
+    options: TraceOptions = {}
+  ): CallTrace {
+    return {
+      userId: options.userId,
+      action: `${service}.${operation}`,
+      parameters: options.includeInput ? input : undefined,
+      timestamp: new Date().toISOString(),
+      success: true,
+      operation: operation
+    };
   }
   
-  private recordTrace(traceData: any): void {
-    // In a full implementation, this would write to a logging service or database
-    // For now, just console log in development
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[AICallTracer] Trace recorded:', traceData);
-    }
+  /**
+   * Get recent traces
+   */
+  static getRecentTraces(limit: number = 10): CallTrace[] {
+    return AICallTracer.traces.slice(0, limit);
+  }
+  
+  /**
+   * Clear all traces
+   */
+  static clearTraces(): void {
+    AICallTracer.traces = [];
   }
 }

@@ -6,14 +6,14 @@ export interface AIMessage {
   function_call?: any;
 }
 
-export interface ChatSession {
-  id: string;
-  messages: AIMessage[];
-  createdAt: string;
-  updatedAt: string;
+export interface ChatMessageProps {
+  message: AIMessage;
+  isLoading?: boolean;
 }
 
-export interface ChatResponse {
-  message: string;
-  error?: string;
+export interface ChatState {
+  messages: AIMessage[];
+  isLoading: boolean;
+  error: string | null;
+  context: string;
 }

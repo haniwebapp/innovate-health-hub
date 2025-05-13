@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIService } from "../AIService";
+import { AIServiceUtils } from "../AIService";
 import { PolicyData, PolicyBestPracticesResult } from "./types";
 
 /**
@@ -14,7 +14,7 @@ export class BestPracticesService {
     policy: PolicyData
   ): Promise<PolicyBestPracticesResult> {
     try {
-      const trace = AIService.createTrace("policy-best-practices", "best-practices-analysis");
+      const trace = AIServiceUtils.createTrace("policy-best-practices", "best-practices-analysis");
       
       const { data, error } = await supabase.functions.invoke("healthcare-policy-analysis", {
         body: { 
@@ -27,7 +27,7 @@ export class BestPracticesService {
       if (error) throw error;
       
       // Log the AI operation for analytics and improvement
-      await AIService.logAIOperation(
+      await AIServiceUtils.logAIOperation(
         "policy-best-practices",
         "best-practices-analysis",
         { policy },
