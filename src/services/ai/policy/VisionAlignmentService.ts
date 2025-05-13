@@ -38,12 +38,16 @@ export class VisionAlignmentService {
     } catch (error: any) {
       console.error("Error in Vision 2030 alignment check:", error);
       return {
+        alignmentScore: 0,
         score: 0,
         overallScore: 0,
         alignmentAreas: [],
         gapAreas: [],
+        vision2030Objectives: [],
         recommendations: ["Unable to perform alignment check due to an error."],
         vision2030Impact: "Error performing alignment assessment.",
+        potentialImpact: "Error performing alignment assessment.",
+        improvementAreas: [],
         overallAssessment: "Error performing alignment assessment.",
         error: error.message
       };

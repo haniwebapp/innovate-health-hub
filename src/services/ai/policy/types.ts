@@ -31,11 +31,17 @@ export interface Vision2030AlignmentInput {
 
 export interface Vision2030AlignmentResult {
   alignmentScore: number;
+  score: number; // Adding this for backward compatibility
   alignmentAreas: string[];
+  gapAreas: string[]; // Adding this field
   vision2030Objectives: string[];
+  vision2030Impact: string; // Adding this field
   improvementAreas: string[];
   potentialImpact: string;
   recommendations: string[];
+  overallScore?: number;
+  overallAssessment?: string;
+  error?: string;
 }
 
 export interface RegulatoryChecklistInput {
@@ -99,4 +105,107 @@ export interface InnovationGuideResult {
     nextMilestone: string;
     estimatedTimeframe: string;
   };
+}
+
+// Additional types needed for the policy components
+export interface PolicyData {
+  name: string;
+  description: string;
+  sector: string;
+  stakeholders?: string[];
+  policyText?: string;
+}
+
+export interface PolicyImpactResult {
+  impactScore: number;
+  overallScore?: number;
+  stakeholderImpact: Record<string, any>;
+  economicImpact: {
+    score: number;
+    description: string;
+  };
+  socialImpact: {
+    score: number;
+    description: string;
+  };
+  healthcareImpact: {
+    score: number;
+    description: string;
+  };
+  healthcareOutcomeImpact: string;
+  implementationComplexity: string;
+  recommendations: string[];
+  timeframeImpact?: {
+    short: string[];
+    medium: string[];
+    long: string[];
+  };
+  error?: string;
+}
+
+export interface PolicyImpactSimulation {
+  impactScore: number;
+  stakeholderImpact: Record<string, { score: number, description: string }>;
+  economicImpact: string;
+  healthcareOutcomeImpact: string;
+  implementationComplexity: string;
+  recommendations: string[];
+  sectors: string[];
+  timelineImpact: {
+    shortTerm: string;
+    mediumTerm: string;
+    longTerm: string;
+  };
+  stakeholders: string[];
+  risks: string[];
+  opportunities: string[];
+  overallAssessment: string;
+  error?: string;
+}
+
+export interface PolicyAnnotationResult {
+  annotations: Array<{
+    text: string;
+    insight: string;
+    type: "key_concept" | "policy_requirement" | "guideline" | "implementation_detail";
+  }>;
+  overallAnalysis: string;
+  keyTakeaways: string[];
+  error?: string;
+}
+
+export interface PolicyQAResult {
+  answer: string;
+  confidence: "high" | "medium" | "low";
+  relevantSections: string[];
+  suggestions: string[];
+  error?: string;
+}
+
+export interface ImplementationGuidanceResult {
+  steps: Array<{
+    title: string;
+    description: string;
+    stakeholders: string[];
+    timeline: string;
+    resources: string[];
+  }>;
+  keyConsiderations: string[];
+  potentialChallenges: string[];
+  successMetrics: string[];
+  error?: string;
+}
+
+export interface PolicyBestPracticesResult {
+  overallScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+  recommendations: Array<{
+    title: string;
+    description: string;
+    implementationTips: string[];
+  }>;
+  error?: string;
 }
