@@ -11,13 +11,9 @@ import FeaturedInnovation from "@/components/innovations/featured/FeaturedInnova
 import FilterBar from "@/components/innovations/filters/FilterBar";
 import InnovationsList from "@/components/innovations/listing/InnovationsList";
 import EmptyState from "@/components/innovations/EmptyState";
-import { 
-  Innovation,
-  mockInnovations,
-  categories,
-  stages,
-  featuredInnovation
-} from "@/components/innovations/model/innovation.data";
+import { featuredInnovation } from "@/components/innovations/model/innovation.data";
+import { Innovation } from "@/types/innovations";
+import { mockInnovations } from "@/components/innovations/data/mockInnovations";
 
 export default function InnovationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,6 +23,10 @@ export default function InnovationsPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFirstRender, setIsFirstRender] = useState(true);
   const { t, language } = useLanguage();
+  
+  // Categories and stages for filtering
+  const categories = ["All Categories", "Digital Health", "Telehealth", "MedTech", "Healthcare IT", "Therapeutics"];
+  const stages = ["All Stages", "New", "Validated", "Scaling", "Established"];
   
   // Fetch innovations from API (using mock data for now)
   const { data: innovations, isLoading, error } = useQuery<Innovation[]>({
@@ -48,7 +48,7 @@ export default function InnovationsPage() {
                            innovation.category === categoryFilter;
                            
     const matchesStage = stageFilter === "All Stages" ||
-                        innovation.stage === stageFilter;
+                        innovation.status === stageFilter;
                         
     return matchesSearch && matchesCategory && matchesStage;
   });
