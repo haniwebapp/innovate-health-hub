@@ -43,8 +43,19 @@ const PolicyAnnotator: React.FC = () => {
       if (result.error) {
         setError(result.error);
       } else {
+        // Convert the received annotations to the expected format
+        const formattedAnnotations: Annotation[] = result.annotations.map((annotation, index) => ({
+          id: `annotation-${index}`,
+          text: annotation.text,
+          startIndex: 0, // Default values since these aren't provided from the API
+          endIndex: 0,
+          category: annotation.type,
+          insights: annotation.insight,
+          sentiment: 'neutral' // Default value
+        }));
+        
         setAnalysisResult({
-          annotations: result.annotations || [],
+          annotations: formattedAnnotations,
           overallAnalysis: result.overallAnalysis || 'No analysis available.',
           keyTakeaways: result.keyTakeaways || [],
           error: result.error,

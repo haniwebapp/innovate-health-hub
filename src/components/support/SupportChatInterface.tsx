@@ -17,14 +17,18 @@ export default function SupportChatInterface() {
   const [currentResponse, setCurrentResponse] = useState<SupportResponse | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
-  // Auto scroll to bottom of chat
+  // Auto scroll to bottom of chat when messages change
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    if (scrollContainerRef.current) {
+      const scrollContainer = scrollContainerRef.current;
+      // Use setTimeout to ensure DOM is updated before scrolling
+      setTimeout(() => {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }, 0);
     }
-  }, [messages]);
+  }, [messages, isLoading, currentResponse]);
 
   // Initial greeting
   useEffect(() => {
@@ -81,7 +85,10 @@ export default function SupportChatInterface() {
 
   return (
     <div className="flex flex-col h-[600px]">
-      <ScrollArea className="flex-1 p-4 mb-4 border rounded-lg" ref={scrollAreaRef}>
+      <div 
+        className="flex-1 p-4 mb-4 border rounded-lg overflow-auto" 
+        ref={scrollContainerRef}
+      >
         <div className="space-y-4">
           {messages.map((message, idx) => (
             <div 
@@ -185,7 +192,7 @@ export default function SupportChatInterface() {
             </CardContent>
           </Card>
         )}
-      </ScrollArea>
+      </div>
 
       <div className="flex items-end gap-2">
         <Textarea

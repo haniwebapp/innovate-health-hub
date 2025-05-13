@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { LoadingIndicator } from "./LoadingIndicator";
 
@@ -9,6 +9,20 @@ interface ChatMessagesProps {
 }
 
 export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // Use setTimeout to ensure DOM is updated before scrolling
+      setTimeout(() => {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 0);
+    }
+  }, [messages, isLoading]);
+
   return (
     <div className="space-y-4 py-4">
       {messages.map((message, idx) => (
@@ -20,6 +34,9 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
       ))}
       
       {isLoading && <LoadingIndicator />}
+      
+      {/* This div is used as a reference for scrolling to the bottom */}
+      <div ref={messagesEndRef} />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { QuotationAIService, QuotationQuery, QuotationResponse } from "@/services/ai/quotation/QuotationAIService";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -41,7 +40,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
   const [currentSection, setCurrentSection] = useState<string | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const chatContentRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const sections: Section[] = [
@@ -83,12 +82,24 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
     }
   ];
   
-  // Auto scroll to bottom of chat
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+  // Enhanced scroll functionality - scrolls to bottom whenever messages change
+  const scrollToBottom = () => {
+    if (chatContentRef.current) {
+      // Use setTimeout to ensure DOM update is complete
+      setTimeout(() => {
+        if (chatContentRef.current) {
+          chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+        }
+      }, 0);
     }
-  }, [messages]);
+  };
+
+  // Auto scroll to bottom when messages, loading state, or current response changes
+  useEffect(() => {
+    if (!minimized) {
+      scrollToBottom();
+    }
+  }, [messages, isLoading, currentResponse, minimized]);
 
   // Initial greeting
   useEffect(() => {
@@ -266,8 +277,14 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="chat" className="flex-1 flex flex-col overflow-hidden mt-2 px-1">
-                <ScrollArea className="flex-1 px-2" ref={scrollAreaRef}>
+              <TabsContent 
+                value="chat" 
+                className="flex-1 flex flex-col overflow-hidden mt-2 px-1"
+              >
+                <div 
+                  ref={chatContentRef}
+                  className="flex-1 px-2 overflow-y-auto"
+                >
                   <div className="space-y-4 pb-4">
                     {messages.map((message, idx) => (
                       <motion.div
@@ -361,7 +378,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                       </motion.div>
                     )}
                   </div>
-                </ScrollArea>
+                </div>
 
                 <div className="p-2 border-t">
                   <div className="relative">
@@ -388,8 +405,8 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
               </TabsContent>
               
               <TabsContent value="sections" className="flex-1 overflow-hidden mt-2">
-                <ScrollArea className="h-full">
-                  <div className="grid grid-cols-2 gap-2 p-2">
+                <div className="h-full overflow-y-auto p-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {sections.map((section) => (
                       <motion.button
                         key={section.id}
@@ -418,7 +435,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                       Select a section to get specialized assistance and resources related to that area.
                     </p>
                   </div>
-                </ScrollArea>
+                </div>
               </TabsContent>
             </Tabs>
           </>
