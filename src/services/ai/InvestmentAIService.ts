@@ -6,6 +6,9 @@ export interface InnovationData {
   description: string;
   sector: string;
   stage: string;
+  fundingNeeded?: number;
+  teamSize?: number;
+  traction?: string;
   technology?: string;
   impact?: string;
   target_audience?: string; // Add this property

@@ -1,139 +1,63 @@
 
-import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
+import { AIService } from "./AIService";
+import { AIServiceStaticReferences } from "./types/AIServiceTypes";
 
-// Define service types
 export enum AIServiceType {
-  Investment = 'investment',
-  Regulatory = 'regulatory',
-  Innovation = 'innovation',
-  Knowledge = 'knowledge',
-  Policy = 'policy',
-  Challenge = 'challenge',
-  Support = 'support',
-  Clinical = 'clinical',
-  Events = 'events',
-  Admin = 'admin',
-  Compliance = 'compliance',
-  Community = 'community',
-  Quotation = 'quotation',
-}
-
-export enum AIOperationType {
-  Validate = 'validate',
-  Generate = 'generate',
-  Summarize = 'summarize',
-  Translate = 'translate',
-  Extract = 'extract',
-  Classify = 'classify',
-  Search = 'search',
-  Create = 'create',
-  Update = 'update',
-  Delete = 'delete',
-  Analyze = 'analyze',
-  Recommend = 'recommend',
-  Predict = 'predict',
-  Optimize = 'optimize',
-  Monitor = 'monitor',
-  Alert = 'alert',
-  Diagnose = 'diagnose',
-  Plan = 'plan',
-  Design = 'design',
-  Simulate = 'simulate',
-  Test = 'test',
-  Debug = 'debug',
-  Deploy = 'deploy',
-  Configure = 'configure',
-  Train = 'train',
-  Evaluate = 'evaluate',
-  Explain = 'explain',
-  Reason = 'reason',
-  Decide = 'decide',
-  Act = 'act',
-  Learn = 'learn',
-  Adapt = 'adapt',
-  Evolve = 'evolve',
-  GenerateResponse = 'generate_response',
-}
-
-export interface AIService {
-  serviceType: AIServiceType;
-  isAvailable(): Promise<boolean>;
-  getStaticReferences(): AIServiceStaticReferences;
-  recordCall(trace: CallTrace): Promise<void>;
+  Investment = "investment",
+  Regulatory = "regulatory",
+  Innovation = "innovation",
+  Knowledge = "knowledge",
+  Policy = "policy",
+  Challenge = "challenge",
+  Support = "support",
+  Clinical = "clinical",
+  Events = "events",
+  Admin = "admin",
+  Compliance = "compliance",
+  Community = "community",
+  Quotation = "quotation"
 }
 
 export class AIServiceRegistry {
-  private static services: { [key: string]: any } = {};
-
-  static register(serviceType: AIServiceType, service: any) {
-    AIServiceRegistry.services[serviceType] = service;
+  private static services: Map<AIServiceType, AIService> = new Map();
+  
+  static registerService(service: AIService): void {
+    this.services.set(service.serviceType, service);
   }
-
-  static get(serviceType: AIServiceType): any {
-    return AIServiceRegistry.services[serviceType];
+  
+  static getService(type: AIServiceType): AIService | undefined {
+    return this.services.get(type);
   }
-
-  static getAll(): { [key: string]: any } {
-    return AIServiceRegistry.services;
+  
+  static getAllServices(): Map<AIServiceType, AIService> {
+    return this.services;
   }
-
-  static initialize(): void {
-    // We'll load the services lazily to avoid circular dependencies
-    // Import services dynamically only when initializing
-    import("./InvestmentAIService").then(({ InvestmentAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Investment, new InvestmentAIService());
-    });
+  
+  static async checkServiceHealth(): Promise<{ [key in AIServiceType]?: boolean }> {
+    const health: { [key in AIServiceType]?: boolean } = {};
     
-    import("./RegulatoryAIService").then(({ RegulatoryAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Regulatory, new RegulatoryAIService());
-    });
-
-    import("./InnovationAIService").then(({ InnovationAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Innovation, new InnovationAIService());
-    });
-
-    import("./KnowledgeAIService").then(({ KnowledgeAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Knowledge, new KnowledgeAIService());
-    });
-
-    import("./PolicyAIService").then(({ PolicyAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Policy, new PolicyAIService());
-    });
-
-    import("./challenge/ChallengeAIService").then(({ ChallengeAIService }) => {
-      // Register without instantiation since it's a static class
-      AIServiceRegistry.register(AIServiceType.Challenge, ChallengeAIService);
-    });
-
-    import("./support/SupportAIService").then(({ SupportAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Support, new SupportAIService());
-    });
-
-    import("./clinical/ClinicalAIService").then(({ ClinicalAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Clinical, new ClinicalAIService());
-    });
-
-    import("./events/EventsAIService").then(({ EventsAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Events, new EventsAIService());
-    });
-
-    import("./admin/AdminAIService").then(({ AdminAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Admin, new AdminAIService());
-    });
-
-    import("./compliance/ComplianceAIService").then(({ ComplianceAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Compliance, new ComplianceAIService());
-    });
-
-    import("./community/CommunityAIService").then(({ CommunityAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Community, new CommunityAIService());
-    });
-
-    import("./quotation/QuotationAIService").then(({ QuotationAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Quotation, QuotationAIService.getInstance());
-    });
+    for (const [type, service] of this.services.entries()) {
+      try {
+        health[type] = await service.isAvailable();
+      } catch (error) {
+        console.error(`Error checking service health for ${type}:`, error);
+        health[type] = false;
+      }
+    }
+    
+    return health;
+  }
+  
+  static getStaticReferences(): AIServiceStaticReferences {
+    const references: AIServiceStaticReferences = {};
+    
+    for (const [type, service] of this.services.entries()) {
+      const serviceRefs = service.getStaticReferences();
+      if (Object.keys(serviceRefs).length > 0) {
+        references[type] = serviceRefs;
+      }
+    }
+    
+    return references;
   }
 }
-
-// Call initialize to register all services
-AIServiceRegistry.initialize();

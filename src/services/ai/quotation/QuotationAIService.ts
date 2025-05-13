@@ -31,7 +31,7 @@ export class QuotationAIService extends AIService {
   private static instance: QuotationAIService;
 
   constructor() {
-    super('quotation');
+    super();
   }
 
   public static getInstance(): QuotationAIService {

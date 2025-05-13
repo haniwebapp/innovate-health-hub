@@ -1,4 +1,7 @@
+
 import { AIService } from "@/services/ai/AIService";
+import { AIServiceType } from "@/services/ai/AIServiceRegistry";
+import { AIServiceStaticReferences, CallTrace } from "@/services/ai/types/AIServiceTypes";
 
 export interface DocumentSummary {
   summary: string;
