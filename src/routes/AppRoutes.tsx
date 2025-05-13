@@ -16,6 +16,8 @@ import { DashboardCollaborationRoutes } from "./DashboardCollaborationRoutes";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import PolicyPage from "@/pages/policy/index";
 import RegulatoryPage from "@/pages/regulatory/index";
+import InternationalRegulationsPage from "@/components/regulatory/international/InternationalRegulationsPage";
+import CrossBorderCollaborationPage from "@/components/collaboration/international/CrossBorderCollaborationPage";
 
 export const AppRoutes = () => {
   return (
@@ -27,9 +29,11 @@ export const AppRoutes = () => {
       <Route path="/challenges" element={<ChallengesPage />} />
       <Route path="/policy" element={<PolicyPage />} />
       <Route path="/regulatory" element={<RegulatoryPage />} />
-      
-      {/* Added Marketplace route */}
       <Route path="/marketplace" element={<MarketplacePage />} />
+      
+      {/* Global Expansion New Routes */}
+      <Route path="/regulatory/international" element={<InternationalRegulationsPage />} />
+      <Route path="/collaboration/international" element={<CrossBorderCollaborationPage />} />
       
       {/* Dashboard Routes */}
       <Route path="/dashboard" element={<DashboardLayout />}>
