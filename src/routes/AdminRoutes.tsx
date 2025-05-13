@@ -24,8 +24,7 @@ import AdminCMSNewPage from '@/pages/admin/cms/pages/new';
 import AdminCMSEditPage from '@/pages/admin/cms/pages/edit';
 
 export const AdminRoutes = (
-  <Route element={<AdminLayout />}>
-    <Route index element={<AdminDashboard />} />
+  <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>}>
     <Route path="settings" element={<AdminSettingsPage />} />
     <Route path="events" element={<AdminEventsPage />} />
     <Route path="reports" element={<AdminReportsPage />} />

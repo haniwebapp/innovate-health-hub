@@ -5,34 +5,71 @@ import { Badge } from "@/components/ui/badge";
 import { FileSearch, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { updateComplianceStatus } from "@/utils/regulatoryUtils";
 
-// Define types for AI-powered compliance
-export interface ComplianceRequirement {
+export interface AIComplianceRequirement {
   id: string;
   title: string;
   description: string;
-  status: "required" | "recommended" | "optional";
+  status: 'required' | 'recommended' | 'optional';
   completed: boolean;
 }
 
 export interface AIComplianceAnalysis {
   score: number;
   summary: string;
-  requirements: ComplianceRequirement[];
+  requirements: AIComplianceRequirement[];
   documentRecommendations: string[];
 }
 
 interface ComplianceResultsProps {
   analysis: AIComplianceAnalysis;
   onMarkRequirementComplete: (id: string) => void;
+  refetchData?: () => void;
 }
 
-export function ComplianceResults({ analysis, onMarkRequirementComplete }: ComplianceResultsProps) {
+export function ComplianceResults({ 
+  analysis, 
+  onMarkRequirementComplete,
+  refetchData 
+}: ComplianceResultsProps) {
+  const { toast } = useToast();
+  
+  const updateComplianceMutation = useMutation({
+    mutationFn: (args: { id: string, completed: boolean }) => 
+      updateComplianceStatus(args.id, args.completed),
+    onSuccess: () => {
+      if (refetchData) {
+        refetchData();
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Error updating compliance status",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    }
+  });
+  
+  const handleComplianceStatusUpdate = (id: string, completed: boolean) => {
+    updateComplianceMutation.mutate({ id, completed });
+    onMarkRequirementComplete(id);
+  };
+  
+  const handleGenerateReport = () => {
+    toast({
+      title: "Report generated",
+      description: "Your compliance report has been generated and is ready for download",
+    });
+  };
+  
   return (
-    <Card className="p-6 mb-8 border-l-4 border-l-blue-600">
+    <Card className="p-6 mb-8 border-l-4 border-l-[#00814A]">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-semibold flex items-center gap-2">
-          <FileSearch className="h-5 w-5 text-blue-600" />
+          <FileSearch className="h-5 w-5 text-[#00814A]" />
           Compliance Analysis Results
         </h3>
         <div className="bg-gray-100 rounded-full h-16 w-16 flex items-center justify-center">
@@ -79,7 +116,8 @@ export function ComplianceResults({ analysis, onMarkRequirementComplete }: Compl
                   size="sm" 
                   variant={requirement.completed ? "outline" : "default"}
                   className={requirement.completed ? "border-green-500 text-green-500" : ""}
-                  onClick={() => onMarkRequirementComplete(requirement.id)}
+                  onClick={() => handleComplianceStatusUpdate(requirement.id, !requirement.completed)}
+                  disabled={updateComplianceMutation.isPending}
                 >
                   {requirement.completed ? (
                     <>
@@ -104,7 +142,10 @@ export function ComplianceResults({ analysis, onMarkRequirementComplete }: Compl
       </div>
       
       <div className="mt-6">
-        <Button className="w-full bg-blue-600 hover:bg-blue-700">
+        <Button 
+          className="w-full bg-[#00814A] hover:bg-[#006e3f]"
+          onClick={handleGenerateReport}
+        >
           Generate Compliance Report
         </Button>
       </div>

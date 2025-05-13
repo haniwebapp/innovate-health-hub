@@ -1,17 +1,25 @@
 
 import React from 'react';
-import AdminLayout from '@/components/layouts/AdminLayout';
-import { Dashboard as DashboardIcon } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { LayoutDashboard } from 'lucide-react';
 
-export default function AdminDashboardPage() {
+const AdminDashboardPage = () => {
   return (
-    <AdminLayout 
-      title="Admin Dashboard" 
-      description="Manage platform settings and users"
-    >
-      <div className="space-y-6">
-        <p>Welcome to the admin dashboard. Select a section from the sidebar to manage different aspects of the platform.</p>
-      </div>
-    </AdminLayout>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="flex flex-col space-y-1.5">
+            <CardTitle>Admin Dashboard</CardTitle>
+            <CardDescription>Manage your healthcare innovation platform</CardDescription>
+          </div>
+          <LayoutDashboard className="h-6 w-6 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <p>Welcome to the admin dashboard. Use the navigation to manage platform settings and content.</p>
+        </CardContent>
+      </Card>
+    </div>
   );
-}
+};
+
+export default AdminDashboardPage;

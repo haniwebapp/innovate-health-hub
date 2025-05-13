@@ -1,24 +1,21 @@
 
 import React from 'react';
-import AdminLayout from '@/components/layouts/AdminLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function ReportsPage() {
+const ReportsPage = () => {
   return (
-    <AdminLayout
-      title="Reports"
-      description="View and export platform reports"
-    >
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Reports</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>The reports section will be implemented in a future update. Check back soon!</p>
-          </CardContent>
-        </Card>
-      </div>
-    </AdminLayout>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Reports Dashboard</CardTitle>
+          <CardDescription>View and generate system reports</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Reports functionality will be implemented in a future update.</p>
+        </CardContent>
+      </Card>
+    </div>
   );
-}
+};
+
+export default ReportsPage;

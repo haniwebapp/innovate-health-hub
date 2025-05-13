@@ -23,9 +23,9 @@ export function AIComplianceAnalyzer({
   onAnalyzeClick
 }: AIComplianceAnalyzerProps) {
   return (
-    <Card className="p-6 mb-8 border-moh-gold/30 bg-gradient-to-br from-white to-moh-lightGreen/20">
+    <Card className="p-6 mb-8 border-[#C3A86B]/30 bg-gradient-to-br from-white to-[#e6f7f0]">
       <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-        <Scale className="h-5 w-5 text-moh-green" />
+        <Scale className="h-5 w-5 text-[#00814A]" />
         AI Compliance Analyzer
       </h3>
       
@@ -34,7 +34,7 @@ export function AIComplianceAnalyzer({
           <label htmlFor="innovationType" className="block text-sm font-medium mb-1">Innovation Type</label>
           <select 
             id="innovationType"
-            className="w-full p-2 border rounded-md focus:border-moh-green focus:ring focus:ring-moh-green/20 outline-none"
+            className="w-full p-2 border rounded-md focus:border-[#00814A] focus:ring focus:ring-[#00814A]/20 outline-none"
             value={innovationType}
             onChange={(e) => onTypeChange(e.target.value)}
           >
@@ -54,13 +54,13 @@ export function AIComplianceAnalyzer({
             placeholder="Briefly describe your healthcare innovation, its purpose, and how it works..."
             value={innovationDescription}
             onChange={(e) => onDescriptionChange(e.target.value)}
-            className="min-h-[120px] focus:border-moh-green"
+            className="min-h-[120px] focus:border-[#00814A]"
           />
         </div>
         
         <Button 
           onClick={onAnalyzeClick} 
-          className="w-full bg-moh-green hover:bg-moh-darkGreen text-white flex items-center justify-center gap-2"
+          className="w-full bg-[#00814A] hover:bg-[#006e3f] text-white flex items-center justify-center gap-2"
           disabled={isAnalyzingCompliance}
         >
           {isAnalyzingCompliance ? (
