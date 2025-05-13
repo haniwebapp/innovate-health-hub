@@ -21,7 +21,7 @@ import { createPageSubmission } from "@/utils/cmsPageSubmission";
 export function PageEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const toast = useToast();
+  const { toast } = useToast();
   
   // Page data loading hook
   const { isNewPage, loading, sections, setSections, form } = useCmsPageData(id);
@@ -74,6 +74,7 @@ export function PageEditor() {
     return <LoadingState />;
   }
 
+  // Important: The form needs to be wrapped properly
   return (
     <div className="space-y-6">
       <ErrorDisplay error={serverError} />
@@ -87,6 +88,7 @@ export function PageEditor() {
         onValidate={handleValidateContent}
       />
 
+      {/* Ensure the PageForm is fully rendered with proper form context */}
       <PageForm 
         form={form} 
         defaultValues={form.getValues()} 

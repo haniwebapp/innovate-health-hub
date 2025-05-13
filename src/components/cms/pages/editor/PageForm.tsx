@@ -40,9 +40,10 @@ interface PageFormProps {
 }
 
 export const PageForm: React.FC<PageFormProps> = ({ defaultValues, onSubmit, form }) => {
+  // Important: We must properly use the Form context here
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Page Details</CardTitle>
@@ -134,4 +135,3 @@ export const PageForm: React.FC<PageFormProps> = ({ defaultValues, onSubmit, for
     </Form>
   );
 };
-

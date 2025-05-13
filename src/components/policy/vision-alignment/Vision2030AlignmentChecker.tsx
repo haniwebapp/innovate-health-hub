@@ -1,109 +1,117 @@
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { VisionAlignmentService } from "@/services/ai/policy/VisionAlignmentService";
-import { PolicyData, Vision2030AlignmentResult } from "@/services/ai/PolicyAIService";
-import { AlignmentForm } from "./AlignmentForm";
-import { AlignmentResults } from "./AlignmentResults";
-import { Lightbulb } from "lucide-react";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, CheckCircle } from 'lucide-react';
 
-export function Vision2030AlignmentChecker() {
-  const [activeTab, setActiveTab] = useState<string>("input");
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<Vision2030AlignmentResult | null>(null);
-  const { toast } = useToast();
+export const Vision2030AlignmentChecker: React.FC = () => {
+  const [description, setDescription] = useState('');
+  const [sector, setSector] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   
-  const [policyData, setPolicyData] = useState<PolicyData>({
-    name: "",
-    description: "",
-    sector: "healthcare",
-    goals: []
-  });
-
-  const handlePolicyChange = (field: keyof PolicyData, value: any) => {
-    setPolicyData({ ...policyData, [field]: value });
-  };
-
-  const handleGoalInput = (value: string) => {
-    if (!value.trim()) return;
-    if (policyData.goals && policyData.goals.includes(value.trim())) return;
+  const handleCheck = () => {
+    if (!description || !sector) return;
     
-    setPolicyData({
-      ...policyData,
-      goals: [...(policyData.goals || []), value.trim()]
-    });
+    setIsLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowResults(true);
+    }, 1500);
   };
-
-  const handleRemoveGoal = (goal: string) => {
-    setPolicyData({
-      ...policyData,
-      goals: policyData.goals?.filter(g => g !== goal) || []
-    });
-  };
-
-  const handleAnalyzeAlignment = async () => {
-    if (!policyData.name || !policyData.description) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please provide policy name and description."
-      });
-      return;
-    }
-
-    setIsAnalyzing(true);
-    try {
-      const alignmentResult = await VisionAlignmentService.analyzeVision2030Alignment(policyData);
-      setResult(alignmentResult);
-      setActiveTab("results");
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Analysis failed",
-        description: error.message || "Could not analyze alignment with Vision 2030"
-      });
-      console.error("Vision 2030 alignment analysis error:", error);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
+  
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg font-medium">
-          <Lightbulb className="h-5 w-5 text-moh-gold" />
-          Vision 2030 Alignment Analysis
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="input">Input</TabsTrigger>
-            <TabsTrigger value="results" disabled={!result}>Results</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="input" className="space-y-4 mt-4">
-            <AlignmentForm 
-              policyData={policyData}
-              isAnalyzing={isAnalyzing}
-              onPolicyChange={handlePolicyChange}
-              onGoalInput={handleGoalInput}
-              onRemoveGoal={handleRemoveGoal}
-              onAnalyzeAlignment={handleAnalyzeAlignment}
-            />
-          </TabsContent>
-          
-          <TabsContent value="results" className="mt-4">
-            <AlignmentResults 
-              isAnalyzing={isAnalyzing} 
-              result={result} 
-            />
-          </TabsContent>
-        </Tabs>
+    <Card className="border-2 border-muted bg-card">
+      <CardContent className="pt-6">
+        {!showResults ? (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="sector" className="block text-sm font-medium">Healthcare Sector</label>
+              <Select value={sector} onValueChange={setSector}>
+                <SelectTrigger id="sector">
+                  <SelectValue placeholder="Select healthcare sector" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="digital-health">Digital Health</SelectItem>
+                  <SelectItem value="medical-devices">Medical Devices</SelectItem>
+                  <SelectItem value="pharmaceuticals">Pharmaceuticals</SelectItem>
+                  <SelectItem value="primary-care">Primary Care</SelectItem>
+                  <SelectItem value="specialized-care">Specialized Care</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label htmlFor="description" className="block text-sm font-medium">Initiative Description</label>
+              <Textarea 
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Briefly describe your healthcare initiative or innovation"
+                rows={4}
+              />
+            </div>
+            
+            <Button 
+              className="w-full bg-moh-green hover:bg-moh-darkGreen"
+              onClick={handleCheck}
+              disabled={isLoading || !description || !sector}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : "Check Alignment"}
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="bg-green-50 rounded-md p-4 flex items-start">
+              <CheckCircle className="h-6 w-6 text-green-600 mr-2 mt-0.5" />
+              <div>
+                <h3 className="font-medium text-green-800">Strong alignment with Vision 2030</h3>
+                <p className="text-sm text-green-700 mt-1">
+                  Your initiative aligns with 4 of 5 key healthcare objectives in Vision 2030.
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="font-medium">Alignment Highlights:</h4>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start">
+                  <div className="h-2 w-2 bg-moh-green rounded-full mr-2 mt-1.5"></div>
+                  <span>Supports the goal of increasing private sector participation in healthcare</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="h-2 w-2 bg-moh-green rounded-full mr-2 mt-1.5"></div>
+                  <span>Contributes to improving access to healthcare services</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="h-2 w-2 bg-moh-green rounded-full mr-2 mt-1.5"></div>
+                  <span>Leverages digital transformation to enhance healthcare delivery</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="h-2 w-2 bg-moh-green rounded-full mr-2 mt-1.5"></div>
+                  <span>Focuses on preventive care measures, a key Vision 2030 priority</span>
+                </li>
+              </ul>
+            </div>
+            
+            <Button 
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowResults(false)}
+            >
+              Check Another Initiative
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
-}
+};
