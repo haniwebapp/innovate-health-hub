@@ -13,6 +13,8 @@ export interface ApplicationFormData {
   name: string;
   description: string;
   innovationType: string;
-  riskLevel: string;
   frameworkId: string;
+  regulatoryChallenges?: string;
+  testingDuration: string;
+  organizationType: string;
 }

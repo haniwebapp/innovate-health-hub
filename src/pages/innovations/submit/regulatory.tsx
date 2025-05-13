@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -37,11 +38,11 @@ export default function RegulatoryPage() {
   const navigate = useNavigate();
   const { formData, updateFormData, updateProgress } = useSubmissionForm();
   
-  // Initialize form with existing data
+  // Initialize form with existing data, ensuring correct type for regulatoryStatusType
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      regulatoryStatusType: formData.regulatoryStatusType || "notStarted",
+      regulatoryStatusType: (formData.regulatoryStatusType as any) || "notStarted",
       approvalType: formData.approvalType || "",
       approvalDetails: formData.approvalDetails || "",
       hasRiskAssessment: formData.hasRiskAssessment || false,

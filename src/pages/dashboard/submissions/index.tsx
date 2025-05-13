@@ -13,14 +13,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 import { Submission } from "@/types/challenges";
 
-// Mock submissions data with corrected status values
+// Mock submissions data with corrected status values and added description field
 const mockSubmissions: Submission[] = [
   {
     id: "1",
     title: "HealthMonitor: Remote Patient Tracker",
+    description: "A comprehensive solution for monitoring patients remotely",
     challenge_id: "1",
     challenge_title: "Remote Patient Monitoring Solutions",
-    status: "under-review", // Fixed to match the type
+    status: "under-review",
     submitted_at: "2025-05-01T14:30:00",
     updated_at: "2025-05-01T14:30:00",
     category: "Digital Health",
@@ -28,9 +29,10 @@ const mockSubmissions: Submission[] = [
   {
     id: "2",
     title: "MedSupply Chain Optimizer",
+    description: "Optimizing healthcare supply chain logistics",
     challenge_id: "3",
     challenge_title: "Healthcare Supply Chain Optimization",
-    status: "draft", // Fixed to match the type
+    status: "draft",
     submitted_at: "",
     updated_at: "2025-04-28T10:15:00",
     category: "Logistics",
@@ -38,9 +40,10 @@ const mockSubmissions: Submission[] = [
   {
     id: "3",
     title: "AI Disease Detection Framework",
+    description: "Advanced AI algorithms for early disease detection",
     challenge_id: "2",
     challenge_title: "AI for Early Disease Detection",
-    status: "submitted", // Fixed to match the type
+    status: "submitted",
     submitted_at: "2025-04-15T09:45:00",
     updated_at: "2025-04-15T09:45:00",
     category: "AI & Machine Learning",

@@ -45,7 +45,7 @@ export const categoryColors: Record<string, string> = {
   'AI Health': 'bg-emerald-100 text-emerald-800 border-emerald-300/30'
 };
 
-// Update the InnovationSubmission interface with all missing properties
+// Update the InnovationSubmission interface with all required properties
 export interface InnovationSubmission {
   id?: string;
   title: string;
@@ -67,7 +67,7 @@ export interface InnovationSubmission {
     integrations: string[];
     dataHandling: string;
   };
-  // Additional properties that were missing
+  // Form specific fields
   contactName?: string;
   contactEmail?: string;
   phoneNumber?: string;
@@ -78,9 +78,27 @@ export interface InnovationSubmission {
   hasAI?: boolean;
   hasConnectedDevices?: boolean;
   hasMobileApp?: boolean;
-  regulatoryStatusType?: string;
+  regulatoryStatusType?: "notStarted" | "inProgress" | "approved" | "notApplicable";
   imageUrls?: string[];
   documentNames?: string[];
+  
+  // Additional form fields needed
+  longDescription?: string;
+  problem?: string;
+  solution?: string;
+  videoUrl?: string;
+  technicalSpecifications?: string;
+  innovationAdvantages?: string;
+  patentStatus?: string;
+  compatibleSystems?: string;
+  targetUsers?: string;
+  approvalType?: string;
+  approvalDetails?: string;
+  hasRiskAssessment?: boolean;
+  hasClinicalTrials?: boolean;
+  hasEthicalReview?: boolean;
+  complianceStandards?: string;
+  regulatoryChallenges?: string;
 }
 
 export interface SubmissionFormProgress {

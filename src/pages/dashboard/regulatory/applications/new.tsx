@@ -1,72 +1,92 @@
-
-import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { ApplicationForm } from "@/components/regulatory/applications/ApplicationForm";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ApplicationFormData } from "@/components/regulatory/applications/types";
-import { Lightbulb } from "lucide-react";
 
-export default function NewRegulatoryApplicationPage() {
-  const { toast } = useToast();
+export default function NewApplicationPage() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const handleSubmitApplication = (formData: ApplicationFormData) => {
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+
+  const handleSubmit = async (data: ApplicationFormData) => {
     setIsSubmitting(true);
-    
-    // Simulate API submission
-    setTimeout(() => {
+    setSubmissionError(null);
+
+    try {
+      if (!user?.id) {
+        throw new Error("User not authenticated.");
+      }
+
+      const { data: application, error } = await supabase
+        .from('regulatory_applications')
+        .insert([
+          {
+            ...data,
+            user_id: user.id,
+            status: 'draft',
+            submittedDate: new Date().toISOString(),
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(error.message || "Failed to create application.");
+      }
+
       toast({
-        title: "Application submitted",
-        description: "Your application has been submitted for review",
+        title: "Application Created",
+        description: "Your regulatory application has been successfully created.",
       });
+      navigate(`/dashboard/regulatory/applications/${application.id}`);
+    } catch (error: any) {
+      console.error("Error submitting application:", error);
+      setSubmissionError(error.message || "Failed to create application. Please try again.");
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create application. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-      navigate("/dashboard/regulatory");
-    }, 1500);
+    }
   };
-  
-  const handleSaveDraft = (formData: ApplicationFormData) => {
-    toast({
-      title: "Draft saved",
-      description: "Your application draft has been saved",
-    });
-  };
-  
+
   return (
-    <div className="space-y-6">
-      <BreadcrumbNav 
-        currentPage="New Sandbox Application" 
-        items={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "Regulatory Sandbox", href: "/dashboard/regulatory" },
-        ]}
-      />
-      
-      <h1 className="text-2xl font-bold tracking-tight">New Sandbox Application</h1>
+    <div className="container mx-auto py-12">
+      <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back
+      </Button>
       
       <Card>
         <CardHeader>
-          <CardTitle>Sandbox Application</CardTitle>
-          <CardDescription>Submit your innovation for testing in our regulatory sandbox environment</CardDescription>
+          <CardTitle className="text-2xl">New Regulatory Application</CardTitle>
+          <CardDescription>
+            Fill out the form below to start a new regulatory application.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <ApplicationForm
-            onSubmit={handleSubmitApplication}
-            onSaveDraft={handleSaveDraft}
-            isSubmitting={isSubmitting}
-          />
+        <CardContent className="space-y-4">
+          {submissionError && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                {submissionError}
+              </AlertDescription>
+            </Alert>
+          )}
           
-          <div className="mt-6 bg-blue-50 p-4 rounded-md border border-blue-100 flex gap-3">
-            <div className="shrink-0">
-              <Lightbulb className="h-5 w-5 text-blue-600" />
-            </div>
-            <p className="text-sm text-blue-800">
-              Applications are reviewed within 10 business days. Priority access is given to innovations 
-              addressing critical healthcare challenges or aligned with Ministry of Health strategic priorities.
-            </p>
-          </div>
+          <ApplicationForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
         </CardContent>
       </Card>
     </div>
