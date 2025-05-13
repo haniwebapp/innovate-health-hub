@@ -94,7 +94,18 @@ export class ImpactSimulationService {
       return {
         impactScore: 0,
         stakeholderImpact: {},
-        economicImpact: "Unable to analyze due to an error.",
+        economicImpact: {
+          score: 0,
+          description: "Unable to analyze due to an error."
+        },
+        socialImpact: {
+          score: 0,
+          description: "Unable to analyze due to an error."
+        },
+        healthcareImpact: {
+          score: 0,
+          description: "Unable to analyze due to an error."
+        },
         healthcareOutcomeImpact: "Unable to analyze due to an error.",
         implementationComplexity: "Unable to analyze due to an error.",
         recommendations: ["Analysis failed due to technical error."],

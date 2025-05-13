@@ -58,10 +58,17 @@ serve(async (req) => {
                   "government": {"score": number, "description": "impact description"},
                   "industry": {"score": number, "description": "impact description"}
                 },
-                "economicImpact": "Detailed analysis of economic impact",
+                "economicImpact": {"score": number, "description": "Detailed analysis of economic impact"},
+                "socialImpact": {"score": number, "description": "Analysis of social impact"},
+                "healthcareImpact": {"score": number, "description": "Analysis of healthcare system impact"},
                 "healthcareOutcomeImpact": "Analysis of impact on healthcare outcomes",
                 "implementationComplexity": "Assessment of implementation difficulty",
-                "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"]
+                "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"],
+                "timeframeImpact": {
+                  "short": ["Short-term impact 1", "Short-term impact 2"],
+                  "medium": ["Medium-term impact 1", "Medium-term impact 2"],
+                  "long": ["Long-term impact 1", "Long-term impact 2"]
+                }
               }
               Remember: Only return valid JSON - do not include any other text or explanation.
             `
@@ -111,7 +118,18 @@ serve(async (req) => {
         error: error.message,
         impactScore: 0,
         stakeholderImpact: {},
-        economicImpact: "Unable to analyze due to an error.",
+        economicImpact: {
+          score: 0,
+          description: "Unable to analyze due to an error."
+        },
+        socialImpact: {
+          score: 0,
+          description: "Unable to analyze due to an error."
+        },
+        healthcareImpact: {
+          score: 0,
+          description: "Unable to analyze due to an error."
+        },
         healthcareOutcomeImpact: "Unable to analyze due to an error.",
         implementationComplexity: "Unable to analyze due to an error.",
         recommendations: ["Analysis failed due to technical error."]

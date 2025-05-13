@@ -30,7 +30,18 @@ export const simulatePolicy = async (policyData: PolicyData, params: { timeframe
     return {
       impactScore: 0,
       stakeholderImpact: {},
-      economicImpact: "Unable to analyze due to an error",
+      economicImpact: {
+        score: 0,
+        description: "Unable to analyze due to an error"
+      },
+      socialImpact: {
+        score: 0,
+        description: "Unable to analyze due to an error"
+      },
+      healthcareImpact: {
+        score: 0,
+        description: "Unable to analyze due to an error"
+      },
       healthcareOutcomeImpact: "Analysis failed", 
       implementationComplexity: "Unknown",
       recommendations: ["Error occurred during analysis. Please try again."]
