@@ -8,6 +8,7 @@ import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 import AIEnhancedPage from '@/pages/ai-enhanced/index';
 import EventsPage from '@/pages/events/index';
+import TeamManagementPage from '@/pages/dashboard/team/index';
 
 export function AppRoutes() {
   return (
@@ -23,6 +24,9 @@ export function AppRoutes() {
       
       {/* Main Dashboard with nested routes (including admin routes) */}
       {DashboardMainRoutes}
+      
+      {/* Team Management */}
+      <Route path="/dashboard/team" element={<TeamManagementPage />} />
       
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />
