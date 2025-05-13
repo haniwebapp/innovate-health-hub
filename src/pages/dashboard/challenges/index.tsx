@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Lightbulb } from "lucide-react";
+import { Challenge } from "@/types/challenges";
 
 // Helper function to format dates
 const formatDate = (dateString: string) => {
@@ -57,7 +58,7 @@ export default function DashboardChallengesPage() {
           prize: item.prize || "Prize to be announced",
           image_url: item.image_url || "",
           organizer: item.organizer,
-          status: item.status,
+          status: item.status as Challenge['status'], // Cast to allowed status type
           eligibility: item.eligibility || "",
           requirements: Array.isArray(item.requirements) 
             ? (item.requirements as string[]) 
@@ -66,7 +67,7 @@ export default function DashboardChallengesPage() {
             { date: formatDate(item.start_date), event: "Challenge Launch" },
             { date: formatDate(item.end_date), event: "Submission Deadline" }
           ]
-        }));
+        })) as Challenge[];
         
         return challenges;
       } catch (error) {
@@ -234,7 +235,7 @@ export default function DashboardChallengesPage() {
 }
 
 // Mock challenges data as fallback
-const mockChallenges = [
+const mockChallenges: Challenge[] = [
   {
     id: "1",
     title: "Remote Patient Monitoring Solutions",

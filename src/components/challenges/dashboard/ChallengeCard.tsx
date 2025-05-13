@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Users, Trophy } from "lucide-react";
 import { Challenge, Submission } from "@/types/challenges";
@@ -28,8 +27,10 @@ interface ChallengeCardProps {
 export default function ChallengeCard({ challenge, submission }: ChallengeCardProps) {
   const hasSubmission = !!submission;
   const submissionStatus = submission?.status || "";
+  
+  // Fix the progress calculation to use correct status values
   const submissionProgress = hasSubmission ? 
-    (submissionStatus === "Complete" ? 100 : submissionStatus === "Submitted" ? 75 : 40) : 0;
+    (submissionStatus === "completed" ? 100 : submissionStatus === "submitted" ? 75 : 40) : 0;
 
   return (
     <Card className="h-full overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group border-moh-green/10">
@@ -59,8 +60,16 @@ export default function ChallengeCard({ challenge, submission }: ChallengeCardPr
           <>
             <div className="flex items-center justify-between text-sm text-gray-500 mb-1">
               <span>Submission Progress</span>
-              <Badge className={getStatusBadgeColor(submissionStatus)}>
-                {submissionStatus}
+              <Badge className={getStatusBadgeColor(
+                submissionStatus === "completed" ? "Complete" :
+                submissionStatus === "submitted" ? "Submitted" :
+                submissionStatus === "under-review" ? "Under Review" :
+                submissionStatus === "draft" ? "Draft" : "In Progress"
+              )}>
+                {submissionStatus === "under-review" ? "Under Review" :
+                 submissionStatus === "completed" ? "Complete" :
+                 submissionStatus === "submitted" ? "Submitted" :
+                 submissionStatus === "draft" ? "Draft" : submissionStatus}
               </Badge>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2 mb-4">

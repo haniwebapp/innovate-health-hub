@@ -8,3 +8,11 @@ export interface Application {
   progress: number;
   testingPeriod?: string;
 }
+
+export interface ApplicationFormData {
+  name: string;
+  description: string;
+  innovationType: string;
+  riskLevel: string;
+  frameworkId: string;
+}

@@ -25,7 +25,7 @@ export interface Innovation {
   };
 }
 
-// Add the missing statusColors export
+// Add the statusColors export
 export const statusColors: Record<string, string> = {
   'New': 'bg-blue-100 text-blue-800',
   'Validated': 'bg-amber-100 text-amber-800',
@@ -33,7 +33,7 @@ export const statusColors: Record<string, string> = {
   'Established': 'bg-purple-100 text-purple-800'
 };
 
-// Add the missing categoryColors export
+// Add the categoryColors export
 export const categoryColors: Record<string, string> = {
   'Digital Health': 'bg-moh-lightGreen text-moh-darkGreen border-moh-green/30',
   'MedTech': 'bg-amber-100 text-amber-800 border-amber-300/30',
@@ -45,7 +45,7 @@ export const categoryColors: Record<string, string> = {
   'AI Health': 'bg-emerald-100 text-emerald-800 border-emerald-300/30'
 };
 
-// Add the InnovationSubmission and SubmissionFormProgress types for the SubmissionFormContext
+// Update the InnovationSubmission interface with all missing properties
 export interface InnovationSubmission {
   id?: string;
   title: string;
@@ -67,6 +67,20 @@ export interface InnovationSubmission {
     integrations: string[];
     dataHandling: string;
   };
+  // Additional properties that were missing
+  contactName?: string;
+  contactEmail?: string;
+  phoneNumber?: string;
+  address?: string;
+  additionalInfo?: string;
+  allowPublicContact?: boolean;
+  implementationStatus?: string;
+  hasAI?: boolean;
+  hasConnectedDevices?: boolean;
+  hasMobileApp?: boolean;
+  regulatoryStatusType?: string;
+  imageUrls?: string[];
+  documentNames?: string[];
 }
 
 export interface SubmissionFormProgress {

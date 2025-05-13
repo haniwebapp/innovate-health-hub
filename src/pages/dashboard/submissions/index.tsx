@@ -13,14 +13,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { format } from "date-fns";
 import { Submission } from "@/types/challenges";
 
-// Mock submissions data
+// Mock submissions data with corrected status values
 const mockSubmissions: Submission[] = [
   {
     id: "1",
     title: "HealthMonitor: Remote Patient Tracker",
     challenge_id: "1",
     challenge_title: "Remote Patient Monitoring Solutions",
-    status: "Under Review",
+    status: "under-review", // Fixed to match the type
     submitted_at: "2025-05-01T14:30:00",
     updated_at: "2025-05-01T14:30:00",
     category: "Digital Health",
@@ -30,8 +30,8 @@ const mockSubmissions: Submission[] = [
     title: "MedSupply Chain Optimizer",
     challenge_id: "3",
     challenge_title: "Healthcare Supply Chain Optimization",
-    status: "Draft",
-    submitted_at: null,
+    status: "draft", // Fixed to match the type
+    submitted_at: "",
     updated_at: "2025-04-28T10:15:00",
     category: "Logistics",
   },
@@ -40,31 +40,37 @@ const mockSubmissions: Submission[] = [
     title: "AI Disease Detection Framework",
     challenge_id: "2",
     challenge_title: "AI for Early Disease Detection",
-    status: "Submitted",
+    status: "submitted", // Fixed to match the type
     submitted_at: "2025-04-15T09:45:00",
     updated_at: "2025-04-15T09:45:00",
     category: "AI & Machine Learning",
   }
 ];
 
-// Submission card component
+// Submission card component with type fixes
 const SubmissionCard = ({ submission }: { submission: Submission }) => {
-  // Get status color
+  // Get status color with display-friendly status text mapping
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Draft':
-        return 'bg-amber-100 text-amber-800 hover:bg-amber-200';
-      case 'Submitted':
-        return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
-      case 'Under Review':
-        return 'bg-purple-100 text-purple-800 hover:bg-purple-200';
-      case 'Shortlisted':
-        return 'bg-green-100 text-green-800 hover:bg-green-200';
-      case 'Rejected':
-        return 'bg-red-100 text-red-800 hover:bg-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
-    }
+    const statusMap: Record<string, string> = {
+      'draft': 'bg-amber-100 text-amber-800 hover:bg-amber-200',
+      'submitted': 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+      'under-review': 'bg-purple-100 text-purple-800 hover:bg-purple-200',
+      'completed': 'bg-green-100 text-green-800 hover:bg-green-200',
+      'rejected': 'bg-red-100 text-red-800 hover:bg-red-200',
+    };
+    return statusMap[status] || 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+  };
+
+  // Map internal status values to display-friendly text
+  const getStatusDisplay = (status: string): string => {
+    const statusDisplay: Record<string, string> = {
+      'draft': 'Draft',
+      'submitted': 'Submitted',
+      'under-review': 'Under Review',
+      'completed': 'Completed',
+      'rejected': 'Rejected'
+    };
+    return statusDisplay[status] || status;
   };
   
   return (
@@ -72,7 +78,7 @@ const SubmissionCard = ({ submission }: { submission: Submission }) => {
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <Badge className={getStatusColor(submission.status)}>
-            {submission.status}
+            {getStatusDisplay(submission.status)}
           </Badge>
           <Badge variant="outline" className="bg-moh-lightGreen/50 text-moh-darkGreen border-none">
             {submission.category}
@@ -93,7 +99,7 @@ const SubmissionCard = ({ submission }: { submission: Submission }) => {
       </CardContent>
       <CardFooter>
         <div className="w-full">
-          {submission.status === 'Draft' ? (
+          {submission.status === "draft" ? (
             <div className="flex gap-2">
               <Button asChild className="flex-1">
                 <Link to={`/dashboard/submissions/edit/${submission.id}`}>
@@ -146,7 +152,7 @@ export default function SubmissionsPage() {
     enabled: !!user?.id
   });
   
-  // Filter submissions based on status and search
+  // Filter submissions based on status and search, with status mapping
   const filteredSubmissions = submissions?.filter(submission => {
     const matchesSearch = submission.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          submission.challenge_title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -160,7 +166,7 @@ export default function SubmissionsPage() {
   const submissionCounts = {
     all: submissions?.length || 0,
     draft: submissions?.filter(s => s.status.toLowerCase() === 'draft').length || 0,
-    submitted: submissions?.filter(s => ['submitted', 'under review', 'shortlisted'].includes(s.status.toLowerCase())).length || 0,
+    submitted: submissions?.filter(s => ['submitted', 'under-review', 'completed'].includes(s.status.toLowerCase())).length || 0,
   };
 
   return (
@@ -202,8 +208,8 @@ export default function SubmissionsPage() {
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="draft">Draft</SelectItem>
               <SelectItem value="submitted">Submitted</SelectItem>
-              <SelectItem value="under review">Under Review</SelectItem>
-              <SelectItem value="shortlisted">Shortlisted</SelectItem>
+              <SelectItem value="under-review">Under Review</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
           </Select>
