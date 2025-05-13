@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -80,11 +81,28 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+  
+  /* Smooth scrolling for the entire page */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Typography enhancements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+  
+  /* Modern focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-moh-green/30 ring-offset-2;
   }
 }
 
 /* Animation Utilities */
 @layer utilities {
+  /* Animation delay utilities */
   .animation-delay-100 {
     animation-delay: 100ms;
   }
@@ -101,6 +119,38 @@
     animation-delay: 500ms;
   }
   
+  /* Motion-safe animations */
+  @media (prefers-reduced-motion: no-preference) {
+    .motion-safe-animate {
+      @apply transition-all;
+    }
+  }
+  
+  /* Parallax elements */
+  .parallax {
+    will-change: transform;
+  }
+  
+  /* Glass card effect */
+  .glass-effect {
+    @apply bg-white/70 backdrop-blur-md border border-white/30;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  }
+  
+  /* Text gradients */
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-moh-green to-moh-darkGreen;
+  }
+  
+  .text-gradient-gold {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-moh-gold to-moh-darkGold;
+  }
+  
+  .text-gradient-animated {
+    @apply text-transparent bg-clip-text bg-text-gradient bg-[length:200%_auto] animate-gradient-flow;
+  }
+  
+  /* Float animation */
   @keyframes float {
     0% {
       transform: translateY(0px);
@@ -117,6 +167,7 @@
     animation: float 4s ease-in-out infinite;
   }
   
+  /* Enhanced fade-in animation */
   @keyframes fade-in {
     from {
       opacity: 0;
@@ -130,10 +181,6 @@
   
   .animate-fade-in {
     animation: fade-in 1s forwards ease-out;
-  }
-  
-  .text-gradient {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-moh-green to-moh-darkGreen;
   }
   
   /* Notification Badge Animation */
@@ -154,6 +201,64 @@
   
   .animate-notification-pulse {
     animation: notification-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Scale hover effect */
+  .hover-scale {
+    @apply transition-transform duration-300;
+  }
+  
+  .hover-scale:hover {
+    @apply transform scale-105;
+  }
+  
+  /* Animated underline */
+  .animated-underline {
+    @apply relative;
+  }
+  
+  .animated-underline:after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-moh-green transition-all duration-300;
+  }
+  
+  .animated-underline:hover:after {
+    @apply w-full;
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-shadow duration-300;
+  }
+  
+  .card-hover:hover {
+    @apply shadow-card-hover;
+  }
+  
+  /* Button hover effects */
+  .button-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button-shine:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.2), 
+      transparent
+    );
+    transition: 0.3s;
+  }
+  
+  .button-shine:hover:after {
+    left: 100%;
   }
 }
 
@@ -188,7 +293,7 @@
 
 [dir="rtl"] .ml-2 {
   margin-left: 0;
-  margin-right: 0.5rem;
+  margin-right: 0.25rem;
 }
 
 [dir="rtl"] .ml-1 {
