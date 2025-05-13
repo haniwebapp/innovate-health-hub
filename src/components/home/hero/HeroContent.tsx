@@ -33,16 +33,6 @@ export function HeroContent() {
       animate="visible"
       variants={containerVariants}
     >
-      {/* Logo element */}
-      <motion.div 
-        className="inline-flex items-center justify-center mb-8"
-        variants={itemVariants}
-      >
-        <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-moh-gold to-moh-darkGold rounded-lg shadow-xl">
-          <Sparkles className="h-6 w-6 text-white" />
-        </div>
-      </motion.div>
-      
       {/* Heading */}
       <motion.h1 
         className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight"
