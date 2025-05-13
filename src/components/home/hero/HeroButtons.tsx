@@ -34,8 +34,8 @@ export function HeroButtons() {
       animate="visible"
     >
       {/* Primary buttons - first row */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full">
-        <motion.div variants={itemVariants} className="flex-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+        <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
             className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full border-0" 
@@ -54,7 +54,7 @@ export function HeroButtons() {
           </Button>
         </motion.div>
         
-        <motion.div variants={itemVariants} className="flex-1">
+        <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
             className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white shadow-md group w-full border-0" 
@@ -74,8 +74,8 @@ export function HeroButtons() {
       </div>
       
       {/* Secondary buttons - second row */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full">
-        <motion.div variants={itemVariants} className="flex-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+        <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
             variant="outline" 
@@ -89,7 +89,7 @@ export function HeroButtons() {
           </Button>
         </motion.div>
         
-        <motion.div variants={itemVariants} className="flex-1">
+        <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
             variant="outline" 
