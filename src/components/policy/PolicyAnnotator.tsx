@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Loader2, AlertCircle, FileText, MessageSquare } from 'lucide-react';
-import { PolicyAnnotationService } from '@/services/ai/policy'; // Import from index file
+import { PolicyAnnotationService } from '@/services/ai/policy';
 
 interface Annotation {
   id: string;
@@ -111,7 +112,7 @@ const PolicyAnnotator: React.FC = () => {
           </Alert>
         )}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+        <Tabs value={activeTab} onValueChange={(value: "analysis" | "qa") => setActiveTab(value)} className="mt-4">
           <TabsList>
             <TabsTrigger value="analysis">Policy Analysis</TabsTrigger>
             <TabsTrigger value="qa">Question & Answer</TabsTrigger>

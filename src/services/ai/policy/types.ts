@@ -46,6 +46,9 @@ export interface Vision2030AlignmentResult {
   gapAreas: string[];
   recommendations: string[];
   vision2030Impact: string;
+  overallScore?: number;
+  overallAssessment?: string;
+  error?: string;
 }
 
 // Strategy Gap Types
@@ -55,6 +58,9 @@ export interface StrategyMetric {
   target: number;
   unit: string;
   description?: string;
+  id?: string;
+  category?: string;
+  currentValue?: number;
 }
 
 export interface StrategyGap {
@@ -62,41 +68,65 @@ export interface StrategyGap {
   description: string;
   severity: 'high' | 'medium' | 'low';
   potentialImpact: string;
+  metricId?: string;
+  metricName?: string;
+  category?: string;
+  currentValue?: number;
+  benchmarkValue?: number;
+  gap?: number;
+  gapPercentage?: number;
+  priority?: 'critical' | 'high' | 'medium' | 'low';
 }
 
 export interface BenchmarkData {
   name: string;
   value: number;
   metrics: StrategyMetric[];
+  id?: string;
+  source?: string;
+  scope?: string;
 }
 
 export interface StrategyGapAnalysisResult {
-  score: number;
+  score?: number;
   gaps: StrategyGap[];
   recommendations: {
-    title: string;
+    title?: string;
     description: string;
-    priority: string;
-    expectedOutcome: string;
+    priority?: string;
+    expectedOutcome?: string;
+    category?: string;
+    expectedImpact?: string;
+    timeframe?: string;
   }[];
-  benchmarkComparison: {
+  benchmarkComparison?: {
     currentScore: number;
     benchmarkScore: number;
     differencePercentage: number;
   };
+  overallScore?: number;
+  categoryScores?: {
+    category: string;
+    score: number;
+    benchmarkComparison: number;
+  }[];
+  benchmarkSource?: string;
+  error?: string;
 }
 
 // Best Practices Types
 export interface PolicyBestPracticesResult {
-  score: number;
   strengths: string[];
   weaknesses: string[];
   opportunities: string[];
-  bestPractices: {
-    title: string;
-    description: string;
-    implementationTips: string[];
+  threats?: string[];
+  recommendations: {
+    title?: string;
+    description?: string;
+    implementationTips?: string[];
   }[];
+  overallScore?: number;
+  error?: string;
 }
 
 // Impact Simulation Types
@@ -112,4 +142,54 @@ export interface PolicyImpactSimulation {
   healthcareOutcomeImpact: string;
   implementationComplexity: string;
   recommendations: string[];
+  error?: string;
+  sectors?: string[];
+  timelineImpact?: {
+    shortTerm: string;
+    mediumTerm: string;
+    longTerm: string;
+  };
+  stakeholders?: string[];
+  risks?: string[];
+  opportunities?: string[];
+  overallAssessment?: string;
+}
+
+// Policy Data Interface
+export interface PolicyData {
+  name: string;
+  description: string;
+  sector: string;
+  stakeholders?: string[];
+  goals?: string[];
+  metrics?: string[];
+}
+
+// Policy Impact Result Interface 
+export interface PolicyImpactResult {
+  impactScore: number;
+  stakeholderImpact: Record<string, any>;
+  economicImpact: any;
+  healthcareOutcomeImpact: string;
+  implementationComplexity: string;
+  recommendations: string[];
+  error?: string;
+  overallScore?: number;
+  economicImpact?: {
+    score: number;
+    description: string;
+  };
+  socialImpact?: {
+    score: number;
+    description: string;
+  };
+  healthcareImpact?: {
+    score: number;
+    description: string;
+  };
+  timeframeImpact?: {
+    short: string[];
+    medium: string[];
+    long: string[];
+  };
 }

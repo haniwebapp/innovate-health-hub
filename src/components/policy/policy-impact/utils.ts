@@ -1,22 +1,15 @@
 
+import { PolicyData, PolicyImpactResult } from '@/services/ai/policy/types';
 import { supabase } from '@/integrations/supabase/client';
 
-interface SimulationParams {
-  timeframe: string;
-  region: string;
-  sectors?: string[];
-}
+export const initialPolicyData: PolicyData = {
+  name: '',
+  description: '',
+  sector: 'healthcare',
+  stakeholders: []
+};
 
-export interface PolicyData {
-  name: string;
-  description: string;
-  sector: string;
-  stakeholders?: string[];
-  goals?: string[];
-  metrics?: string[];
-}
-
-export const simulatePolicy = async (policyData: PolicyData, params: SimulationParams) => {
+export const simulatePolicy = async (policyData: PolicyData, params: { timeframe: string; region: string }) => {
   try {
     const { data, error } = await supabase.functions.invoke("policy-impact-simulation", {
       body: { 
@@ -31,7 +24,7 @@ export const simulatePolicy = async (policyData: PolicyData, params: SimulationP
     });
 
     if (error) throw error;
-    return data;
+    return data as PolicyImpactResult;
   } catch (error: any) {
     console.error("Error simulating policy impact:", error);
     return {
@@ -41,6 +34,6 @@ export const simulatePolicy = async (policyData: PolicyData, params: SimulationP
       healthcareOutcomeImpact: "Analysis failed", 
       implementationComplexity: "Unknown",
       recommendations: ["Error occurred during analysis. Please try again."]
-    };
+    } as PolicyImpactResult;
   }
 };
