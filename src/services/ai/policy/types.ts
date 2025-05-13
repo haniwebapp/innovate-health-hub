@@ -1,196 +1,102 @@
 
-// Policy Annotation Types
-export interface PolicyAnnotation {
-  id: string;
-  text: string;
-  startIndex: number;
-  endIndex: number;
-  category: string;
-  insights: string;
-  sentiment: 'positive' | 'neutral' | 'negative';
-}
-
-export interface PolicyAnnotationResult {
-  annotations: PolicyAnnotation[];
-  overallAnalysis: string;
-  keyTakeaways: string[];
-  error?: string;
-}
-
-export interface PolicyQAResult {
-  answer: string;
-  confidence: string;
-  relevantSections: string[];
-  suggestions: string[];
-  error?: string;
-}
-
-export interface ImplementationGuidanceResult {
-  steps: {
+export interface StrategyGapInput {
+  policyDetails: {
     title: string;
     description: string;
-    timeframe: string;
-    resources: string[];
+    objectives: string[];
+    targetSectors?: string[];
+  };
+  currentState?: string;
+  desiredState?: string;
+}
+
+export interface StrategyGapResult {
+  gaps: {
+    title: string;
+    description: string;
+    severity: "low" | "medium" | "high";
+    potentialImpact: string;
   }[];
-  keyStakeholders: string[];
-  potentialChallenges: string[];
-  successMetrics: string[];
-  summary: string;
-  error?: string;
-}
-
-// Vision Alignment Types
-export interface Vision2030AlignmentResult {
-  score: number;
-  alignmentAreas: string[];
-  gapAreas: string[];
   recommendations: string[];
-  vision2030Impact: string;
-  overallScore?: number;
-  overallAssessment?: string;
-  error?: string;
+  overallAnalysis: string;
 }
 
-// Strategy Gap Types
-export interface StrategyMetric {
+export interface Vision2030AlignmentInput {
   name: string;
-  value: number;
-  target: number;
-  unit: string;
-  description?: string;
-  id?: string;
-  category?: string;
-  currentValue?: number;
+  description: string;
+  goals?: string;
+  targetAudience?: string;
+  sector?: string;
 }
 
-export interface StrategyGap {
+export interface Vision2030AlignmentResult {
+  alignmentScore: number;
+  alignmentAreas: string[];
+  vision2030Objectives: string[];
+  improvementAreas: string[];
+  potentialImpact: string;
+  recommendations: string[];
+}
+
+export interface RegulatoryChecklistInput {
+  innovationType: string;
+  description: string;
+  sector?: string;
+}
+
+export interface RegulatoryChecklistItem {
+  id: string;
   title: string;
   description: string;
-  severity: 'high' | 'medium' | 'low';
-  potentialImpact: string;
-  metricId?: string;
-  metricName?: string;
-  category?: string;
-  currentValue?: number;
-  benchmarkValue?: number;
-  gap?: number;
-  gapPercentage?: number;
-  priority?: 'critical' | 'high' | 'medium' | 'low';
+  type: "document" | "test" | "approval" | "certification";
+  priority: "high" | "medium" | "low";
+  regulatoryBody: string;
+  timelineEstimate: string;
 }
 
-export interface BenchmarkData {
-  name: string;
-  value: number;
-  metrics: StrategyMetric[];
-  id?: string;
-  source?: string;
-  scope?: string;
-}
-
-export interface StrategyGapAnalysisResult {
-  gaps: StrategyGap[];
-  recommendations: {
-    title?: string;
+export interface RegulatoryChecklistResult {
+  checklist: RegulatoryChecklistItem[];
+  regulatoryPathway: {
+    name: string;
     description: string;
-    priority?: string;
-    expectedOutcome?: string;
-    category?: string;
-    expectedImpact?: string;
-    timeframe?: string;
+    steps: string[];
+    estimatedTimeline: string;
+  };
+  keyConsiderations: string[];
+  recommendedExperts: string[];
+}
+
+export interface InnovationGuideInput {
+  innovationStage: string;
+  innovationType: string;
+  challenges?: string;
+  goals?: string;
+}
+
+export interface InnovationGuideResult {
+  nextSteps: {
+    title: string;
+    description: string;
+    priority: "high" | "medium" | "low";
+    resources: string[];
   }[];
-  benchmarkComparison?: {
-    currentScore: number;
-    benchmarkScore: number;
-    differencePercentage: number;
-  };
-  overallScore?: number;
-  categoryScores?: {
-    category: string;
-    score: number;
-    benchmarkComparison: number;
+  commonPitfalls: {
+    title: string;
+    description: string;
+    avoidanceStrategy: string;
   }[];
-  benchmarkSource?: string;
-  error?: string;
-}
-
-// Best Practices Types
-export interface PolicyBestPracticesResult {
-  strengths: string[];
-  weaknesses: string[];
-  opportunities: string[];
-  threats?: string[];
-  recommendations: {
-    title?: string;
-    description?: string;
-    implementationTips?: string[];
-  }[];
-  overallScore?: number;
-  error?: string;
-}
-
-// Impact Simulation Types
-export interface PolicyImpactSimulation {
-  impactScore: number;
-  stakeholderImpact: {
-    [key: string]: {
-      score: number;
-      description: string;
-    };
+  marketInsights: {
+    opportunities: string[];
+    challenges: string[];
+    keyPlayerTypes: string[];
   };
-  economicImpact: string;
-  healthcareOutcomeImpact: string;
-  implementationComplexity: string;
-  recommendations: string[];
-  sectors?: string[];
-  timelineImpact?: {
-    shortTerm: string;
-    mediumTerm: string;
-    longTerm: string;
+  resourceRecommendations: {
+    expertTypes: string[];
+    tools: string[];
+    knowledgeAreas: string[];
   };
-  stakeholders?: string[];
-  risks?: string[];
-  opportunities?: string[];
-  overallAssessment?: string;
-  error?: string;
-}
-
-// Policy Data Interface
-export interface PolicyData {
-  name: string;
-  description: string;
-  sector: string;
-  stakeholders?: string[];
-  goals?: string[];
-  metrics?: string[];
-}
-
-// Policy Impact Result Interface 
-export interface PolicyImpactResult {
-  impactScore: number;
-  stakeholderImpact: Record<string, {
-    score: number;
-    description: string;
-  }>;
-  economicImpact: {
-    score: number;
-    description: string;
+  timelineEstimate: {
+    nextMilestone: string;
+    estimatedTimeframe: string;
   };
-  socialImpact: {
-    score: number;
-    description: string;
-  };
-  healthcareImpact: {
-    score: number;
-    description: string;
-  };
-  healthcareOutcomeImpact: string;
-  implementationComplexity: string;
-  recommendations: string[];
-  timeframeImpact?: {
-    short: string[];
-    medium: string[];
-    long: string[];
-  };
-  overallScore?: number;
-  error?: string;
 }

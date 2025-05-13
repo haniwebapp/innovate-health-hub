@@ -17,6 +17,8 @@ export { InvestmentAIService } from './InvestmentAIService';
 export { KnowledgeAIService } from './KnowledgeAIService';
 export { PolicyAIService } from './PolicyAIService';
 export { PolicyAnnotationService } from './policy/PolicyAnnotationService';
+export { RegulatoryChecklistService } from './regulatory/RegulatoryChecklistService';
+export { InnovationGuideService } from './innovation/InnovationGuideService';
 export * from './admin/AdminAIService';
 export * from './challenge/ChallengeAIService';
 export * from './community/CommunityAIService';
@@ -25,3 +27,4 @@ export * from './events/EventsAIService';
 export * from './support/SupportAIService';
 export * from './clinical/ClinicalAIService';
 export * from './success/SuccessStoryAIService';
+
