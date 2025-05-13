@@ -9,19 +9,45 @@ import { Plus, Trash2, MoveUp, MoveDown } from "lucide-react";
 
 interface SectionsListProps {
   sections: PageSection[];
-  onAddSection: (type: PageSection["type"]) => void;
-  onRemoveSection: (index: number) => void;
-  onMoveSection: (index: number, direction: 'up' | 'down') => void;
-  onUpdateSection: (index: number, section: PageSection) => void;
+  setSections: React.Dispatch<React.SetStateAction<PageSection[]>>;
 }
 
 export const SectionsList: React.FC<SectionsListProps> = ({
   sections,
-  onAddSection,
-  onRemoveSection,
-  onMoveSection,
-  onUpdateSection
+  setSections
 }) => {
+  const onAddSection = (type: PageSection["type"]) => {
+    const newSection: PageSection = { type };
+    setSections([...sections, newSection]);
+  };
+
+  const onRemoveSection = (index: number) => {
+    const newSections = [...sections];
+    newSections.splice(index, 1);
+    setSections(newSections);
+  };
+
+  const onMoveSection = (index: number, direction: 'up' | 'down') => {
+    if (
+      (direction === 'up' && index === 0) || 
+      (direction === 'down' && index === sections.length - 1)
+    ) {
+      return;
+    }
+
+    const newSections = [...sections];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    const [movedSection] = newSections.splice(index, 1);
+    newSections.splice(newIndex, 0, movedSection);
+    setSections(newSections);
+  };
+
+  const onUpdateSection = (index: number, section: PageSection) => {
+    const newSections = [...sections];
+    newSections[index] = section;
+    setSections(newSections);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
