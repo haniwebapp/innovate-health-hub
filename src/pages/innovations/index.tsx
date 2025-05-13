@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -6,8 +5,21 @@ import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Lightbulb, Target, ArrowUpRight, Clock, Users, Sparkles } from "lucide-react";
+import { ChevronRight, Lightbulb, Target, ArrowUpRight, Clock, Users, Sparkles, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+// Define proper type for innovations data
+interface Innovation {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  stage: string;
+  innovator: string;
+  image: string;
+  impact: string;
+  date: string;
+}
 
 // Mock innovations data
 const mockInnovations = [
@@ -106,11 +118,11 @@ export default function InnovationsPage() {
   const { t, language } = useLanguage();
   
   // Fetch innovations from API (using mock data for now)
-  const { data: innovations, isLoading, error } = useQuery({
+  const { data: innovations, isLoading, error } = useQuery<Innovation[]>({
     queryKey: ['innovations'],
     queryFn: async () => {
       // In a real app, this would be fetching from an API
-      return new Promise(resolve => {
+      return new Promise<Innovation[]>(resolve => {
         setTimeout(() => resolve(mockInnovations), 1000);
       });
     }
