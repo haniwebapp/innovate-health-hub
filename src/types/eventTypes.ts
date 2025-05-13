@@ -33,3 +33,10 @@ export interface EventRegistration {
   feedback?: string;
   rating?: number;
 }
+
+export interface EventRecommendation {
+  eventId: string;
+  eventTitle: string;
+  matchScore: number;
+  matchReason: string;
+}

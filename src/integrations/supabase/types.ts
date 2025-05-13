@@ -2770,6 +2770,15 @@ export type Database = {
           user_organization: string
         }[]
       }
+      get_event_recommendations: {
+        Args: { p_user_id: string; p_limit?: number }
+        Returns: {
+          id: string
+          title: string
+          match_score: number
+          match_reason: string
+        }[]
+      }
       get_logs_by_date_range_and_environment: {
         Args: { start_date: string; end_date: string; env?: string }
         Returns: {

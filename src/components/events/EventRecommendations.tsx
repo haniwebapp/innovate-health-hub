@@ -8,13 +8,7 @@ import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EventsAIService } from "@/services/ai/events/EventsAIService";
 import { useAuth } from "@/contexts/AuthContext";
-
-interface EventRecommendation {
-  eventId: string;
-  eventTitle: string;
-  matchScore: number;
-  matchReason: string;
-}
+import { EventRecommendation } from "@/types/eventTypes";
 
 export function EventRecommendations() {
   const [recommendations, setRecommendations] = useState<EventRecommendation[]>([]);

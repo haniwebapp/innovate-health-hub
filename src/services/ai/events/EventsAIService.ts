@@ -1,127 +1,80 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIService } from "../AIService";
 
-export interface EventRecommendation {
+interface EventRecommendation {
   eventId: string;
   eventTitle: string;
   matchScore: number;
   matchReason: string;
 }
 
-export interface SpeakerSuggestion {
-  name: string;
-  expertise: string[];
-  relevanceScore: number;
-  reasonForSuggestion: string;
-  potentialTopics: string[];
-}
-
-export interface EventTrend {
-  topic: string;
-  popularity: number;
-  momentumScore: number;
-  relevantAudiences: string[];
-  relatedEvents: string[];
-}
-
-/**
- * Service for handling events-related AI operations
- */
 export class EventsAIService {
   /**
    * Get personalized event recommendations for a user
    */
   static async getEventRecommendations(
     userId: string,
-    interests?: string[],
-    pastEvents?: string[]
+    interests: string[] = [],
+    pastEvents: string[] = []
   ): Promise<EventRecommendation[]> {
     try {
-      const { data, error } = await supabase.functions.invoke("event-recommender", {
-        body: { 
-          userId,
-          interests,
-          pastEvents 
-        }
+      // Call the Supabase edge function for recommendations
+      const { data, error } = await supabase.functions.invoke('event-recommendation-service', {
+        body: { userId, interests, pastEvents, limit: 5 },
       });
 
       if (error) throw error;
-      return data as EventRecommendation[];
-    } catch (error: any) {
-      console.error("Error getting event recommendations:", error);
-      throw AIService.handleError(error, "getEventRecommendations", "events");
+
+      // Map the response to the expected format
+      return (data || []).map((item: any) => ({
+        eventId: item.id,
+        eventTitle: item.title,
+        matchScore: item.match_score,
+        matchReason: item.match_reason,
+      }));
+    } catch (error) {
+      console.error("Error fetching event recommendations:", error);
+      throw error;
     }
   }
 
   /**
-   * Get speaker suggestions for an event
+   * Analyze event feedback and generate summary
    */
-  static async getSpeakerSuggestions(
-    eventTopic: string,
-    eventDetails: string
-  ): Promise<SpeakerSuggestion[]> {
+  static async analyzeEventFeedback(eventId: string): Promise<{ summary: string; sentiment: string; suggestions: string[] }> {
     try {
-      const { data, error } = await supabase.functions.invoke("speaker-suggester", {
-        body: { 
-          eventTopic,
-          eventDetails
-        }
+      const { data, error } = await supabase.functions.invoke('event-feedback-summarizer', {
+        body: { eventId },
       });
 
       if (error) throw error;
-      return data as SpeakerSuggestion[];
-    } catch (error: any) {
-      console.error("Error getting speaker suggestions:", error);
-      throw AIService.handleError(error, "getSpeakerSuggestions", "events");
+
+      return data || {
+        summary: "No feedback data available for analysis.",
+        sentiment: "neutral",
+        suggestions: []
+      };
+    } catch (error) {
+      console.error("Error analyzing event feedback:", error);
+      throw error;
     }
   }
 
   /**
-   * Predict trending event topics
+   * Predict event trends based on historical data
    */
-  static async predictEventTrends(
-    sector?: string,
-    timeframe?: string
-  ): Promise<EventTrend[]> {
+  static async predictEventTrends(): Promise<{ trends: any[]; forecast: any }> {
     try {
-      const { data, error } = await supabase.functions.invoke("event-trend-predictor", {
-        body: { 
-          sector,
-          timeframe
-        }
+      const { data, error } = await supabase.functions.invoke('event-trend-predictor', {
+        body: {},
       });
 
       if (error) throw error;
-      return data as EventTrend[];
-    } catch (error: any) {
+
+      return data || { trends: [], forecast: {} };
+    } catch (error) {
       console.error("Error predicting event trends:", error);
-      throw AIService.handleError(error, "predictEventTrends", "events");
-    }
-  }
-
-  /**
-   * Summarize event feedback
-   */
-  static async summarizeEventFeedback(
-    feedbackItems: string[]
-  ): Promise<{
-    summary: string;
-    sentimentScore: number;
-    strengths: string[];
-    improvements: string[];
-    actionItems: string[];
-  }> {
-    try {
-      const { data, error } = await supabase.functions.invoke("event-feedback-summarizer", {
-        body: { feedbackItems }
-      });
-
-      if (error) throw error;
-      return data;
-    } catch (error: any) {
-      console.error("Error summarizing event feedback:", error);
-      throw AIService.handleError(error, "summarizeEventFeedback", "events");
+      throw error;
     }
   }
 }
