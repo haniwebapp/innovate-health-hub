@@ -1,83 +1,117 @@
 
 import { motion } from "framer-motion";
-import { Users, Award, Globe } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
-export default function HeroSection() {
-  const fadeInUpVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
-  };
-  
-  const staggerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
-  };
-  
+const HeroSection = () => {
   return (
-    <section className="pt-0 pb-16 bg-gradient-to-br from-moh-lightGreen to-white relative overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div 
-          className="max-w-3xl ml-auto pt-28"
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUpVariants}
-        >
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-moh-darkGreen">
-            Saudi Healthcare Innovation Platform
-          </h1>
-          <motion.p 
-            className="text-lg text-gray-700 mb-8 leading-relaxed"
-            variants={fadeInUpVariants}
-          >
-            Accelerating healthcare transformation across Saudi Arabia through innovation, collaboration, and strategic partnerships aligned with Vision 2030.
-          </motion.p>
-          
-          <motion.div 
-            className="flex flex-wrap gap-3"
-            variants={staggerVariants}
-          >
-            <motion.span 
-              className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium"
-              variants={fadeInUpVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <Users className="mr-1.5" size={16} />
-              500+ Innovators
-            </motion.span>
-            <motion.span 
-              className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGold text-moh-darkGold text-sm font-medium"
-              variants={fadeInUpVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <Award className="mr-1.5" size={16} />
-              40+ Challenges
-            </motion.span>
-            <motion.span 
-              className="inline-flex items-center px-3 py-1.5 rounded-full bg-moh-lightGreen text-moh-green text-sm font-medium"
-              variants={fadeInUpVariants}
-              whileHover={{ scale: 1.05 }}
-            >
-              <Globe className="mr-1.5" size={16} />
-              Nationwide Impact
-            </motion.span>
-          </motion.div>
-        </motion.div>
+    <section className="relative overflow-hidden bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
+      {/* Background decoration elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-moh-gold blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-moh-lightGold blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-60 h-60 rounded-full bg-moh-darkGreen blur-3xl"></div>
       </div>
-      <div className="absolute bottom-0 right-0 opacity-20">
-        <svg width="300" height="300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="40" stroke="#00814A" strokeWidth="2" />
-          <path d="M30,50 L45,65 L70,35" stroke="#00814A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      
+      {/* Animated grid pattern */}
+      <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-5"></div>
+      
+      <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-6"
+          >
+            <motion.span 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-block px-3 py-1 rounded-full bg-moh-darkGreen text-moh-lightGreen text-sm font-medium"
+            >
+              About Us
+            </motion.span>
+            
+            <motion.h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-bold"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              Transforming <span className="text-transparent bg-clip-text bg-gradient-to-r from-moh-gold to-moh-lightGold">Healthcare</span> Through Innovation
+            </motion.h1>
+            
+            <motion.p 
+              className="text-lg md:text-xl text-moh-lightGreen"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              We're building a vibrant ecosystem that accelerates healthcare transformation by connecting innovators, providers, and policymakers.
+            </motion.p>
+            
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <a href="#vision-mission" className="bg-moh-gold hover:bg-moh-darkGold text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center">
+                Our Vision & Mission
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </a>
+              <a href="#partners" className="border border-moh-gold/50 text-moh-lightGold hover:bg-moh-darkGreen/20 font-medium py-3 px-6 rounded-lg flex items-center justify-center">
+                Our Partners
+              </a>
+            </motion.div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="hidden md:block"
+          >
+            <div className="relative">
+              <div className="absolute -top-10 -left-10 w-20 h-20 bg-moh-gold/20 rounded-full blur-md"></div>
+              <div className="absolute -bottom-5 -right-5 w-16 h-16 bg-moh-gold/30 rounded-full blur-md"></div>
+              
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 relative">
+                <div className="grid gap-4 grid-cols-2">
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors text-center">
+                    <div className="text-3xl font-bold text-white mb-1">3+</div>
+                    <div className="text-sm text-white/70">Years of Innovation</div>
+                  </div>
+                  
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors text-center">
+                    <div className="text-3xl font-bold text-white mb-1">500+</div>
+                    <div className="text-sm text-white/70">Innovators</div>
+                  </div>
+                  
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors text-center">
+                    <div className="text-3xl font-bold text-white mb-1">25+</div>
+                    <div className="text-sm text-white/70">Strategic Partners</div>
+                  </div>
+                  
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors text-center">
+                    <div className="text-3xl font-bold text-white mb-1">100+</div>
+                    <div className="text-sm text-white/70">Innovations Launched</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      
+      {/* Wave divider */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-12">
+          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.92,130.83,141.41,214.86,114.72,271.78,97.31,328.1,64.46,392.73,38.81" fill="currentColor" className="text-moh-lightGreen"></path>
         </svg>
       </div>
     </section>
   );
-}
+};
+
+export default HeroSection;

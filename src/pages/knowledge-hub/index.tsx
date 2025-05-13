@@ -2,8 +2,11 @@
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { Button } from "@/components/ui/button";
-import { Search, Download, BookOpen, Globe, Video, FileText } from "lucide-react";
+import { ScrollProgress } from "@/components/animations/ScrollProgress";
+import { motion } from "framer-motion";
+import { Search, Download, BookOpen, Globe, Video, FileText, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Resource type definition
 type Resource = {
@@ -100,6 +103,7 @@ const categoryColors = {
 export default function KnowledgeHub() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { t, language } = useLanguage();
   
   // Filter resources based on search and category
   const filteredResources = resourcesData.filter(resource => {
@@ -110,38 +114,142 @@ export default function KnowledgeHub() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGreen">
       <Navbar />
-      <main className="flex-grow pt-24 pb-16">
-        {/* Hero section */}
-        <div className="bg-moh-lightGreen py-12 mb-12">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-3xl font-bold text-moh-darkGreen sm:text-4xl mb-6">
-                Knowledge Hub
-              </h1>
-              <p className="text-lg text-gray-700 mb-8">
-                Access resources, research papers, and guides to support your healthcare innovation journey
-              </p>
-              <div className="relative max-w-2xl mx-auto">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
+      <ScrollProgress />
+      
+      <main className="flex-grow pt-0 my-0 rounded-none py-0">
+        {/* Hero Section - with updated green theme similar to Investment page */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
+          {/* Background decoration elements */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-moh-gold blur-3xl"></div>
+            <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-moh-lightGold blur-3xl"></div>
+            <div className="absolute top-40 right-20 w-60 h-60 rounded-full bg-moh-darkGreen blur-3xl"></div>
+          </div>
+          
+          {/* Animated grid pattern */}
+          <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-5"></div>
+          
+          <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="space-y-6"
+              >
+                <motion.span 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="inline-block px-3 py-1 rounded-full bg-moh-darkGreen text-moh-lightGreen text-sm font-medium"
+                >
+                  Knowledge Resources
+                </motion.span>
+                
+                <motion.h1 
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  Healthcare <span className="text-transparent bg-clip-text bg-gradient-to-r from-moh-gold to-moh-lightGold">Knowledge Hub</span>
+                </motion.h1>
+                
+                <motion.p 
+                  className="text-lg md:text-xl text-moh-lightGreen"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  Access resources, research papers, and guides to support your healthcare innovation journey.
+                </motion.p>
+                
+                <div className="relative max-w-2xl mt-4">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-white/60" />
+                  </div>
+                  <input
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-3 bg-white/10 border border-white/20 rounded-md leading-5 
+                              placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-moh-gold focus:border-transparent 
+                              text-white sm:text-sm backdrop-blur-sm"
+                    placeholder="Search for resources, topics, or keywords"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-                <input
-                  type="text"
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white 
-                          placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-moh-green focus:border-moh-green sm:text-sm"
-                  placeholder="Search for resources, topics, or keywords"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="hidden md:block"
+              >
+                <div className="relative">
+                  <div className="absolute -top-10 -left-10 w-20 h-20 bg-moh-gold/20 rounded-full blur-md"></div>
+                  <div className="absolute -bottom-5 -right-5 w-16 h-16 bg-moh-gold/30 rounded-full blur-md"></div>
+                  
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 relative">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 rounded-full bg-moh-green flex items-center justify-center">
+                          <BookOpen className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="font-medium text-white">Featured Resources</h3>
+                          <p className="text-sm text-white/70">Latest knowledge materials</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {resourcesData.slice(0, 3).map((resource, index) => (
+                        <motion.div
+                          key={resource.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + (index * 0.1) }}
+                          className="bg-white/5 border border-white/10 rounded-lg p-3 hover:bg-white/10 transition-colors"
+                        >
+                          <div className="flex justify-between">
+                            <p className="font-medium text-white">{resource.title.length > 35 ? resource.title.substring(0, 35) + '...' : resource.title}</p>
+                            <span className="text-xs bg-moh-gold/20 text-moh-lightGold px-2 py-0.5 rounded">
+                              {resource.category}
+                            </span>
+                          </div>
+                          <div className="flex justify-between mt-2 text-xs text-white/70">
+                            <span>{resource.source}</span>
+                            <span>{resource.date}</span>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-4 text-center">
+                      <a href="#resources-list" className="text-moh-lightGold hover:text-moh-gold text-sm flex items-center justify-center">
+                        Browse all resources
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
-
+          
+          {/* Wave divider */}
+          <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-12">
+              <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.92,130.83,141.41,214.86,114.72,271.78,97.31,328.1,64.46,392.73,38.81" fill="currentColor" className="text-moh-lightGreen"></path>
+            </svg>
+          </div>
+        </section>
+        
         {/* Main content */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="resources-list" className="container mx-auto px-4 py-12">
           {/* Categories filter */}
           <div className="mb-8 flex flex-wrap gap-2">
             <Button 
@@ -193,9 +301,13 @@ export default function KnowledgeHub() {
           {/* Resources grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {filteredResources.length > 0 ? (
-              filteredResources.map((resource) => (
-                <div 
-                  key={resource.id} 
+              filteredResources.map((resource, index) => (
+                <motion.div 
+                  key={resource.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
                   <div className="h-48 overflow-hidden">
@@ -231,7 +343,7 @@ export default function KnowledgeHub() {
                       </Button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))
             ) : (
               <div className="col-span-full text-center py-12">
@@ -280,6 +392,7 @@ export default function KnowledgeHub() {
           </div>
         </div>
       </main>
+      
       <Footer />
     </div>
   );

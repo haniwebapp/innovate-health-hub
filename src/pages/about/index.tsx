@@ -2,6 +2,7 @@
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ScrollProgress } from "@/components/animations/ScrollProgress";
 import HeroSection from "@/components/about/HeroSection";
 import VisionMissionSection from "@/components/about/VisionMissionSection";
 import FocusAreasSection from "@/components/about/FocusAreasSection";
@@ -27,7 +28,7 @@ const AboutPage = () => {
   
   return (
     <motion.div 
-      className="min-h-screen flex flex-col bg-white"
+      className="min-h-screen flex flex-col bg-gradient-to-br from-moh-lightGreen via-white to-moh-lightGreen"
       dir="ltr"
       initial="initial"
       animate="animate"
@@ -35,6 +36,7 @@ const AboutPage = () => {
       variants={pageVariants}
     >
       <Navbar />
+      <ScrollProgress />
       
       <main className="flex-grow pt-0 my-0 rounded-none py-0">
         <HeroSection />
