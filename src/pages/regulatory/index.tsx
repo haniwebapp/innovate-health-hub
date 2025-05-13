@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,6 +12,7 @@ import { OverviewTab } from "@/components/regulatory/OverviewTab";
 import { SupportServicesSection } from "@/components/regulatory/SupportServicesSection";
 import { RegulatoryFrameworks } from "@/components/regulatory/RegulatoryFrameworks";
 import { AIComplianceAnalysis } from "@/components/regulatory/ComplianceResults";
+import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
 import { Shield, ClipboardCheck, FileCheck, ChevronRight } from "lucide-react";
 
 export default function RegulatoryPage() {
@@ -228,7 +228,7 @@ export default function RegulatoryPage() {
       <ScrollProgress />
       
       <main className="flex-grow pt-0 my-0 rounded-none py-0">
-        {/* Hero Section - with updated green theme similar to Investment page */}
+        {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
           {/* Background decoration elements */}
           <div className="absolute inset-0 opacity-10">
@@ -377,19 +377,6 @@ export default function RegulatoryPage() {
           </div>
         </section>
         
-        <div id="ai-analyzer" className="pt-12">
-          <HeroSection
-            innovationType={innovationType}
-            innovationDescription={innovationDescription}
-            setInnovationType={setInnovationType}
-            setInnovationDescription={setInnovationDescription}
-            isLoadingAI={isLoadingAI}
-            isAnalyzingCompliance={isAnalyzingCompliance}
-            generateRecommendations={generateRecommendations}
-            analyzeCompliance={analyzeCompliance}
-          />
-        </div>
-        
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-5xl mx-auto">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
@@ -438,6 +425,24 @@ export default function RegulatoryPage() {
                 <SupportServicesSection />
               </TabsContent>
             </Tabs>
+
+            {/* AI Compliance Analyzer - Moved above the FAQ */}
+            <div id="ai-analyzer" className="mt-16 mb-8">
+              <h2 className="text-2xl font-semibold mb-6 text-moh-darkGreen">AI Compliance Assessment</h2>
+              <AIComplianceAnalyzer 
+                innovationDescription={innovationDescription}
+                innovationType={innovationType}
+                isAnalyzingCompliance={isAnalyzingCompliance}
+                onDescriptionChange={setInnovationDescription}
+                onTypeChange={setInnovationType}
+                onAnalyzeClick={analyzeCompliance}
+              />
+            </div>
+
+            {/* FAQ section */}
+            <div className="mt-8">
+              <RegulatoryFAQ />
+            </div>
           </div>
         </div>
       </main>
