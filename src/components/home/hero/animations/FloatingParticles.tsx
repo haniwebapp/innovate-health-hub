@@ -100,12 +100,12 @@ export function FloatingParticles() {
         );
       })}
 
-      {/* Add CSS for triangle clip path */}
-      <style jsx global>{`
-        .clip-path-triangle {
+      {/* Add CSS for triangle clip path - fixed style tag */}
+      <style>
+        {`.clip-path-triangle {
           clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-        }
-      `}</style>
+        }`}
+      </style>
     </>
   );
 }
