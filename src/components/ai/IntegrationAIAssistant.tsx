@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
-import { callAIAssistant, AIMessage } from "@/utils/aiUtils";
+import { callAIAssistant } from "@/utils/aiUtils";
+import { AIMessage } from "@/types/chatTypes";
 
 export default function IntegrationAIAssistant() {
   const [question, setQuestion] = useState("");

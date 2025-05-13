@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AIServiceType } from '@/services/ai/AIServiceRegistry';
-import { initializeAIServices, checkAIServicesAvailability, getAIService } from '@/services/ai/initializeAI';
+import { AIServiceType } from '@/services/ai/AIService';
+import { initializeAIServices, checkAIServicesAvailability } from '@/services/ai/initializeAI';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { AIMessage } from '@/types/chatTypes';

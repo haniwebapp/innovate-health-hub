@@ -1,5 +1,6 @@
 
-import { AIServiceRegistry, AIServiceType } from './AIServiceRegistry';
+import { AIServiceRegistry } from './AIServiceRegistry';
+import { AIServiceType } from './AIService';
 import { AdminAIService } from './admin/AdminAIService';
 import { ClinicalAIService } from './clinical/ClinicalAIService';
 import { ComplianceAIService } from './compliance/ComplianceAIService';

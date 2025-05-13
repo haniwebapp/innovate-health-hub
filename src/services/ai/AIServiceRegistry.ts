@@ -25,3 +25,6 @@ export class AIServiceRegistry {
     return Array.from(AIServiceRegistry.services.keys());
   }
 }
+
+// Re-export AIServiceType to make it accessible
+export { AIServiceType } from './AIService';

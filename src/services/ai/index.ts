@@ -2,7 +2,7 @@
 // Main service
 export * from './AIService';
 
-// Types
+// Types - don't re-export types that are already exported from AIService
 export * from './types/AIServiceTypes';
 
 // Utilities

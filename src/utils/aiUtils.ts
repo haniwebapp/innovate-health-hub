@@ -11,6 +11,15 @@ export class AIError extends Error {
   }
 }
 
+// Export AIMessage type
+export { AIMessage };
+
+// Add AIResponse type
+export interface AIResponse<T = any> {
+  data: T | null;
+  error: Error | null;
+}
+
 // Helper function to call AI assistants via edge functions
 export async function callAIAssistant(
   messages: AIMessage[],

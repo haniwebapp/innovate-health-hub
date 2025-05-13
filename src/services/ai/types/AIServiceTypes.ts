@@ -40,3 +40,6 @@ export interface AIStreamOptions {
   onError: (error: string) => void;
   onComplete: () => void;
 }
+
+// Re-export AIServiceType to avoid import issues
+export { AIServiceType };
