@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -26,16 +27,23 @@ export default function NewApplicationPage() {
         throw new Error("User not authenticated.");
       }
 
+      // Map form fields to database column names
+      const applicationData = {
+        user_id: user.id,
+        name: data.name,
+        description: data.description,
+        innovation_type: data.innovationType,
+        organization_type: data.organizationType,
+        regulatory_challenges: data.regulatoryChallenges,
+        testing_duration: data.testingDuration,
+        framework_id: data.frameworkId,
+        status: 'draft',
+        submitted_date: new Date().toISOString()
+      };
+
       const { data: application, error } = await supabase
         .from('regulatory_applications')
-        .insert([
-          {
-            ...data,
-            user_id: user.id,
-            status: 'draft',
-            submittedDate: new Date().toISOString(),
-          },
-        ])
+        .insert(applicationData)
         .select()
         .single();
 

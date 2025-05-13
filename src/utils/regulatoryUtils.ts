@@ -19,6 +19,7 @@ export interface SandboxApplication {
   created_at: string;
   updated_at: string;
   innovator?: string;
+  submitted_date?: string; // Added new field to match the database
 }
 
 export interface SandboxComplianceRequirement {
