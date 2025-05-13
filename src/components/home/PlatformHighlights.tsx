@@ -10,6 +10,7 @@ import { HighlightsCallToAction } from "./platform-highlights/HighlightsCallToAc
 import { BackgroundDecorations } from "./platform-highlights/BackgroundDecorations";
 import { features } from "./platform-highlights/features";
 import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
+import { EventsList } from "./platform-highlights/EventsList";
 
 export default function PlatformHighlights() {
   // State to track the active feature card
@@ -72,6 +73,13 @@ export default function PlatformHighlights() {
             />
           ))}
         </motion.div>
+        
+        <ScrollFadeIn delay={0.5}>
+          <div className="mb-16">
+            <h3 className="text-2xl font-bold text-center mb-8">Upcoming Events</h3>
+            <EventsList />
+          </div>
+        </ScrollFadeIn>
         
         <ScrollFadeIn delay={0.5}>
           <HighlightsCallToAction />
