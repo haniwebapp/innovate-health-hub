@@ -113,6 +113,28 @@ export interface StrategyGapAnalysisResult {
   error?: string;
 }
 
+// Adding the missing StrategyGapResult interface
+export interface StrategyGapResult {
+  overallGapScore: number;
+  coverageMetrics: {
+    category: string;
+    currentCoverage: number;
+    benchmarkCoverage: number;
+    gap: number;
+    impact: 'low' | 'medium' | 'high';
+  }[];
+  topGapAreas: string[];
+  timePeriodAnalysis: {
+    period: string;
+    coverage: number;
+    gaps: string[];
+    opportunities: string[];
+  }[];
+  recommendations: string[];
+  benchmarkComparison: Record<string, any>;
+  error?: string;
+}
+
 // Best Practices Types
 export interface PolicyBestPracticesResult {
   strengths: string[];
