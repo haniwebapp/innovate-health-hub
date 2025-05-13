@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { ChatBubble } from "./ChatBubble";
 import { ChatSuggestedQuestions } from "./ChatSuggestedQuestions";
@@ -27,10 +27,22 @@ export function ChatContent({
   currentResponse, 
   setInput 
 }: ChatContentProps) {
+  // Effect to auto-scroll to bottom when messages change or when loading starts/stops
+  useEffect(() => {
+    if (chatContentRef.current) {
+      // Use setTimeout to ensure DOM update is complete
+      setTimeout(() => {
+        if (chatContentRef.current) {
+          chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+        }
+      }, 0);
+    }
+  }, [messages, isLoading, currentResponse?.followUpQuestions, currentResponse?.relatedResources]);
+
   return (
     <div 
       ref={chatContentRef}
-      className="flex-1 overflow-y-auto h-[350px] px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+      className="flex-1 overflow-y-auto h-[350px] px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scroll-smooth"
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
