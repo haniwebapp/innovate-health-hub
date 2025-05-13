@@ -34,13 +34,12 @@ export function DataParticle({
   const xOffset = -30 + Math.random() * 60;
   const yOffset = -30 + Math.random() * 60;
   
-  // Get particle color based on index and speed
+  // Get particle color based on index using MOH colors
   const getParticleColor = () => {
+    // Alternate between MOH Green and MOH Gold
     const colors = [
-      'bg-blue-400/80', 
-      'bg-green-400/80', 
-      'bg-purple-400/80', 
-      'bg-moh-gold/80'
+      'bg-moh-green/80',   // MOH Green with 80% opacity
+      'bg-moh-gold/80'    // MOH Gold with 80% opacity
     ];
     
     // Fast particles get brighter colors

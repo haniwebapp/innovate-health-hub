@@ -40,9 +40,10 @@ export default function HealthcareAnimation() {
             activityLevel={networkData.activityLevel}
           />
           
+          {/* First floating icon - MOH Green */}
           <FloatingIcon 
             icon={iconColors.heart.icon}
-            color={iconColors.heart.color}
+            color="#00814A" // MOH Green
             position={{
               top: "10%",
               left: "25%",
@@ -53,9 +54,10 @@ export default function HealthcareAnimation() {
             pulseIntensity="high"
           />
           
+          {/* Second floating icon - MOH Gold */}
           <FloatingIcon 
             icon={iconColors.pill.icon}
-            color={iconColors.pill.color}
+            color="#C3A86B" // MOH Gold
             position={{
               top: "25%",
               right: "25%",
@@ -66,9 +68,10 @@ export default function HealthcareAnimation() {
             pulseIntensity="medium"
           />
           
+          {/* Third floating icon - MOH Green */}
           <FloatingIcon 
             icon={iconColors.beaker.icon}
-            color={iconColors.beaker.color}
+            color="#00814A" // MOH Green
             position={{
               bottom: "25%",
               left: "30%",
@@ -79,9 +82,10 @@ export default function HealthcareAnimation() {
             pulseIntensity="high"
           />
           
+          {/* Fourth floating icon - MOH Gold */}
           <FloatingIcon 
             icon={iconColors.thermometer.icon}
-            color={iconColors.thermometer.color}
+            color="#C3A86B" // MOH Gold
             position={{
               bottom: "15%",
               right: "30%",
@@ -92,7 +96,7 @@ export default function HealthcareAnimation() {
             pulseIntensity="medium"
           />
           
-          {/* Data particles with increased count and varied speeds */}
+          {/* Data particles with MOH brand colors */}
           {Array.from({ length: 12 }).map((_, index) => (
             <DataParticle 
               key={index} 
