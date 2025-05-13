@@ -1,124 +1,121 @@
 
 import React from "react";
 import { PageSection } from "@/types/pageTypes";
-import { SectionEditor } from "../SectionEditor";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
-import { Plus, Trash2, MoveUp, MoveDown } from "lucide-react";
+import { SectionEditor } from "../SectionEditor";
+import { Plus, MoveUp, MoveDown, Trash2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
-interface SectionsListProps {
+export interface SectionsListProps {
   sections: PageSection[];
-  onAddSection: (type: PageSection["type"]) => void;
-  onRemoveSection: (index: number) => void;
-  onMoveSection: (index: number, direction: 'up' | 'down') => void;
-  onUpdateSection: (index: number, section: PageSection) => void;
+  setSections: React.Dispatch<React.SetStateAction<PageSection[]>>;
 }
 
 export const SectionsList: React.FC<SectionsListProps> = ({
   sections,
-  onAddSection,
-  onRemoveSection,
-  onMoveSection,
-  onUpdateSection
+  setSections
 }) => {
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Page Sections</h3>
-        <div className="flex gap-2 items-center">
-          <Select
-            onValueChange={(value: PageSection["type"]) => onAddSection(value as PageSection["type"])}
-          >
-            <SelectTrigger className="w-[180px]">
-              <div className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                <span>Add Section</span>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="hero">Hero Section</SelectItem>
-              <SelectItem value="content">Content Section</SelectItem>
-              <SelectItem value="cards">Cards Section</SelectItem>
-              <SelectItem value="image-text">Image + Text</SelectItem>
-              <SelectItem value="cta">Call to Action</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+  const addSection = () => {
+    setSections([
+      ...sections,
+      {
+        type: "content",
+        title: "",
+        content: ""
+      }
+    ]);
+  };
 
-      <div className="space-y-4">
-        {sections.length === 0 ? (
-          <div className="flex items-center justify-center border rounded-lg p-8">
-            <div className="text-center">
-              <p className="text-muted-foreground mb-4">
-                No sections added yet. Add your first section to get started.
-              </p>
-              <Select
-                onValueChange={(value: PageSection["type"]) => onAddSection(value as PageSection["type"])}
-              >
-                <SelectTrigger className="w-[180px] mx-auto">
-                  <div className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    <span>Add Section</span>
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hero">Hero Section</SelectItem>
-                  <SelectItem value="content">Content Section</SelectItem>
-                  <SelectItem value="cards">Cards Section</SelectItem>
-                  <SelectItem value="image-text">Image + Text</SelectItem>
-                  <SelectItem value="cta">Call to Action</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        ) : (
-          sections.map((section, index) => (
-            <Card key={index} className="relative border">
-              <CardHeader className="bg-slate-50 flex flex-row items-center justify-between py-3">
-                <CardTitle className="text-sm font-medium capitalize flex gap-2 items-center">
-                  Section {index + 1}: {section.type}
-                </CardTitle>
-                <div className="flex items-center gap-1">
+  const updateSection = (index: number, updatedSection: PageSection) => {
+    const updatedSections = [...sections];
+    updatedSections[index] = updatedSection;
+    setSections(updatedSections);
+  };
+
+  const removeSection = (index: number) => {
+    const updatedSections = [...sections];
+    updatedSections.splice(index, 1);
+    setSections(updatedSections);
+  };
+
+  const moveSection = (index: number, direction: "up" | "down") => {
+    if (
+      (direction === "up" && index === 0) ||
+      (direction === "down" && index === sections.length - 1)
+    ) {
+      return;
+    }
+
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    const updatedSections = [...sections];
+    const temp = updatedSections[index];
+    updatedSections[index] = updatedSections[newIndex];
+    updatedSections[newIndex] = temp;
+    setSections(updatedSections);
+  };
+
+  return (
+    <div className="space-y-6">
+      {sections.length === 0 ? (
+        <div className="text-center p-8 border border-dashed rounded-lg bg-muted/50">
+          <p className="text-muted-foreground mb-4">No content sections added yet</p>
+          <Button onClick={addSection}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add First Section
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {sections.map((section, index) => (
+            <Card key={index} className="p-4 border">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-md font-medium capitalize">
+                  {section.type} Section {index + 1}
+                </h3>
+                <div className="flex space-x-1">
                   <Button
                     variant="ghost"
-                    size="icon"
-                    onClick={() => onMoveSection(index, 'up')}
+                    size="sm"
+                    onClick={() => moveSection(index, "up")}
                     disabled={index === 0}
-                    className="h-8 w-8"
+                    className="h-8 w-8 p-0"
                   >
                     <MoveUp className="h-4 w-4" />
+                    <span className="sr-only">Move Up</span>
                   </Button>
                   <Button
                     variant="ghost"
-                    size="icon"
-                    onClick={() => onMoveSection(index, 'down')}
+                    size="sm"
+                    onClick={() => moveSection(index, "down")}
                     disabled={index === sections.length - 1}
-                    className="h-8 w-8"
+                    className="h-8 w-8 p-0"
                   >
                     <MoveDown className="h-4 w-4" />
+                    <span className="sr-only">Move Down</span>
                   </Button>
                   <Button
                     variant="ghost"
-                    size="icon"
-                    onClick={() => onRemoveSection(index)}
-                    className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
+                    size="sm"
+                    onClick={() => removeSection(index)}
+                    className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Remove</span>
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <SectionEditor 
-                  section={section}
-                  onChange={(updatedSection) => onUpdateSection(index, updatedSection)}
-                />
-              </CardContent>
+              </div>
+              <SectionEditor
+                section={section}
+                onChange={(updatedSection) => updateSection(index, updatedSection)}
+              />
             </Card>
-          ))
-        )}
-      </div>
+          ))}
+          <Button onClick={addSection} className="w-full">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Section
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

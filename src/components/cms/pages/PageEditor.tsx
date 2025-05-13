@@ -6,7 +6,7 @@ import { PageContent } from "@/types/pageTypes";
 
 // Custom hooks
 import { useCmsPageData } from "@/hooks/useCmsPageData";
-import { useCmsPageValidation } from "@/hooks/useCmsPageValidation";
+import { useCmsPageValidation, ValidationIssues } from "@/hooks/useCmsPageValidation";
 
 // Components
 import { PageForm } from "./editor/PageForm";
@@ -14,6 +14,7 @@ import { ContentTabs } from "./editor/ContentTabs";
 import { ActionButtons } from "./editor/ActionButtons";
 import { ErrorDisplay } from "./editor/ErrorDisplay";
 import { LoadingState } from "./editor/LoadingState";
+import { Form } from "@/components/ui/form";
 
 // Utilities
 import { createPageSubmission } from "@/utils/cmsPageSubmission";
@@ -76,44 +77,46 @@ export function PageEditor() {
 
   // Return the main component with properly structured form
   return (
-    <div className="space-y-6">
-      <ErrorDisplay error={serverError} />
+    <Form {...form}>
+      <div className="space-y-6">
+        <ErrorDisplay error={serverError} />
 
-      <ActionButtons 
-        isNewPage={isNewPage}
-        saving={saving}
-        validating={validating}
-        onBack={handleNavigateBack}
-        onSave={form.handleSubmit(onSubmit)}
-        onValidate={handleValidateContent}
-      />
+        <ActionButtons 
+          isNewPage={isNewPage}
+          saving={saving}
+          validating={validating}
+          onBack={handleNavigateBack}
+          onSave={form.handleSubmit(onSubmit)}
+          onValidate={handleValidateContent}
+        />
 
-      {/* Ensure the PageForm is correctly rendered with form context */}
-      <PageForm 
-        form={form} 
-        defaultValues={form.getValues()} 
-        onSubmit={onSubmit} 
-      />
+        {/* Ensure the PageForm is correctly rendered with form context */}
+        <PageForm 
+          form={form} 
+          defaultValues={form.getValues()} 
+          onSubmit={onSubmit} 
+        />
 
-      <ContentTabs
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        sections={sections}
-        setSections={setSections}
-        formValues={form.getValues()}
-        validating={validating}
-        validationIssues={validationIssues}
-        onValidateContent={handleValidateContent}
-      />
+        <ContentTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          sections={sections}
+          setSections={setSections}
+          formValues={form.getValues()}
+          validating={validating}
+          validationIssues={validationIssues}
+          onValidateContent={handleValidateContent}
+        />
 
-      <ActionButtons 
-        isNewPage={isNewPage}
-        saving={saving}
-        validating={validating}
-        onBack={handleNavigateBack}
-        onSave={form.handleSubmit(onSubmit)}
-        onValidate={handleValidateContent}
-      />
-    </div>
+        <ActionButtons 
+          isNewPage={isNewPage}
+          saving={saving}
+          validating={validating}
+          onBack={handleNavigateBack}
+          onSave={form.handleSubmit(onSubmit)}
+          onValidate={handleValidateContent}
+        />
+      </div>
+    </Form>
   );
 }

@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PageContent } from "@/types/pageTypes";
 import { supabase } from "@/integrations/supabase/client";
 
-interface ValidationIssues {
+export interface ValidationIssues {
   errors: string[];
   warnings: string[];
   seoSuggestions: string[];

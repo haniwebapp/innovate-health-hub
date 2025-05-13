@@ -1,25 +1,25 @@
 
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { PageSection } from "@/types/pageTypes";
 import { SectionsList } from "./SectionsList";
-import { PagePreview } from "./PagePreview";
+import { PageSection } from "@/types/pageTypes";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PageValidationIssues } from "../PageValidationIssues";
+import { PagePreview } from "./PagePreview";
 
-interface ContentTabsProps {
+export interface ContentTabsProps {
   activeTab: string;
-  setActiveTab: (value: string) => void;
+  setActiveTab: (tab: string) => void;
   sections: PageSection[];
   setSections: React.Dispatch<React.SetStateAction<PageSection[]>>;
-  formValues: { title?: string; slug?: string; metaDescription?: string; published?: boolean; };
+  formValues: any;
   validating: boolean;
-  validationIssues: { 
-    errors: string[], 
-    warnings: string[], 
-    seoSuggestions: string[] 
+  validationIssues: {
+    errors: string[];
+    warnings: string[];
+    seoSuggestions: string[];
   };
-  onValidateContent: () => void;
+  onValidateContent: () => Promise<boolean>;
 }
 
 export const ContentTabs: React.FC<ContentTabsProps> = ({
@@ -32,81 +32,42 @@ export const ContentTabs: React.FC<ContentTabsProps> = ({
   validationIssues,
   onValidateContent
 }) => {
-  const handleAddSection = (type: PageSection["type"]) => {
-    const newSection: PageSection = {
-      type,
-      title: "",
-      content: ""
-    };
-    setSections([...sections, newSection]);
-  };
-
-  const handleRemoveSection = (index: number) => {
-    const newSections = [...sections];
-    newSections.splice(index, 1);
-    setSections(newSections);
-  };
-
-  const handleMoveSection = (index: number, direction: 'up' | 'down') => {
-    if (
-      (direction === 'up' && index === 0) || 
-      (direction === 'down' && index === sections.length - 1)
-    ) {
-      return;
-    }
-    
-    const newSections = [...sections];
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
-    [newSections[index], newSections[newIndex]] = [newSections[newIndex], newSections[index]];
-    setSections(newSections);
-  };
-
-  const handleUpdateSection = (index: number, updatedSection: PageSection) => {
-    const newSections = [...sections];
-    newSections[index] = updatedSection;
-    setSections(newSections);
-  };
-
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="content">Content</TabsTrigger>
-        <TabsTrigger value="preview">Preview</TabsTrigger>
-        <TabsTrigger value="validation" className="relative">
-          Validation
-          {(validationIssues.errors.length > 0 || validationIssues.warnings.length > 0) && (
-            <Badge variant="destructive" className="ml-2 h-5 min-w-5 px-1 absolute -top-1 -right-1 rounded-full">
-              {validationIssues.errors.length + validationIssues.warnings.length}
-            </Badge>
-          )}
-        </TabsTrigger>
-      </TabsList>
+    <Card>
+      <CardHeader>
+        <CardTitle>Page Content</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-4">
+            <TabsTrigger value="content">Content Sections</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="validation">Validation</TabsTrigger>
+          </TabsList>
 
-      <TabsContent value="content" className="space-y-4 mt-4">
-        <SectionsList 
-          sections={sections}
-          onAddSection={handleAddSection}
-          onRemoveSection={handleRemoveSection}
-          onMoveSection={handleMoveSection}
-          onUpdateSection={handleUpdateSection}
-        />
-      </TabsContent>
+          <TabsContent value="content">
+            <SectionsList 
+              sections={sections} 
+              setSections={setSections} 
+            />
+          </TabsContent>
 
-      <TabsContent value="preview" className="mt-4">
-        <PagePreview 
-          title={formValues.title || "Untitled Page"} 
-          sections={sections} 
-        />
-      </TabsContent>
+          <TabsContent value="preview">
+            <PagePreview
+              title={formValues.title}
+              sections={sections}
+            />
+          </TabsContent>
 
-      <TabsContent value="validation" className="mt-4">
-        <PageValidationIssues 
-          validating={validating}
-          validationIssues={validationIssues}
-          onRunValidation={onValidateContent}
-        />
-      </TabsContent>
-    </Tabs>
+          <TabsContent value="validation">
+            <PageValidationIssues
+              validationIssues={validationIssues}
+              validating={validating}
+              onValidate={onValidateContent}
+            />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 };
