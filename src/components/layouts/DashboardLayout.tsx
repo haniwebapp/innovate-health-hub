@@ -102,9 +102,7 @@ export default function DashboardLayout() {
       <DashboardSidebar isCollapsed={isCollapsed} onToggleCollapse={handleToggleCollapse} />
       
       <div
-        className={`flex-1 transition-all duration-300 ease-in-out flex flex-col ${
-          isCollapsed ? "ml-[70px]" : "ml-64"
-        }`}
+        className={`flex-1 transition-all duration-300 ease-in-out flex flex-col`}
       >
         {/* Top header bar with glass effect */}
         <motion.header 
