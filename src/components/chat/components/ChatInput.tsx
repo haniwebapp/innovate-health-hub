@@ -45,7 +45,7 @@ export function ChatInput({
           size="sm"
           onClick={handleSendMessage}
           disabled={isLoading || !input.trim()}
-          className="absolute right-1 bottom-1 h-8 w-8 bg-moh-green hover:bg-moh-green/90 p-0"
+          className="absolute right-2 bottom-2 h-8 w-8 bg-moh-green hover:bg-moh-green/90 p-0"
           aria-label={isLoading ? "Sending message" : "Send message"}
         >
           {isLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <SendHorizontal className="h-4 w-4" aria-hidden="true" />}
