@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ActivityList } from "./ActivityList";
 import { ActivityData } from "./activityTypes";
 import { sortActivities } from "./activityUtils";
+import { recentActivities } from "./mockData";
 
 interface ActivityCardProps {
   activities: ActivityData[];
@@ -25,7 +26,8 @@ export function ActivityCard({ activities }: ActivityCardProps) {
   };
 
   // Sort activities with pinned items first and by date
-  const sortedActivities = sortActivities(activities);
+  // Use provided activities or fall back to mock data if empty array is provided
+  const sortedActivities = sortActivities(activities.length > 0 ? activities : recentActivities);
 
   return (
     <Card className="h-full border-moh-green/10 overflow-hidden relative">

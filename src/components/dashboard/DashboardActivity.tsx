@@ -5,6 +5,7 @@ import { ActivityCard } from "./activity/ActivityCard";
 import { ActivityData } from "./activity/activityTypes";
 import { fetchUserActivity } from "@/utils/activityUtils";
 import { Loader2 } from "lucide-react";
+import { recentActivities } from "./activity/mockData";
 
 export default function DashboardActivity() {
   const [activities, setActivities] = useState<ActivityData[]>([]);
@@ -64,10 +65,10 @@ export default function DashboardActivity() {
         <div className="p-4 text-center">
           <p className="text-red-500">{error}</p>
           <p className="text-sm text-muted-foreground mt-2">Using mock data as fallback</p>
-          <ActivityCard activities={[]} />
+          <ActivityCard activities={recentActivities} />
         </div>
       ) : (
-        <ActivityCard activities={activities.length > 0 ? activities : []} />
+        <ActivityCard activities={activities.length > 0 ? activities : recentActivities} />
       )}
     </motion.div>
   );
