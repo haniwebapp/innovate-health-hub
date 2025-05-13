@@ -38,17 +38,17 @@ export function HeroButtons() {
         <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
-            className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full border-0" 
+            className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group w-full border-0" 
             asChild
           >
             <Link to="/innovations">
-              <Sparkles className="mr-2 h-5 w-5" />
-              <span>Explore Innovations</span>
+              <Sparkles className="mr-2 h-5 w-5 text-white" />
+              <span className="text-white">Explore Innovations</span>
               <motion.div 
                 animate={{ x: [0, 5, 0] }}
                 transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
               >
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-5 w-5 text-white" />
               </motion.div>
             </Link>
           </Button>
@@ -57,7 +57,7 @@ export function HeroButtons() {
         <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
-            className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white shadow-md group w-full border-0" 
+            className="bg-moh-gold hover:bg-moh-darkGold text-white shadow-md group w-full border-0" 
             asChild
           >
             <Link to="/challenges">
@@ -65,9 +65,9 @@ export function HeroButtons() {
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
               >
-                <Award className="mr-2 h-5 w-5" />
+                <Award className="mr-2 h-5 w-5 text-white" />
               </motion.div>
-              <span>Join a Challenge</span>
+              <span className="text-white">Join a Challenge</span>
             </Link>
           </Button>
         </motion.div>
@@ -79,12 +79,12 @@ export function HeroButtons() {
           <Button 
             size="lg" 
             variant="outline" 
-            className="border-moh-green/30 text-white hover:bg-moh-green/10 hover:text-white shadow-sm w-full" 
+            className="border-2 border-moh-green text-moh-green hover:bg-moh-green/10 hover:text-moh-green shadow-sm w-full" 
             asChild
           >
             <Link to="/innovations/submit">
-              <FileUp className="mr-2 h-5 w-5" />
-              <span>Submit Innovation</span>
+              <FileUp className="mr-2 h-5 w-5 text-moh-green" />
+              <span className="text-moh-green">Submit Innovation</span>
             </Link>
           </Button>
         </motion.div>
@@ -93,12 +93,12 @@ export function HeroButtons() {
           <Button 
             size="lg" 
             variant="outline" 
-            className="border-moh-gold/30 text-white hover:bg-moh-gold/10 shadow-sm w-full" 
+            className="border-2 border-moh-gold text-moh-gold hover:bg-moh-gold/10 shadow-sm w-full" 
             asChild
           >
             <Link to="/investment">
-              <Coins className="mr-2 h-5 w-5" />
-              <span>Access Investment</span>
+              <Coins className="mr-2 h-5 w-5 text-moh-gold" />
+              <span className="text-moh-gold">Access Investment</span>
             </Link>
           </Button>
         </motion.div>
