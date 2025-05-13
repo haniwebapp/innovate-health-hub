@@ -47,8 +47,6 @@ export const DashboardMainRoutes = (
     {DashboardCollaborationRoutes}
     
     {/* Admin routes nested inside the DashboardLayout */}
-    <Route path="admin" element={<AdminLayout />}>
-      {AdminRoutes}
-    </Route>
+    <Route path="admin" element={<AdminLayout>{AdminRoutes}</AdminLayout>} />
   </Route>
 );
