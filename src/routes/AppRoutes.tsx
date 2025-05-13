@@ -1,15 +1,21 @@
 
 import { Routes, Route, Navigate } from "react-router-dom";
-import HomePage from "@/pages/home/index";
-import DashboardPage from "@/pages/dashboard/index";
+import HomePage from "@/pages/home/HomePage";
+import DashboardPage from "@/pages/dashboard/DashboardPage";
 import MarketplacePage from "@/pages/marketplace/index";
 import AboutPage from "@/pages/about/index";
 import InnovationsPage from "@/pages/innovations/index";
 import InnovationDetailPage from "@/pages/innovations/[id]";
 import ChallengesPage from "@/pages/challenges/index";
-import { DashboardRoutes } from "./DashboardRoutes";
 import { DashboardInnovationRoutes } from "./DashboardInnovationRoutes";
+import { DashboardRegulatoryRoutes } from "./DashboardRegulatoryRoutes";
+import { DashboardMainRoutes } from "./DashboardMainRoutes";
+import { DashboardInvestmentRoutes } from "./DashboardInvestmentRoutes";
+import { DashboardKnowledgeRoutes } from "./DashboardKnowledgeRoutes";
+import { DashboardCollaborationRoutes } from "./DashboardCollaborationRoutes";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import PolicyPage from "@/pages/policy/index";
+import RegulatoryPage from "@/pages/regulatory/index";
 
 export const AppRoutes = () => {
   return (
@@ -19,6 +25,8 @@ export const AppRoutes = () => {
       <Route path="/innovations" element={<InnovationsPage />} />
       <Route path="/innovations/:id" element={<InnovationDetailPage />} />
       <Route path="/challenges" element={<ChallengesPage />} />
+      <Route path="/policy" element={<PolicyPage />} />
+      <Route path="/regulatory" element={<RegulatoryPage />} />
       
       {/* Added Marketplace route */}
       <Route path="/marketplace" element={<MarketplacePage />} />
@@ -26,8 +34,11 @@ export const AppRoutes = () => {
       {/* Dashboard Routes */}
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<DashboardPage />} />
-        {DashboardRoutes}
         {DashboardInnovationRoutes}
+        {DashboardInvestmentRoutes}
+        {DashboardRegulatoryRoutes}
+        {DashboardKnowledgeRoutes}
+        {DashboardCollaborationRoutes}
       </Route>
       
       <Route path="*" element={<Navigate to="/" replace />} />
