@@ -1,6 +1,4 @@
-
-import { AIService, AIServiceType } from './AIServiceRegistry';
-import { AIServiceStaticReferences, CallTrace } from './types/AIServiceTypes';
+import { AIService } from "@/services/ai/AIService";
 
 export interface DocumentSummary {
   summary: string;
@@ -25,20 +23,22 @@ export interface SearchParams {
   };
 }
 
-export interface SearchResult {
+export interface SearchResultItem {
   id: string;
   title: string;
-  snippet: string;
-  relevanceScore: number;
-  category: string;
+  summary: string;
   type: string;
+  category: string;
+  relevanceScore: number;
 }
 
 export interface SearchResults {
-  results: SearchResult[];
-  totalResults: number;
-  queryExpansion?: string[];
-  suggestedQueries?: string[];
+  results: SearchResultItem[];
+  totalCount: number;
+  metadata?: {
+    processingTimeMs: number;
+    queryVector?: number[];
+  };
 }
 
 export interface TranslationResult {
@@ -84,44 +84,48 @@ export class KnowledgeAIService implements AIService {
   }
 
   static async semanticSearch(params: SearchParams): Promise<SearchResults> {
-    console.log('Performing semantic search for:', params.query, params.filters);
-    
-    // Mock implementation
-    return {
-      results: [
-        {
-          id: "doc1",
-          title: "Healthcare Innovation Guide",
-          snippet: "...provides comprehensive guidance on healthcare innovation in Saudi Arabia...",
-          relevanceScore: 0.92,
-          category: "guides",
-          type: "pdf"
-        },
-        {
-          id: "doc2",
-          title: "Regulatory Approval Process",
-          snippet: "...outlines the steps required for regulatory approval of healthcare innovations...",
-          relevanceScore: 0.85,
-          category: "regulatory",
-          type: "article"
-        },
-        {
-          id: "doc3",
-          title: "Digital Health Standards",
-          snippet: "...digital health solutions must comply with these standards...",
-          relevanceScore: 0.78,
-          category: "standards",
-          type: "document"
+    try {
+      console.log("Performing semantic search:", params);
+      
+      // Mock implementation for development
+      const mockResults: SearchResults = {
+        results: [
+          {
+            id: "1",
+            title: "Healthcare Innovation Framework",
+            summary: "A comprehensive guide to innovation methodologies in healthcare",
+            type: "Document",
+            category: "Innovation",
+            relevanceScore: 92
+          },
+          {
+            id: "2",
+            title: "Digital Health Policy Guidelines",
+            summary: "Guidelines for implementing digital health solutions in accordance with MOH policies",
+            type: "PDF",
+            category: "Policy",
+            relevanceScore: 87
+          },
+          {
+            id: "3",
+            title: "Vision 2030 Healthcare Objectives",
+            summary: "Overview of healthcare transformation goals under Saudi Vision 2030",
+            type: "Presentation",
+            category: "Strategy",
+            relevanceScore: 81
+          }
+        ],
+        totalCount: 3,
+        metadata: {
+          processingTimeMs: 235
         }
-      ],
-      totalResults: 24,
-      queryExpansion: ["healthcare innovation", "medical technology", "health tech"],
-      suggestedQueries: [
-        "healthcare innovation funding",
-        "regulatory requirements for medical devices",
-        "digital health certification"
-      ]
-    };
+      };
+      
+      return mockResults;
+    } catch (error) {
+      console.error("Error in semanticSearch:", error);
+      throw error;
+    }
   }
 
   static async translateContent(content: string, targetLanguage: string): Promise<TranslationResult> {

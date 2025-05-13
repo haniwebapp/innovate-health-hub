@@ -1,17 +1,14 @@
-
 import { AIService, AIServiceType } from './AIServiceRegistry';
 import { AIServiceStaticReferences, CallTrace } from './types/AIServiceTypes';
 
 export interface InnovationData {
   name: string;
   description: string;
-  stage: string;
   sector: string;
-  fundingNeeded?: number;
-  teamSize?: number;
-  traction?: string;
-  patentStatus?: string;
-  regulatoryStatus?: string;
+  stage: string;
+  technology?: string;
+  impact?: string;
+  target_audience?: string; // Add this property
 }
 
 export interface InvestorCriteria {

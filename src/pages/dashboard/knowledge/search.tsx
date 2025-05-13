@@ -9,6 +9,15 @@ import { SearchResultsList } from '@/components/knowledge/SearchResultsList';
 import { KnowledgeAIService, SearchParams, SearchResults } from '@/services/ai/KnowledgeAIService';
 import { useToast } from '@/hooks/use-toast';
 
+interface SearchResult {
+  id: string;
+  title: string;
+  snippet: string;
+  relevanceScore: number;
+  category: string;
+  type: string;
+}
+
 export default function SearchResultsPage() {
   const { t } = useLanguage();
   const { toast } = useToast();
@@ -72,7 +81,7 @@ export default function SearchResultsPage() {
 
       {hasSearched ? (
         <SearchResultsList 
-          results={searchResults?.results || []} 
+          results={searchResults || []} 
           loading={isSearching}
           searchQuery={searchQuery}
         />

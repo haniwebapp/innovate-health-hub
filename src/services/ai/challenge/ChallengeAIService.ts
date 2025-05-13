@@ -26,6 +26,20 @@ export interface ProposalScoreResult {
   vision2030Alignment: number;
 }
 
+export interface DuplicateDetectionResult {
+  isDuplicate: boolean;
+  similarityScore: number;
+  similarChallenges: SimilarChallenge[];
+  analysis?: string;
+}
+
+export interface SimilarChallenge {
+  id: string;
+  title: string;
+  similarity: number;
+  overlappingConcepts?: string[];
+}
+
 export class ChallengeAIService {
   static async generateChallengeIdeas(sector: string, focus?: string): Promise<ChallengeIdea[]> {
     try {
@@ -118,6 +132,39 @@ export class ChallengeAIService {
     } catch (error) {
       console.error('Error in scoreProposal:', error);
       throw error;
+    }
+  }
+
+  static async detectDuplicateChallenges(
+    title: string,
+    description: string
+  ): Promise<DuplicateDetectionResult> {
+    try {
+      console.log(`Checking for duplicate challenges with title: ${title}`);
+      
+      const response = await fetch('/supabase/functions/v1/duplicate-challenge-detection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          newChallengeTitle: title,
+          newChallengeDescription: description 
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to detect duplicates: ${errorText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in detectDuplicateChallenges:', error);
+      return {
+        isDuplicate: false,
+        similarityScore: 0,
+        similarChallenges: [],
+        analysis: `Error analyzing challenge: ${error instanceof Error ? error.message : String(error)}`
+      };
     }
   }
 }

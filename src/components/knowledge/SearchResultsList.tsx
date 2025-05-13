@@ -4,15 +4,18 @@ import { ResourceCard } from '@/components/knowledge/ResourceCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SearchResults } from '@/services/ai/KnowledgeAIService';
 
+interface SearchResultItemType {
+  id: string;
+  title: string;
+  summary?: string;
+  snippet?: string;
+  type: string;
+  category: string;
+  relevanceScore: number;
+}
+
 interface SearchResultsListProps {
-  results: Array<{
-    id: string;
-    title: string;
-    summary: string;
-    type: string;
-    category: string;
-    relevanceScore: number;
-  }> | SearchResults;
+  results: Array<SearchResultItemType> | SearchResults;
   loading?: boolean;
   searchQuery?: string;
 }
@@ -52,7 +55,7 @@ export function SearchResultsList({ results, loading = false, searchQuery }: Sea
           resource={{
             id: result.id,
             title: result.title,
-            description: result.summary,
+            description: result.summary || result.snippet || "",
             type: result.type,
             category: result.category,
             matchScore: result.relevanceScore
