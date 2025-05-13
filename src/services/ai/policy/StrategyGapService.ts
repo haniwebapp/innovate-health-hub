@@ -20,11 +20,11 @@ export class StrategyGapService {
         source: "World Health Organization",
         scope: "global",
         metrics: [
-          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 75, unit: "%" },
-          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 80, unit: "%" },
-          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 85, unit: "%" },
-          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 82, unit: "%" },
-          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 76, unit: "per 10,000" }
+          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 75, target: 90, unit: "%" },
+          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 80, target: 95, unit: "%" },
+          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 85, target: 95, unit: "%" },
+          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 82, target: 90, unit: "%" },
+          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 76, target: 85, unit: "per 10,000" }
         ]
       },
       {
@@ -33,11 +33,11 @@ export class StrategyGapService {
         source: "Gulf Cooperation Council",
         scope: "regional",
         metrics: [
-          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 70, unit: "%" },
-          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 73, unit: "%" },
-          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 79, unit: "%" },
-          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 77, unit: "%" },
-          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 65, unit: "per 10,000" }
+          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 70, target: 85, unit: "%" },
+          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 73, target: 90, unit: "%" },
+          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 79, target: 90, unit: "%" },
+          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 77, target: 88, unit: "%" },
+          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 65, target: 80, unit: "per 10,000" }
         ]
       },
       {
@@ -46,11 +46,11 @@ export class StrategyGapService {
         source: "International Health Policy Center",
         scope: "global",
         metrics: [
-          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 85, unit: "%" },
-          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 87, unit: "%" },
-          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 90, unit: "%" },
-          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 88, unit: "%" },
-          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 82, unit: "per 10,000" }
+          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 85, target: 95, unit: "%" },
+          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 87, target: 98, unit: "%" },
+          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 90, target: 99, unit: "%" },
+          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 88, target: 95, unit: "%" },
+          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 82, target: 90, unit: "per 10,000" }
         ]
       }
     ];
@@ -63,11 +63,11 @@ export class StrategyGapService {
     // In a real implementation, this would fetch from the database
     // For now, we'll return mock data
     return [
-      { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", currentValue: 58, targetValue: 80, unit: "%" },
-      { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", currentValue: 65, targetValue: 85, unit: "%" },
-      { id: "accessibility", name: "Healthcare Accessibility", category: "Access", currentValue: 72, targetValue: 90, unit: "%" },
-      { id: "quality-care", name: "Quality of Care", category: "Quality", currentValue: 70, targetValue: 85, unit: "%" },
-      { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", currentValue: 55, targetValue: 75, unit: "per 10,000" }
+      { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", currentValue: 58, value: 58, target: 80, unit: "%" },
+      { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", currentValue: 65, value: 65, target: 85, unit: "%" },
+      { id: "accessibility", name: "Healthcare Accessibility", category: "Access", currentValue: 72, value: 72, target: 90, unit: "%" },
+      { id: "quality-care", name: "Quality of Care", category: "Quality", currentValue: 70, value: 70, target: 85, unit: "%" },
+      { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", currentValue: 55, value: 55, target: 75, unit: "per 10,000" }
     ];
   }
 
@@ -96,7 +96,7 @@ export class StrategyGapService {
         const benchmarkMetric = selectedBenchmark.metrics.find(bm => bm.id === metric.id);
         if (!benchmarkMetric) return null;
         
-        const gap = benchmarkMetric.value - metric.currentValue;
+        const gap = benchmarkMetric.value - metric.value;
         const gapPercentage = (gap / benchmarkMetric.value) * 100;
         
         let priority: "critical" | "high" | "medium" | "low" = "medium";
@@ -105,25 +105,30 @@ export class StrategyGapService {
         else if (gapPercentage < 10) priority = "low";
         
         return {
+          title: `Gap in ${metric.name}`,
+          description: `Current value (${metric.value}${metric.unit}) is below benchmark (${benchmarkMetric.value}${benchmarkMetric.unit})`,
+          severity: priority === "critical" ? "high" : (priority === "high" ? "medium" : "low") as "high" | "medium" | "low",
+          potentialImpact: `Addressing this gap could improve healthcare outcomes and align better with standards`,
           metricId: metric.id,
           metricName: metric.name,
           category: metric.category,
-          currentValue: metric.currentValue,
+          currentValue: metric.value,
           benchmarkValue: benchmarkMetric.value,
           gap,
           gapPercentage,
           priority
         };
-      }).filter(Boolean) as StrategyGapAnalysisResult["gaps"];
+      }).filter(Boolean) as StrategyGap[];
       
       // Calculate category scores
-      const categories = [...new Set(currentMetrics.map(m => m.category))];
+      const categories = [...new Set(currentMetrics.map(m => m.category).filter(Boolean))];
       const categoryScores = categories.map(category => {
+        const categoryMetrics = currentMetrics.filter(m => m.category === category);
         const categoryGaps = gaps.filter(g => g.category === category);
-        const categoryScore = 100 - (categoryGaps.reduce((acc, g) => acc + g.gapPercentage, 0) / categoryGaps.length);
+        const categoryScore = 100 - (categoryGaps.reduce((acc, g) => acc + (g.gapPercentage || 0), 0) / categoryGaps.length);
         
         return {
-          category,
+          category: category as string,
           score: Math.round(categoryScore),
           benchmarkComparison: Math.round(categoryScore)
         };
@@ -167,7 +172,7 @@ export class StrategyGapService {
     const recommendations: StrategyGapAnalysisResult["recommendations"] = [];
     
     // Sort categories by lowest score
-    const sortedCategories = [...categoryScores].sort((a, b) => a.score - b.score);
+    const sortedCategories = [...(categoryScores || [])].sort((a, b) => a.score - b.score);
     
     // Generate recommendations for the lowest scoring categories
     sortedCategories.slice(0, 3).forEach(category => {
@@ -175,10 +180,11 @@ export class StrategyGapService {
       
       if (category.score < 70) {
         recommendations.push({
-          category: category.category,
+          title: `Improve ${category.category}`,
           description: `Develop a comprehensive improvement plan for ${category.category} with specific targets and milestones.`,
           expectedImpact: "Significant improvements in overall healthcare outcomes and alignment with global standards.",
-          timeframe: "medium"
+          timeframe: "medium",
+          category: category.category
         });
       }
       
@@ -186,10 +192,11 @@ export class StrategyGapService {
       const criticalGaps = categoryGaps.filter(g => g.priority === "critical");
       if (criticalGaps.length > 0) {
         recommendations.push({
-          category: category.category,
+          title: `Address Critical Gaps in ${category.category}`,
           description: `Address critical gaps in ${criticalGaps.map(g => g.metricName).join(", ")}.`,
           expectedImpact: "Rapid improvement in key healthcare indicators and better patient outcomes.",
-          timeframe: "short"
+          timeframe: "short",
+          category: category.category
         });
       }
     });
@@ -197,10 +204,11 @@ export class StrategyGapService {
     // Add general recommendations
     if (recommendations.length < 3) {
       recommendations.push({
-        category: "General",
+        title: "Establish Monitoring System",
         description: "Establish a continuous monitoring system for healthcare strategy metrics with quarterly reviews.",
         expectedImpact: "More agile response to changing healthcare needs and improved strategic alignment.",
-        timeframe: "medium"
+        timeframe: "medium",
+        category: "General"
       });
     }
     

@@ -44,7 +44,13 @@ export class BestPracticesService {
         weaknesses: ["Unable to complete analysis"],
         opportunities: [],
         threats: [],
-        recommendations: ["Try again with more detailed policy information"],
+        recommendations: [
+          {
+            title: "Try Again",
+            description: "Try again with more detailed policy information",
+            implementationTips: ["Provide more specific policy details", "Include sector-specific information"]
+          }
+        ],
         error: error.message
       };
     }

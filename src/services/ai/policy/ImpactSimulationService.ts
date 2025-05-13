@@ -44,6 +44,16 @@ export class ImpactSimulationService {
     } catch (error: any) {
       console.error("Error in policy impact simulation:", error);
       return {
+        impactScore: 0,
+        stakeholderImpact: {
+          patients: { score: 0, description: "Unable to analyze due to error." },
+          providers: { score: 0, description: "Unable to analyze due to error." },
+          payers: { score: 0, description: "Unable to analyze due to error." }
+        },
+        economicImpact: "Unable to analyze due to error.",
+        healthcareOutcomeImpact: "Unable to analyze due to error.",
+        implementationComplexity: "Error occurred",
+        recommendations: ["Analysis failed due to technical error."],
         sectors: [],
         timelineImpact: {
           shortTerm: "Unable to analyze due to error.",

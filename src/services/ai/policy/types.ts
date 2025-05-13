@@ -88,7 +88,6 @@ export interface BenchmarkData {
 }
 
 export interface StrategyGapAnalysisResult {
-  score?: number;
   gaps: StrategyGap[];
   recommendations: {
     title?: string;
@@ -142,7 +141,6 @@ export interface PolicyImpactSimulation {
   healthcareOutcomeImpact: string;
   implementationComplexity: string;
   recommendations: string[];
-  error?: string;
   sectors?: string[];
   timelineImpact?: {
     shortTerm: string;
@@ -153,6 +151,7 @@ export interface PolicyImpactSimulation {
   risks?: string[];
   opportunities?: string[];
   overallAssessment?: string;
+  error?: string;
 }
 
 // Policy Data Interface
@@ -169,16 +168,10 @@ export interface PolicyData {
 export interface PolicyImpactResult {
   impactScore: number;
   stakeholderImpact: Record<string, any>;
-  economicImpact: any;
+  economicImpact: string;
   healthcareOutcomeImpact: string;
   implementationComplexity: string;
   recommendations: string[];
-  error?: string;
-  overallScore?: number;
-  economicImpact?: {
-    score: number;
-    description: string;
-  };
   socialImpact?: {
     score: number;
     description: string;
@@ -192,4 +185,5 @@ export interface PolicyImpactResult {
     medium: string[];
     long: string[];
   };
+  error?: string;
 }
