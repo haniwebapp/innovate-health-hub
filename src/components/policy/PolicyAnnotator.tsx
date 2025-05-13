@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileText, Highlighter, BookOpen, MessageSquareDiff, CalendarCheck } from "lucide-react";
 import { PolicyAIService } from "@/services/ai/PolicyAIService";
+import { PolicyAnnotationService } from "@/services/ai/policy/PolicyAnnotationService";
 import { PolicyAnnotationResult, PolicyAnnotation, ImplementationGuidanceResult, PolicyQAResult } from "@/services/ai/policy/types";
 
 export function PolicyAnnotator() {

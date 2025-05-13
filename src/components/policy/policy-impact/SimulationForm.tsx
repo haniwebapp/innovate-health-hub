@@ -10,6 +10,9 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { PolicyData } from "@/services/ai/policy/types";
 import { initialPolicyData } from "./utils";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Loader2 } from "lucide-react";
 
 interface SimulationFormProps {
   policyData: PolicyData;
