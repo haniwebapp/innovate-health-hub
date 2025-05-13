@@ -22,11 +22,11 @@ export function HeroVisual() {
   }, [autoRotate]);
   
   const iconPositions = [
-    { icon: Dna, color: "#9b87f5", size: 24 },
-    { icon: Heart, color: "#7E69AB", size: 24 },
-    { icon: Stethoscope, color: "#0EA5E9", size: 24 },
-    { icon: HeartPulse, color: "#D6BCFA", size: 24 },
-    { icon: Pill, color: "#8B5CF6", size: 24 },
+    { icon: Dna, color: "#C3A86B", size: 24 }, // Gold color
+    { icon: Heart, color: "#00814A", size: 24 }, // Green color
+    { icon: Stethoscope, color: "#C3A86B", size: 24 }, // Gold color
+    { icon: HeartPulse, color: "#00814A", size: 24 }, // Green color
+    { icon: Pill, color: "#C3A86B", size: 24 }, // Gold color
   ];
   
   return (
@@ -40,9 +40,9 @@ export function HeroVisual() {
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 rounded-full bg-white/5 backdrop-blur-md border border-white/10"
         animate={{
           boxShadow: [
-            "0 0 20px 10px rgba(155, 135, 245, 0.1)",
-            "0 0 30px 15px rgba(155, 135, 245, 0.2)",
-            "0 0 20px 10px rgba(155, 135, 245, 0.1)"
+            "0 0 20px 10px rgba(0, 129, 74, 0.1)",
+            "0 0 30px 15px rgba(0, 129, 74, 0.2)",
+            "0 0 20px 10px rgba(0, 129, 74, 0.1)"
           ]
         }}
         transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
@@ -60,14 +60,14 @@ export function HeroVisual() {
           rotateY: { duration: 6, repeat: Infinity, repeatType: "reverse" }
         }}
       >
-        <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-xl">
+        <div className="w-20 h-20 bg-gradient-to-br from-[#00814A] to-[#006B3E] rounded-full flex items-center justify-center shadow-xl">
           <BrainCircuit className="h-10 w-10 text-white" />
         </div>
       </motion.div>
       
       {/* Orbital ring */}
       <motion.div
-        className="absolute top-1/2 left-1/2 w-full h-full rounded-full border border-white/10"
+        className="absolute top-1/2 left-1/2 w-full h-full rounded-full border border-[#C3A86B]/20"
         style={{ 
           transformOrigin: "center", 
           transform: `translate(-50%, -50%) rotate(${rotation}deg)` 
@@ -105,8 +105,8 @@ export function HeroVisual() {
       <svg className="absolute inset-0 w-full h-full" style={{ transform: `rotate(${rotation}deg)` }}>
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(155, 135, 245, 0.2)" />
-            <stop offset="100%" stopColor="rgba(14, 165, 233, 0.2)" />
+            <stop offset="0%" stopColor="rgba(0, 129, 74, 0.3)" /> {/* MOH Green */}
+            <stop offset="100%" stopColor="rgba(195, 168, 107, 0.3)" /> {/* MOH Gold */}
           </linearGradient>
         </defs>
         
@@ -156,7 +156,7 @@ export function HeroVisual() {
               y1={`${y1}%`}
               x2="50%"
               y2="50%"
-              stroke="rgba(155, 135, 245, 0.15)"
+              stroke={index % 2 === 0 ? "rgba(195, 168, 107, 0.2)" : "rgba(0, 129, 74, 0.2)"} // Alternating MOH Gold and Green
               strokeWidth="1"
               strokeDasharray="3,3"
               animate={{
@@ -176,12 +176,13 @@ export function HeroVisual() {
       {Array.from({ length: 10 }).map((_, i) => (
         <motion.div
           key={`floating-particle-${i}`}
-          className="absolute rounded-full bg-white/40"
+          className="absolute rounded-full"
           style={{
             width: Math.random() * 3 + 2,
             height: Math.random() * 3 + 2,
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            backgroundColor: i % 2 === 0 ? "rgba(0, 129, 74, 0.5)" : "rgba(195, 168, 107, 0.5)", // Alternating MOH green and gold
           }}
           animate={{
             scale: [1, 1.5, 1],
@@ -201,10 +202,11 @@ export function HeroVisual() {
       {Array.from({ length: 8 }).map((_, i) => (
         <motion.div
           key={`data-flow-${i}`}
-          className="absolute h-1 w-1 rounded-full bg-blue-400/50"
+          className="absolute h-1 w-1 rounded-full"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            backgroundColor: i % 2 === 0 ? "rgba(0, 129, 74, 0.6)" : "rgba(195, 168, 107, 0.6)", // Alternating MOH green and gold
           }}
           animate={{
             x: [0, Math.random() * 60 - 30],
