@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GlobeMapIcon, MapPin } from 'lucide-react';
+import { Globe, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -74,7 +74,7 @@ export function GeographicDistributionMap() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center">
-          <GlobeMapIcon className="h-5 w-5 text-moh-green mr-2" />
+          <Globe className="h-5 w-5 text-moh-green mr-2" />
           Geographic Distribution
         </CardTitle>
       </CardHeader>
