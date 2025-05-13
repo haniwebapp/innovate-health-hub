@@ -56,7 +56,7 @@ export function HeroButtons() {
         <Button 
           size="lg" 
           variant="outline" 
-          className="border-white/70 text-white hover:bg-white/10 hover:text-white shadow-sm group w-full sm:w-auto" 
+          className="border-moh-gold/30 text-white hover:bg-moh-green/10 hover:text-white shadow-sm group w-full sm:w-auto" 
           asChild
         >
           <Link to="/challenges">
@@ -75,7 +75,7 @@ export function HeroButtons() {
         <Button 
           size="lg" 
           variant="outline" 
-          className="border-white/70 text-white hover:bg-white/10 shadow-sm w-full sm:w-auto" 
+          className="border-white/70 text-white hover:bg-moh-green/10 shadow-sm w-full sm:w-auto" 
           asChild
         >
           <Link to="/innovations/submit">
@@ -89,7 +89,7 @@ export function HeroButtons() {
         <Button 
           size="lg" 
           variant="outline" 
-          className="border-white/70 text-white hover:bg-white/10 shadow-sm w-full sm:w-auto" 
+          className="border-white/70 text-white hover:bg-moh-gold/10 shadow-sm w-full sm:w-auto" 
           asChild
         >
           <Link to="/investment">

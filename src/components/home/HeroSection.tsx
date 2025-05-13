@@ -19,7 +19,7 @@ export default function HeroSection() {
   return (
     <motion.section
       ref={sectionRef}
-      className="relative min-h-screen pt-20 pb-16 overflow-hidden bg-gradient-to-b from-[#1A1F2C] via-[#292d3e] to-[#2e3246] text-white"
+      className="relative min-h-screen pt-20 pb-16 overflow-hidden bg-gradient-to-b from-moh-green via-[#076b3e] to-[#065832] text-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}

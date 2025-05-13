@@ -28,14 +28,14 @@ export function HeroBackground() {
         }}
       />
       
-      {/* Modern gradient orbs */}
+      {/* Modern gradient orbs with MOH colors */}
       <motion.div
         className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] rounded-full opacity-20 blur-[80px]"
         animate={{
           background: [
-            'radial-gradient(circle, rgba(148,187,233,0.7) 0%, rgba(138,138,255,0.4) 100%)',
-            'radial-gradient(circle, rgba(148,187,233,0.5) 0%, rgba(138,138,255,0.2) 100%)',
-            'radial-gradient(circle, rgba(148,187,233,0.7) 0%, rgba(138,138,255,0.4) 100%)',
+            'radial-gradient(circle, rgba(0,129,74,0.7) 0%, rgba(0,107,62,0.4) 100%)',
+            'radial-gradient(circle, rgba(0,129,74,0.5) 0%, rgba(0,107,62,0.2) 100%)',
+            'radial-gradient(circle, rgba(0,129,74,0.7) 0%, rgba(0,107,62,0.4) 100%)',
           ],
           scale: [1, 1.05, 1],
         }}
@@ -50,9 +50,9 @@ export function HeroBackground() {
         className="absolute -bottom-[20%] -right-[10%] w-[500px] h-[500px] rounded-full opacity-20 blur-[70px]"
         animate={{
           background: [
-            'radial-gradient(circle, rgba(214,188,250,0.7) 0%, rgba(155,135,245,0.4) 100%)',
-            'radial-gradient(circle, rgba(214,188,250,0.5) 0%, rgba(155,135,245,0.2) 100%)',
-            'radial-gradient(circle, rgba(214,188,250,0.7) 0%, rgba(155,135,245,0.4) 100%)',
+            'radial-gradient(circle, rgba(195,168,107,0.7) 0%, rgba(163,138,86,0.4) 100%)',
+            'radial-gradient(circle, rgba(195,168,107,0.5) 0%, rgba(163,138,86,0.2) 100%)',
+            'radial-gradient(circle, rgba(195,168,107,0.7) 0%, rgba(163,138,86,0.4) 100%)',
           ],
           scale: [1, 1.1, 1],
         }}
@@ -66,7 +66,7 @@ export function HeroBackground() {
       
       {/* Subtle animated gradient overlay */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-[#1A1F2C]/10 via-transparent to-[#1A1F2C]/30 opacity-70"
+        className="absolute inset-0 bg-gradient-to-b from-[#00814A]/10 via-transparent to-[#00814A]/30 opacity-70"
         animate={{
           opacity: [0.6, 0.8, 0.6],
         }}

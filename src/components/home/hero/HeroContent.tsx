@@ -38,7 +38,7 @@ export function HeroContent() {
         className="inline-flex items-center justify-center mb-8"
         variants={itemVariants}
       >
-        <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg shadow-xl">
+        <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-moh-gold to-moh-darkGold rounded-lg shadow-xl">
           <Sparkles className="h-6 w-6 text-white" />
         </div>
       </motion.div>
@@ -49,7 +49,7 @@ export function HeroContent() {
         variants={itemVariants}
       >
         <span className="block text-white">Transforming Healthcare</span>
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-blue-300 mt-1">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-moh-gold to-moh-lightGold mt-1">
           Through Innovation
         </span>
       </motion.h1>
@@ -70,7 +70,7 @@ export function HeroContent() {
         {/* Primary Button */}
         <Button 
           size="lg" 
-          className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg group w-full sm:w-auto border-0" 
+          className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white shadow-lg group w-full sm:w-auto border-0" 
           asChild
         >
           <Link to="/innovations">
