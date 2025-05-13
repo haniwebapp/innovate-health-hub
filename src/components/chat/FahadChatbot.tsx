@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { QuotationAIService, QuotationQuery, QuotationResponse } from "@/services/ai/quotation/QuotationAIService";
 import { useToast } from "@/hooks/use-toast";
@@ -283,7 +282,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
               >
                 <div 
                   ref={chatContentRef}
-                  className="flex-1 px-2 overflow-y-auto"
+                  className="flex-1 overflow-y-auto h-[350px] px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
                 >
                   <div className="space-y-4 pb-4">
                     {messages.map((message, idx) => (
