@@ -1,8 +1,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-// Importing the correct type from hooks instead of components
-import type { Toast } from "@/hooks/use-toast";
+// Importing the correct type for Toast
+import type { ToastType as Toast } from "@/hooks/use-toast";
 
 // Standard error handling for AI functionality
 export class AIError extends Error {
