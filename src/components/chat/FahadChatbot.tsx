@@ -1,16 +1,19 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { QuotationAIService, QuotationQuery, QuotationResponse } from "@/services/ai/quotation/QuotationAIService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
-  Lightbulb, Award, DollarSign, ShieldCheck, BookOpen, 
-  CalendarDays, X, Minimize, Maximize, SendHorizontal, Loader2,
-  MessageSquare, Sparkles, Menu
-} from "lucide-react";
+import { MessageSquare, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Import new components
+import { ChatHeader } from "./components/ChatHeader";
+import { ChatContent } from "./components/ChatContent";
+import { ChatInput } from "./components/ChatInput";
+import { ChatFooter } from "./components/ChatFooter";
+import { ChatSections, sections } from "./components/ChatSections";
 
 interface FahadChatbotProps {
   isOpen: boolean;
@@ -20,13 +23,6 @@ interface FahadChatbotProps {
 type Message = {
   type: "user" | "assistant";
   content: string;
-}
-
-type Section = {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  description: string;
 }
 
 export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
@@ -41,45 +37,6 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
   const { user } = useAuth();
   const chatContentRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const sections: Section[] = [
-    { 
-      id: "innovation-marketplace", 
-      label: "Innovation Marketplace", 
-      icon: <Lightbulb className="text-moh-gold" />,
-      description: "Discover and connect with innovative healthcare solutions."
-    },
-    { 
-      id: "challenges-portal", 
-      label: "Challenges Portal", 
-      icon: <Award className="text-moh-gold" />,
-      description: "Explore healthcare challenges and submit your solutions."
-    },
-    { 
-      id: "funding-opportunities", 
-      label: "Funding Opportunities", 
-      icon: <DollarSign className="text-moh-gold" />,
-      description: "Find funding options for your healthcare innovation."
-    },
-    { 
-      id: "regulatory-sandbox", 
-      label: "Regulatory Sandbox", 
-      icon: <ShieldCheck className="text-moh-gold" />,
-      description: "Navigate the regulatory landscape for healthcare innovations."
-    },
-    { 
-      id: "knowledge-hub", 
-      label: "Knowledge Hub", 
-      icon: <BookOpen className="text-moh-gold" />,
-      description: "Access resources and educational content."
-    },
-    { 
-      id: "events", 
-      label: "Events", 
-      icon: <CalendarDays className="text-moh-gold" />,
-      description: "Discover upcoming events, workshops, and webinars."
-    }
-  ];
   
   // Enhanced scroll functionality - scrolls to bottom whenever messages change
   const scrollToBottom = () => {
@@ -204,54 +161,14 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
           minimized ? "w-64 h-14" : "w-80 md:w-96 h-[500px] max-h-[80vh]"
         )}
       >
-        {/* Chatbot Header with Tabs */}
-        <div 
-          className={cn(
-            "flex items-center justify-between px-4 py-2",
-            "bg-gradient-to-r from-moh-green to-moh-green/80",
-            "text-white"
-          )}
-        >
-          <div className="flex items-center space-x-2">
-            {!minimized ? (
-              <>
-                <div className="flex items-center space-x-1">
-                  <Sparkles size={16} className="text-moh-gold" />
-                  <span className="font-semibold">MOH Assistant</span>
-                </div>
-                {currentSection && (
-                  <span className="text-xs bg-moh-gold/20 px-2 py-0.5 rounded-full">
-                    {sections.find(s => s.id === currentSection)?.label}
-                  </span>
-                )}
-              </>
-            ) : (
-              <div className="flex items-center space-x-1">
-                <Sparkles size={16} className="text-moh-gold" />
-                <span className="font-semibold">MOH Assistant</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center space-x-1">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-6 w-6 text-white hover:bg-white/20" 
-              onClick={toggleMinimize}
-            >
-              {minimized ? <Maximize size={14} /> : <Minimize size={14} />}
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-6 w-6 text-white hover:bg-white/20" 
-              onClick={onClose}
-            >
-              <X size={14} />
-            </Button>
-          </div>
-        </div>
+        {/* Chatbot Header */}
+        <ChatHeader 
+          minimized={minimized}
+          currentSection={currentSection}
+          sections={sections}
+          toggleMinimize={toggleMinimize}
+          onClose={onClose}
+        />
         
         {!minimized && (
           <>
@@ -280,170 +197,36 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                 value="chat" 
                 className="flex-1 flex flex-col overflow-hidden mt-2 px-1"
               >
-                <div 
-                  ref={chatContentRef}
-                  className="flex-1 overflow-y-auto h-[350px] px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
-                >
-                  <div className="space-y-4 pb-4">
-                    {messages.map((message, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className={cn(
-                          "flex",
-                          message.type === "user" ? "justify-end" : "justify-start"
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "max-w-[85%] rounded-xl p-3",
-                            message.type === "user"
-                              ? "bg-gradient-to-br from-moh-green to-moh-green/90 text-white"
-                              : "bg-gradient-to-br from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-100 dark:border-gray-800"
-                          )}
-                        >
-                          <p className="whitespace-pre-wrap text-sm">{message.content}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                    
-                    {isLoading && (
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex justify-start"
-                      >
-                        <div className="max-w-[85%] rounded-xl p-3 bg-gradient-to-br from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-100 dark:border-gray-800">
-                          <div className="flex items-center gap-1">
-                            <Loader2 size={12} className="animate-spin" />
-                            <span className="text-sm">Thinking...</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
+                <ChatContent 
+                  messages={messages}
+                  isLoading={isLoading}
+                  chatContentRef={chatContentRef}
+                  currentResponse={currentResponse}
+                  setInput={setInput}
+                />
 
-                    {/* Follow-up questions */}
-                    {currentResponse?.followUpQuestions && currentResponse.followUpQuestions.length > 0 && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.2 }}
-                        className="mt-2"
-                      >
-                        <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-2">Suggested questions:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {currentResponse.followUpQuestions.map((question, idx) => (
-                            <Button 
-                              key={idx} 
-                              variant="outline" 
-                              size="sm" 
-                              className="text-xs py-1 h-auto bg-white hover:bg-moh-green hover:text-white"
-                              onClick={() => setInput(question)}
-                            >
-                              {question}
-                            </Button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Related resources */}
-                    {currentResponse?.relatedResources && currentResponse.relatedResources.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.3 }}
-                        className="mt-3 p-3 rounded-lg bg-moh-green/5 border border-moh-green/10"
-                      >
-                        <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Related Resources:</h4>
-                        <div className="space-y-1">
-                          {currentResponse.relatedResources.map((resource, idx) => (
-                            <a
-                              key={idx}
-                              href={resource.url}
-                              className="text-xs flex items-center gap-1 text-moh-green hover:underline"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <span className="inline-block px-1.5 py-0.5 bg-moh-green/10 text-moh-green rounded text-[10px]">
-                                {resource.type}
-                              </span>
-                              {resource.title}
-                            </a>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="p-2 border-t">
-                  <div className="relative">
-                    <textarea
-                      ref={inputRef}
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      placeholder="Type your question..."
-                      className="w-full p-2 pr-10 text-sm border rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-moh-green dark:bg-gray-800 dark:border-gray-700"
-                      rows={2}
-                      disabled={isLoading}
-                    />
-                    <Button
-                      size="sm"
-                      onClick={handleSendMessage}
-                      disabled={isLoading || !input.trim()}
-                      className="absolute right-1 bottom-1 h-8 w-8 bg-moh-green hover:bg-moh-green/90 p-0"
-                    >
-                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendHorizontal className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </div>
+                <ChatInput 
+                  input={input}
+                  setInput={setInput}
+                  handleSendMessage={handleSendMessage}
+                  isLoading={isLoading}
+                  handleKeyPress={handleKeyPress}
+                  inputRef={inputRef}
+                />
               </TabsContent>
               
               <TabsContent value="sections" className="flex-1 overflow-hidden mt-2">
-                <div className="h-full overflow-y-auto p-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    {sections.map((section) => (
-                      <motion.button
-                        key={section.id}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className={cn(
-                          "flex flex-col items-center justify-center p-3 rounded-xl",
-                          "transition-colors border",
-                          currentSection === section.id 
-                            ? "bg-moh-green/10 border-moh-green/30" 
-                            : "bg-white hover:bg-gray-50 border-gray-100"
-                        )}
-                        onClick={() => handleSelectSection(section.id)}
-                      >
-                        <div className="h-8 w-8 flex items-center justify-center mb-2">
-                          {section.icon}
-                        </div>
-                        <span className="text-xs font-medium text-center">{section.label}</span>
-                      </motion.button>
-                    ))}
-                  </div>
-                  
-                  <div className="p-3 mt-2 mx-2 bg-moh-gold/10 rounded-lg border border-moh-gold/20">
-                    <h4 className="text-xs font-medium text-moh-gold mb-1">Tip:</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">
-                      Select a section to get specialized assistance and resources related to that area.
-                    </p>
-                  </div>
-                </div>
+                <ChatSections 
+                  currentSection={currentSection}
+                  onSelectSection={handleSelectSection}
+                />
               </TabsContent>
             </Tabs>
           </>
         )}
         
         {/* Chatbot Footer */}
-        <div className="px-3 py-1.5 text-[10px] text-center text-gray-400 bg-gray-50 dark:bg-gray-900 border-t">
-          Powered by MOH Innovation Platform
-        </div>
+        <ChatFooter />
       </motion.div>
     </AnimatePresence>
   );

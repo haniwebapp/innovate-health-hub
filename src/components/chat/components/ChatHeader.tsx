@@ -1,24 +1,71 @@
 
 import React from "react";
-import { MessageSquare } from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { DrawerHeader } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import { Sparkles, Maximize, Minimize, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function ChatHeader() {
+interface ChatHeaderProps {
+  minimized: boolean;
+  currentSection: string | null;
+  sections: Array<{id: string; label: string;}>;
+  toggleMinimize: () => void;
+  onClose: () => void;
+}
+
+export function ChatHeader({ 
+  minimized, 
+  currentSection, 
+  sections, 
+  toggleMinimize, 
+  onClose 
+}: ChatHeaderProps) {
   return (
-    <DrawerHeader className="bg-moh-green text-white py-3 px-4 flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Avatar className="h-8 w-8 border-2 border-white">
-          <AvatarImage src="/lovable-uploads/8b61ff0c-8ac1-4567-a8c2-24b34ecda18b.png" alt="Assistant" />
-          <AvatarFallback className="bg-white/20">
-            <MessageSquare className="h-4 w-4 text-white" />
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h3 className="text-sm font-medium">Chat with MOH Assistant</h3>
-          <p className="text-xs text-white/70">We are online!</p>
-        </div>
+    <div 
+      className={cn(
+        "flex items-center justify-between px-4 py-2",
+        "bg-gradient-to-r from-moh-green to-moh-green/80",
+        "text-white"
+      )}
+    >
+      <div className="flex items-center space-x-2">
+        {!minimized ? (
+          <>
+            <div className="flex items-center space-x-1">
+              <Sparkles size={16} className="text-moh-gold" />
+              <span className="font-semibold">MOH Assistant</span>
+            </div>
+            {currentSection && (
+              <span className="text-xs bg-moh-gold/20 px-2 py-0.5 rounded-full">
+                {sections.find(s => s.id === currentSection)?.label}
+              </span>
+            )}
+          </>
+        ) : (
+          <div className="flex items-center space-x-1">
+            <Sparkles size={16} className="text-moh-gold" />
+            <span className="font-semibold">MOH Assistant</span>
+          </div>
+        )}
       </div>
-    </DrawerHeader>
+      
+      <div className="flex items-center space-x-1">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6 text-white hover:bg-white/20" 
+          onClick={toggleMinimize}
+        >
+          {minimized ? <Maximize size={14} /> : <Minimize size={14} />}
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-6 w-6 text-white hover:bg-white/20" 
+          onClick={onClose}
+        >
+          <X size={14} />
+        </Button>
+      </div>
+    </div>
   );
 }
