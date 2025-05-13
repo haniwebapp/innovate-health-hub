@@ -1,58 +1,49 @@
 
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartBarIcon, ArrowUpRightIcon } from "lucide-react";
 
-export const StrategyAnalytics: React.FC = () => {
-  const form = useFormContext();
-  
-  // Add safeguard to check if the component is used within a Form context
-  if (!form) {
-    console.error("StrategyAnalytics must be used within a Form context");
-    return <div>Error: Form context not available</div>;
-  }
+export const StrategyAnalytics = () => {
+  // Mock data for strategy alignment scores
+  const alignmentScores = [
+    { area: "Digital Transformation", score: 85 },
+    { area: "Patient-Centered Care", score: 72 },
+    { area: "Healthcare Access", score: 93 },
+    { area: "Data Governance", score: 68 }
+  ];
 
   return (
-    <div className="space-y-6">
-      <p className="text-muted-foreground">
-        Get detailed analytics on how your policy aligns with healthcare strategy.
-      </p>
-      
-      <FormField
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Policy Text</FormLabel>
-            <FormControl>
-              <Textarea 
-                placeholder="Enter policy text for analytics" 
-                className="min-h-[200px]"
-                {...field} 
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      
-      <Button type="button" className="bg-moh-green hover:bg-moh-darkGreen">
-        Generate Analytics
-      </Button>
-      
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>Strategy Analytics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center text-muted-foreground">
-            Submit your policy for detailed strategy analytics.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <ChartBarIcon className="h-5 w-5" />
+          Strategy Alignment
+        </CardTitle>
+        <CardDescription>
+          See how your innovation aligns with strategic healthcare priorities
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {alignmentScores.map((item, index) => (
+            <div key={index} className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>{item.area}</span>
+                <span className="font-medium">{item.score}%</span>
+              </div>
+              <Progress value={item.score} className="h-2" />
+            </div>
+          ))}
+          
+          <div className="pt-4">
+            <Button size="sm" className="w-full mt-2">
+              Generate Full Analysis
+              <ArrowUpRightIcon className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
