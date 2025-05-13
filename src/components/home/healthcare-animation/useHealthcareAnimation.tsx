@@ -40,22 +40,23 @@ export const useHealthcareAnimation = (containerRef: RefObject<HTMLDivElement>) 
     };
   }, [containerRef]);
   
+  // Updated icon colors to only use MOH green and gold variants
   const iconColors = {
     heart: {
       icon: Heart,
-      color: "#ea384c"
+      color: "#00814A" // MOH green
     },
     pill: {
       icon: Pill,
-      color: "#9b87f5"
+      color: "#C3A86B" // MOH gold
     },
     beaker: {
       icon: Beaker,
-      color: "#33C3F0"
+      color: "#00814A" // MOH green
     },
     thermometer: {
       icon: Thermometer,
-      color: "#4AAF46"
+      color: "#C3A86B" // MOH gold
     }
   };
   
