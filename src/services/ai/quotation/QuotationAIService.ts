@@ -2,6 +2,7 @@
 import { AIService } from "../AIService";
 import { AIServiceType } from "../AIServiceRegistry";
 import { AIServiceStaticReferences, CallTrace } from "../types/AIServiceTypes";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface QuotationQuery {
   query: string;
@@ -32,6 +33,7 @@ export interface QuotationResponse {
 export class QuotationAIService extends AIService {
   serviceType = AIServiceType.Quotation;
   private static instance: QuotationAIService;
+  private messageHistory: {role: 'user' | 'assistant', content: string}[] = [];
 
   constructor() {
     super();
@@ -60,36 +62,47 @@ export class QuotationAIService extends AIService {
     try {
       console.log("Processing quotation query:", query);
       
-      // Mock response for development
-      return {
-        answer: `Thank you for your query about ${query.context || 'our services'}. I'd be happy to provide information on that.`,
-        quotationData: {
-          price: 5000,
-          timeframe: "3-4 weeks",
-          services: ["Consultation", "Implementation", "Support"],
-          requirements: ["Technical Documentation", "Initial Assessment"]
-        },
-        relatedResources: [
-          {
-            title: "Pricing Guidelines",
-            url: "/resources/pricing",
-            type: "Document"
-          },
-          {
-            title: "Service Catalog",
-            url: "/resources/services",
-            type: "Catalog"
-          }
-        ],
-        followUpQuestions: [
-          "Would you like a detailed breakdown of costs?",
-          "Do you need information about customization options?",
-          "Would you like to schedule a consultation?"
-        ]
-      };
+      // Add user message to history
+      this.messageHistory.push({
+        role: 'user',
+        content: query.query
+      });
+      
+      // Limit history to last 10 messages to prevent token overflow
+      if (this.messageHistory.length > 10) {
+        this.messageHistory = this.messageHistory.slice(this.messageHistory.length - 10);
+      }
+      
+      // Call the chat-gpt edge function
+      const { data, error } = await supabase.functions.invoke("chat-gpt", {
+        body: { 
+          messages: this.messageHistory,
+          context: query.context || null
+        }
+      });
+
+      if (error) {
+        console.error("Error calling chat-gpt function:", error);
+        throw error;
+      }
+      
+      // Add assistant response to history
+      if (data && data.answer) {
+        this.messageHistory.push({
+          role: 'assistant',
+          content: data.answer
+        });
+      }
+      
+      return data as QuotationResponse;
     } catch (error) {
       console.error("Error in handleQuotationQuery:", error);
       throw error;
     }
+  }
+  
+  // Clear message history (useful for starting new conversations)
+  public clearMessageHistory(): void {
+    this.messageHistory = [];
   }
 }
