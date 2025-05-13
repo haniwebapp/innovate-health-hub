@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { EventsHero } from '@/components/events/EventsHero';
-import { EventsFilter } from '@/components/events/EventsFilter';
-import { UpcomingEvents } from '@/components/events/UpcomingEvents';
-import { PastEvents } from '@/components/events/PastEvents';
-import { FeaturedEvents } from '@/components/events/FeaturedEvents';
-import { EventRecommendations } from '@/components/events/EventRecommendations';
+import EventsHero from '@/components/events/EventsHero';
+import EventsFilter from '@/components/events/EventsFilter';
+import UpcomingEvents from '@/components/events/UpcomingEvents';
+import PastEvents from '@/components/events/PastEvents';
+import FeaturedEvents from '@/components/events/FeaturedEvents';
+import EventRecommendations from '@/components/events/EventRecommendations';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Navbar from '@/components/layouts/Navbar';
