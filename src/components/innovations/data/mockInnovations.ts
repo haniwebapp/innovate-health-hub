@@ -1,7 +1,7 @@
 
 import { Innovation } from "@/types/innovations";
 
-// Updated mock data for innovations with the correct type format
+// Updated mock data for innovations with real photos
 export const mockInnovations: Innovation[] = [
   {
     id: "1",
@@ -58,7 +58,7 @@ export const mockInnovations: Innovation[] = [
     title: "Smart Medication Dispenser",
     description: "Device that helps patients adhere to complex medication regimens with reminders and monitoring. The smart dispenser automatically sorts medications, provides timely alerts, tracks adherence, and can notify caregivers or healthcare providers when doses are missed.",
     imageUrl: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    category: "MedTech",
+    category: "Medical Devices",
     tags: ["IoT", "Medication Management", "Elderly Care"],
     rating: 4.2,
     status: "New",
@@ -103,7 +103,7 @@ export const mockInnovations: Innovation[] = [
     title: "Portable Ultrasound Device",
     description: "Affordable handheld ultrasound that connects to smartphones for use in remote locations. This pocket-sized device brings advanced imaging capabilities to underserved areas, allowing for preliminary diagnostics in locations with limited access to healthcare facilities.",
     imageUrl: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    category: "MedTech",
+    category: "Medical Devices",
     tags: ["Ultrasound", "Portable", "Rural Healthcare"],
     rating: 4.7,
     status: "Established",
