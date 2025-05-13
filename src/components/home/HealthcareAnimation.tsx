@@ -104,7 +104,7 @@ export default function HealthcareAnimation() {
   return (
     <section 
       ref={containerRef}
-      className="py-16 md:py-24 bg-gradient-to-br from-moh-lightGreen/30 via-white to-moh-lightGold/30 overflow-hidden relative"
+      className="py-16 md:py-24 bg-white overflow-hidden relative"
     >
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
