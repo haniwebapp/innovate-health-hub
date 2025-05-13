@@ -112,11 +112,9 @@ export default function MediaPage() {
   
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     // In a real application, you would upload the files to a server and get URLs
-    // For now, we're just storing the file objects
+    // For now, we're just storing the preview URLs and document names
     updateFormData({
       ...data,
-      images,
-      documentFiles: documents,
       imageUrls: imagePreviewUrls,
       documentNames
     });
