@@ -1,178 +1,333 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, MapPin, Users, Video, ExternalLink } from "lucide-react";
-import { mockEvents } from "@/components/events/mockData";
-import { Event } from "@/types/events";
-import { format } from "date-fns";
+import { Calendar, MapPin, Clock, Users, Globe, Calendar as CalendarIcon, Search, Filter, Video } from "lucide-react";
 
-const EventsPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+// Sample mock data
+const upcomingEvents = [
+  {
+    id: "1",
+    title: "Digital Health Innovation Forum",
+    description: "Join healthcare leaders to discuss the latest innovations in digital health technologies and their implementation in healthcare settings.",
+    date: "2025-05-25T09:00:00",
+    endDate: "2025-05-25T16:00:00",
+    location: "King Salman Conference Center, Riyadh",
+    image: "/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png",
+    category: "Conference",
+    isVirtual: false,
+    presenter: "Dr. Ahmed Al-Farsi",
+    organization: "Ministry of Health"
+  },
+  {
+    id: "2",
+    title: "AI in Healthcare Workshop",
+    description: "Learn about practical applications of artificial intelligence in clinical decision support, diagnostics, and patient care.",
+    date: "2025-06-10T13:00:00",
+    endDate: "2025-06-10T17:00:00",
+    location: "Online",
+    image: "/lovable-uploads/dcd2d50c-77f9-409a-a6ba-fe69ade5fe12.png",
+    category: "Workshop",
+    isVirtual: true,
+    presenter: "Dr. Sarah Johnson",
+    organization: "Healthcare AI Institute"
+  },
+  {
+    id: "3",
+    title: "Healthcare Regulatory Compliance Seminar",
+    description: "A comprehensive seminar on navigating healthcare regulatory frameworks and ensuring compliance.",
+    date: "2025-06-18T10:00:00",
+    endDate: "2025-06-18T15:30:00",
+    location: "Jeddah Business Hub",
+    image: "/lovable-uploads/fc6609f7-b2c9-4eb5-8a3a-6baa876025c7.png",
+    category: "Seminar",
+    isVirtual: false,
+    presenter: "Fatima Al-Qassim",
+    organization: "Healthcare Regulatory Authority"
+  },
+  {
+    id: "4",
+    title: "Telehealth Implementation Webinar",
+    description: "Best practices for implementing telehealth solutions in healthcare organizations.",
+    date: "2025-06-22T14:00:00",
+    endDate: "2025-06-22T16:00:00",
+    location: "Online",
+    image: "/lovable-uploads/5a9acce6-713e-4091-9221-498fa246c6d3.png",
+    category: "Webinar",
+    isVirtual: true,
+    presenter: "Dr. Mohammed Al-Shaikh",
+    organization: "Telehealth Association"
+  }
+];
 
-  // Filter events based on search query and selected category
-  const filteredEvents = mockEvents.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        event.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory ? event.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
+const pastEvents = [
+  {
+    id: "5",
+    title: "Healthcare Innovation Summit 2025",
+    description: "A gathering of healthcare innovators discussing transformative technologies and approaches.",
+    date: "2025-04-15T09:00:00",
+    endDate: "2025-04-16T17:00:00",
+    location: "King Abdullah Economic City",
+    image: "/lovable-uploads/8b61ff0c-8ac1-4567-a8c2-24b34ecda18b.png",
+    category: "Summit",
+    isVirtual: false,
+    presenter: "Various Speakers",
+    organization: "Ministry of Health",
+    recordingUrl: "https://example.com/recording1"
+  },
+  {
+    id: "6",
+    title: "Medical Device Innovation Workshop",
+    description: "Hands-on workshop exploring innovative medical device technologies and development approaches.",
+    date: "2025-03-28T10:00:00",
+    endDate: "2025-03-28T16:00:00",
+    location: "Riyadh Medical Technology Center",
+    image: "/lovable-uploads/8740809b-3739-46bc-927a-4787dc7ca177.png",
+    category: "Workshop",
+    isVirtual: false,
+    presenter: "Dr. Khalid Ibrahim",
+    organization: "Medical Devices Association",
+    recordingUrl: "https://example.com/recording2"
+  }
+];
+
+// Helper function to format date
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
   });
+};
 
-  // Get unique categories
-  const categories = Array.from(new Set(mockEvents.map(event => event.category)));
+// Helper function to format time
+const formatTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
 
-  // Group events by status
-  const upcomingEvents = filteredEvents.filter(event => event.status === 'upcoming');
-  const pastEvents = filteredEvents.filter(event => event.status === 'completed');
+export default function EventsPage() {
+  const [activeTab, setActiveTab] = useState("upcoming");
+  const [searchQuery, setSearchQuery] = useState("");
   
   return (
-    <div className="container py-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Events</h1>
-          <p className="text-muted-foreground mt-1">
-            Discover healthcare innovation events, workshops, and webinars
+    <div className="container mx-auto py-8 px-4">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="text-center space-y-3">
+          <h1 className="text-3xl md:text-4xl font-bold text-moh-darkGreen">
+            Healthcare Events & Webinars
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Join industry experts, healthcare leaders, and innovators at our upcoming events.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Input 
-            placeholder="Search events..." 
-            className="max-w-xs"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input 
+              placeholder="Search events by title, speaker, or topic..." 
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button variant="outline" className="flex gap-2">
+            <Filter className="h-4 w-4" />
+            <span>Filters</span>
+          </Button>
+        </div>
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid grid-cols-2 w-full">
+            <TabsTrigger value="upcoming" className="flex gap-2">
+              <Calendar className="h-4 w-4" />
+              <span>Upcoming Events</span>
+            </TabsTrigger>
+            <TabsTrigger value="past" className="flex gap-2">
+              <CalendarIcon className="h-4 w-4" />
+              <span>Past Events</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="upcoming" className="space-y-6">
+            {upcomingEvents.length === 0 ? (
+              <div className="text-center py-12 bg-muted/50 rounded-lg">
+                <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-1">No upcoming events</h3>
+                <p className="text-muted-foreground">Check back soon for new events</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6">
+                {upcomingEvents
+                  .filter(event => 
+                    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    event.presenter.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    event.category.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map(event => (
+                    <Card key={event.id} className="overflow-hidden">
+                      <div className="md:flex">
+                        <div className="md:w-1/3 h-48 md:h-auto relative">
+                          <img 
+                            src={event.image} 
+                            alt={event.title} 
+                            className="w-full h-full object-cover"
+                          />
+                          <Badge 
+                            className={`absolute top-4 left-4 ${
+                              event.isVirtual 
+                                ? 'bg-blue-500' 
+                                : 'bg-moh-green'
+                            }`}
+                          >
+                            {event.isVirtual ? (
+                              <div className="flex items-center gap-1">
+                                <Video className="h-3 w-3" />
+                                <span>Virtual</span>
+                              </div>
+                            ) : 'In Person'}
+                          </Badge>
+                        </div>
+                        <div className="p-6 md:w-2/3">
+                          <div className="mb-4">
+                            <Badge variant="outline" className="mb-2 bg-moh-lightGreen/50 text-moh-darkGreen">
+                              {event.category}
+                            </Badge>
+                            <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                            <p className="text-muted-foreground text-sm line-clamp-2">{event.description}</p>
+                          </div>
+                          
+                          <div className="space-y-1 text-sm mb-4">
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="h-4 w-4 text-moh-green" />
+                              <span>{formatDate(event.date)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-moh-green" />
+                              <span>{formatTime(event.date)} - {formatTime(event.endDate)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {event.isVirtual ? (
+                                <>
+                                  <Globe className="h-4 w-4 text-moh-green" />
+                                  <span>{event.location}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <MapPin className="h-4 w-4 text-moh-green" />
+                                  <span>{event.location}</span>
+                                </>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4 text-moh-green" />
+                              <span>{event.presenter}, {event.organization}</span>
+                            </div>
+                          </div>
+                          
+                          <Button className="w-full md:w-auto bg-moh-green hover:bg-moh-darkGreen">
+                            Register Now
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+              </div>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="past" className="space-y-6">
+            {pastEvents.length === 0 ? (
+              <div className="text-center py-12 bg-muted/50 rounded-lg">
+                <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-1">No past events</h3>
+                <p className="text-muted-foreground">Check back later for archived events</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6">
+                {pastEvents
+                  .filter(event => 
+                    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    event.presenter.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    event.category.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map(event => (
+                    <Card key={event.id} className="overflow-hidden">
+                      <div className="md:flex">
+                        <div className="md:w-1/3 h-48 md:h-auto relative">
+                          <img 
+                            src={event.image} 
+                            alt={event.title} 
+                            className="w-full h-full object-cover opacity-80 grayscale"
+                          />
+                          <Badge 
+                            className="absolute top-4 left-4 bg-muted text-muted-foreground"
+                          >
+                            Past Event
+                          </Badge>
+                        </div>
+                        <div className="p-6 md:w-2/3">
+                          <div className="mb-4">
+                            <Badge variant="outline" className="mb-2">
+                              {event.category}
+                            </Badge>
+                            <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                            <p className="text-muted-foreground text-sm line-clamp-2">{event.description}</p>
+                          </div>
+                          
+                          <div className="space-y-1 text-sm mb-4">
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                              <span>{formatDate(event.date)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-muted-foreground" />
+                              <span>{event.location}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4 text-muted-foreground" />
+                              <span>{event.presenter}, {event.organization}</span>
+                            </div>
+                          </div>
+                          
+                          {event.recordingUrl && (
+                            <Button 
+                              variant="outline" 
+                              className="w-full md:w-auto"
+                              onClick={() => window.open(event.recordingUrl, '_blank')}
+                            >
+                              <Video className="h-4 w-4 mr-2" />
+                              Watch Recording
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+        
+        <div className="bg-moh-lightGreen/30 border border-moh-green/20 rounded-lg p-6 text-center">
+          <h3 className="text-xl font-semibold text-moh-darkGreen mb-2">Want to host an event?</h3>
+          <p className="text-muted-foreground mb-4">
+            We welcome collaboration opportunities to host healthcare innovation events or webinars.
+          </p>
+          <Button>Contact Us About Events</Button>
         </div>
       </div>
-      
-      <div className="flex flex-wrap gap-2 mb-6">
-        <Badge 
-          variant={selectedCategory === null ? "default" : "outline"}
-          onClick={() => setSelectedCategory(null)}
-          className="cursor-pointer"
-        >
-          All
-        </Badge>
-        {categories.map(category => (
-          <Badge 
-            key={category}
-            variant={selectedCategory === category ? "default" : "outline"}
-            onClick={() => setSelectedCategory(category)}
-            className="cursor-pointer"
-          >
-            {category}
-          </Badge>
-        ))}
-      </div>
-      
-      <Tabs defaultValue="upcoming" className="space-y-8">
-        <TabsList>
-          <TabsTrigger value="upcoming">Upcoming Events</TabsTrigger>
-          <TabsTrigger value="past">Past Events</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="upcoming">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingEvents.length > 0 ? (
-              upcomingEvents.map(event => (
-                <EventCard key={event.id} event={event} />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-10">
-                <p className="text-muted-foreground">No upcoming events found matching your criteria.</p>
-              </div>
-            )}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="past">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastEvents.length > 0 ? (
-              pastEvents.map(event => (
-                <EventCard key={event.id} event={event} />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-10">
-                <p className="text-muted-foreground">No past events found matching your criteria.</p>
-              </div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
     </div>
   );
-};
-
-const EventCard: React.FC<{ event: Event }> = ({ event }) => {
-  return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-xl">{event.title}</CardTitle>
-          {event.featured && (
-            <Badge className="bg-amber-500">Featured</Badge>
-          )}
-        </div>
-        <CardDescription>{event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-          {event.description}
-        </p>
-        <div className="space-y-3">
-          <div className="flex items-center text-sm">
-            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span>
-              {format(event.startDate, "MMMM d, yyyy")}
-              {event.startDate.toDateString() !== event.endDate.toDateString() && 
-                ` - ${format(event.endDate, "MMMM d, yyyy")}`}
-            </span>
-          </div>
-          <div className="flex items-center text-sm">
-            <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span>{format(event.startDate, "h:mm a")}</span>
-          </div>
-          {event.isVirtual ? (
-            <div className="flex items-center text-sm">
-              <Video className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span>Virtual Event</span>
-            </div>
-          ) : (
-            <div className="flex items-center text-sm">
-              <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span>{event.location}</span>
-            </div>
-          )}
-          {event.maxAttendees && (
-            <div className="flex items-center text-sm">
-              <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span>Limited to {event.maxAttendees} attendees</span>
-            </div>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between items-center pt-4 border-t">
-        <div>
-          <Badge variant="outline" className="mr-2">
-            {event.category}
-          </Badge>
-        </div>
-        {event.status === 'upcoming' ? (
-          <Button>Register Now</Button>
-        ) : event.recordingUrl ? (
-          <Button variant="outline" className="flex items-center">
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Watch Recording
-          </Button>
-        ) : (
-          <Badge variant="outline">Completed</Badge>
-        )}
-      </CardFooter>
-    </Card>
-  );
-};
-
-export default EventsPage;
+}

@@ -24,3 +24,57 @@ export interface Innovation {
     pendingApprovals: string[];
   };
 }
+
+// Add the missing statusColors export
+export const statusColors: Record<string, string> = {
+  'New': 'bg-blue-100 text-blue-800',
+  'Validated': 'bg-amber-100 text-amber-800',
+  'Scaling': 'bg-green-100 text-green-800',
+  'Established': 'bg-purple-100 text-purple-800'
+};
+
+// Add the missing categoryColors export
+export const categoryColors: Record<string, string> = {
+  'Digital Health': 'bg-moh-lightGreen text-moh-darkGreen border-moh-green/30',
+  'MedTech': 'bg-amber-100 text-amber-800 border-amber-300/30',
+  'Telehealth': 'bg-blue-100 text-blue-800 border-blue-300/30',
+  'Healthcare IT': 'bg-indigo-100 text-indigo-800 border-indigo-300/30',
+  'Therapeutics': 'bg-rose-100 text-rose-800 border-rose-300/30',
+  'Diagnostics': 'bg-purple-100 text-purple-800 border-purple-300/30',
+  'Wearables': 'bg-sky-100 text-sky-800 border-sky-300/30',
+  'AI Health': 'bg-emerald-100 text-emerald-800 border-emerald-300/30'
+};
+
+// Add the InnovationSubmission and SubmissionFormProgress types for the SubmissionFormContext
+export interface InnovationSubmission {
+  id?: string;
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  organization?: string;
+  website?: string;
+  contact?: string;
+  imageUrl?: string;
+  status: string;
+  regulatoryStatus?: {
+    compliant: boolean;
+    certifications: string[];
+    pendingApprovals: string[];
+  };
+  technicalDetails?: {
+    platform: string;
+    integrations: string[];
+    dataHandling: string;
+  };
+}
+
+export interface SubmissionFormProgress {
+  basicInfo: boolean;
+  details: boolean;
+  media: boolean;
+  technical: boolean;
+  regulatory: boolean;
+  contact: boolean;
+  review: boolean;
+}

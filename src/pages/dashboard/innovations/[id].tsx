@@ -89,7 +89,7 @@ export default function DashboardInnovationDetailsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                {innovation.longDescription || innovation.description}
+                {innovation.description}
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {innovation.tags.map(tag => (

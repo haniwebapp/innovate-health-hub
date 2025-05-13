@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Innovation, statusColors } from "@/types/innovations";
+import { Innovation } from "@/types/innovations";
+import { statusColors } from "@/types/innovations";
 
 export default function InnovationDetailPage() {
   const { id } = useParams();
@@ -22,8 +23,7 @@ export default function InnovationDetailPage() {
         const mockInnovation: Innovation = {
           id: id || "1",
           title: "AI-Powered Diabetes Management System",
-          description: "An innovative solution that combines continuous glucose monitoring with AI to predict blood sugar fluctuations and recommend preventive actions.",
-          longDescription: "This comprehensive platform integrates seamlessly with continuous glucose monitoring devices, collecting real-time data to build a personalized health profile. Our proprietary AI algorithms analyze this data alongside nutritional information, physical activity, and medical history to provide predictive insights about potential blood sugar fluctuations hours before they occur. The system sends timely alerts and personalized recommendations for diet adjustments, activity suggestions, or medication reminders, empowering patients to take proactive control of their health. Healthcare providers can access aggregated data through a dedicated portal, enabling more informed treatment decisions and remote patient monitoring capabilities.",
+          description: "An innovative solution that combines continuous glucose monitoring with AI to predict blood sugar fluctuations and recommend preventive actions. This comprehensive platform integrates seamlessly with continuous glucose monitoring devices, collecting real-time data to build a personalized health profile. Our proprietary AI algorithms analyze this data alongside nutritional information, physical activity, and medical history to provide predictive insights about potential blood sugar fluctuations hours before they occur. The system sends timely alerts and personalized recommendations for diet adjustments, activity suggestions, or medication reminders, empowering patients to take proactive control of their health. Healthcare providers can access aggregated data through a dedicated portal, enabling more informed treatment decisions and remote patient monitoring capabilities.",
           imageUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
           category: "Digital Health",
           tags: ["Artificial Intelligence", "Diabetes Care", "Remote Monitoring", "Preventive Health"],
@@ -120,7 +120,6 @@ export default function InnovationDetailPage() {
             <div className="prose max-w-none">
               <h2 className="text-2xl font-semibold mb-4">Overview</h2>
               <p className="text-gray-700 mb-4">{innovation.description}</p>
-              <p className="text-gray-700">{innovation.longDescription}</p>
             </div>
           </div>
           
