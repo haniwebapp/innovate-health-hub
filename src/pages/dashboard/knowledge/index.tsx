@@ -151,18 +151,18 @@ export default function DashboardKnowledgePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <BreadcrumbNav 
-          items={[{ label: t('nav.dashboard'), href: "/dashboard" }]} 
-          currentPage={t('nav.knowledge')} 
+          items={[{ label: "Dashboard", href: "/dashboard" }]} 
+          currentPage="Knowledge Hub" 
         />
         <LanguageSwitcher />
       </div>
       
       <div>
         <h1 className="text-3xl font-bold tracking-tight mb-2">
-          {t('knowledge.hub')}
+          Knowledge Hub
         </h1>
         <p className="text-muted-foreground">
-          {t('knowledge.hubDescription')}
+          Access resources, research papers, and guides to support your healthcare innovation journey
         </p>
       </div>
       
@@ -171,12 +171,12 @@ export default function DashboardKnowledgePage() {
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-moh-green mr-2" />
-          <p>{t('knowledge.loading')}</p>
+          <p>Loading resources...</p>
         </div>
       ) : error ? (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>{t('common.error')}</AlertTitle>
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : (
@@ -187,11 +187,11 @@ export default function DashboardKnowledgePage() {
           className="space-y-6"
         >
           <TabsList className="bg-muted/50">
-            <TabsTrigger value="overview">{t('knowledge.overview')}</TabsTrigger>
-            <TabsTrigger value="resources">{t('knowledge.resources')}</TabsTrigger>
-            <TabsTrigger value="learning">{t('knowledge.learningPaths')}</TabsTrigger>
-            <TabsTrigger value="search">{t('knowledge.searchResults')}</TabsTrigger>
-            <TabsTrigger value="saved">{t('knowledge.saved')}</TabsTrigger>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="resources">Resources</TabsTrigger>
+            <TabsTrigger value="learning">Learning Paths</TabsTrigger>
+            <TabsTrigger value="search">Search Results</TabsTrigger>
+            <TabsTrigger value="saved">Saved</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview" className="space-y-6">
@@ -201,10 +201,10 @@ export default function DashboardKnowledgePage() {
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <Lightbulb className="h-5 w-5 mr-2 text-moh-gold" />
-                      {t('knowledge.featuredResources')}
+                      Featured Resources
                     </CardTitle>
                     <CardDescription>
-                      {t('knowledge.featuredResourcesDescription')}
+                      Highlighted resources curated by the Ministry of Health
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -243,7 +243,7 @@ export default function DashboardKnowledgePage() {
                                 {resource.description}
                               </p>
                               <div className="flex items-center text-xs text-muted-foreground mt-auto">
-                                <span>{resource.downloads} {t('knowledge.downloads')}</span>
+                                <span>{resource.downloads} downloads</span>
                                 <span className="mx-1">•</span>
                                 <span>{new Date(resource.created_at).toLocaleDateString()}</span>
                               </div>
@@ -256,7 +256,7 @@ export default function DashboardKnowledgePage() {
                                 className="w-full"
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                  {t('knowledge.viewResource')}
+                                  View Resource
                                   <ArrowRight className="h-3 w-3 ml-1" />
                                 </Link>
                               </Button>
@@ -274,7 +274,7 @@ export default function DashboardKnowledgePage() {
                         asChild
                       >
                         <Link to="/dashboard/knowledge/resources">
-                          {t('knowledge.viewAllResources')}
+                          View All Resources
                           <ArrowRight className="h-4 w-4 ml-2" />
                         </Link>
                       </Button>
@@ -287,10 +287,10 @@ export default function DashboardKnowledgePage() {
                     <CardHeader>
                       <CardTitle className="flex items-center">
                         <BookOpen className="h-5 w-5 mr-2 text-purple-500" />
-                        {t('knowledge.bestPractices')}
+                        Best Practices
                       </CardTitle>
                       <CardDescription>
-                        {t('knowledge.bestPracticesDescription')}
+                        Learn from successful healthcare innovations
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -315,7 +315,7 @@ export default function DashboardKnowledgePage() {
                                 asChild
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                  {t('knowledge.readMore')}
+                                  Read More
                                 </Link>
                               </Button>
                             </div>
@@ -329,10 +329,10 @@ export default function DashboardKnowledgePage() {
                     <CardHeader>
                       <CardTitle className="flex items-center">
                         <FileText className="h-5 w-5 mr-2 text-blue-500" />
-                        {t('knowledge.policyGuidelines')}
+                        Policy Guidelines
                       </CardTitle>
                       <CardDescription>
-                        {t('knowledge.policyGuidelinesDescription')}
+                        Official guidance and regulatory information
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -357,7 +357,7 @@ export default function DashboardKnowledgePage() {
                                 asChild
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
-                                  {t('knowledge.readMore')}
+                                  Read More
                                 </Link>
                               </Button>
                             </div>
@@ -372,10 +372,10 @@ export default function DashboardKnowledgePage() {
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <GraduationCap className="h-5 w-5 mr-2 text-moh-green" />
-                      {t('knowledge.learningPaths')}
+                      Learning Paths
                     </CardTitle>
                     <CardDescription>
-                      {t('knowledge.learningPathsDescription')}
+                      Structured learning programs for healthcare professionals
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -390,7 +390,7 @@ export default function DashboardKnowledgePage() {
                           <CardHeader className="pb-2">
                             {path.featured && (
                               <Badge className="w-fit mb-1 bg-moh-green text-white">
-                                {t('common.featured')}
+                                Featured
                               </Badge>
                             )}
                             <CardTitle className="text-lg">{path.title}</CardTitle>
@@ -407,7 +407,7 @@ export default function DashboardKnowledgePage() {
                                 {path.level}
                               </Badge>
                               <Badge variant="outline" className="text-xs font-normal">
-                                {path.estimated_hours} {t('knowledge.hours')}
+                                {path.estimated_hours} hours
                               </Badge>
                             </div>
                           </CardContent>
@@ -419,7 +419,7 @@ export default function DashboardKnowledgePage() {
                               asChild
                             >
                               <Link to={`/dashboard/knowledge/learning/${path.id}`}>
-                                {t('knowledge.viewPath')}
+                                View Path
                                 <ArrowRight className="h-3 w-3 ml-1" />
                               </Link>
                             </Button>
@@ -436,7 +436,7 @@ export default function DashboardKnowledgePage() {
                         asChild
                       >
                         <Link to="/dashboard/knowledge/learning">
-                          {t('knowledge.viewAllLearningPaths')}
+                          View All Learning Paths
                           <ArrowRight className="h-4 w-4 ml-2" />
                         </Link>
                       </Button>
@@ -448,14 +448,14 @@ export default function DashboardKnowledgePage() {
               <div className="text-center py-12 bg-muted/20 rounded-lg border border-dashed">
                 <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">
-                  {t('knowledge.noResourcesAvailable')}
+                  No Resources Available
                 </h3>
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  {t('knowledge.noResourcesDescription')}
+                  There are currently no knowledge resources available. Please check back later.
                 </p>
                 <Button asChild>
                   <Link to="/dashboard">
-                    {t('common.returnToDashboard')}
+                    Return to Dashboard
                   </Link>
                 </Button>
               </div>
@@ -464,12 +464,12 @@ export default function DashboardKnowledgePage() {
           
           <TabsContent value="resources" className="space-y-6">
             {/* Resources tab content would go here */}
-            <p>{t('knowledge.resourcesListComingSoon')}</p>
+            <p>Resources list coming soon</p>
           </TabsContent>
 
           <TabsContent value="learning" className="space-y-6">
             {/* Learning paths tab content would go here */}
-            <p>{t('knowledge.learningPathsComingSoon')}</p>
+            <p>Learning paths coming soon</p>
           </TabsContent>
 
           <TabsContent value="search" className="space-y-6">
@@ -479,10 +479,10 @@ export default function DashboardKnowledgePage() {
               <div className="text-center py-12">
                 <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">
-                  {t('knowledge.noSearchPerformed')}
+                  No Search Performed
                 </h3>
                 <p className="text-muted-foreground">
-                  {t('knowledge.useSearchBar')}
+                  Use the search bar above to find knowledge resources
                 </p>
               </div>
             )}
@@ -490,7 +490,7 @@ export default function DashboardKnowledgePage() {
 
           <TabsContent value="saved" className="space-y-6">
             {/* Saved resources tab content would go here */}
-            <p>{t('knowledge.savedResourcesComingSoon')}</p>
+            <p>Saved resources coming soon</p>
           </TabsContent>
         </Tabs>
       )}
