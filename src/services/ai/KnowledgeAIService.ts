@@ -1,7 +1,7 @@
 
-import { AIService } from "@/services/ai/AIService";
-import { AIServiceType } from "@/services/ai/AIServiceRegistry";
-import { AIServiceStaticReferences, CallTrace } from "@/services/ai/types/AIServiceTypes";
+import { AIService } from "./AIService";
+import { AIServiceType } from "./AIServiceRegistry";
+import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
 
 export interface DocumentSummary {
   summary: string;

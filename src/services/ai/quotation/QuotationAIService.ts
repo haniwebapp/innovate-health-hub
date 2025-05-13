@@ -1,5 +1,7 @@
 
-import { AIService } from "@/services/ai/AIService";
+import { AIService } from "../AIService";
+import { AIServiceType } from "../AIServiceRegistry";
+import { AIServiceStaticReferences, CallTrace } from "../types/AIServiceTypes";
 
 export interface QuotationQuery {
   query: string;
@@ -28,6 +30,7 @@ export interface QuotationResponse {
 }
 
 export class QuotationAIService extends AIService {
+  serviceType = AIServiceType.Quotation;
   private static instance: QuotationAIService;
 
   constructor() {
@@ -39,6 +42,18 @@ export class QuotationAIService extends AIService {
       QuotationAIService.instance = new QuotationAIService();
     }
     return QuotationAIService.instance;
+  }
+
+  async isAvailable(): Promise<boolean> {
+    return true;
+  }
+
+  getStaticReferences(): AIServiceStaticReferences {
+    return {};
+  }
+
+  async recordCall(trace: CallTrace): Promise<void> {
+    console.log('Quotation AI Service call recorded:', trace);
   }
 
   public async handleQuotationQuery(query: QuotationQuery): Promise<QuotationResponse> {

@@ -18,6 +18,18 @@ export enum AIServiceType {
   Quotation = "quotation"
 }
 
+export enum AIOperationType {
+  Analysis = "analysis",
+  Generation = "generation",
+  Recommendation = "recommendation",
+  Prediction = "prediction",
+  Classification = "classification",
+  Scoring = "scoring",
+  Matching = "matching",
+  Search = "search",
+  Translation = "translation"
+}
+
 export class AIServiceRegistry {
   private static services: Map<AIServiceType, AIService> = new Map();
   

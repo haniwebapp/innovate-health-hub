@@ -1,5 +1,5 @@
 
-import { AIOperationType, AIServiceType } from "../AIServiceRegistry";
+import { AIServiceType, AIOperationType } from "../AIServiceRegistry";
 
 export class AICallTracer {
   private serviceType: AIServiceType;
