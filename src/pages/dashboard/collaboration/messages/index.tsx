@@ -8,9 +8,8 @@ import { MessageComposer } from "@/components/collaboration/messages/MessageComp
 import { ThreadList } from "@/components/collaboration/messages/ThreadList";
 import { Thread, Message, fetchUserThreads, fetchThreadMessages, sendMessage, markMessagesAsRead, createThread } from "@/utils/messageUtils";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
 import NewThreadDialog from "@/components/collaboration/messages/NewThreadDialog";
 
 export default function MessagesPage() {
@@ -205,7 +204,7 @@ export default function MessagesPage() {
       
       {!isLoading && !fetchError && (
         <Card className="h-[calc(100vh-14rem)] flex">
-          <div className="w-full md:w-72 lg:w-80 h-full">
+          <div className="w-full md:w-72 lg:w-80 h-full border-r">
             <ThreadList 
               threads={threads}
               selectedThreadId={selectedThreadId}
