@@ -14,7 +14,11 @@ interface ContentTabsProps {
   setSections: React.Dispatch<React.SetStateAction<PageSection[]>>;
   formValues: any;
   validating: boolean;
-  validationIssues: any[];
+  validationIssues: {
+    errors: string[];
+    warnings: string[];
+    seoSuggestions: string[];
+  };
   onValidateContent: () => Promise<boolean>;
 }
 

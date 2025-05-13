@@ -11,18 +11,18 @@ import {
 
 interface PageValidationIssuesProps {
   validating: boolean;
-  validationIssues: {
+  issues: {
     errors: string[];
     warnings: string[];
     seoSuggestions: string[];
   };
-  onRunValidation: () => void;
+  onValidate: () => Promise<boolean>;
 }
 
 export function PageValidationIssues({ 
   validating, 
-  validationIssues, 
-  onRunValidation 
+  issues, 
+  onValidate 
 }: PageValidationIssuesProps) {
   return (
     <Card>
@@ -41,14 +41,14 @@ export function PageValidationIssues({
                 <AlertCircle className="h-5 w-5 text-red-500" />
                 Errors
               </h3>
-              {validationIssues.errors.length === 0 ? (
+              {issues.errors.length === 0 ? (
                 <div className="flex items-center gap-2 text-green-600 mb-4">
                   <CheckCircle2 className="h-5 w-5" />
                   <span>No errors found</span>
                 </div>
               ) : (
                 <ul className="list-disc pl-5 space-y-1 mb-4">
-                  {validationIssues.errors.map((error, i) => (
+                  {issues.errors.map((error, i) => (
                     <li key={i} className="text-red-500">
                       {error}
                     </li>
@@ -62,14 +62,14 @@ export function PageValidationIssues({
                 <AlertCircle className="h-5 w-5 text-amber-500" />
                 Warnings
               </h3>
-              {validationIssues.warnings.length === 0 ? (
+              {issues.warnings.length === 0 ? (
                 <div className="flex items-center gap-2 text-green-600 mb-4">
                   <CheckCircle2 className="h-5 w-5" />
                   <span>No warnings found</span>
                 </div>
               ) : (
                 <ul className="list-disc pl-5 space-y-1 mb-4">
-                  {validationIssues.warnings.map((warning, i) => (
+                  {issues.warnings.map((warning, i) => (
                     <li key={i} className="text-amber-500">
                       {warning}
                     </li>
@@ -83,14 +83,14 @@ export function PageValidationIssues({
                 <AlertCircle className="h-5 w-5 text-blue-500" />
                 SEO Suggestions
               </h3>
-              {validationIssues.seoSuggestions.length === 0 ? (
+              {issues.seoSuggestions.length === 0 ? (
                 <div className="flex items-center gap-2 text-green-600">
                   <CheckCircle2 className="h-5 w-5" />
                   <span>No SEO suggestions</span>
                 </div>
               ) : (
                 <ul className="list-disc pl-5 space-y-1">
-                  {validationIssues.seoSuggestions.map((suggestion, i) => (
+                  {issues.seoSuggestions.map((suggestion, i) => (
                     <li key={i} className="text-blue-600">
                       {suggestion}
                     </li>
@@ -99,9 +99,9 @@ export function PageValidationIssues({
               )}
             </div>
             
-            {(validationIssues.errors.length === 0 && 
-              validationIssues.warnings.length === 0 &&
-              validationIssues.seoSuggestions.length === 0) && (
+            {(issues.errors.length === 0 && 
+              issues.warnings.length === 0 &&
+              issues.seoSuggestions.length === 0) && (
               <div className="flex flex-col items-center justify-center py-8">
                 <div className="bg-green-100 rounded-full p-3">
                   <CheckCircle2 className="h-8 w-8 text-green-600" />
@@ -116,7 +116,7 @@ export function PageValidationIssues({
             <div className="mt-4 pt-4 border-t flex justify-end">
               <Button
                 variant="outline"
-                onClick={onRunValidation}
+                onClick={onValidate}
                 className="gap-2"
               >
                 <Eye className="h-4 w-4" />
