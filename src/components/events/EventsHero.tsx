@@ -25,8 +25,55 @@ export default function EventsHero() {
       </div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 py-12 md:py-24 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 min-h-[60vh] lg:min-h-[50vh]">
+      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
+        {/* Feature icons - Moved up above the grid */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.div
+            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+          >
+            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+              <Calendar className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">Upcoming Events</h3>
+              <p className="text-sm opacity-80">Webinars, workshops & more</p>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+          >
+            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">Expert Speakers</h3>
+              <p className="text-sm opacity-80">Industry leaders & innovators</p>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+          >
+            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+              <Globe className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">Global & Local</h3>
+              <p className="text-sm opacity-80">Virtual & in-person options</p>
+            </div>
+          </motion.div>
+        </motion.div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 min-h-[50vh] lg:min-h-[40vh]">
           {/* Dashboard - Left Side */}
           <motion.div 
             className="lg:col-span-5"
@@ -112,59 +159,6 @@ export default function EventsHero() {
                 />
               </div>
             </motion.div>
-          </motion.div>
-        </div>
-      </div>
-      
-      {/* Feature icons */}
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 -mb-8">
-          <motion.div
-            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Calendar className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Upcoming Events</h3>
-              <p className="text-sm opacity-80">Webinars, workshops & more</p>
-            </div>
-          </motion.div>
-          
-          <motion.div
-            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Users className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Expert Speakers</h3>
-              <p className="text-sm opacity-80">Industry leaders & innovators</p>
-            </div>
-          </motion.div>
-          
-          <motion.div
-            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Globe className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Global & Local</h3>
-              <p className="text-sm opacity-80">Virtual & in-person options</p>
-            </div>
           </motion.div>
         </div>
       </div>
