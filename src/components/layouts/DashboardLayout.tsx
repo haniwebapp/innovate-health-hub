@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
@@ -104,7 +103,7 @@ export default function DashboardLayout() {
       
       <div
         className={`flex-1 transition-all duration-300 ease-in-out flex flex-col ${
-          isCollapsed ? "ml-[70px]" : "ml-0"
+          isCollapsed ? "ml-[70px]" : "ml-64"
         }`}
       >
         {/* Top header bar with glass effect */}
