@@ -44,6 +44,10 @@ export const DashboardMainRoutes = (
     {DashboardRegulatoryRoutes}
     {DashboardKnowledgeRoutes}
     {DashboardCollaborationRoutes}
-    {AdminRoutes}
+    
+    {/* Admin routes nested inside the DashboardLayout */}
+    <Route path="admin">
+      {AdminRoutes}
+    </Route>
   </Route>
 );

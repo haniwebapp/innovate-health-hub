@@ -1,7 +1,6 @@
 
 import { Route } from 'react-router-dom';
 
-import DashboardLayout from '@/components/layouts/DashboardLayout';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import AdminUsersList from '@/pages/admin/users/index';
 import AdminUsersEdit from '@/pages/admin/users/edit';
@@ -16,8 +15,10 @@ import EditPagePage from '@/pages/admin/cms/pages/edit';
 import NewPagePage from '@/pages/admin/cms/pages/new';
 import AdminInnovationRegistryPage from '@/pages/admin/innovations/index';
 
+// Export routes without wrapping them in a layout
+// The layout will be provided by DashboardMainRoutes
 export const AdminRoutes = (
-  <Route path="/dashboard/admin" element={<DashboardLayout />}>
+  <>
     <Route index element={<AdminDashboard />} />
     
     {/* Users Management */}
@@ -53,5 +54,5 @@ export const AdminRoutes = (
     
     {/* Innovations Management */}
     <Route path="innovations" element={<AdminInnovationRegistryPage />} />
-  </Route>
+  </>
 );

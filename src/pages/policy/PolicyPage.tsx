@@ -1,109 +1,60 @@
 
-import React, { useState } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Navbar from "@/components/layouts/Navbar";
-import Footer from "@/components/home/Footer";
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import { Vision2030AlignmentChecker } from "@/components/policy/vision-alignment";
-import { StrategyAnalytics, StrategyGapAnalyzer } from "@/components/policy/strategy";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Vision2030AlignmentChecker } from '@/components/policy/vision-alignment';
+import { StrategyAnalytics, StrategyGapAnalyzer } from '@/components/policy/strategy';
 
-const policySchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-});
-
-type PolicyFormValues = z.infer<typeof policySchema>;
-
-const PolicyPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("vision-alignment");
-
-  const form = useForm<PolicyFormValues>({
-    resolver: zodResolver(policySchema),
-    defaultValues: {
-      title: "",
-      description: "",
-    },
-  });
-
+export default function PolicyPage() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Healthcare Policy Center</h1>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Policy Analysis Tools</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex border-b mb-4">
-                  <button 
-                    className={`px-4 py-2 ${activeTab === 'vision-alignment' ? 'border-b-2 border-moh-green font-medium' : ''}`}
-                    onClick={() => setActiveTab('vision-alignment')}
-                  >
-                    Vision 2030 Alignment
-                  </button>
-                  <button 
-                    className={`px-4 py-2 ${activeTab === 'strategy-gap' ? 'border-b-2 border-moh-green font-medium' : ''}`}
-                    onClick={() => setActiveTab('strategy-gap')}
-                  >
-                    Strategy Gap Analysis
-                  </button>
-                  <button 
-                    className={`px-4 py-2 ${activeTab === 'analytics' ? 'border-b-2 border-moh-green font-medium' : ''}`}
-                    onClick={() => setActiveTab('analytics')}
-                  >
-                    Analytics
-                  </button>
-                </div>
-                
-                {/* Each tab component with proper Form wrapper */}
-                <Form {...form}>
-                  <form>
-                    {activeTab === 'vision-alignment' && <Vision2030AlignmentChecker />}
-                    {activeTab === 'strategy-gap' && <StrategyGapAnalyzer />}
-                    {activeTab === 'analytics' && <StrategyAnalytics />}
-                  </form>
-                </Form>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="lg:col-span-1">
-            <Card>
-              <CardHeader>
-                <CardTitle>Latest Policy Updates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="border-b pb-2">
-                    <h3 className="font-medium">Digital Health Framework Update</h3>
-                    <p className="text-sm text-gray-600">Updated on 10 May 2025</p>
-                  </li>
-                  <li className="border-b pb-2">
-                    <h3 className="font-medium">Telemedicine Guidelines Released</h3>
-                    <p className="text-sm text-gray-600">Released on 5 May 2025</p>
-                  </li>
-                  <li>
-                    <h3 className="font-medium">AI in Healthcare Regulation</h3>
-                    <p className="text-sm text-gray-600">Draft available for review</p>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </main>
-      
-      <Footer />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Policy & Strategy</h1>
+        <p className="text-muted-foreground">
+          Analyze policies, check Vision 2030 alignment, and identify strategic gaps
+        </p>
+      </div>
+
+      <Tabs defaultValue="vision-alignment" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="vision-alignment">Vision 2030 Alignment</TabsTrigger>
+          <TabsTrigger value="strategy-analytics">Strategy Analytics</TabsTrigger>
+          <TabsTrigger value="gap-analysis">Gap Analysis</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="vision-alignment">
+          <Card>
+            <CardHeader>
+              <CardTitle>Vision 2030 Alignment Checker</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Vision2030AlignmentChecker />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="strategy-analytics">
+          <Card>
+            <CardHeader>
+              <CardTitle>Strategy Analytics Dashboard</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <StrategyAnalytics />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="gap-analysis">
+          <Card>
+            <CardHeader>
+              <CardTitle>Strategy Gap Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <StrategyGapAnalyzer />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
-
-export default PolicyPage;
+}
