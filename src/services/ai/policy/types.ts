@@ -167,23 +167,30 @@ export interface PolicyData {
 // Policy Impact Result Interface 
 export interface PolicyImpactResult {
   impactScore: number;
-  stakeholderImpact: Record<string, any>;
-  economicImpact: string;
+  stakeholderImpact: Record<string, {
+    score: number;
+    description: string;
+  }>;
+  economicImpact: {
+    score: number;
+    description: string;
+  };
+  socialImpact: {
+    score: number;
+    description: string;
+  };
+  healthcareImpact: {
+    score: number;
+    description: string;
+  };
   healthcareOutcomeImpact: string;
   implementationComplexity: string;
   recommendations: string[];
-  socialImpact?: {
-    score: number;
-    description: string;
-  };
-  healthcareImpact?: {
-    score: number;
-    description: string;
-  };
   timeframeImpact?: {
     short: string[];
     medium: string[];
     long: string[];
   };
+  overallScore?: number;
   error?: string;
 }

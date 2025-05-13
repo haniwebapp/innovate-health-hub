@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AIService } from "../AIService";
-import { BenchmarkData, StrategyGapAnalysisResult, StrategyMetric } from "./types";
+import { BenchmarkData, StrategyGapAnalysisResult, StrategyMetric, StrategyGap } from "./types";
 
 /**
  * Service for analyzing strategy gaps against benchmarks
@@ -19,6 +19,7 @@ export class StrategyGapService {
         name: "WHO Healthcare Standards 2023",
         source: "World Health Organization",
         scope: "global",
+        value: 75, // Added missing value property
         metrics: [
           { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 75, target: 90, unit: "%" },
           { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 80, target: 95, unit: "%" },
@@ -32,6 +33,7 @@ export class StrategyGapService {
         name: "GCC Healthcare Benchmark 2023",
         source: "Gulf Cooperation Council",
         scope: "regional",
+        value: 70, // Added missing value property
         metrics: [
           { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 70, target: 85, unit: "%" },
           { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 73, target: 90, unit: "%" },
@@ -45,6 +47,7 @@ export class StrategyGapService {
         name: "Healthcare Best Practices 2023",
         source: "International Health Policy Center",
         scope: "global",
+        value: 85, // Added missing value property
         metrics: [
           { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 85, target: 95, unit: "%" },
           { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 87, target: 98, unit: "%" },
@@ -92,7 +95,7 @@ export class StrategyGapService {
       }
       
       // Calculate gaps for each metric
-      const gaps = currentMetrics.map(metric => {
+      const gaps: StrategyGap[] = currentMetrics.map(metric => {
         const benchmarkMetric = selectedBenchmark.metrics.find(bm => bm.id === metric.id);
         if (!benchmarkMetric) return null;
         
