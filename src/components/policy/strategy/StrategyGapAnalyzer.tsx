@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, CheckCircle2, FileSparkles } from "lucide-react";
+import { AlertCircle, CheckCircle2, Sparkles } from "lucide-react";
 
 export const StrategyGapAnalyzer = () => {
   // Mock data for gap analysis
@@ -17,7 +17,7 @@ export const StrategyGapAnalyzer = () => {
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <FileSparkles className="h-5 w-5" />
+          <Sparkles className="h-5 w-5" />
           Gap Analysis
         </CardTitle>
         <CardDescription>
