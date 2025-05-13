@@ -124,16 +124,6 @@ export default {
 				},
 				'shimmer': {
 					'100%': { transform: 'translateX(100%)' }
-				},
-				'morph': {
-					'0%': { borderRadius: '60% 40% 30% 70%/60% 30% 70% 40%' },
-					'50%': { borderRadius: '30% 60% 70% 40%/50% 60% 30% 60%' },
-					'100%': { borderRadius: '60% 40% 30% 70%/60% 30% 70% 40%' }
-				},
-				'float-rotate': {
-					'0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-					'25%': { transform: 'translateY(-15px) rotate(3deg)' },
-					'75%': { transform: 'translateY(15px) rotate(-3deg)' }
 				}
 			},
 			animation: {
@@ -145,16 +135,13 @@ export default {
 				'float': 'float 4s infinite ease-in-out',
 				'scale-in': 'scale-in 0.3s ease-out forwards',
 				'count-up': 'count-up 2s forwards',
-				'shimmer': 'shimmer 2s infinite',
-				'morph': 'morph 8s ease-in-out infinite',
-				'float-rotate': 'float-rotate 15s ease-in-out infinite'
+				'shimmer': 'shimmer 2s infinite'
 			},
 			backgroundImage: {
 				'hero-pattern': 'linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 100%)',
 				'card-gradient': 'linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.9))',
 				'green-gold-gradient': 'linear-gradient(135deg, rgba(0, 129, 74, 0.05) 0%, rgba(195, 168, 107, 0.05) 100%)',
 				'shimmer-gradient': 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%)',
-				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 			}
 		}
 	},

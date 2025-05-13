@@ -1,8 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { useAnimation } from "@/components/animations/AnimationProvider";
+import React from "react";
 
 interface TextRevealProps {
   text: string;
@@ -14,78 +12,61 @@ interface TextRevealProps {
 
 export function TextReveal({
   text,
-  className,
+  className = "",
   delay = 0,
   staggerDelay = 0.03,
-  splitBy = "chars",
+  splitBy = "chars"
 }: TextRevealProps) {
-  const [parts, setParts] = useState<string[]>([]);
-  const { animationsEnabled, prefersReducedMotion } = useAnimation();
+  // Split text either by characters or words
+  const items = splitBy === "chars" 
+    ? text.split("")
+    : text.split(" ");
   
-  // Split text based on splitBy prop
-  useEffect(() => {
-    if (splitBy === "chars") {
-      setParts(text.split(""));
-    } else {
-      setParts(text.split(" "));
-    }
-  }, [text, splitBy]);
-  
-  // Container variants
-  const containerVariants = {
+  // Animation variants
+  const container = {
     hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { 
+        staggerChildren: staggerDelay, 
+        delayChildren: delay,
+      },
+    }),
+  };
+  
+  const child = {
+    hidden: {
+      y: 20,
+      opacity: 0,
+    },
     visible: {
+      y: 0,
       opacity: 1,
       transition: {
-        staggerChildren: staggerDelay,
-        delayChildren: delay,
+        type: "spring",
+        damping: 12,
+        stiffness: 200,
       },
     },
   };
   
-  // Item variants
-  const itemVariants = {
-    hidden: { 
-      y: 20, 
-      opacity: 0, 
-      filter: "blur(4px)", 
-    },
-    visible: { 
-      y: 0, 
-      opacity: 1, 
-      filter: "blur(0px)",
-      transition: { 
-        type: "spring", 
-        damping: 10, 
-        stiffness: 100 
-      } 
-    },
-  };
-  
-  // If reduced motion is preferred or animations are disabled, render text directly
-  if (prefersReducedMotion || !animationsEnabled) {
-    return <span className={className}>{text}</span>;
-  }
-  
   return (
     <motion.span
-      variants={containerVariants}
+      className={className}
+      variants={container}
       initial="hidden"
       animate="visible"
-      className={cn("inline-block", className)}
     >
-      {parts.map((part, index) => (
+      {items.map((item, index) => (
         <motion.span
-          key={`${part}-${index}`}
-          variants={itemVariants}
-          className="inline-block"
+          key={index}
+          variants={child}
           style={{ 
-            marginRight: splitBy === "words" ? "0.3em" : undefined,
-            marginLeft: splitBy === "words" && index === 0 ? "0" : undefined,
+            display: splitBy === "chars" ? "inline-block" : "inline-block",
+            marginRight: splitBy === "chars" ? "0" : "0.3em",
           }}
         >
-          {part}
-          {splitBy === "words" && index < parts.length - 1 ? " " : ""}
+          {item === " " ? "\u00A0" : item}
         </motion.span>
       ))}
     </motion.span>

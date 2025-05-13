@@ -1,30 +1,30 @@
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { AnimationProvider } from "@/components/animations/AnimationProvider";
-import { SidebarProvider } from "@/components/sidebar/SidebarProvider";
+import { ReactNode } from 'react';
+import { ThemeProvider } from "next-themes";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 
-export function AppProviders({
-  children,
-  queryClient,
-}: {
-  children: React.ReactNode;
+interface AppProvidersProps {
+  children: ReactNode;
   queryClient: QueryClient;
-}) {
+}
+
+export function AppProviders({ children, queryClient }: AppProvidersProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="moh-theme">
-        <AnimationProvider>
-          <AuthProvider>
-            <SidebarProvider>
+    <ThemeProvider defaultTheme="light" storageKey="moh-theme-preference">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <LanguageProvider>
+            <TooltipProvider>
               {children}
               <Toaster />
-            </SidebarProvider>
-          </AuthProvider>
-        </AnimationProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+            </TooltipProvider>
+          </LanguageProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

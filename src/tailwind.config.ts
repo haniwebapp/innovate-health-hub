@@ -63,33 +63,21 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// MOH brand colors - enhanced with additional shades
+				// MOH brand colors
 				moh: {
 					green: '#00814A',
 					gold: '#C3A86B',
-					lightGreen: '#E8F5F0', // Updated to a proper light green for backgrounds
+					lightGreen: '#F8F8F8', // Updated to a very light white shade
 					darkGreen: '#006B3E',
 					lightGold: '#F0EAD6',
 					darkGold: '#A38A56',
 					gray: '#F5F7FA',
 					darkGray: '#4A5568',
-					// New glass effect colors
-					glassGreen: 'rgba(0, 129, 74, 0.08)',
-					glassGold: 'rgba(195, 168, 107, 0.1)',
-					// New hover shades
-					greenHover: '#007543',
-					goldHover: '#B39A5F',
-					// Additional colors for accents
-					accent1: '#00A36A', // Lighter green
-					accent2: '#D4B87B', // Lighter gold
-					accent3: '#005634', // Darker green
-					accent4: '#8A7243', // Darker gold
 				}
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				arabic: ['Tajawal', 'sans-serif'],
-				// Adding Playfair Display for headings
 				playfair: ['Playfair Display', 'serif'],
 			},
 			borderRadius: {
@@ -129,44 +117,6 @@ export default {
 				'count-up': {
 					'0%': { content: '"0"' },
 					'100%': { content: 'attr(data-value)' }
-				},
-				'shimmer': {
-					'100%': { transform: 'translateX(100%)' }
-				},
-				'morph': {
-					'0%': { borderRadius: '60% 40% 30% 70%/60% 30% 70% 40%' },
-					'50%': { borderRadius: '30% 60% 70% 40%/50% 60% 30% 60%' },
-					'100%': { borderRadius: '60% 40% 30% 70%/60% 30% 70% 40%' }
-				},
-				'float-rotate': {
-					'0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-					'25%': { transform: 'translateY(-15px) rotate(3deg)' },
-					'75%': { transform: 'translateY(15px) rotate(-3deg)' }
-				},
-				'text-shimmer': {
-					'0%': { backgroundPosition: '-200%' },
-					'100%': { backgroundPosition: '200%' }
-				},
-				'wave': {
-					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-10px)' }
-				},
-				'spin-slow': {
-					'0%': { transform: 'rotate(0deg)' },
-					'100%': { transform: 'rotate(360deg)' }
-				},
-				'breathe': {
-					'0%, 100%': { transform: 'scale(1)' },
-					'50%': { transform: 'scale(1.1)' }
-				},
-				'ping-slow': {
-					'0%': { transform: 'scale(1)', opacity: '1' },
-					'75%, 100%': { transform: 'scale(2)', opacity: '0' }
-				},
-				'gradient-flow': {
-					'0%': { backgroundPosition: '0% 50%' },
-					'50%': { backgroundPosition: '100% 50%' },
-					'100%': { backgroundPosition: '0% 50%' }
 				}
 			},
 			animation: {
@@ -177,39 +127,11 @@ export default {
 				'pulse-soft': 'pulse-soft 3s infinite ease-in-out',
 				'float': 'float 4s infinite ease-in-out',
 				'scale-in': 'scale-in 0.3s ease-out forwards',
-				'count-up': 'count-up 2s forwards',
-				'shimmer': 'shimmer 2s infinite',
-				'morph': 'morph 8s ease-in-out infinite',
-				'float-rotate': 'float-rotate 15s ease-in-out infinite',
-				'text-shimmer': 'text-shimmer 3s infinite linear',
-				'wave': 'wave 3s infinite ease-in-out',
-				'spin-slow': 'spin-slow 8s linear infinite',
-				'breathe': 'breathe 4s infinite ease-in-out',
-				'ping-slow': 'ping-slow 3s infinite cubic-bezier(0, 0, 0.2, 1)',
-				'gradient-flow': 'gradient-flow 3s ease infinite'
+				'count-up': 'count-up 2s forwards'
 			},
 			backgroundImage: {
 				'hero-pattern': 'linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 100%)',
 				'card-gradient': 'linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(250, 250, 250, 0.9))',
-				'green-gold-gradient': 'linear-gradient(135deg, rgba(0, 129, 74, 0.05) 0%, rgba(195, 168, 107, 0.05) 100%)',
-				'shimmer-gradient': 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%)',
-				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-				'text-gradient': 'linear-gradient(90deg, #00814A, #C3A86B, #00814A)',
-				'card-hover': 'linear-gradient(145deg, rgba(0, 129, 74, 0.1) 0%, rgba(195, 168, 107, 0.1) 100%)',
-				'glass-card': 'linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%)',
-				'main-button': 'linear-gradient(90deg, #00814A, #007744)',
-				'secondary-button': 'linear-gradient(90deg, #C3A86B, #B39A5F)',
-			},
-			boxShadow: {
-				'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-				'card-hover': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
-				'button-inner': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.4)',
-				'input-focus': '0 0 0 2px rgba(0, 129, 74, 0.2)',
-			},
-			transitionTimingFunction: {
-				'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-				'bounce-out': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-				'soft-in': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
 			}
 		}
 	},

@@ -1,59 +1,103 @@
 
-import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ArrowRight, Award, Sparkles, FileUp, Coins } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAnimation } from "@/components/animations/AnimationProvider";
-import { GlassButton } from "@/components/ui/glassmorphism";
 
 export function HeroButtons() {
-  const { animationsEnabled } = useAnimation();
-
+  const { language } = useLanguage();
+  
+  // Animation variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.3 }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 260, damping: 20 }
+    }
+  };
+  
   return (
     <motion.div 
-      className="flex flex-wrap justify-center gap-4"
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: {
-            type: "spring",
-            stiffness: 400,
-            damping: 25
-          }
-        }
-      }}
+      className="flex flex-col sm:flex-row justify-center flex-wrap gap-4" 
+      variants={containerVariants} 
+      initial="hidden" 
+      animate="visible"
     >
-      <motion.div
-        whileHover={animationsEnabled ? { scale: 1.05, y: -2 } : undefined}
-        whileTap={animationsEnabled ? { scale: 0.95 } : undefined}
-      >
-        <Button
+      <motion.div variants={itemVariants}>
+        <Button 
+          size="lg" 
+          className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full sm:w-auto" 
           asChild
-          size="lg"
-          className={`bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md hover:shadow-lg transition-all duration-300 px-6`}
         >
-          <Link to="/innovations" className="flex items-center gap-2">
-            Explore Innovations
-            {animationsEnabled && (
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              >
-                <ArrowRight size={18} />
-              </motion.div>
-            )}
-            {!animationsEnabled && <ArrowRight size={18} />}
+          <Link to="/innovations">
+            <Sparkles className="mr-2 h-5 w-5" />
+            <span>Explore Innovations</span>
+            <motion.div 
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
+            >
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </motion.div>
           </Link>
         </Button>
       </motion.div>
-
-      <GlassButton variant="gold" className="px-6 py-2.5" whileHover={{ scale: 1.05 }}>
-        <Link to="/about" className="flex items-center gap-2">
-          About Platform
-        </Link>
-      </GlassButton>
+      
+      <motion.div variants={itemVariants}>
+        <Button 
+          size="lg" 
+          variant="outline" 
+          className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm group w-full sm:w-auto" 
+          asChild
+        >
+          <Link to="/challenges">
+            <motion.div 
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+            >
+              <Award className="mr-2 h-5 w-5" />
+            </motion.div>
+            <span>Join a Challenge</span>
+          </Link>
+        </Button>
+      </motion.div>
+      
+      <motion.div variants={itemVariants}>
+        <Button 
+          size="lg" 
+          variant="outline" 
+          className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm w-full sm:w-auto" 
+          asChild
+        >
+          <Link to="/innovations/submit">
+            <FileUp className="mr-2 h-5 w-5" />
+            <span>Submit Innovation</span>
+          </Link>
+        </Button>
+      </motion.div>
+      
+      <motion.div variants={itemVariants}>
+        <Button 
+          size="lg" 
+          variant="outline" 
+          className="border-moh-darkGold text-moh-darkGold hover:bg-moh-lightGold/50 shadow-sm w-full sm:w-auto" 
+          asChild
+        >
+          <Link to="/investment">
+            <Coins className="mr-2 h-5 w-5" />
+            <span>Access Investment</span>
+          </Link>
+        </Button>
+      </motion.div>
     </motion.div>
   );
 }
