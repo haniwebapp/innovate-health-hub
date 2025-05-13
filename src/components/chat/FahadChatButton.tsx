@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X } from "lucide-react";
-import { PulseRings } from "@/components/home/hero/animations/PulseRings";
 
 interface FahadChatButtonProps {
   hasNewMessages?: boolean;
@@ -33,17 +32,16 @@ export function FahadChatButton({ hasNewMessages = false, onClick, isOpen }: Fah
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
-      <AnimatePresence mode="wait">
-        {isPulsing && !isOpen && (
-          <div className="absolute inset-0">
-            <PulseRings />
-          </div>
-        )}
-      </AnimatePresence>
+      {isPulsing && !isOpen && (
+        <div className="absolute inset-0 -m-1">
+          <div className="absolute inset-0 animate-ping rounded-full bg-moh-green/30"></div>
+          <div className="absolute inset-0 animate-pulse rounded-full bg-moh-green/20 duration-700"></div>
+        </div>
+      )}
       
       <motion.button
         onClick={onClick}
-        className="relative flex items-center justify-center w-14 h-14 rounded-full bg-moh-green shadow-lg hover:bg-moh-darkGreen transition-colors"
+        className="relative flex items-center justify-center w-16 h-16 rounded-full bg-moh-green shadow-lg hover:bg-moh-darkGreen transition-colors"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         animate={isPulsing ? { y: [0, -5, 0], transition: { repeat: 3, duration: 1 } } : {}}
@@ -75,7 +73,7 @@ export function FahadChatButton({ hasNewMessages = false, onClick, isOpen }: Fah
         
         {hasNewMessages && !isOpen && (
           <motion.div
-            className="absolute -top-1 -right-1 h-3 w-3 bg-moh-gold rounded-full"
+            className="absolute -top-1 -right-1 h-4 w-4 bg-moh-gold rounded-full border-2 border-white"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 500, damping: 15 }}

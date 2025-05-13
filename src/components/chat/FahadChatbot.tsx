@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { QuotationAIService, QuotationQuery, QuotationResponse } from "@/services/ai/quotation/QuotationAIService";
@@ -7,9 +8,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
 import { Loader2, Send, MessageSquare, Search, Info, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface FahadChatbotProps {
   isOpen: boolean;
@@ -37,7 +39,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
     if (isOpen && messages.length === 0) {
       setMessages([{ 
         type: "assistant", 
-        content: "مرحبًا! I'm Fahad, your investment assistant. How can I help with your investment queries and quotations today?" 
+        content: "Welcome to our healthcare innovation platform! How can I help you today?" 
       }]);
     }
   }, [isOpen, messages.length]);
@@ -57,16 +59,16 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
       const query: QuotationQuery = {
         query: userMessage,
         userId: user?.id,
-        context: "investment"
+        context: "healthcare"
       };
       
-      const response = await QuotationAIService.handleQuotationQuery(query);
+      const response = await QuotationAIService.getInstance().handleQuotationQuery(query);
       setCurrentResponse(response);
       
       // Add assistant message to chat
       setMessages(prev => [...prev, { type: "assistant", content: response.answer }]);
     } catch (error: any) {
-      console.error("Error getting quotation response:", error);
+      console.error("Error getting response:", error);
       toast({
         variant: "destructive",
         title: "Service Error",
@@ -88,26 +90,54 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
     }
   };
 
+  const renderQuickActions = () => {
+    const actions = [
+      { label: "Purchase info", action: () => setInput("I need information about purchasing") },
+      { label: "Order status", action: () => setInput("What is the status of my order?") },
+      { label: "Refund info", action: () => setInput("How can I request a refund?") },
+      { label: "Shipping", action: () => setInput("Tell me about shipping options") },
+    ];
+
+    return (
+      <div className="flex flex-wrap gap-2 my-3 px-1">
+        {actions.map((action, idx) => (
+          <Button 
+            key={idx}
+            variant="outline" 
+            size="sm"
+            onClick={action.action}
+            className={`text-xs border rounded-full px-4 py-1 ${
+              idx === 3 ? "bg-moh-green text-white border-moh-green" : "bg-white text-moh-darkGray border-moh-darkGray/30"
+            }`}
+          >
+            {action.label}
+          </Button>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="h-[80vh] max-h-[80vh]">
-        <DrawerHeader className="bg-moh-green text-white">
+        <DrawerHeader className="bg-moh-green text-white py-3 px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <MessageSquare className="h-6 w-6" />
-            </div>
+            <Avatar className="h-8 w-8 border-2 border-white">
+              <AvatarImage src="/lovable-uploads/8b61ff0c-8ac1-4567-a8c2-24b34ecda18b.png" alt="Assistant" />
+              <AvatarFallback className="bg-white/20">
+                <MessageSquare className="h-4 w-4 text-white" />
+              </AvatarFallback>
+            </Avatar>
             <div>
-              <DrawerTitle>Fahad - Investment Assistant</DrawerTitle>
-              <DrawerDescription className="text-white/70 text-xs">
-                Ask me about investments and quotations
-              </DrawerDescription>
+              <h3 className="text-sm font-medium">Chat with MOH Assistant</h3>
+              <p className="text-xs text-white/70">We are online!</p>
             </div>
           </div>
         </DrawerHeader>
         
-        <div className="flex flex-col h-full p-4 overflow-hidden">
-          <ScrollArea className="flex-1 mb-4 pr-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
+        <div className="flex flex-col h-full bg-white overflow-hidden">
+          <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
+            <div className="space-y-4 py-4">
               {messages.map((message, idx) => (
                 <div 
                   key={idx} 
@@ -120,22 +150,9 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                     className={`max-w-[80%] rounded-lg p-3 ${
                       message.type === "user" 
                         ? "bg-moh-green text-white" 
-                        : "bg-slate-100 text-slate-800"
+                        : "bg-gray-100 text-gray-800"
                     }`}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      {message.type === "user" ? (
-                        <div className="flex items-center gap-1 text-xs opacity-80">
-                          <User size={12} />
-                          <span>You</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1 text-xs opacity-80">
-                          <MessageSquare size={12} />
-                          <span>Fahad</span>
-                        </div>
-                      )}
-                    </div>
                     <div className="whitespace-pre-wrap">{message.content}</div>
                   </motion.div>
                 </div>
@@ -146,14 +163,8 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                   <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="max-w-[80%] rounded-lg p-3 bg-slate-100 text-slate-800"
+                    className="max-w-[80%] rounded-lg p-3 bg-gray-100 text-gray-800"
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="flex items-center gap-1 text-xs opacity-80">
-                        <MessageSquare size={12} />
-                        <span>Fahad</span>
-                      </div>
-                    </div>
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
                       <span>Thinking...</span>
@@ -162,6 +173,8 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                 </div>
               )}
             </div>
+
+            {messages.length === 1 && !isLoading && renderQuickActions()}
 
             {/* Quotation Data */}
             {currentResponse?.quotationData && (
@@ -174,7 +187,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                   <CardContent className="pt-4">
                     <h4 className="text-sm font-medium flex items-center gap-1 mb-2 text-moh-darkGreen">
                       <Info size={14} />
-                      Quotation Details
+                      Details
                     </h4>
                     
                     <div className="space-y-2">
@@ -232,7 +245,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                <Card className="mt-4 bg-slate-50 border-slate-200">
+                <Card className="mt-4 bg-gray-50 border-gray-200">
                   <CardContent className="pt-4">
                     <h4 className="text-sm font-medium flex items-center gap-1 mb-2">
                       <Search size={14} />
@@ -265,7 +278,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <Card className="mt-4 bg-slate-50 border-slate-200">
+                <Card className="mt-4 mb-4 bg-gray-50 border-gray-200">
                   <CardContent className="pt-4">
                     <h4 className="text-sm font-medium flex items-center gap-1 mb-2">
                       <Info size={14} />
@@ -292,22 +305,27 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
             )}
           </ScrollArea>
 
-          <div className="flex items-end gap-2 pt-2">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Type your question here..."
-              className="flex-1 resize-none min-h-[60px]"
-              disabled={isLoading}
-            />
-            <Button 
-              onClick={handleSendMessage} 
-              disabled={isLoading || !input.trim()}
-              className="h-[60px] px-5 bg-moh-green hover:bg-moh-darkGreen"
-            >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            </Button>
+          <div className="border-t p-3">
+            <div className="flex items-end gap-2 pt-1">
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Enter your message..."
+                className="flex-1 resize-none min-h-[50px] max-h-[100px] border-gray-300"
+                disabled={isLoading}
+              />
+              <Button 
+                onClick={handleSendMessage} 
+                disabled={isLoading || !input.trim()}
+                className="h-[50px] w-[50px] p-0 rounded-full bg-moh-green hover:bg-moh-darkGreen"
+              >
+                {isLoading ? 
+                  <Loader2 className="h-5 w-5 animate-spin" /> : 
+                  <Send className="h-5 w-5" />
+                }
+              </Button>
+            </div>
           </div>
         </div>
       </DrawerContent>

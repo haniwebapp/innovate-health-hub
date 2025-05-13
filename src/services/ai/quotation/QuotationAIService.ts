@@ -1,53 +1,80 @@
 
-import { AIService, AIServiceType } from '../AIServiceRegistry';
-import { AIServiceStaticReferences, CallTrace } from '../types/AIServiceTypes';
+import { AIService } from "@/services/ai/AIService";
 
 export interface QuotationQuery {
   query: string;
+  userId?: string | null;
   context?: string;
-  userId?: string;
+}
+
+export interface Resource {
+  title: string;
+  url: string;
+  type: string;
+}
+
+export interface QuotationData {
+  price?: number;
+  timeframe?: string;
+  services?: string[];
+  requirements?: string[];
 }
 
 export interface QuotationResponse {
-  response: string;
-  source?: string;
-  confidence: number;
-  contextLinks?: string[];
+  answer: string;
+  quotationData?: QuotationData;
+  relatedResources?: Resource[];
+  followUpQuestions?: string[];
 }
 
-export class QuotationAIService implements AIService {
-  serviceType = AIServiceType.Quotation;
+export class QuotationAIService extends AIService {
+  private static instance: QuotationAIService;
 
-  constructor() {}
-
-  static getInstance(): QuotationAIService {
-    return new QuotationAIService();
+  private constructor() {
+    super('quotation');
   }
 
-  async isAvailable(): Promise<boolean> {
-    return true;
+  public static getInstance(): QuotationAIService {
+    if (!QuotationAIService.instance) {
+      QuotationAIService.instance = new QuotationAIService();
+    }
+    return QuotationAIService.instance;
   }
 
-  getStaticReferences(): AIServiceStaticReferences {
-    return {};
-  }
-
-  async recordCall(trace: CallTrace): Promise<void> {
-    console.log('Quotation AI Service call recorded:', trace);
-  }
-
-  static async handleQuotationQuery(query: QuotationQuery): Promise<QuotationResponse> {
-    console.log('Processing quotation query:', query);
-    
-    // Mock implementation
-    return {
-      response: `Here's a response to your query: "${query.query}"`,
-      source: "Database/Knowledge Base",
-      confidence: 0.92,
-      contextLinks: [
-        "/resources/healthcare-policy",
-        "/faq/quotation-process"
-      ]
-    };
+  public async handleQuotationQuery(query: QuotationQuery): Promise<QuotationResponse> {
+    try {
+      console.log("Processing quotation query:", query);
+      
+      // Mock response for development
+      return {
+        answer: `Thank you for your query about ${query.context || 'our services'}. I'd be happy to provide information on that.`,
+        quotationData: {
+          price: 5000,
+          timeframe: "3-4 weeks",
+          services: ["Consultation", "Implementation", "Support"],
+          requirements: ["Technical Documentation", "Initial Assessment"]
+        },
+        relatedResources: [
+          {
+            title: "Pricing Guidelines",
+            url: "/resources/pricing",
+            type: "Document"
+          },
+          {
+            title: "Service Catalog",
+            url: "/resources/services",
+            type: "Catalog"
+          }
+        ],
+        followUpQuestions: [
+          "Would you like a detailed breakdown of costs?",
+          "Do you need information about customization options?",
+          "Would you like to schedule a consultation?"
+        ]
+      };
+    } catch (error) {
+      console.error("Error in handleQuotationQuery:", error);
+      throw error;
+    }
   }
 }
