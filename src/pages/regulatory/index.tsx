@@ -13,6 +13,7 @@ import { SupportServicesSection } from "@/components/regulatory/SupportServicesS
 import { RegulatoryFrameworks } from "@/components/regulatory/RegulatoryFrameworks";
 import { AIComplianceAnalysis } from "@/components/regulatory/ComplianceResults";
 import { AIComplianceAnalyzer } from "@/components/regulatory/AIComplianceAnalyzer";
+import { RegulatoryFAQ } from "@/components/regulatory/RegulatoryFAQ";
 import { Shield, ClipboardCheck, FileCheck, ChevronRight } from "lucide-react";
 
 export default function RegulatoryPage() {
