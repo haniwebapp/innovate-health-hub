@@ -14,6 +14,11 @@ import PagesListPage from '@/pages/admin/cms/pages/index';
 import EditPagePage from '@/pages/admin/cms/pages/edit';
 import NewPagePage from '@/pages/admin/cms/pages/new';
 import AdminInnovationRegistryPage from '@/pages/admin/innovations/index';
+import AdminChallengeManagementPage from '@/pages/admin/challenges/index';
+import AdminInvestmentToolsPage from '@/pages/admin/investment/index';
+import AdminKnowledgePage from '@/pages/admin/knowledge/index';
+import AdminNotificationsPage from '@/pages/admin/notifications/index';
+import AdminReportsPage from '@/pages/admin/reports/index';
 
 // Export routes without wrapping them in a layout
 // The layout will be provided by DashboardMainRoutes
@@ -54,5 +59,25 @@ export const AdminRoutes = (
     
     {/* Innovations Management */}
     <Route path="innovations" element={<AdminInnovationRegistryPage />} />
+    
+    {/* NEWLY ADDED ROUTES */}
+    
+    {/* Challenges Management */}
+    <Route path="challenges" element={<AdminChallengeManagementPage />} />
+    
+    {/* Investment Tools */}
+    <Route path="investment" element={<AdminInvestmentToolsPage />} />
+    
+    {/* Regulatory Sandbox - Using 'sandbox' path as per the sidebar navigation */}
+    <Route path="sandbox" element={<AdminAnalytics />} /> {/* Placeholder until sandbox page is created */}
+    
+    {/* Knowledge Repository */}
+    <Route path="knowledge" element={<AdminKnowledgePage />} />
+    
+    {/* Notifications & Communications */}
+    <Route path="notifications" element={<AdminNotificationsPage />} />
+    
+    {/* Reports */}
+    <Route path="reports" element={<AdminAnalytics />} /> {/* Placeholder until reports page is created */}
   </>
 );
