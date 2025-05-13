@@ -221,16 +221,32 @@ export default function FeaturedSection() {
                             <p className="text-gray-700 mb-4">
                               {story.description}
                             </p>
-                            <Button variant="outline" className="border-moh-green text-moh-green self-start group">
-                              Read More
-                              <motion.span className="inline-block ml-1" animate={{
-                            x: [0, 3, 0]
-                          }} transition={{
-                            duration: 1.5,
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            repeatDelay: 1
-                          }}>
+                            <Button 
+                              variant="outline" 
+                              className="border-moh-green text-moh-green self-start group hover:bg-moh-lightGreen transition-all duration-300 relative overflow-hidden"
+                            >
+                              <span className="relative z-10">Read More</span>
+                              <motion.span 
+                                className="absolute inset-0 bg-moh-green/10 rounded-md z-0"
+                                initial={{ scale: 0, opacity: 0 }}
+                                whileHover={{ 
+                                  scale: 1, 
+                                  opacity: 1, 
+                                  transition: { duration: 0.3 } 
+                                }}
+                              />
+                              <motion.span 
+                                className="inline-block ml-1 relative z-10"
+                                animate={{
+                                  x: [0, 3, 0]
+                                }} 
+                                transition={{
+                                  duration: 1.5,
+                                  repeat: Infinity,
+                                  repeatType: "loop",
+                                  repeatDelay: 1
+                                }}
+                              >
                                 →
                               </motion.span>
                             </Button>
@@ -255,11 +271,37 @@ export default function FeaturedSection() {
                 {successStories.map((_, index) => <button key={index} onClick={() => setActiveSlide(index)} className={`w-3 h-3 rounded-full ${activeSlide === index ? 'bg-moh-green' : 'bg-gray-300'}`} aria-label={`Go to slide ${index + 1}`} />)}
               </div>
               <div className="flex gap-2">
-                <Button size="icon" variant="outline" onClick={prevSlide} className="rounded-full w-10 h-10 hover:bg-moh-lightGreen hover:border-moh-green">
-                  <ArrowLeft className="h-4 w-4" />
+                <Button 
+                  size="icon" 
+                  variant="outline" 
+                  onClick={prevSlide} 
+                  className="rounded-full w-10 h-10 hover:bg-moh-lightGreen hover:border-moh-green transition-all duration-300 relative overflow-hidden"
+                >
+                  <ArrowLeft className="h-4 w-4 relative z-10" />
+                  <motion.span 
+                    className="absolute inset-0 bg-moh-green/10 rounded-full"
+                    initial={{ scale: 0 }}
+                    whileHover={{ 
+                      scale: 1,
+                      transition: { duration: 0.2 }
+                    }}
+                  />
                 </Button>
-                <Button size="icon" variant="outline" onClick={nextSlide} className="rounded-full w-10 h-10 hover:bg-moh-lightGreen hover:border-moh-green">
-                  <ArrowRight className="h-4 w-4" />
+                <Button 
+                  size="icon" 
+                  variant="outline" 
+                  onClick={nextSlide} 
+                  className="rounded-full w-10 h-10 hover:bg-moh-lightGreen hover:border-moh-green transition-all duration-300 relative overflow-hidden"
+                >
+                  <ArrowRight className="h-4 w-4 relative z-10" />
+                  <motion.span 
+                    className="absolute inset-0 bg-moh-green/10 rounded-full"
+                    initial={{ scale: 0 }}
+                    whileHover={{ 
+                      scale: 1,
+                      transition: { duration: 0.2 }
+                    }}
+                  />
                 </Button>
               </div>
             </motion.div>
