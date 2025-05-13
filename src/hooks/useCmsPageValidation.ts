@@ -3,7 +3,12 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { PageContent } from "@/types/pageTypes";
 import { supabase } from "@/integrations/supabase/client";
-import { ValidationIssues } from "@/components/cms/pages/PageValidationIssues";
+
+interface ValidationIssues {
+  errors: string[];
+  warnings: string[];
+  seoSuggestions: string[];
+}
 
 export function useCmsPageValidation() {
   const { toast } = useToast();

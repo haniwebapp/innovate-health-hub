@@ -9,22 +9,20 @@ import {
   Eye 
 } from "lucide-react";
 
-export interface ValidationIssues {
-  errors: string[];
-  warnings: string[];
-  seoSuggestions: string[];
-}
-
 interface PageValidationIssuesProps {
   validating: boolean;
-  validationIssues: ValidationIssues;
-  onValidate: () => Promise<boolean>;
+  validationIssues: {
+    errors: string[];
+    warnings: string[];
+    seoSuggestions: string[];
+  };
+  onRunValidation: () => void;
 }
 
 export function PageValidationIssues({ 
   validating, 
   validationIssues, 
-  onValidate 
+  onRunValidation 
 }: PageValidationIssuesProps) {
   return (
     <Card>
@@ -118,7 +116,7 @@ export function PageValidationIssues({
             <div className="mt-4 pt-4 border-t flex justify-end">
               <Button
                 variant="outline"
-                onClick={onValidate}
+                onClick={onRunValidation}
                 className="gap-2"
               >
                 <Eye className="h-4 w-4" />

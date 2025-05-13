@@ -4,7 +4,7 @@ import { SectionsList } from "./SectionsList";
 import { PageSection } from "@/types/pageTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { PageValidationIssues, ValidationIssues } from "../PageValidationIssues";
+import { PageValidationIssues } from "../PageValidationIssues";
 import { PagePreview } from "./PagePreview";
 
 interface ContentTabsProps {
@@ -14,7 +14,7 @@ interface ContentTabsProps {
   setSections: React.Dispatch<React.SetStateAction<PageSection[]>>;
   formValues: any;
   validating: boolean;
-  validationIssues: ValidationIssues;
+  validationIssues: any[];
   onValidateContent: () => Promise<boolean>;
 }
 
@@ -57,7 +57,7 @@ export const ContentTabs: React.FC<ContentTabsProps> = ({
 
           <TabsContent value="validation">
             <PageValidationIssues
-              validationIssues={validationIssues}
+              issues={validationIssues}
               validating={validating}
               onValidate={onValidateContent}
             />
