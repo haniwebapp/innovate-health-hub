@@ -28,76 +28,81 @@ export function HeroButtons() {
   
   return (
     <motion.div 
-      className="flex flex-col sm:flex-row justify-center lg:justify-start flex-wrap gap-4" 
+      className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 mt-8" 
       variants={containerVariants} 
       initial="hidden" 
       animate="visible"
     >
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white shadow-md group w-full sm:w-auto border-0" 
-          asChild
-        >
-          <Link to="/innovations">
-            <Sparkles className="mr-2 h-5 w-5" />
-            <span>Explore Innovations</span>
-            <motion.div 
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
-            >
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </motion.div>
-          </Link>
-        </Button>
-      </motion.div>
+      {/* Primary buttons - first row */}
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
+        <motion.div variants={itemVariants} className="flex-1">
+          <Button 
+            size="lg" 
+            className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full border-0" 
+            asChild
+          >
+            <Link to="/innovations">
+              <Sparkles className="mr-2 h-5 w-5" />
+              <span>Explore Innovations</span>
+              <motion.div 
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
+              >
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </motion.div>
+            </Link>
+          </Button>
+        </motion.div>
+        
+        <motion.div variants={itemVariants} className="flex-1">
+          <Button 
+            size="lg" 
+            className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white shadow-md group w-full border-0" 
+            asChild
+          >
+            <Link to="/challenges">
+              <motion.div 
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+              >
+                <Award className="mr-2 h-5 w-5" />
+              </motion.div>
+              <span>Join a Challenge</span>
+            </Link>
+          </Button>
+        </motion.div>
+      </div>
       
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          variant="outline" 
-          className="border-moh-gold/30 text-white hover:bg-moh-green/10 hover:text-white shadow-sm group w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/challenges">
-            <motion.div 
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-            >
-              <Award className="mr-2 h-5 w-5" />
-            </motion.div>
-            <span>Join a Challenge</span>
-          </Link>
-        </Button>
-      </motion.div>
-      
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          variant="outline" 
-          className="border-white/70 text-white hover:bg-moh-green/10 shadow-sm w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/innovations/submit">
-            <FileUp className="mr-2 h-5 w-5" />
-            <span>Submit Innovation</span>
-          </Link>
-        </Button>
-      </motion.div>
-      
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          variant="outline" 
-          className="border-white/70 text-white hover:bg-moh-gold/10 shadow-sm w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/investment">
-            <Coins className="mr-2 h-5 w-5" />
-            <span>Access Investment</span>
-          </Link>
-        </Button>
-      </motion.div>
+      {/* Secondary buttons - second row */}
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
+        <motion.div variants={itemVariants} className="flex-1">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="border-moh-green/30 text-white hover:bg-moh-green/10 hover:text-white shadow-sm w-full" 
+            asChild
+          >
+            <Link to="/innovations/submit">
+              <FileUp className="mr-2 h-5 w-5" />
+              <span>Submit Innovation</span>
+            </Link>
+          </Button>
+        </motion.div>
+        
+        <motion.div variants={itemVariants} className="flex-1">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="border-moh-gold/30 text-white hover:bg-moh-gold/10 shadow-sm w-full" 
+            asChild
+          >
+            <Link to="/investment">
+              <Coins className="mr-2 h-5 w-5" />
+              <span>Access Investment</span>
+            </Link>
+          </Button>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
