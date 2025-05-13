@@ -1,4 +1,38 @@
 
+export interface PolicyData {
+  name: string;
+  description: string;
+  sector: string;
+  stakeholders?: string[];
+  goals?: string[];
+}
+
+export interface Vision2030AlignmentResult {
+  overallScore: number;
+  alignmentAreas: {
+    pillar: string;
+    score: number;
+    relevance: string;
+    opportunities: string[];
+  }[];
+  recommendations: string[];
+  overallAssessment: string;
+}
+
+export interface PolicyImpactResult {
+  impactScore: number;
+  stakeholderImpact: {
+    [key: string]: {
+      score: number;
+      description: string;
+    };
+  };
+  economicImpact: string;
+  healthcareOutcomeImpact: string;
+  implementationComplexity: string;
+  recommendations: string[];
+}
+
 export interface PolicyAnnotation {
   section: string;
   annotation: string;
@@ -177,5 +211,94 @@ export class PolicyAIService {
     await new Promise(resolve => setTimeout(resolve, 1200));
     
     return result;
+  }
+
+  static async simulateImpact(policyData: PolicyData, params: {timeframe: string; region: string}): Promise<PolicyImpactResult> {
+    // This would typically call an AI service or backend API
+    // For now, we'll return mock data
+    const mockResult: PolicyImpactResult = {
+      impactScore: 78,
+      stakeholderImpact: {
+        patients: {
+          score: 85,
+          description: "Patients will likely experience improved healthcare access and quality."
+        },
+        providers: {
+          score: 75,
+          description: "Healthcare providers may need to adapt to new workflows but will benefit from better data."
+        },
+        government: {
+          score: 82,
+          description: "Government will see improved healthcare efficiency and potential cost savings."
+        },
+        industry: {
+          score: 65,
+          description: "Industry players will need to meet higher standards but gain market clarity."
+        }
+      },
+      economicImpact: "The policy is expected to create moderate economic growth in the healthcare technology sector with potential for 3-5% increase in related jobs over the specified timeframe.",
+      healthcareOutcomeImpact: "Improved data sharing and standardization is likely to result in better clinical decision making and reduced medical errors by approximately 12% within the implementation period.",
+      implementationComplexity: "Medium complexity implementation requiring coordination across multiple stakeholders and technical systems. Estimated timeline for full adoption is 18-24 months.",
+      recommendations: [
+        "Create a detailed implementation roadmap with clear milestones",
+        "Establish a stakeholder feedback mechanism to identify issues early",
+        "Develop comprehensive training programs for healthcare providers",
+        "Consider phased rollout to address technical challenges"
+      ]
+    };
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    return mockResult;
+  }
+
+  static async checkVision2030Alignment(policyData: PolicyData): Promise<Vision2030AlignmentResult> {
+    // This would typically call an AI service or backend API
+    // For now, we'll return mock data
+    const mockResult: Vision2030AlignmentResult = {
+      overallScore: 82,
+      alignmentAreas: [
+        {
+          pillar: "Vibrant Society",
+          score: 85,
+          relevance: "The policy strongly supports healthcare improvement goals under the Vibrant Society pillar.",
+          opportunities: [
+            "Enhanced healthcare services accessibility",
+            "Improved quality of life through better health outcomes"
+          ]
+        },
+        {
+          pillar: "Thriving Economy",
+          score: 78,
+          relevance: "The policy moderately supports economic diversification through healthcare innovation.",
+          opportunities: [
+            "Development of local health technology sector",
+            "Creation of skilled jobs in healthcare technology"
+          ]
+        },
+        {
+          pillar: "Ambitious Nation",
+          score: 80,
+          relevance: "The policy contributes to building a more effective government through healthcare modernization.",
+          opportunities: [
+            "Improved governance of healthcare technology",
+            "Better data for evidence-based policy making"
+          ]
+        }
+      ],
+      recommendations: [
+        "Strengthen economic impact by including more local content requirements",
+        "Enhance alignment with digital transformation objectives",
+        "Consider adding metrics tied directly to Vision 2030 KPIs",
+        "Include references to specific Vision 2030 programs in the policy"
+      ],
+      overallAssessment: "The policy demonstrates strong alignment with Vision 2030, particularly in healthcare quality improvement and innovation support. Minor enhancements could further strengthen this alignment."
+    };
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1700));
+    
+    return mockResult;
   }
 }
