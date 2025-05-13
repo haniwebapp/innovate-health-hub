@@ -12,6 +12,7 @@ import { ComplianceAIService } from "./compliance/ComplianceAIService";
 import { EventsAIService } from "./events/EventsAIService";
 import { SupportAIService } from "./support/SupportAIService";
 import { ClinicalAIService } from "./clinical/ClinicalAIService";
+import { QuotationAIService } from "./quotation/QuotationAIService";
 
 // Register all AI services with the central registry
 AIService.innovation = InnovationAIService;
@@ -26,6 +27,8 @@ AIService.compliance = ComplianceAIService;
 AIService.events = EventsAIService;
 AIService.support = SupportAIService;
 AIService.clinical = ClinicalAIService;
+// Add quotation service to registry
+AIService.quotation = QuotationAIService;
 
 // Export a function to get a specific service by type
 export function getAIService(type: AIServiceType) {
@@ -46,5 +49,6 @@ export {
   ComplianceAIService,
   EventsAIService,
   SupportAIService,
-  ClinicalAIService
+  ClinicalAIService,
+  QuotationAIService // Export the new service
 };

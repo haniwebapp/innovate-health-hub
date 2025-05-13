@@ -16,7 +16,8 @@ export enum AIServiceType {
   EVENTS = "events",
   ADMIN = "admin",
   COMPLIANCE = "compliance",
-  COMMUNITY = "community"
+  COMMUNITY = "community",
+  QUOTATION = "quotation" // Add the new service type
 }
 
 export class AIService {
@@ -33,7 +34,8 @@ export class AIService {
     events: null,
     admin: null,
     compliance: null,
-    community: null
+    community: null,
+    quotation: null // Add quotation service
   };
   
   // Getters for service access
@@ -49,6 +51,7 @@ export class AIService {
   static get admin() { return this.services.admin; }
   static get compliance() { return this.services.compliance; }
   static get community() { return this.services.community; }
+  static get quotation() { return this.services.quotation; } // Getter for quotation service
   
   // Setters for service initialization
   static set investment(service: any) { this.services.investment = service; }
@@ -63,6 +66,7 @@ export class AIService {
   static set admin(service: any) { this.services.admin = service; }
   static set compliance(service: any) { this.services.compliance = service; }
   static set community(service: any) { this.services.community = service; }
+  static set quotation(service: any) { this.services.quotation = service; } // Setter for quotation service
 
   // Re-export utility methods
   static createTrace = createTrace;
