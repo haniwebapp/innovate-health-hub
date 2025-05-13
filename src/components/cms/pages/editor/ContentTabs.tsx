@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PageValidationIssues } from "../PageValidationIssues";
 import { PagePreview } from "./PagePreview";
 
-interface ContentTabsProps {
+export interface ContentTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   sections: PageSection[];
@@ -61,7 +61,7 @@ export const ContentTabs: React.FC<ContentTabsProps> = ({
 
           <TabsContent value="validation">
             <PageValidationIssues
-              issues={validationIssues}
+              validationIssues={validationIssues}
               validating={validating}
               onValidate={onValidateContent}
             />

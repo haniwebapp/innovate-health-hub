@@ -6,7 +6,7 @@ import { PageContent } from "@/types/pageTypes";
 
 // Custom hooks
 import { useCmsPageData } from "@/hooks/useCmsPageData";
-import { useCmsPageValidation } from "@/hooks/useCmsPageValidation";
+import { useCmsPageValidation, ValidationIssues } from "@/hooks/useCmsPageValidation";
 
 // Components
 import { PageForm } from "./editor/PageForm";
