@@ -6,7 +6,6 @@ import BreadcrumbNav from "@/components/navigation/BreadcrumbNav";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchResourceById, KnowledgeResource } from "@/utils/knowledgeUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getRTLClasses } from "@/utils/rtlUtils";
 import { LanguageSwitcher } from '@/components/knowledge/LanguageSwitcher';
 import { ResourceHeader } from '@/components/knowledge/resource/ResourceHeader';
 import { ResourceTags } from '@/components/knowledge/resource/ResourceTags';
@@ -24,8 +23,7 @@ export default function ResourceViewPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("content");
   
-  const { language, t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
+  const { t } = useLanguage();
   
   const {
     summary,
@@ -82,8 +80,8 @@ export default function ResourceViewPage() {
   }
 
   return (
-    <div className={`space-y-6 ${language === 'ar' ? 'rtl-mode' : ''}`}>
-      <div className={`flex items-center justify-between ${rtlClasses.flex}`}>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
         <BreadcrumbNav 
           items={[
             { label: t('nav.dashboard'), href: "/dashboard" },
@@ -98,14 +96,14 @@ export default function ResourceViewPage() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <ResourceHeader resource={resource} language={language} />
+              <ResourceHeader resource={resource} />
             </CardHeader>
             
             <CardContent className="pt-2">
               <ResourceTags category={resource.category} tags={resource.tags} />
               
               <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-                <TabsList className={rtlClasses.flex}>
+                <TabsList className="flex">
                   <TabsTrigger value="content">{t('knowledge.content')}</TabsTrigger>
                   <TabsTrigger value="summary">{t('knowledge.summary')}</TabsTrigger>
                   {translatedContent && (
@@ -132,7 +130,6 @@ export default function ResourceViewPage() {
                 onTranslate={handleTranslate}
                 isTranslating={isTranslating}
                 hasContent={!!resource.content}
-                language={language}
               />
             </CardFooter>
           </Card>
@@ -145,7 +142,6 @@ export default function ResourceViewPage() {
             documentTitle={resource.title}
             documentType={resource.type}
             onDownload={handleDownload}
-            language={language}
           />
         </div>
       </div>

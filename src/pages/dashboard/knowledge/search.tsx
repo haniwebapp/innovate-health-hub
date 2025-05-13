@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getRTLClasses } from '@/utils/rtlUtils';
 import { LanguageSwitcher } from '@/components/knowledge/LanguageSwitcher';
 import { SemanticSearchBar } from '@/components/knowledge/SemanticSearchBar';
 import { SearchResultsList } from '@/components/knowledge/SearchResultsList';
@@ -11,8 +10,7 @@ import { KnowledgeAIService, SemanticSearchParams, SearchResults } from '@/servi
 import { useToast } from '@/hooks/use-toast';
 
 export default function SearchResultsPage() {
-  const { language, t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
+  const { t } = useLanguage();
   const { toast } = useToast();
   
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
@@ -43,8 +41,8 @@ export default function SearchResultsPage() {
   };
 
   return (
-    <div className={`space-y-6 ${language === 'ar' ? 'rtl-mode' : ''}`}>
-      <div className={`flex items-center justify-between ${rtlClasses.flex}`}>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
         <BreadcrumbNav
           items={[
             { label: t('nav.dashboard'), href: "/dashboard" },
@@ -55,7 +53,7 @@ export default function SearchResultsPage() {
         <LanguageSwitcher />
       </div>
 
-      <h1 className={`text-3xl font-bold tracking-tight mb-2 ${rtlClasses.text}`}>
+      <h1 className="text-3xl font-bold tracking-tight mb-2">
         {t('knowledge.searchResults')}
       </h1>
 
@@ -68,7 +66,7 @@ export default function SearchResultsPage() {
           searchQuery={searchQuery}
         />
       ) : (
-        <div className={`${rtlClasses.text} text-center py-12`}>
+        <div className="text-center py-12">
           <p>
             {t('knowledge.enterSearchQuery')}
           </p>

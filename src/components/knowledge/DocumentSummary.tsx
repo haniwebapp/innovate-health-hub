@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Download, FileText, BookOpen, List, Tag } from "lucide-react";
 import { DocumentSummary } from "@/services/ai/KnowledgeAIService";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getRTLClasses } from "@/utils/rtlUtils";
 
 interface DocumentSummaryCardProps {
   isLoading: boolean;
@@ -24,22 +23,21 @@ export function DocumentSummaryCard({
   documentType,
   onDownload 
 }: DocumentSummaryCardProps) {
-  const { language, t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
+  const { t } = useLanguage();
   
   return (
     <Card className="overflow-hidden">
       <CardHeader className="bg-moh-lightGreen pb-4">
-        <div className={`flex items-center justify-between ${rtlClasses.flex}`}>
+        <div className="flex items-center justify-between">
           <CardTitle className="text-moh-darkGreen flex items-center">
-            <FileText className={`h-5 w-5 ${rtlClasses.iconMargin}`} />
+            <FileText className="h-5 w-5 mr-2" />
             {t('knowledge.documentSummary')}
           </CardTitle>
           <Badge variant="outline" className="capitalize">
             {documentType}
           </Badge>
         </div>
-        <CardDescription className={rtlClasses.text}>
+        <CardDescription>
           {documentTitle}
         </CardDescription>
       </CardHeader>
@@ -53,21 +51,21 @@ export function DocumentSummaryCard({
         ) : summaryData ? (
           <>
             <div>
-              <h3 className={`text-lg font-medium mb-2 ${rtlClasses.text}`}>{t('knowledge.summary')}</h3>
-              <p className={`text-gray-700 ${rtlClasses.text}`}>{summaryData.summary}</p>
+              <h3 className="text-lg font-medium mb-2">{t('knowledge.summary')}</h3>
+              <p className="text-gray-700">{summaryData.summary}</p>
             </div>
             
             <Separator className="my-4" />
             
             <div>
-              <h3 className={`text-lg font-medium mb-2 flex items-center ${rtlClasses.text}`}>
-                <List className={`h-5 w-5 ${rtlClasses.iconMargin} text-moh-green`} />
+              <h3 className="text-lg font-medium mb-2 flex items-center">
+                <List className="h-5 w-5 mr-2 text-moh-green" />
                 {t('knowledge.keyPoints')}
               </h3>
-              <ul className={`space-y-2 ${rtlClasses.text}`}>
+              <ul className="space-y-2">
                 {summaryData.keyPoints.map((point, index) => (
-                  <li key={index} className={`flex ${rtlClasses.flex}`}>
-                    <span className={`font-medium ${rtlClasses.iconMargin}`}>•</span>
+                  <li key={index} className="flex">
+                    <span className="font-medium mr-2">•</span>
                     <span>{point}</span>
                   </li>
                 ))}
@@ -77,11 +75,11 @@ export function DocumentSummaryCard({
             <Separator className="my-4" />
             
             <div>
-              <h3 className={`text-lg font-medium mb-2 flex items-center ${rtlClasses.text}`}>
-                <Tag className={`h-5 w-5 ${rtlClasses.iconMargin} text-moh-green`} />
+              <h3 className="text-lg font-medium mb-2 flex items-center">
+                <Tag className="h-5 w-5 mr-2 text-moh-green" />
                 {t('knowledge.relevantTopics')}
               </h3>
-              <div className={`flex flex-wrap gap-2 ${language === 'ar' ? 'justify-end' : ''}`}>
+              <div className="flex flex-wrap gap-2">
                 {summaryData.relevantTopics.map((topic, index) => (
                   <Badge key={index} variant="secondary" className="bg-moh-lightGreen/50">
                     {topic}
@@ -99,9 +97,9 @@ export function DocumentSummaryCard({
       </CardContent>
       
       {!isLoading && summaryData && onDownload && (
-        <CardFooter className={`flex ${rtlClasses.justify} bg-gray-50 pt-4`}>
+        <CardFooter className="flex justify-end bg-gray-50 pt-4">
           <Button variant="outline" onClick={onDownload} className="flex items-center">
-            <Download className={`h-4 w-4 ${rtlClasses.iconMargin}`} />
+            <Download className="h-4 w-4 mr-2" />
             {t('knowledge.downloadSummary')}
           </Button>
         </CardFooter>

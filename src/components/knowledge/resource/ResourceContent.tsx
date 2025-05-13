@@ -9,14 +9,17 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ResourceContentProps {
   content?: string;
+  translatedContent?: string | null;
   summary: DocumentSummary | null;
   isSummarizing: boolean;
+  isTranslating?: boolean;
   activeTab: string;
   onGenerateSummary: () => void;
 }
 
 export function ResourceContent({
   content,
+  translatedContent,
   summary,
   isSummarizing,
   activeTab,
@@ -83,6 +86,16 @@ export function ResourceContent({
           </div>
         )}
       </TabsContent>
+      
+      {translatedContent && (
+        <TabsContent value="translated" className="mt-4">
+          <div className="prose max-w-none">
+            {translatedContent.split('\n').map((paragraph, i) => (
+              <p key={i} className="mb-4">{paragraph}</p>
+            ))}
+          </div>
+        </TabsContent>
+      )}
     </>
   );
 }

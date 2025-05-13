@@ -32,7 +32,6 @@ import { DocumentSummaryCard } from "@/components/knowledge/DocumentSummary";
 import { SearchResultsList } from "@/components/knowledge/SearchResultsList";
 import { LanguageSwitcher } from "@/components/knowledge/LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getRTLClasses } from "@/utils/rtlUtils";
 import { SemanticSearchParams, KnowledgeAIService, SearchResults } from "@/services/ai/KnowledgeAIService";
 
 export default function DashboardKnowledgePage() {
@@ -49,9 +48,8 @@ export default function DashboardKnowledgePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResults | null>(null);
   
-  // Language and RTL support
-  const { language, t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
+  // Language support
+  const { t } = useLanguage();
 
   useEffect(() => {
     async function loadData() {
@@ -150,8 +148,8 @@ export default function DashboardKnowledgePage() {
   };
 
   return (
-    <div className={`space-y-6 ${language === 'ar' ? 'rtl-mode' : ''}`}>
-      <div className={`flex items-center justify-between ${rtlClasses.flex}`}>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
         <BreadcrumbNav 
           items={[{ label: t('nav.dashboard'), href: "/dashboard" }]} 
           currentPage={t('nav.knowledge')} 
@@ -160,10 +158,10 @@ export default function DashboardKnowledgePage() {
       </div>
       
       <div>
-        <h1 className={`text-3xl font-bold tracking-tight mb-2 ${rtlClasses.text}`}>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">
           {t('knowledge.hub')}
         </h1>
-        <p className={`text-muted-foreground ${rtlClasses.text}`}>
+        <p className="text-muted-foreground">
           {t('knowledge.hubDescription')}
         </p>
       </div>
@@ -188,7 +186,7 @@ export default function DashboardKnowledgePage() {
           value={activeTab}
           className="space-y-6"
         >
-          <TabsList className={`bg-muted/50 ${rtlClasses.flex}`}>
+          <TabsList className="bg-muted/50">
             <TabsTrigger value="overview">{t('knowledge.overview')}</TabsTrigger>
             <TabsTrigger value="resources">{t('knowledge.resources')}</TabsTrigger>
             <TabsTrigger value="learning">{t('knowledge.learningPaths')}</TabsTrigger>
@@ -201,11 +199,11 @@ export default function DashboardKnowledgePage() {
               <>
                 <Card>
                   <CardHeader>
-                    <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
-                      <Lightbulb className={`h-5 w-5 ${rtlClasses.iconMargin} text-moh-gold`} />
+                    <CardTitle className="flex items-center">
+                      <Lightbulb className="h-5 w-5 mr-2 text-moh-gold" />
                       {t('knowledge.featuredResources')}
                     </CardTitle>
-                    <CardDescription className={rtlClasses.text}>
+                    <CardDescription>
                       {t('knowledge.featuredResourcesDescription')}
                     </CardDescription>
                   </CardHeader>
@@ -238,13 +236,13 @@ export default function DashboardKnowledgePage() {
                               >
                                 {resource.category}
                               </Badge>
-                              <h3 className={`font-medium mb-2 line-clamp-2 ${rtlClasses.text}`}>
+                              <h3 className="font-medium mb-2 line-clamp-2">
                                 {resource.title}
                               </h3>
-                              <p className={`text-sm text-muted-foreground line-clamp-2 mb-2 ${rtlClasses.text}`}>
+                              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                                 {resource.description}
                               </p>
-                              <div className={`flex items-center text-xs text-muted-foreground mt-auto ${rtlClasses.text}`}>
+                              <div className="flex items-center text-xs text-muted-foreground mt-auto">
                                 <span>{resource.downloads} {t('knowledge.downloads')}</span>
                                 <span className="mx-1">•</span>
                                 <span>{new Date(resource.created_at).toLocaleDateString()}</span>
@@ -259,7 +257,7 @@ export default function DashboardKnowledgePage() {
                               >
                                 <Link to={`/dashboard/knowledge/resources/${resource.id}`}>
                                   {t('knowledge.viewResource')}
-                                  <ArrowRight className={`h-3 w-3 ${language === 'ar' ? 'mr-1 transform rotate-180' : 'ml-1'}`} />
+                                  <ArrowRight className="h-3 w-3 ml-1" />
                                 </Link>
                               </Button>
                             </CardFooter>
@@ -277,7 +275,7 @@ export default function DashboardKnowledgePage() {
                       >
                         <Link to="/dashboard/knowledge/resources">
                           {t('knowledge.viewAllResources')}
-                          <ArrowRight className={`h-4 w-4 ${language === 'ar' ? 'mr-2 transform rotate-180' : 'ml-2'}`} />
+                          <ArrowRight className="h-4 w-4 ml-2" />
                         </Link>
                       </Button>
                     </CardFooter>
@@ -287,11 +285,11 @@ export default function DashboardKnowledgePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
-                        <BookOpen className={`h-5 w-5 ${rtlClasses.iconMargin} text-purple-500`} />
+                      <CardTitle className="flex items-center">
+                        <BookOpen className="h-5 w-5 mr-2 text-purple-500" />
                         {t('knowledge.bestPractices')}
                       </CardTitle>
-                      <CardDescription className={rtlClasses.text}>
+                      <CardDescription>
                         {t('knowledge.bestPracticesDescription')}
                       </CardDescription>
                     </CardHeader>
@@ -300,14 +298,14 @@ export default function DashboardKnowledgePage() {
                         {bestPractices.slice(0, 3).map(resource => (
                           <div 
                             key={resource.id}
-                            className={`flex items-start p-3 border rounded-lg ${rtlClasses.flex}`}
+                            className="flex items-start p-3 border rounded-lg"
                           >
                             <div className="bg-muted/80 p-2 rounded mr-3">
                               {getResourceIcon(resource.type)}
                             </div>
                             <div className="flex-1">
-                              <h3 className={`font-medium mb-1 line-clamp-1 ${rtlClasses.text}`}>{resource.title}</h3>
-                              <p className={`text-xs text-muted-foreground line-clamp-2 mb-2 ${rtlClasses.text}`}>
+                              <h3 className="font-medium mb-1 line-clamp-1">{resource.title}</h3>
+                              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                                 {resource.description}
                               </p>
                               <Button 
@@ -329,11 +327,11 @@ export default function DashboardKnowledgePage() {
                   
                   <Card>
                     <CardHeader>
-                      <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
-                        <FileText className={`h-5 w-5 ${rtlClasses.iconMargin} text-blue-500`} />
+                      <CardTitle className="flex items-center">
+                        <FileText className="h-5 w-5 mr-2 text-blue-500" />
                         {t('knowledge.policyGuidelines')}
                       </CardTitle>
-                      <CardDescription className={rtlClasses.text}>
+                      <CardDescription>
                         {t('knowledge.policyGuidelinesDescription')}
                       </CardDescription>
                     </CardHeader>
@@ -342,14 +340,14 @@ export default function DashboardKnowledgePage() {
                         {policyGuidelines.slice(0, 3).map(resource => (
                           <div 
                             key={resource.id}
-                            className={`flex items-start p-3 border rounded-lg ${rtlClasses.flex}`}
+                            className="flex items-start p-3 border rounded-lg"
                           >
                             <div className="bg-muted/80 p-2 rounded mr-3">
                               {getResourceIcon(resource.type)}
                             </div>
                             <div className="flex-1">
-                              <h3 className={`font-medium mb-1 line-clamp-1 ${rtlClasses.text}`}>{resource.title}</h3>
-                              <p className={`text-xs text-muted-foreground line-clamp-2 mb-2 ${rtlClasses.text}`}>
+                              <h3 className="font-medium mb-1 line-clamp-1">{resource.title}</h3>
+                              <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                                 {resource.description}
                               </p>
                               <Button 
@@ -372,11 +370,11 @@ export default function DashboardKnowledgePage() {
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle className={`flex items-center ${rtlClasses.flex}`}>
-                      <GraduationCap className={`h-5 w-5 ${rtlClasses.iconMargin} text-moh-green`} />
+                    <CardTitle className="flex items-center">
+                      <GraduationCap className="h-5 w-5 mr-2 text-moh-green" />
                       {t('knowledge.learningPaths')}
                     </CardTitle>
-                    <CardDescription className={rtlClasses.text}>
+                    <CardDescription>
                       {t('knowledge.learningPathsDescription')}
                     </CardDescription>
                   </CardHeader>
@@ -395,8 +393,8 @@ export default function DashboardKnowledgePage() {
                                 {t('common.featured')}
                               </Badge>
                             )}
-                            <CardTitle className={`text-lg ${rtlClasses.text}`}>{path.title}</CardTitle>
-                            <CardDescription className={`line-clamp-2 ${rtlClasses.text}`}>
+                            <CardTitle className="text-lg">{path.title}</CardTitle>
+                            <CardDescription className="line-clamp-2">
                               {path.description}
                             </CardDescription>
                           </CardHeader>
@@ -422,7 +420,7 @@ export default function DashboardKnowledgePage() {
                             >
                               <Link to={`/dashboard/knowledge/learning/${path.id}`}>
                                 {t('knowledge.viewPath')}
-                                <ArrowRight className={`h-3 w-3 ${language === 'ar' ? 'mr-1 transform rotate-180' : 'ml-1'}`} />
+                                <ArrowRight className="h-3 w-3 ml-1" />
                               </Link>
                             </Button>
                           </CardFooter>
@@ -439,7 +437,7 @@ export default function DashboardKnowledgePage() {
                       >
                         <Link to="/dashboard/knowledge/learning">
                           {t('knowledge.viewAllLearningPaths')}
-                          <ArrowRight className={`h-4 w-4 ${language === 'ar' ? 'mr-2 transform rotate-180' : 'ml-2'}`} />
+                          <ArrowRight className="h-4 w-4 ml-2" />
                         </Link>
                       </Button>
                     </CardFooter>
@@ -449,10 +447,10 @@ export default function DashboardKnowledgePage() {
             ) : (
               <div className="text-center py-12 bg-muted/20 rounded-lg border border-dashed">
                 <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className={`text-lg font-medium mb-2 ${rtlClasses.text}`}>
+                <h3 className="text-lg font-medium mb-2">
                   {t('knowledge.noResourcesAvailable')}
                 </h3>
-                <p className={`text-muted-foreground mb-6 max-w-md mx-auto ${rtlClasses.text}`}>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                   {t('knowledge.noResourcesDescription')}
                 </p>
                 <Button asChild>
@@ -476,14 +474,14 @@ export default function DashboardKnowledgePage() {
 
           <TabsContent value="search" className="space-y-6">
             {searchResults ? (
-              <SearchResultsList results={searchResults} searchQuery={searchQuery} />
+              <SearchResultsList results={searchResults.results || []} searchQuery={searchQuery} loading={isSearching} />
             ) : (
               <div className="text-center py-12">
                 <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className={`text-lg font-medium mb-2 ${rtlClasses.text}`}>
+                <h3 className="text-lg font-medium mb-2">
                   {t('knowledge.noSearchPerformed')}
                 </h3>
-                <p className={`text-muted-foreground ${rtlClasses.text}`}>
+                <p className="text-muted-foreground">
                   {t('knowledge.useSearchBar')}
                 </p>
               </div>

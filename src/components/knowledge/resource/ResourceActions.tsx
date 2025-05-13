@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface ResourceActionsProps {
   onSaveResource: () => void;
   onDownload: () => void;
-  onTranslate?: () => void; // Made optional as we're removing translation functionality
+  onTranslate?: () => void;
   isTranslating?: boolean;
   hasContent: boolean;
 }
@@ -15,6 +15,8 @@ interface ResourceActionsProps {
 export function ResourceActions({ 
   onSaveResource, 
   onDownload,
+  onTranslate,
+  isTranslating,
   hasContent
 }: ResourceActionsProps) {
   const { t } = useLanguage();

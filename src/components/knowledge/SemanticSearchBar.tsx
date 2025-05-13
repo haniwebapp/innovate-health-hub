@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Search, Filter, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getRTLClasses } from '@/utils/rtlUtils';
 
 interface SemanticSearchParams {
   query: string;
@@ -42,7 +41,6 @@ export function SemanticSearchBar({ onSearch, isSearching = false }: {
     tags: [] as string[],
   });
   const { language, t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
   
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -76,7 +74,7 @@ export function SemanticSearchBar({ onSearch, isSearching = false }: {
 
   return (
     <div className="relative">
-      <form onSubmit={handleSubmit} className={`relative flex w-full items-center ${rtlClasses.flex}`}>
+      <form onSubmit={handleSubmit} className="relative flex w-full items-center">
         <Input 
           type="text" 
           value={query}
