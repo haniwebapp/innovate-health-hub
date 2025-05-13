@@ -12,6 +12,20 @@ export interface AIResponse {
   error?: string;
 }
 
+// Cache for storing recent AI responses
+const responseCache = new Map<string, {
+  data: AIResponse;
+  timestamp: number;
+}>();
+
+// Cache expiration time (5 minutes)
+const CACHE_EXPIRATION = 5 * 60 * 1000;
+
+// Create a simple hash for caching AI requests
+const hashMessages = (messages: AIMessage[], context?: string): string => {
+  return `${context || ''}-${messages.map(m => `${m.role}:${m.content.substring(0, 50)}`).join('|')}`;
+};
+
 /**
  * Call the admin-assistant edge function with messages
  * @param messages Array of messages to send to the assistant
@@ -20,6 +34,17 @@ export interface AIResponse {
  */
 export const callAIAssistant = async (messages: AIMessage[], context?: string): Promise<AIResponse> => {
   try {
+    // Generate cache key
+    const cacheKey = hashMessages(messages, context);
+    
+    // Check cache first
+    const cachedResponse = responseCache.get(cacheKey);
+    if (cachedResponse && (Date.now() - cachedResponse.timestamp < CACHE_EXPIRATION)) {
+      console.log('Using cached AI response');
+      return cachedResponse.data;
+    }
+
+    // No cache hit, make the actual call
     const { data, error } = await supabase.functions.invoke("admin-assistant", {
       body: { 
         messages,
@@ -28,6 +53,13 @@ export const callAIAssistant = async (messages: AIMessage[], context?: string): 
     });
 
     if (error) throw error;
+    
+    // Cache the response
+    responseCache.set(cacheKey, {
+      data: data as AIResponse,
+      timestamp: Date.now()
+    });
+    
     return data as AIResponse;
   } catch (error: any) {
     console.error("Error calling AI assistant:", error);
@@ -46,6 +78,16 @@ export const callAIAssistant = async (messages: AIMessage[], context?: string): 
  */
 export const generateAIRecommendations = async (data: any, context: string): Promise<AIResponse> => {
   try {
+    // Generate cache key for recommendations
+    const cacheKey = `recommendations-${context}-${JSON.stringify(data).substring(0, 100)}`;
+    
+    // Check cache first
+    const cachedResponse = responseCache.get(cacheKey);
+    if (cachedResponse && (Date.now() - cachedResponse.timestamp < CACHE_EXPIRATION)) {
+      console.log('Using cached AI recommendations');
+      return cachedResponse.data;
+    }
+    
     const message = {
       role: "user" as const,
       content: `Analyze this data and provide recommendations: ${JSON.stringify(data)}`
@@ -59,6 +101,13 @@ export const generateAIRecommendations = async (data: any, context: string): Pro
     });
 
     if (error) throw error;
+    
+    // Cache the recommendations
+    responseCache.set(cacheKey, {
+      data: responseData as AIResponse,
+      timestamp: Date.now()
+    });
+    
     return responseData as AIResponse;
   } catch (error: any) {
     console.error("Error getting AI recommendations:", error);
@@ -108,6 +157,12 @@ export const formatAIError = (error: any): string => {
  */
 export const generateInvestmentMatches = async (criteria: any): Promise<AIResponse> => {
   try {
+    const cacheKey = `investment-matches-${JSON.stringify(criteria).substring(0, 100)}`;
+    const cachedResponse = responseCache.get(cacheKey);
+    if (cachedResponse && (Date.now() - cachedResponse.timestamp < CACHE_EXPIRATION)) {
+      return cachedResponse.data;
+    }
+    
     const message = {
       role: "user" as const,
       content: `Find investment matches based on these criteria: ${JSON.stringify(criteria)}`
@@ -121,6 +176,12 @@ export const generateInvestmentMatches = async (criteria: any): Promise<AIRespon
     });
 
     if (error) throw error;
+    
+    responseCache.set(cacheKey, {
+      data: responseData as AIResponse,
+      timestamp: Date.now()
+    });
+    
     return responseData as AIResponse;
   } catch (error: any) {
     console.error("Error generating investment matches:", error);
@@ -138,6 +199,12 @@ export const generateInvestmentMatches = async (criteria: any): Promise<AIRespon
  */
 export const analyzeRegulatoryCompliance = async (innovationData: any): Promise<AIResponse> => {
   try {
+    const cacheKey = `regulatory-compliance-${JSON.stringify(innovationData).substring(0, 100)}`;
+    const cachedResponse = responseCache.get(cacheKey);
+    if (cachedResponse && (Date.now() - cachedResponse.timestamp < CACHE_EXPIRATION)) {
+      return cachedResponse.data;
+    }
+    
     const message = {
       role: "user" as const,
       content: `Analyze regulatory compliance for this innovation: ${JSON.stringify(innovationData)}`
@@ -151,6 +218,12 @@ export const analyzeRegulatoryCompliance = async (innovationData: any): Promise<
     });
 
     if (error) throw error;
+    
+    responseCache.set(cacheKey, {
+      data: responseData as AIResponse,
+      timestamp: Date.now()
+    });
+    
     return responseData as AIResponse;
   } catch (error: any) {
     console.error("Error analyzing regulatory compliance:", error);
@@ -168,6 +241,12 @@ export const analyzeRegulatoryCompliance = async (innovationData: any): Promise<
  */
 export const analyzeMarketTrends = async (parameters: any): Promise<AIResponse> => {
   try {
+    const cacheKey = `market-trends-${JSON.stringify(parameters).substring(0, 100)}`;
+    const cachedResponse = responseCache.get(cacheKey);
+    if (cachedResponse && (Date.now() - cachedResponse.timestamp < CACHE_EXPIRATION)) {
+      return cachedResponse.data;
+    }
+    
     const message = {
       role: "user" as const,
       content: `Analyze healthcare investment market trends based on these parameters: ${JSON.stringify(parameters)}`
@@ -181,6 +260,12 @@ export const analyzeMarketTrends = async (parameters: any): Promise<AIResponse> 
     });
 
     if (error) throw error;
+    
+    responseCache.set(cacheKey, {
+      data: responseData as AIResponse,
+      timestamp: Date.now()
+    });
+    
     return responseData as AIResponse;
   } catch (error: any) {
     console.error("Error analyzing market trends:", error);

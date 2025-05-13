@@ -1,6 +1,5 @@
 
 import { Route } from 'react-router-dom';
-import AdminLayout from '@/components/layouts/AdminLayout';
 import AdminDashboard from '@/pages/admin/dashboard/AdminDashboardPage';
 import AdminSettingsPage from '@/pages/admin/settings/index';
 import AdminEventsPage from '@/pages/admin/events/index';
