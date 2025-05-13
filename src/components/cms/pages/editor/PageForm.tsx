@@ -1,7 +1,10 @@
 
 import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -13,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WebsitePageFormData } from "@/types/pageTypes";
 
 // Enhanced validation schema with more specific constraints
 export const pageFormSchema = z.object({
@@ -36,93 +40,98 @@ interface PageFormProps {
 }
 
 export const PageForm: React.FC<PageFormProps> = ({ defaultValues, onSubmit, form }) => {
+  // Important: We must properly use the Form context here
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Page Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Page Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter page title" {...field} />
-              </FormControl>
-              <FormDescription>
-                The main title of the page that will be displayed in the browser tab.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Form {...form}>
+      <form className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Page Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Page Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter page title" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The main title of the page that will be displayed in the browser tab.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL Slug</FormLabel>
-              <FormControl>
-                <div className="flex items-center">
-                  <span className="text-sm text-muted-foreground mr-2">/</span>
-                  <Input placeholder="page-url-slug" {...field} />
-                </div>
-              </FormControl>
-              <FormDescription>
-                The URL-friendly version of the page title (e.g., "about-us").
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL Slug</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center">
+                      <span className="text-sm text-muted-foreground mr-2">/</span>
+                      <Input placeholder="page-url-slug" {...field} />
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    The URL-friendly version of the page title (e.g., "about-us").
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="metaDescription"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Meta Description</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Enter a brief description for search engines" 
-                  className="resize-none"
-                  {...field} 
-                />
-              </FormControl>
-              <FormDescription>
-                A short description that appears in search engine results (max 160 characters).
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="metaDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Meta Description</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Enter a brief description for search engines" 
+                      className="resize-none"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    A short description that appears in search engine results (max 160 characters).
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="published"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">
-                  Published
-                </FormLabel>
-                <FormDescription>
-                  When enabled, the page will be visible to all users.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </CardContent>
-    </Card>
+            <FormField
+              control={form.control}
+              name="published"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Published
+                    </FormLabel>
+                    <FormDescription>
+                      When enabled, the page will be visible to all users.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      </form>
+    </Form>
   );
 };
