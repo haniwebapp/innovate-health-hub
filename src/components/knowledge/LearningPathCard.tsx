@@ -1,103 +1,85 @@
 
+import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { GraduationCap, Clock, Play, Award, BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { LearningPath } from '@/types/learning';
+import { BookOpen, Clock, GraduationCap, Check } from 'lucide-react';
 
 interface LearningPathCardProps {
-  path: {
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    totalModules: number;
-    completedModules: number;
-    estimatedHours: number;
-    level: "beginner" | "intermediate" | "advanced";
-    isEnrolled?: boolean;
-  };
-  className?: string;
-  onEnroll?: (pathId: string) => void;
+  path: LearningPath;
+  onEnroll: (pathId: string) => void;
 }
 
-export function LearningPathCard({ path, className, onEnroll }: LearningPathCardProps) {
-  const progress = Math.round((path.completedModules / path.totalModules) * 100);
-  
-  const getLevelColor = (level: string) => {
-    switch(level) {
-      case "beginner": return "bg-green-50 text-green-700 border-green-200";
-      case "intermediate": return "bg-amber-50 text-amber-700 border-amber-200";
-      case "advanced": return "bg-red-50 text-red-700 border-red-200";
-      default: return "";
-    }
-  };
-  
+export function LearningPathCard({ path, onEnroll }: LearningPathCardProps) {
+  // Calculate progress if enrolled
+  const progress = path.completedModules && path.totalModules 
+    ? Math.round((path.completedModules / path.totalModules) * 100) 
+    : 0;
+
   return (
-    <Card className={cn("overflow-hidden transition-all hover:border-moh-green/40", className)}>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start mb-1">
-          <Badge variant="outline" className="bg-moh-green/10 text-moh-green border-moh-green/20">
+    <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle className="text-lg">{path.title}</CardTitle>
+            <CardDescription className="line-clamp-2">{path.description}</CardDescription>
+          </div>
+          <Badge variant="outline" className="capitalize">
+            {path.level}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3 flex-grow">
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="outline" className="bg-moh-lightGreen/10 text-moh-green">
             {path.category}
           </Badge>
-          <Badge variant="outline" className={getLevelColor(path.level)}>
-            {path.level.charAt(0).toUpperCase() + path.level.slice(1)}
-          </Badge>
-        </div>
-        <CardTitle className="text-lg line-clamp-1">{path.title}</CardTitle>
-        <CardDescription className="line-clamp-2">{path.description}</CardDescription>
-      </CardHeader>
-      
-      <CardContent>
-        <div className="flex justify-between items-center text-sm mb-3">
-          <div className="flex items-center text-muted-foreground">
-            <BookOpen className="h-3 w-3 mr-1" />
-            <span>{path.totalModules} modules</span>
-          </div>
-          <div className="flex items-center text-muted-foreground">
-            <Clock className="h-3 w-3 mr-1" />
-            <span>{path.estimatedHours} hours</span>
-          </div>
+          
+          {path.featured && (
+            <Badge variant="secondary">
+              Featured
+            </Badge>
+          )}
         </div>
         
-        {path.isEnrolled && (
-          <div className="space-y-1">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <BookOpen className="h-4 w-4" />
+          <span>{path.totalModules} modules</span>
+        </div>
+        
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Clock className="h-4 w-4" />
+          <span>{path.estimatedHours} hours</span>
+        </div>
+        
+        {path.isEnrolled && path.completedModules !== undefined && (
+          <div className="space-y-1 mt-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Your progress</span>
+              <span>
+                <GraduationCap className="h-4 w-4 inline mr-1" />
+                Progress
+              </span>
               <span className="font-medium">{progress}%</span>
             </div>
             <Progress value={progress} className="h-2" />
-            <div className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {path.completedModules} of {path.totalModules} modules completed
-            </div>
+            </p>
           </div>
         )}
       </CardContent>
-      
       <CardFooter>
         {path.isEnrolled ? (
-          <div className="w-full flex justify-between">
-            <Button variant="outline" asChild>
-              <Link to={`/dashboard/knowledge/learning-paths/${path.id}`}>
-                <BookOpen className="h-4 w-4 mr-1" />
-                View Path
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link to={`/dashboard/knowledge/learning-paths/${path.id}/continue`}>
-                <Play className="h-4 w-4 mr-1" />
-                Continue
-              </Link>
-            </Button>
-          </div>
+          <Button variant="outline" className="w-full" asChild>
+            <a href={`/dashboard/knowledge/learning-hub/path/${path.id}`}>
+              <Check className="h-4 w-4 mr-2" />
+              Continue Learning
+            </a>
+          </Button>
         ) : (
-          <Button 
-            className="w-full" 
-            onClick={() => onEnroll && onEnroll(path.id)}
-          >
-            <GraduationCap className="h-4 w-4 mr-1" />
+          <Button className="w-full" onClick={() => onEnroll(path.id)}>
             Enroll Now
           </Button>
         )}

@@ -15,7 +15,7 @@ export interface ResourceMockData {
   downloadCount?: number;
 }
 
-export const mockResources: ResourceMockData[] = [
+export const mockData: ResourceMockData[] = [
   {
     id: '1',
     title: 'Digital Health Strategy Guide 2025',

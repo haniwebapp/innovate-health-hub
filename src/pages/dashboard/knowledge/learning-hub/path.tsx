@@ -213,7 +213,7 @@ export default function LearningPathDetailsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm">
-            {t('learning.completionRequirement', { percentage: '80%' })}
+            {t('learning.completionRequirement')}
           </p>
         </CardContent>
         <CardFooter>

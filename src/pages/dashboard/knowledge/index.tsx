@@ -1,11 +1,13 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/knowledge/LanguageSwitcher';
-import { SemanticSearchBar } from '@/components/knowledge/SemanticSearchBar';
+import { SemanticSearchBar, SemanticSearchParams } from '@/components/knowledge/SemanticSearchBar';
 import { ResourceCard } from '@/components/knowledge/ResourceCard';
 import { mockData } from '@/components/knowledge/mockData';
 import { BookOpen, FileText, GraduationCap, Calendar, Search, Filter } from 'lucide-react';
@@ -14,6 +16,19 @@ import { BookOpen, FileText, GraduationCap, Calendar, Search, Filter } from 'luc
 export default function DashboardKnowledgePage() {
   const { t } = useLanguage();
   const featuredResources = mockData.slice(0, 3);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearch = (params: SemanticSearchParams) => {
+    setIsSearching(true);
+    
+    // Simulate a search - in real implementation, this would call an API
+    console.log("Searching for:", params);
+    
+    // End search simulation after 1 second
+    setTimeout(() => {
+      setIsSearching(false);
+    }, 1000);
+  };
 
   return (
     <div className="space-y-6">
@@ -31,7 +46,7 @@ export default function DashboardKnowledgePage() {
         {t('knowledge.title')}
       </h1>
 
-      <SemanticSearchBar />
+      <SemanticSearchBar onSearch={handleSearch} isSearching={isSearching} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="md:col-span-2 bg-gradient-to-br from-moh-lightGreen/30 to-moh-green/10 border-moh-green/20 hover:border-moh-green/30 transition-colors cursor-pointer">
