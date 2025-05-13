@@ -18,10 +18,13 @@ import PolicyPage from "@/pages/policy/index";
 import RegulatoryPage from "@/pages/regulatory/index";
 import InternationalRegulationsPage from "@/components/regulatory/international/InternationalRegulationsPage";
 import CrossBorderCollaborationPage from "@/components/collaboration/international/CrossBorderCollaborationPage";
+import KnowledgeHubPage from "@/pages/knowledge-hub/index";
+import ReportsPage from "@/pages/admin/reports/ReportsPage";
 
 export const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/innovations" element={<InnovationsPage />} />
@@ -30,6 +33,7 @@ export const AppRoutes = () => {
       <Route path="/policy" element={<PolicyPage />} />
       <Route path="/regulatory" element={<RegulatoryPage />} />
       <Route path="/marketplace" element={<MarketplacePage />} />
+      <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />
       
       {/* Global Expansion New Routes */}
       <Route path="/regulatory/international" element={<InternationalRegulationsPage />} />
@@ -43,6 +47,11 @@ export const AppRoutes = () => {
         {DashboardRegulatoryRoutes}
         {DashboardKnowledgeRoutes}
         {DashboardCollaborationRoutes}
+      </Route>
+
+      {/* Admin Routes */}
+      <Route path="/admin">
+        <Route path="reports" element={<ReportsPage />} />
       </Route>
       
       <Route path="*" element={<Navigate to="/" replace />} />

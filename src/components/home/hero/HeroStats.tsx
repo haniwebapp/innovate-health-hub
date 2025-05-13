@@ -1,100 +1,40 @@
 
 import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { AnimatedCounter } from "@/components/animations/AnimatedCounter";
-import { Users, Award, Globe, Lightbulb, HeartPulse } from "lucide-react";
 
 export function HeroStats() {
-  const { t } = useLanguage();
-  
+  const stats = [
+    { value: 250, label: "Active Innovations", icon: "🚀" },
+    { value: 85, label: "Global Partners", icon: "🌍" },
+    { value: 120, label: "Funded Projects", icon: "💰" },
+    { value: 45, label: "Approved Products", icon: "✅" }
+  ];
+
   return (
     <motion.div 
-      className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: 0.2 }}
+      className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto mt-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.2, duration: 0.8 }}
     >
-      <StatCard 
-        icon={<Users className="h-6 w-6 text-moh-green" />}
-        value={500}
-        suffix="+"
-        label="Registered Innovators"
-        color="text-moh-green"
-        delay={0}
-      />
-      
-      <StatCard 
-        icon={<Award className="h-6 w-6 text-moh-darkGold" />}
-        value={250}
-        suffix="M+"
-        label="Investment Funding"
-        color="text-moh-darkGold"
-        delay={0.2}
-      />
-      
-      <StatCard 
-        icon={<Globe className="h-6 w-6 text-moh-green" />}
-        value={40}
-        suffix="+"
-        label="Active Challenges"
-        color="text-moh-green"
-        delay={0.4}
-      />
-      
-      <StatCard 
-        icon={<Lightbulb className="h-6 w-6 text-moh-gold" />}
-        value={125}
-        suffix="+"
-        label="Solutions Launched"
-        color="text-moh-gold"
-        delay={0.6}
-      />
-      
-      <StatCard 
-        icon={<HeartPulse className="h-6 w-6 text-moh-darkGreen" />}
-        value={1.5}
-        suffix="M+"
-        label="Patients Impacted"
-        color="text-moh-darkGreen"
-        delay={0.8}
-      />
-    </motion.div>
-  );
-}
-
-interface StatCardProps {
-  icon: React.ReactNode;
-  value: number;
-  suffix: string;
-  label: string;
-  color: string;
-  delay: number;
-}
-
-function StatCard({ icon, value, suffix, label, color, delay }: StatCardProps) {
-  return (
-    <motion.div 
-      className="text-center p-4 rounded-lg bg-white/40 backdrop-blur-sm border border-white/20 hover:bg-white/60 transition-colors"
-      whileHover={{ scale: 1.05, y: -5 }}
-      transition={{ type: "spring", stiffness: 400, damping: 10 }}
-    >
-      <div className="flex justify-center mb-2">
-        {icon}
-      </div>
-      <div className={`font-bold text-2xl md:text-3xl ${color}`}>
-        <AnimatedCounter value={value} suffix={suffix} duration={2.5} delay={delay} />
-      </div>
-      <div className="text-sm md:text-base text-gray-600">{label}</div>
-      
-      {/* Add subtle animation */}
-      <motion.div 
-        className={`w-12 h-1 rounded-full mx-auto mt-2 bg-opacity-60 ${color.replace('text-', 'bg-')}`}
-        initial={{ width: 0 }}
-        whileInView={{ width: 48 }}
-        viewport={{ once: true }}
-        transition={{ delay: delay + 0.5, duration: 0.8 }}
-      />
+      {stats.map((stat, index) => (
+        <motion.div 
+          key={index}
+          className="bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center text-center"
+          whileHover={{ y: -5, scale: 1.03 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
+        >
+          <span className="text-2xl mb-1">{stat.icon}</span>
+          <AnimatedCounter 
+            value={stat.value} 
+            className="text-2xl md:text-3xl font-bold text-moh-darkGreen" 
+          />
+          <span className="text-sm text-gray-600 mt-1">{stat.label}</span>
+        </motion.div>
+      ))}
     </motion.div>
   );
 }

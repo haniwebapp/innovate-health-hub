@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
@@ -27,6 +28,9 @@ const getPageTitle = (pathname: string): string => {
     'collaboration': 'Collaboration',
     'activity': 'Activity History',
     'notifications': 'Notifications',
+    'policy': 'Policy Framework',
+    'strategy': 'Strategic Planning',
+    'support': 'Support Center',
   };
   
   // Handle special cases like submit/123
@@ -111,7 +115,7 @@ export default function DashboardLayout() {
           initial="hidden"
           animate="visible"
           variants={slideIn}
-          className="h-16 border-b border-slate-200 backdrop-blur-sm bg-white/80 flex items-center justify-between px-4 md:px-6 z-30"
+          className="h-16 border-b border-slate-200 backdrop-blur-sm bg-white/90 flex items-center justify-between px-4 md:px-6 z-30"
         >
           <div className="flex items-center">
             {/* Mobile sidebar toggle */}

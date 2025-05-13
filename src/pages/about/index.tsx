@@ -28,7 +28,7 @@ const AboutPage = () => {
   return (
     <motion.div 
       className="min-h-screen flex flex-col bg-white"
-      dir="ltr"
+      dir={language === 'ar' ? "rtl" : "ltr"}
       initial="initial"
       animate="animate"
       exit="exit"

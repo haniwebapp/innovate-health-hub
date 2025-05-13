@@ -1,103 +1,39 @@
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Sparkles, FileUp, Coins } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ChevronRight, FileUp } from "lucide-react";
 
 export function HeroButtons() {
-  const { language } = useLanguage();
-  
-  // Animation variants for staggered animations
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.3 }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 260, damping: 20 }
-    }
-  };
-  
   return (
     <motion.div 
-      className="flex flex-col sm:flex-row justify-center flex-wrap gap-4" 
-      variants={containerVariants} 
-      initial="hidden" 
-      animate="visible"
+      className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.8, duration: 0.5 }}
     >
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/innovations">
-            <Sparkles className="mr-2 h-5 w-5" />
-            <span>Explore Innovations</span>
-            <motion.div 
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", repeatDelay: 2 }}
-            >
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </motion.div>
-          </Link>
-        </Button>
-      </motion.div>
+      <Button 
+        size="lg" 
+        className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md hover:shadow-lg transition-all duration-300 group"
+        asChild
+      >
+        <Link to="/innovations/submit" className="flex items-center">
+          <FileUp className="mr-2 h-4 w-4" />
+          <span>Submit Innovation</span>
+          <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Link>
+      </Button>
       
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          variant="outline" 
-          className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm group w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/challenges">
-            <motion.div 
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-            >
-              <Award className="mr-2 h-5 w-5" />
-            </motion.div>
-            <span>Join a Challenge</span>
-          </Link>
-        </Button>
-      </motion.div>
-      
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          variant="outline" 
-          className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/innovations/submit">
-            <FileUp className="mr-2 h-5 w-5" />
-            <span>Submit Innovation</span>
-          </Link>
-        </Button>
-      </motion.div>
-      
-      <motion.div variants={itemVariants}>
-        <Button 
-          size="lg" 
-          variant="outline" 
-          className="border-moh-darkGold text-moh-darkGold hover:bg-moh-lightGold/50 shadow-sm w-full sm:w-auto" 
-          asChild
-        >
-          <Link to="/investment">
-            <Coins className="mr-2 h-5 w-5" />
-            <span>Access Investment</span>
-          </Link>
-        </Button>
-      </motion.div>
+      <Button 
+        size="lg"
+        variant="outline"
+        className="border-moh-green text-moh-darkGreen hover:bg-moh-lightGreen/20 transition-all duration-300"
+        asChild
+      >
+        <Link to="/challenges">
+          <span>Explore Challenges</span>
+        </Link>
+      </Button>
     </motion.div>
   );
 }
