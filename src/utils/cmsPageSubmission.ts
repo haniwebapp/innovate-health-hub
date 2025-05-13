@@ -8,7 +8,7 @@ export const createPageSubmission = async (
   sections: PageSection[],
   isNewPage: boolean,
   pageId: string | undefined,
-  { toast }: { toast: any },
+  toast: any,
   validatePageContent: (content: PageContent, slug: string) => Promise<boolean>
 ) => {
   if (sections.length === 0) {

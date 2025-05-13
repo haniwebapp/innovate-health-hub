@@ -63,30 +63,14 @@ const PolicyPage: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Each tab component is properly wrapped with Form provider */}
-                {activeTab === 'vision-alignment' && (
-                  <Form {...form}>
-                    <form>
-                      <Vision2030AlignmentChecker />
-                    </form>
-                  </Form>
-                )}
-                
-                {activeTab === 'strategy-gap' && (
-                  <Form {...form}>
-                    <form>
-                      <StrategyGapAnalyzer />
-                    </form>
-                  </Form>
-                )}
-                
-                {activeTab === 'analytics' && (
-                  <Form {...form}>
-                    <form>
-                      <StrategyAnalytics />
-                    </form>
-                  </Form>
-                )}
+                {/* Each tab component with proper Form wrapper */}
+                <Form {...form}>
+                  <form>
+                    {activeTab === 'vision-alignment' && <Vision2030AlignmentChecker />}
+                    {activeTab === 'strategy-gap' && <StrategyGapAnalyzer />}
+                    {activeTab === 'analytics' && <StrategyAnalytics />}
+                  </form>
+                </Form>
               </CardContent>
             </Card>
           </div>

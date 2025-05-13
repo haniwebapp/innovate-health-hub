@@ -10,6 +10,7 @@ import { useFormContext } from 'react-hook-form';
 export const Vision2030AlignmentChecker: React.FC = () => {
   const form = useFormContext();
   
+  // Add safeguard to check if the component is used within a Form context
   if (!form) {
     console.error("Vision2030AlignmentChecker must be used within a Form context");
     return <div>Error: Form context not available</div>;

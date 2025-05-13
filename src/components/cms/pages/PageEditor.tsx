@@ -44,7 +44,7 @@ export function PageEditor() {
         sections, 
         isNewPage, 
         id, 
-        { toast }, 
+        toast, 
         validatePageContent
       );
       
@@ -74,7 +74,7 @@ export function PageEditor() {
     return <LoadingState />;
   }
 
-  // Important: The form needs to be wrapped properly
+  // Return the main component with properly structured form
   return (
     <div className="space-y-6">
       <ErrorDisplay error={serverError} />
@@ -88,7 +88,7 @@ export function PageEditor() {
         onValidate={handleValidateContent}
       />
 
-      {/* Ensure the PageForm is fully rendered with proper form context */}
+      {/* Ensure the PageForm is correctly rendered with form context */}
       <PageForm 
         form={form} 
         defaultValues={form.getValues()} 
