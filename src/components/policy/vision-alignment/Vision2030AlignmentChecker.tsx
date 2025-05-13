@@ -1,189 +1,152 @@
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
+import React, { useState } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { HeartPulse, Lightbulb, Users, BarChart3, Upload } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-export const Vision2030AlignmentChecker = () => {
-  const [selectedProject, setSelectedProject] = useState("default");
-  
-  // Mock alignment data for Vision 2030
-  const alignmentData = {
-    scores: {
-      overall: 78,
-      healthcareAccess: 85,
-      digitalTransformation: 92,
-      qualityOfCare: 68,
-      economicImpact: 72
-    },
-    highlights: [
-      "Strong alignment with digital transformation goals",
-      "Supports healthcare access improvement targets",
-      "Contributes to healthcare workforce development"
-    ],
-    recommendations: [
-      "Enhance focus on preventive care aspects",
-      "Strengthen alignment with quality metrics",
-      "Consider integration with national health information systems"
-    ]
-  };
+const alignmentData = [
+  { name: 'Highly Aligned', value: 40 },
+  { name: 'Partially Aligned', value: 30 },
+  { name: 'Needs Adjustment', value: 20 },
+  { name: 'Not Aligned', value: 10 },
+];
 
-  const visionPillars = [
-    { 
-      id: "healthcare-access", 
-      title: "Healthcare Access", 
-      icon: <Users className="h-4 w-4" />,
-      score: alignmentData.scores.healthcareAccess,
-      description: "Ensuring all citizens have access to high-quality healthcare services"
-    },
-    { 
-      id: "digital-transformation", 
-      title: "Digital Transformation", 
-      icon: <Lightbulb className="h-4 w-4" />,
-      score: alignmentData.scores.digitalTransformation,
-      description: "Leveraging technology to improve healthcare delivery and outcomes"
-    },
-    { 
-      id: "quality-of-care", 
-      title: "Quality of Care", 
-      icon: <HeartPulse className="h-4 w-4" />,
-      score: alignmentData.scores.qualityOfCare,
-      description: "Enhancing healthcare quality and patient experience"
-    },
-    { 
-      id: "economic-impact", 
-      title: "Economic Impact", 
-      icon: <BarChart3 className="h-4 w-4" />,
-      score: alignmentData.scores.economicImpact,
-      description: "Contributing to economic growth and healthcare sustainability"
+const COLORS = ['#00814A', '#65dba9', '#F59E0B', '#EF4444'];
+
+const mockAlignmentAreas = [
+  "Improving quality of healthcare services",
+  "Expanding digital health infrastructure",
+  "Increasing preventive care accessibility",
+  "Developing local pharmaceutical manufacturing",
+  "Promoting medical research and innovation"
+];
+
+const mockImprovementAreas = [
+  "Focus more on rural healthcare access initiatives",
+  "Strengthen integration with private sector providers",
+  "Increase workforce development incentives",
+  "Expand medical education programs"
+];
+
+export const Vision2030AlignmentChecker: React.FC = () => {
+  const [policyText, setPolicyText] = useState<string>('');
+  const [policyType, setPolicyType] = useState<string>('');
+  const [showResults, setShowResults] = useState<boolean>(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (policyText && policyType) {
+      setShowResults(true);
     }
-  ];
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-        <div>
-          <h3 className="text-lg font-medium">Vision 2030 Alignment Score</h3>
-          <p className="text-sm text-muted-foreground">
-            How well your innovation aligns with Saudi Vision 2030 healthcare pillars
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
-            <Upload className="h-4 w-4" />
-            <span>Upload Innovation</span>
-          </Button>
-          <select 
-            className="border rounded px-2 py-1 text-sm"
-            value={selectedProject}
-            onChange={(e) => setSelectedProject(e.target.value)}
-          >
-            <option value="default">Select existing innovation</option>
-            <option value="1">TeleHealth Platform</option>
-            <option value="2">AI Diagnostic Tool</option>
-            <option value="3">Patient Management System</option>
-          </select>
-        </div>
-      </div>
-      
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle>Overall Alignment</CardTitle>
-          <CardDescription>
-            Combined score across all Vision 2030 healthcare pillars
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center">
-            <div className="w-40 h-40 rounded-full border-8 border-muted flex items-center justify-center mb-4">
-              <div className="text-center">
-                <div className="text-4xl font-bold">{alignmentData.scores.overall}%</div>
-                <div className="text-xs text-muted-foreground">Alignment</div>
-              </div>
+      {!showResults ? (
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="policy-type">Policy Type</Label>
+              <Select value={policyType} onValueChange={setPolicyType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select policy type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="healthcare-access">Healthcare Access</SelectItem>
+                  <SelectItem value="digital-health">Digital Health</SelectItem>
+                  <SelectItem value="preventive-care">Preventive Care</SelectItem>
+                  <SelectItem value="workforce-development">Workforce Development</SelectItem>
+                  <SelectItem value="research-innovation">Research & Innovation</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+            
+            <div>
+              <Label htmlFor="policy-text">Policy Text or Summary</Label>
+              <Textarea
+                id="policy-text"
+                value={policyText}
+                onChange={(e) => setPolicyText(e.target.value)}
+                placeholder="Enter the policy text or a detailed summary..."
+                className="h-32"
+              />
+            </div>
+            
+            <Button type="submit" className="w-full" disabled={!policyText || !policyType}>
+              Check Vision 2030 Alignment
+            </Button>
           </div>
-        </CardContent>
-      </Card>
-      
-      <Tabs defaultValue="pillars">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="pillars">Pillars</TabsTrigger>
-          <TabsTrigger value="highlights">Highlights</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="pillars" className="space-y-4 mt-4">
-          {visionPillars.map((pillar) => (
-            <div key={pillar.id} className="space-y-1">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  {pillar.icon}
-                  <span className="font-medium">{pillar.title}</span>
-                </div>
-                <span className="text-sm font-medium">{pillar.score}%</span>
+        </form>
+      ) : (
+        <div className="space-y-6">
+          <Card className="border-moh-green/10 shadow-sm">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium mb-2">Alignment Analysis Results</h3>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={alignmentData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {alignmentData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => [`${value}%`, 'Proportion']} />
+                    <Legend verticalAlign="bottom" height={36}/>
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-              <Progress value={pillar.score} className="h-2" />
-              <p className="text-xs text-muted-foreground">{pillar.description}</p>
-            </div>
-          ))}
-        </TabsContent>
-        
-        <TabsContent value="highlights" className="mt-4">
-          <Card>
-            <CardContent className="pt-6">
-              <ul className="space-y-2">
-                {alignmentData.highlights.map((highlight, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
             </CardContent>
           </Card>
-        </TabsContent>
-        
-        <TabsContent value="recommendations" className="mt-4">
-          <Card>
-            <CardContent className="pt-6">
-              <ul className="space-y-2">
-                {alignmentData.recommendations.map((recommendation, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Lightbulb className="h-5 w-5 text-amber-500 mt-0.5" />
-                    <span>{recommendation}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-      
-      <div className="flex justify-end">
-        <Button>Generate Detailed Report</Button>
-      </div>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card className="border-moh-green/10 shadow-sm">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-medium mb-4">Areas of Alignment</h3>
+                <ul className="space-y-2">
+                  {mockAlignmentAreas.map((area, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                      <span>{area}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-moh-green/10 shadow-sm">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-medium mb-4">Improvement Areas</h3>
+                <ul className="space-y-2">
+                  {mockImprovementAreas.map((area, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+                      <span>{area}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="flex justify-center mt-4">
+            <Button variant="outline" onClick={() => setShowResults(false)}>
+              Check Another Policy
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
-  );
-};
-
-// Helper component for the CheckCircle icon
-const CheckCircle = ({ className }: { className?: string }) => {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <circle cx="12" cy="12" r="10"></circle>
-      <path d="m9 12 2 2 4-4"></path>
-    </svg>
   );
 };
