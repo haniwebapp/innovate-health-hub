@@ -1,5 +1,5 @@
 
-import { AIService, AIServiceType } from './AIServiceRegistry';
+import { AIService, AIServiceType } from './AIService';
 import { AIServiceStaticReferences, CallTrace } from './types/AIServiceTypes';
 
 export class InnovationAIService implements AIService {

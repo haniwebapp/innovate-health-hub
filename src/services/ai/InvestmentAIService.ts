@@ -1,4 +1,6 @@
-import { AIService, AIServiceType } from './AIServiceRegistry';
+
+import { AIService } from './AIService';
+import { AIServiceType } from './AIServiceRegistry';
 import { AIServiceStaticReferences, CallTrace } from './types/AIServiceTypes';
 
 export interface InnovationData {

@@ -2,6 +2,8 @@
 import { AIService } from "./AIService";
 import { AIServiceStaticReferences } from "./types/AIServiceTypes";
 
+export { AIService }; // Export AIService from this file as well
+
 export enum AIServiceType {
   Investment = "investment",
   Regulatory = "regulatory",
