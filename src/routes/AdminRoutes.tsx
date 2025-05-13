@@ -78,6 +78,6 @@ export const AdminRoutes = (
     <Route path="notifications" element={<AdminNotificationsPage />} />
     
     {/* Reports */}
-    <Route path="reports" element={<AdminAnalytics />} /> {/* Placeholder until reports page is created */}
+    <Route path="reports" element={<AdminReportsPage />} />
   </>
 );

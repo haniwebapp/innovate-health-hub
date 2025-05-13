@@ -1,127 +1,49 @@
-export interface UserProfile {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  userType: string;
-  organization?: string;
-  lastSignIn: string;
-  status: "active" | "inactive";
-}
 
-export interface ProfileData {
-  id?: string;
-  first_name?: string;
-  last_name?: string;
-  user_type?: string;
-  organization?: string;
-  avatar_url?: string;
-  updated_at?: string;
-  email?: string;
-  status?: "active" | "inactive";
-}
-
-export interface ProfileWithEmail extends UserProfile {
-  email: string;
-}
-
+// General platform settings
 export interface GeneralSettings {
   allowNewRegistrations: boolean;
   requireEmailVerification: boolean;
   enableNotifications: boolean;
   maintenanceMode: boolean;
-  [key: string]: boolean;
 }
 
+// Challenge-specific settings
 export interface ChallengeSettings {
   requireApproval: boolean;
   allowPublicSubmissions: boolean;
   autoCloseExpiredChallenges: boolean;
-  submissionTimeLimit: string;
-  [key: string]: boolean | string;
+  submissionTimeLimit: string; // days
 }
 
-export interface TableFilter {
-  field: string;
-  value: string;
+// Notification settings
+export interface NotificationSettings {
+  enableEmailNotifications: boolean;
+  enableInAppNotifications: boolean;
+  notificationTemplates: NotificationTemplate[];
 }
 
-export interface SystemEvent {
-  text: string;
-  time: string;
-  type: "user" | "submission" | "challenge" | "system";
-}
-
-export interface SystemHealth {
-  name: string;
-  status: string;
-  value: number;
-}
-
-export interface AdminStatCard {
-  title: string;
-  value: number;
-  icon: React.ReactNode;
-  color: string;
-  textColor: string;
-}
-
-export interface Integration {
-  id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  type: string;
-  config: any;
-}
-
-export interface Challenge {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  status: "active" | "draft" | "closed";
-  startDate: string;
-  endDate: string;
-  submissions: number;
-}
-
-export interface Innovation {
-  id: string;
-  title: string;
-  creator: string;
-  status: string;
-  submittedDate: string;
-  category: string;
-}
-
-export interface InvestmentProgram {
+export interface NotificationTemplate {
   id: string;
   name: string;
   type: string;
-  amount: string;
-  status: string;
-  applicants: number;
-  deadline: string;
+  subject: string;
+  content: string;
+  active: boolean;
 }
 
-export interface SandboxProject {
+// Integration settings
+export interface IntegrationSettings {
   id: string;
   name: string;
-  innovator: string;
-  status: string;
-  startDate: string;
-  endDate: string;
-  riskLevel: string;
+  enabled: boolean;
+  apiKey?: string;
+  endpoint?: string;
+  config: Record<string, any>;
 }
 
-export interface KnowledgeResource {
-  id: string;
-  title: string;
-  type: string;
-  category: string;
-  tags: string[];
-  dateAdded: string;
-  downloads: number;
-  featured: boolean;
+export interface AdminSettings {
+  general: GeneralSettings;
+  challenges: ChallengeSettings;
+  notifications: NotificationSettings;
+  integrations: IntegrationSettings[];
 }

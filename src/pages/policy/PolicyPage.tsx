@@ -1,6 +1,7 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Vision2030AlignmentChecker } from "@/components/policy/vision-alignment";
 import { StrategyAnalytics, StrategyGapAnalyzer } from "@/components/policy/strategy";
@@ -11,81 +12,95 @@ export default function PolicyPage() {
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Policy Analysis Center</h1>
+        <h1 className="text-3xl font-bold mb-2">Healthcare Policy Center</h1>
         <p className="text-muted-foreground">
-          Tools for health policy analysis, vision alignment, and strategy development
+          Analyze, align, and implement healthcare policies that support innovation and improve outcomes
         </p>
       </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid grid-cols-4 gap-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="vision">Vision 2030</TabsTrigger>
-          <TabsTrigger value="strategy">Strategy</TabsTrigger>
+          <TabsTrigger value="vision-alignment">Vision 2030 Alignment</TabsTrigger>
+          <TabsTrigger value="strategy-tools">Strategy Tools</TabsTrigger>
           <TabsTrigger value="analysis">Analysis</TabsTrigger>
         </TabsList>
-
+        
         {/* Overview Tab */}
         <TabsContent value="overview">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Vision 2030 Alignment</CardTitle>
+                <CardTitle>Policy Framework</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4">
-                  Check how healthcare innovations align with Saudi Arabia's Vision 2030 goals and healthcare transformation objectives.
+                <p className="text-muted-foreground mb-6">
+                  The Healthcare Innovation Platform's policy tools are designed to support policy makers,
+                  healthcare leaders, and innovators in aligning initiatives with national health priorities
+                  and Vision 2030 objectives.
                 </p>
+                <Button variant="outline">View Policy Guidelines</Button>
               </CardContent>
             </Card>
+            
             <Card>
               <CardHeader>
-                <CardTitle>Strategy Gap Analysis</CardTitle>
+                <CardTitle>Recent Updates</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4">
-                  Analyze gaps in current healthcare strategy implementation and identify areas for improvement.
-                </p>
+                <ul className="space-y-2">
+                  <li className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Jun 15, 2025:</span> Updated Digital Health Initiative guidelines
+                  </li>
+                  <li className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">May 28, 2025:</span> New regulatory framework for AI in healthcare
+                  </li>
+                  <li className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Apr 10, 2025:</span> Policy changes for remote patient monitoring
+                  </li>
+                </ul>
               </CardContent>
             </Card>
-            <Card>
+            
+            <Card className="md:col-span-2">
               <CardHeader>
-                <CardTitle>Policy Impact Simulation</CardTitle>
+                <CardTitle>How to Use These Tools</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4">
-                  Simulate the potential impact of policy changes on healthcare outcomes and stakeholders.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Regulatory Compliance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">
-                  Assess healthcare innovations against current regulatory frameworks and compliance requirements.
-                </p>
+                <ol className="space-y-2 list-decimal pl-4">
+                  <li className="text-muted-foreground">
+                    <span className="font-medium text-foreground">Vision 2030 Alignment:</span> Evaluate how your innovation 
+                    or policy aligns with Saudi Vision 2030 healthcare goals
+                  </li>
+                  <li className="text-muted-foreground">
+                    <span className="font-medium text-foreground">Strategy Tools:</span> Analyze gaps in current strategies 
+                    and identify opportunities for improvement
+                  </li>
+                  <li className="text-muted-foreground">
+                    <span className="font-medium text-foreground">Analysis:</span> Simulate policy impacts and get detailed 
+                    annotations for policy documents
+                  </li>
+                </ol>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        {/* Vision 2030 Tab */}
-        <TabsContent value="vision">
+        {/* Vision Alignment Tab */}
+        <TabsContent value="vision-alignment">
           <Vision2030AlignmentChecker />
         </TabsContent>
-
-        {/* Strategy Tab */}
-        <TabsContent value="strategy">
+        
+        {/* Strategy Tools Tab */}
+        <TabsContent value="strategy-tools">
           <div className="space-y-8">
             <StrategyAnalytics />
             <StrategyGapAnalyzer />
           </div>
         </TabsContent>
-
+        
         {/* Analysis Tab */}
         <TabsContent value="analysis">
           <div className="space-y-8">
