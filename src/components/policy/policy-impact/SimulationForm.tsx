@@ -13,6 +13,9 @@ import { initialPolicyData } from "./utils";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { Brain, ChevronRight } from "lucide-react";
+import { SimulationResults } from "./SimulationResults";
+import { simulatePolicy } from "./utils";
 
 interface SimulationFormProps {
   policyData: PolicyData;
