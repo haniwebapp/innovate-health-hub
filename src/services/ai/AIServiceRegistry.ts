@@ -1,16 +1,17 @@
-import { InvestmentAIService } from "./InvestmentAIService";
-import { RegulatoryAIService } from "./RegulatoryAIService";
-import { InnovationAIService } from "./InnovationAIService";
-import { KnowledgeAIService } from "./KnowledgeAIService";
-import { PolicyAIService } from "./PolicyAIService";
-import { ChallengeAIService } from "./ChallengeAIService";
-import { SupportAIService } from "./SupportAIService";
-import { ClinicalAIService } from "./ClinicalAIService";
-import { EventsAIService } from "./EventsAIService";
-import { AdminAIService } from "./AdminAIService";
-import { ComplianceAIService } from "./ComplianceAIService";
-import { CommunityAIService } from "./CommunityAIService";
-import { QuotationAIService } from "./quotation/QuotationAIService";
+
+import { InvestmentAIService } from "../ai/InvestmentAIService";
+import { RegulatoryAIService } from "../ai/RegulatoryAIService";
+import { InnovationAIService } from "../ai/InnovationAIService";
+import { KnowledgeAIService } from "../ai/KnowledgeAIService";
+import { PolicyAIService } from "../ai/PolicyAIService";
+import { ChallengeAIService } from "../ai/challenge/ChallengeAIService"; 
+import { SupportAIService } from "../ai/support/SupportAIService";
+import { ClinicalAIService } from "../ai/clinical/ClinicalAIService";
+import { EventsAIService } from "../ai/events/EventsAIService";
+import { AdminAIService } from "../ai/admin/AdminAIService";
+import { ComplianceAIService } from "../ai/compliance/ComplianceAIService";
+import { CommunityAIService } from "../ai/community/CommunityAIService";
+import { QuotationAIService } from "../ai/quotation/QuotationAIService";
 
 import {
   AIServiceStaticReferences,
@@ -94,19 +95,19 @@ export class AIServiceRegistry {
 
   static initialize(): void {
     // Initialize and register all AI services here
-    AIServiceRegistry.register(AIServiceType.Investment, InvestmentAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Regulatory, RegulatoryAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Innovation, InnovationAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Knowledge, KnowledgeAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Policy, PolicyAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Challenge, ChallengeAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Support, SupportAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Clinical, ClinicalAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Events, EventsAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Admin, AdminAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Compliance, ComplianceAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Community, CommunityAIService.getInstance());
-    AIServiceRegistry.register(AIServiceType.Quotation, QuotationAIService.getInstance());
+    AIServiceRegistry.register(AIServiceType.Investment, new InvestmentAIService());
+    AIServiceRegistry.register(AIServiceType.Regulatory, new RegulatoryAIService());
+    AIServiceRegistry.register(AIServiceType.Innovation, new InnovationAIService());
+    AIServiceRegistry.register(AIServiceType.Knowledge, new KnowledgeAIService());
+    AIServiceRegistry.register(AIServiceType.Policy, new PolicyAIService());
+    AIServiceRegistry.register(AIServiceType.Challenge, new ChallengeAIService());
+    AIServiceRegistry.register(AIServiceType.Support, new SupportAIService());
+    AIServiceRegistry.register(AIServiceType.Clinical, new ClinicalAIService());
+    AIServiceRegistry.register(AIServiceType.Events, new EventsAIService());
+    AIServiceRegistry.register(AIServiceType.Admin, new AdminAIService());
+    AIServiceRegistry.register(AIServiceType.Compliance, new ComplianceAIService());
+    AIServiceRegistry.register(AIServiceType.Community, new CommunityAIService());
+    AIServiceRegistry.register(AIServiceType.Quotation, new QuotationAIService());
   }
 }
 
