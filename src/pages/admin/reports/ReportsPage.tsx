@@ -33,14 +33,20 @@ export default function ReportsPage() {
   
   const handleDownloadReport = () => {
     setIsLoading(true);
-    toast.promise(
-      new Promise(resolve => setTimeout(resolve, 1500)),
-      {
-        loading: "Generating report...",
-        success: "Report downloaded successfully",
-        error: "Failed to generate report",
-      }
-    ).finally(() => setIsLoading(false));
+    
+    // Fix: Create a promise first, then use toast.promise, then handle completion separately
+    const downloadPromise = new Promise(resolve => setTimeout(resolve, 1500));
+    
+    toast.promise(downloadPromise, {
+      loading: "Generating report...",
+      success: "Report downloaded successfully",
+      error: "Failed to generate report",
+    });
+    
+    // Handle the loading state separately
+    downloadPromise.then(() => {
+      setIsLoading(false);
+    });
   };
 
   return (
