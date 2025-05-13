@@ -1,17 +1,17 @@
 
-import { InvestmentAIService } from "../ai/InvestmentAIService";
-import { RegulatoryAIService } from "../ai/RegulatoryAIService";
-import { InnovationAIService } from "../ai/InnovationAIService";
-import { KnowledgeAIService } from "../ai/KnowledgeAIService";
-import { PolicyAIService } from "../ai/PolicyAIService";
-import { ChallengeAIService } from "../ai/challenge/ChallengeAIService"; 
-import { SupportAIService } from "../ai/support/SupportAIService";
-import { ClinicalAIService } from "../ai/clinical/ClinicalAIService";
-import { EventsAIService } from "../ai/events/EventsAIService";
-import { AdminAIService } from "../ai/admin/AdminAIService";
-import { ComplianceAIService } from "../ai/compliance/ComplianceAIService";
-import { CommunityAIService } from "../ai/community/CommunityAIService";
-import { QuotationAIService } from "../ai/quotation/QuotationAIService";
+import { InvestmentAIService } from "./InvestmentAIService";
+import { RegulatoryAIService } from "./RegulatoryAIService";
+import { InnovationAIService } from "./InnovationAIService";
+import { KnowledgeAIService } from "./KnowledgeAIService";
+import { PolicyAIService } from "./PolicyAIService";
+import { ChallengeAIService } from "./challenge/ChallengeAIService"; 
+import { SupportAIService } from "./support/SupportAIService";
+import { ClinicalAIService } from "./clinical/ClinicalAIService";
+import { EventsAIService } from "./events/EventsAIService";
+import { AdminAIService } from "./admin/AdminAIService";
+import { ComplianceAIService } from "./compliance/ComplianceAIService";
+import { CommunityAIService } from "./community/CommunityAIService";
+import { QuotationAIService } from "./quotation/QuotationAIService";
 
 import {
   AIServiceStaticReferences,

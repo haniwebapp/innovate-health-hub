@@ -1,163 +1,218 @@
 
-import React from 'react';
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Download, FileBarChart, FileText, RefreshCw } from "lucide-react";
-import AdminLayout from '@/components/layouts/AdminLayout';
+import { Download, FileBarChart, Users, Activity, Newspaper, Calendar, Lightbulb } from "lucide-react";
 
-const ReportsPage = () => {
-  const [isGenerating, setIsGenerating] = React.useState(false);
-  
-  const handleGenerateReport = () => {
-    setIsGenerating(true);
-    // Simulate report generation
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 2000);
-  };
+export default function ReportsPage() {
+  const [activeTab, setActiveTab] = useState("activity");
 
   return (
-    <AdminLayout title="Reports" description="Generate and view system reports">
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold">Reports Dashboard</h2>
-          <Button onClick={handleGenerateReport} disabled={isGenerating}>
-            {isGenerating ? (
-              <>
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <FileBarChart className="mr-2 h-4 w-4" />
-                Generate New Report
-              </>
-            )}
-          </Button>
+    <div className="container mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-moh-darkGreen">Reports</h1>
+          <p className="text-muted-foreground">
+            Analyze system data and generate reports
+          </p>
         </div>
-
-        <Tabs defaultValue="analytics" className="w-full">
-          <TabsList>
-            <TabsTrigger value="analytics">Analytics Reports</TabsTrigger>
-            <TabsTrigger value="usage">Usage Reports</TabsTrigger>
-            <TabsTrigger value="compliance">Compliance Reports</TabsTrigger>
-            <TabsTrigger value="financial">Financial Reports</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="analytics" className="space-y-4 pt-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <ReportCard 
-                title="User Activity Report" 
-                description="User engagement and activity statistics"
-                date="Generated May 2, 2025"
-              />
-              <ReportCard 
-                title="Innovation Metrics" 
-                description="Track innovation submissions and approvals"
-                date="Generated May 1, 2025"
-              />
-              <ReportCard 
-                title="Challenge Performance" 
-                description="Challenge participation and completion stats"
-                date="Generated April 28, 2025"
-              />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="usage" className="space-y-4 pt-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <ReportCard 
-                title="Platform Usage" 
-                description="Daily and monthly active users"
-                date="Generated May 2, 2025"
-              />
-              <ReportCard 
-                title="Resource Downloads" 
-                description="Knowledge resource utilization"
-                date="Generated May 1, 2025"
-              />
-              <ReportCard 
-                title="Feature Adoption" 
-                description="Feature usage across user segments"
-                date="Generated April 29, 2025"
-              />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="compliance" className="space-y-4 pt-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <ReportCard 
-                title="Regulatory Compliance" 
-                description="Regulatory compliance status"
-                date="Generated May 1, 2025"
-              />
-              <ReportCard 
-                title="Data Privacy Audit" 
-                description="GDPR and data protection compliance"
-                date="Generated April 25, 2025"
-              />
-              <ReportCard 
-                title="Security Posture" 
-                description="Platform security assessment"
-                date="Generated April 20, 2025"
-              />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="financial" className="space-y-4 pt-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <ReportCard 
-                title="Investment Overview" 
-                description="Investment allocation and performance"
-                date="Generated May 2, 2025"
-              />
-              <ReportCard 
-                title="Budget Utilization" 
-                description="Program budget tracking"
-                date="Generated May 1, 2025"
-              />
-              <ReportCard 
-                title="ROI Analysis" 
-                description="Return on innovation investments"
-                date="Generated April 27, 2025"
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
+        <Button variant="outline">
+          <Download className="mr-2 h-4 w-4" />
+          Export All Data
+        </Button>
       </div>
-    </AdminLayout>
-  );
-};
 
-interface ReportCardProps {
-  title: string;
-  description: string;
-  date: string;
+      <Tabs
+        defaultValue={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-4"
+      >
+        <TabsList className="grid grid-cols-6 h-auto">
+          <TabsTrigger value="activity" className="py-2">
+            <Activity className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Activity</span>
+          </TabsTrigger>
+          <TabsTrigger value="users" className="py-2">
+            <Users className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Users</span>
+          </TabsTrigger>
+          <TabsTrigger value="challenges" className="py-2">
+            <FileBarChart className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Challenges</span>
+          </TabsTrigger>
+          <TabsTrigger value="innovations" className="py-2">
+            <Lightbulb className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Innovations</span>
+          </TabsTrigger>
+          <TabsTrigger value="events" className="py-2">
+            <Calendar className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Events</span>
+          </TabsTrigger>
+          <TabsTrigger value="content" className="py-2">
+            <Newspaper className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Content</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="activity" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Activity
+                </CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">7,842</div>
+                <p className="text-xs text-muted-foreground">
+                  +12% from last month
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Active Users
+                </CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">2,453</div>
+                <p className="text-xs text-muted-foreground">
+                  +5.2% from last month
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Engagement Rate
+                </CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">42.3%</div>
+                <p className="text-xs text-muted-foreground">
+                  +8% from last month
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Average Session
+                </CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">12m 24s</div>
+                <p className="text-xs text-muted-foreground">
+                  +1m 12s from last month
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                System activity over the last 30 days
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="p-6">
+                {/* Activity chart would go here */}
+                <div className="h-80 bg-muted rounded-md flex items-center justify-center">
+                  Activity Chart Placeholder
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="users" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Analytics</CardTitle>
+              <CardDescription>
+                User registrations, activity, and growth
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 bg-muted rounded-md flex items-center justify-center">
+                User Analytics Charts Placeholder
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="challenges" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Challenge Reports</CardTitle>
+              <CardDescription>
+                Challenge participation and completion statistics
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 bg-muted rounded-md flex items-center justify-center">
+                Challenge Reports Placeholder
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="innovations" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Innovation Insights</CardTitle>
+              <CardDescription>
+                Analysis of innovation submissions and trends
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 bg-muted rounded-md flex items-center justify-center">
+                Innovation Insights Placeholder
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="events" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Event Analytics</CardTitle>
+              <CardDescription>
+                Event participation and engagement metrics
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 bg-muted rounded-md flex items-center justify-center">
+                Event Analytics Placeholder
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="content" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Content Performance</CardTitle>
+              <CardDescription>
+                Analysis of content views and engagement
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 bg-muted rounded-md flex items-center justify-center">
+                Content Performance Placeholder
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 }
-
-const ReportCard = ({ title, description, date }: ReportCardProps) => {
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="text-sm text-muted-foreground mb-4">{date}</div>
-        <div className="flex justify-between items-center">
-          <Button variant="outline" size="sm" className="flex gap-1">
-            <FileText className="h-4 w-4" />
-            View
-          </Button>
-          <Button variant="outline" size="sm" className="flex gap-1">
-            <Download className="h-4 w-4" />
-            Download
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-export default ReportsPage;

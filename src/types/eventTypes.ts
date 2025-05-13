@@ -3,33 +3,22 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  eventType: 'webinar' | 'conference' | 'workshop' | 'panel' | 'other';
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   location?: string;
   isVirtual: boolean;
-  eventUrl?: string;
-  registrationUrl?: string;
-  recordingUrl?: string;
-  maxAttendees?: number;
-  presenter?: string;
-  presenterTitle?: string;
-  presenterOrganization?: string;
   category: string;
   tags?: string[];
-  featured: boolean;
-  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-  createdBy?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  presenter?: string;
+  registrationUrl?: string;
 }
 
 export interface EventRegistration {
   id: string;
   eventId: string;
   userId: string;
-  registrationDate: Date;
-  attended?: boolean;
+  registrationDate: string;
+  attended: boolean;
   feedback?: string;
   rating?: number;
 }
@@ -39,4 +28,5 @@ export interface EventRecommendation {
   eventTitle: string;
   matchScore: number;
   matchReason: string;
+  eventDate: string;
 }

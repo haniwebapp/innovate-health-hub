@@ -8,19 +8,19 @@ export interface CallTrace {
 }
 
 export interface AIServiceStaticReferences {
-  investment: any;
-  regulatory: any;
-  innovation: any;
-  knowledge: any;
-  policy: any;
-  challenge: any;
-  support: any;
-  clinical: any;
-  events: any;
-  admin: any;
-  compliance: any;
-  community: any;
-  quotation: any;
+  investment?: any;
+  regulatory?: any;
+  innovation?: any;
+  knowledge?: any;
+  policy?: any;
+  challenge?: any;
+  support?: any;
+  clinical?: any;
+  events?: any;
+  admin?: any;
+  compliance?: any;
+  community?: any;
+  quotation?: any;
 }
 
 export interface AIServiceHealth {
