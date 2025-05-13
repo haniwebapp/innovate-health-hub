@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Vision2030AlignmentChecker } from "@/components/policy/vision-alignment";
 import { StrategyAnalytics, StrategyGapAnalyzer } from "@/components/policy/strategy";
+import { PolicyAnnotator } from "@/components/policy/PolicyAnnotator";
+import { PolicyImpactSimulator } from "@/components/policy/PolicyImpactSimulator";
 
 export default function PolicyPage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -86,16 +88,10 @@ export default function PolicyPage() {
 
         {/* Analysis Tab */}
         <TabsContent value="analysis">
-          <Card>
-            <CardHeader>
-              <CardTitle>Policy Analysis Tools</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-6">
-                This section will include comprehensive policy analysis tools for healthcare innovation assessment.
-              </p>
-            </CardContent>
-          </Card>
+          <div className="space-y-8">
+            <PolicyImpactSimulator />
+            <PolicyAnnotator />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

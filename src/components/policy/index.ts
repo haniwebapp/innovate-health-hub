@@ -10,3 +10,5 @@ export * from './policy-impact/SimulationResults';
 export * from './vision-alignment/AlignmentForm';
 export * from './vision-alignment/AlignmentResults';
 export * from './vision-alignment/Vision2030AlignmentChecker';
+export * from './strategy/StrategyAnalytics';
+export * from './strategy/StrategyGapAnalyzer';
