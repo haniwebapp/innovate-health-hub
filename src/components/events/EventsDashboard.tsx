@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Users, TrendingUp, Activity } from "lucide-react";
@@ -23,7 +22,7 @@ export default function EventsDashboard() {
       <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-xl overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-moh-green/5 to-moh-gold/5 pointer-events-none" />
         <CardContent className="p-5">
-          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 text-white">
             <Activity className="h-5 w-5 text-moh-green" />
             Events Dashboard
           </h3>
@@ -42,8 +41,8 @@ export default function EventsDashboard() {
                   <CalendarDays className="h-5 w-5 text-moh-green" />
                 </div>
                 <div>
-                  <p className="text-sm opacity-80">Upcoming Events</p>
-                  <h4 className="text-2xl font-bold">{eventsStats.upcoming}</h4>
+                  <p className="text-sm opacity-80 text-white">Upcoming Events</p>
+                  <h4 className="text-2xl font-bold text-white">{eventsStats.upcoming}</h4>
                 </div>
               </div>
             </motion.div>
@@ -61,8 +60,8 @@ export default function EventsDashboard() {
                   <Users className="h-5 w-5 text-moh-gold" />
                 </div>
                 <div>
-                  <p className="text-sm opacity-80">Categories</p>
-                  <h4 className="text-2xl font-bold">{eventsStats.categories}</h4>
+                  <p className="text-sm opacity-80 text-white">Categories</p>
+                  <h4 className="text-2xl font-bold text-white">{eventsStats.categories}</h4>
                 </div>
               </div>
             </motion.div>
@@ -80,8 +79,8 @@ export default function EventsDashboard() {
                   <TrendingUp className="h-5 w-5 text-moh-green" />
                 </div>
                 <div>
-                  <p className="text-sm opacity-80">Attendance Rate</p>
-                  <h4 className="text-2xl font-bold">{eventsStats.attendance}%</h4>
+                  <p className="text-sm opacity-80 text-white">Attendance Rate</p>
+                  <h4 className="text-2xl font-bold text-white">{eventsStats.attendance}%</h4>
                 </div>
               </div>
             </motion.div>
@@ -99,8 +98,8 @@ export default function EventsDashboard() {
                   <Users className="h-5 w-5 text-moh-gold" />
                 </div>
                 <div>
-                  <p className="text-sm opacity-80">New Registrations</p>
-                  <h4 className="text-2xl font-bold">{eventsStats.registrations}</h4>
+                  <p className="text-sm opacity-80 text-white">New Registrations</p>
+                  <h4 className="text-2xl font-bold text-white">{eventsStats.registrations}</h4>
                 </div>
               </div>
             </motion.div>
@@ -113,11 +112,11 @@ export default function EventsDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
           >
-            <h4 className="text-sm font-medium mb-3">Events by Category</h4>
+            <h4 className="text-sm font-medium mb-3 text-white">Events by Category</h4>
             <div className="space-y-2">
               {/* Webinars */}
               <div>
-                <div className="flex justify-between text-xs mb-1">
+                <div className="flex justify-between text-xs mb-1 text-white">
                   <span>Webinars</span>
                   <span>45%</span>
                 </div>
@@ -133,7 +132,7 @@ export default function EventsDashboard() {
               
               {/* Conferences */}
               <div>
-                <div className="flex justify-between text-xs mb-1">
+                <div className="flex justify-between text-xs mb-1 text-white">
                   <span>Conferences</span>
                   <span>25%</span>
                 </div>
@@ -149,7 +148,7 @@ export default function EventsDashboard() {
               
               {/* Workshops */}
               <div>
-                <div className="flex justify-between text-xs mb-1">
+                <div className="flex justify-between text-xs mb-1 text-white">
                   <span>Workshops</span>
                   <span>20%</span>
                 </div>
@@ -165,7 +164,7 @@ export default function EventsDashboard() {
               
               {/* Other */}
               <div>
-                <div className="flex justify-between text-xs mb-1">
+                <div className="flex justify-between text-xs mb-1 text-white">
                   <span>Other Events</span>
                   <span>10%</span>
                 </div>
