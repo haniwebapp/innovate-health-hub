@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { BrainCircuit, Microscope, Stethoscope, Flask, Tablets, HeartPulse, Dna, Pill } from "lucide-react";
+import { BrainCircuit, Microscope, Stethoscope, Tablets, HeartPulse, Dna, Pill } from "lucide-react";
 import { FloatingIcon } from "../healthcare/FloatingIcon";
 
 export function HealthcareIconsCluster() {
@@ -89,7 +89,7 @@ export function HealthcareIconsCluster() {
       />
       
       <FloatingIcon
-        icon={Flask}
+        icon={Pill}
         color="#C3A86B"
         position={{ bottom: "10%", left: "20%", transform: "translate(-50%, 50%)" }}
         animationDelay={0.9}

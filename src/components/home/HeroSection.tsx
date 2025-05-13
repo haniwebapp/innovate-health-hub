@@ -6,7 +6,7 @@ import { HeroButtons } from "./hero/HeroButtons";
 import { HeroStats } from "./hero/HeroStats";
 import { HeroDecorations } from "./hero/HeroDecorations";
 import { HeroBackgroundEffect } from "./hero/HeroBackgroundEffect";
-import { ChevronDown, Dna, Atom, Stethoscope, HeartPulse, Tablets, Microscope, Flask } from "lucide-react";
+import { ChevronDown, Dna, Atom, Stethoscope, HeartPulse, Tablets, Microscope, Pill } from "lucide-react";
 import { useRef } from "react";
 import { HealthcareIconsCluster } from "./hero/HealthcareIconsCluster";
 
