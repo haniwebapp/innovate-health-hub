@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { PageService } from "@/services/page/PageService";
@@ -18,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { getErrorMessage } from "@/utils/errorHandling";
 
 export function PageList() {
   const [pages, setPages] = useState<WebsitePage[]>([]);
@@ -39,16 +39,7 @@ export function PageList() {
       setPages(data);
     } catch (error) {
       console.error("Failed to load pages:", error);
-      let errorMessage = "Failed to load pages. Please try again.";
-      
-      // Provide more specific error message for common issues
-      if (error instanceof Error) {
-        if (error.message.includes("infinite recursion")) {
-          errorMessage = "Database policy error: Infinite recursion detected. Please check your Supabase Row Level Security policies for the profiles table.";
-        } else {
-          errorMessage = `Error: ${error.message}`;
-        }
-      }
+      const errorMessage = getErrorMessage(error);
       
       setError(errorMessage);
       toast({
@@ -136,7 +127,7 @@ export function PageList() {
     );
   }
 
-  // Show error state
+  // Show error state with more detailed guidance
   if (error) {
     return (
       <Card className="bg-red-50/30 p-8 text-center">
@@ -147,13 +138,28 @@ export function PageList() {
             <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
               {error}
             </p>
-            <div className="space-x-4">
-              <Button onClick={loadPages}>
-                Try Again
-              </Button>
-              <Button variant="outline" onClick={() => navigate("/dashboard/admin")}>
-                Return to Dashboard
-              </Button>
+            <div className="space-y-3">
+              {error.includes("infinite recursion") && (
+                <Card className="bg-amber-50 border-amber-200 p-4 mb-4 text-left">
+                  <CardContent className="p-0">
+                    <h4 className="font-medium mb-2">How to fix this issue:</h4>
+                    <ol className="list-decimal pl-4 space-y-1 text-sm">
+                      <li>This is a Supabase Row Level Security policy error</li>
+                      <li>Your RLS policy on the <code>profiles</code> table is causing a recursive loop</li>
+                      <li>Check if your policy references the same table within the policy condition</li>
+                      <li>Create a security definer function to properly secure your table access</li>
+                    </ol>
+                  </CardContent>
+                </Card>
+              )}
+              <div className="flex flex-col sm:flex-row justify-center gap-3">
+                <Button onClick={loadPages}>
+                  Try Again
+                </Button>
+                <Button variant="outline" onClick={() => navigate("/dashboard/admin")}>
+                  Return to Dashboard
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
