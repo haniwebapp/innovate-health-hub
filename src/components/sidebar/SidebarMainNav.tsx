@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { Home, LineChart, FileText, Send, MessageCircle, HelpCircle } from "lucide-react";
+import { Home, LineChart, FileText, Send, MessageCircle, HelpCircle, CalendarDays } from "lucide-react";
 import { SidebarNavSection } from "./SidebarNavSection";
 import { SidebarNavItem } from "./SidebarNavItem";
 
@@ -48,6 +48,14 @@ export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
         href="/dashboard/activity"
         icon={<FileText className="h-[1.2rem] w-[1.2rem]" />}
         label="Activity"
+      />
+      
+      <SidebarNavItem
+        isCollapsed={isCollapsed}
+        isActive={isActive("/dashboard/events")}
+        href="/dashboard/collaboration/events"
+        icon={<CalendarDays className="h-[1.2rem] w-[1.2rem]" />}
+        label="Events"
       />
       
       <SidebarNavItem
