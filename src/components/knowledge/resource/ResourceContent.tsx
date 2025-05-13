@@ -5,35 +5,30 @@ import { TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { DocumentSummary } from "@/services/ai/KnowledgeAIService";
 import { Button } from "@/components/ui/button";
-import { getRTLClasses } from "@/utils/rtlUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ResourceContentProps {
   content?: string;
-  translatedContent: string | null;
   summary: DocumentSummary | null;
   isSummarizing: boolean;
-  isTranslating: boolean;
   activeTab: string;
   onGenerateSummary: () => void;
 }
 
 export function ResourceContent({
   content,
-  translatedContent,
   summary,
   isSummarizing,
   activeTab,
   onGenerateSummary
 }: ResourceContentProps) {
-  const { language, t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
+  const { t } = useLanguage();
 
   return (
     <>
       <TabsContent value="content" className="mt-4">
         {content ? (
-          <div className={`prose max-w-none ${rtlClasses.text}`}>
+          <div className="prose max-w-none">
             {content.split('\n').map((paragraph, i) => (
               <p key={i} className="mb-4">{paragraph}</p>
             ))}
@@ -48,7 +43,7 @@ export function ResourceContent({
       
       <TabsContent value="summary" className="mt-4">
         {summary ? (
-          <div className={`prose max-w-none ${rtlClasses.text}`}>
+          <div className="prose max-w-none">
             <h3>{t('knowledge.summary')}</h3>
             <p>{summary.summary}</p>
             
@@ -88,16 +83,6 @@ export function ResourceContent({
           </div>
         )}
       </TabsContent>
-      
-      {translatedContent && (
-        <TabsContent value="translated" className="mt-4">
-          <div className={`prose max-w-none ${rtlClasses.text}`}>
-            {translatedContent.split('\n').map((paragraph, i) => (
-              <p key={i} className="mb-4">{paragraph}</p>
-            ))}
-          </div>
-        </TabsContent>
-      )}
     </>
   );
 }

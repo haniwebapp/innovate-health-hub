@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Share2, MessageSquare, FileText } from "lucide-react";
 import { DocumentSummaryCard } from "@/components/knowledge/DocumentSummary";
 import { DocumentSummary } from "@/services/ai/KnowledgeAIService";
-import { getRTLClasses } from "@/utils/rtlUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ResourceSidebarProps {
@@ -14,7 +13,6 @@ interface ResourceSidebarProps {
   documentTitle: string;
   documentType: string;
   onDownload: () => void;
-  language: string;
 }
 
 export function ResourceSidebar({ 
@@ -22,11 +20,9 @@ export function ResourceSidebar({
   summary, 
   documentTitle, 
   documentType, 
-  onDownload,
-  language 
+  onDownload
 }: ResourceSidebarProps) {
   const { t } = useLanguage();
-  const rtlClasses = getRTLClasses(language);
   
   return (
     <div className="space-y-6">
@@ -42,7 +38,7 @@ export function ResourceSidebar({
       {/* Related resources would go here */}
       <Card>
         <CardHeader>
-          <CardTitle className={rtlClasses.text}>
+          <CardTitle>
             {t('knowledge.relatedResources')}
           </CardTitle>
         </CardHeader>
@@ -56,21 +52,21 @@ export function ResourceSidebar({
       {/* Actions */}
       <Card>
         <CardHeader>
-          <CardTitle className={rtlClasses.text}>
+          <CardTitle>
             {t('knowledge.actions')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <Button className="w-full justify-start" variant="outline">
-            <Share2 className={`h-4 w-4 ${rtlClasses.iconMargin}`} />
+            <Share2 className="h-4 w-4 mr-2" />
             {t('knowledge.shareResource')}
           </Button>
           <Button className="w-full justify-start" variant="outline">
-            <MessageSquare className={`h-4 w-4 ${rtlClasses.iconMargin}`} />
+            <MessageSquare className="h-4 w-4 mr-2" />
             {t('knowledge.discussResource')}
           </Button>
           <Button className="w-full justify-start" variant="outline">
-            <FileText className={`h-4 w-4 ${rtlClasses.iconMargin}`} />
+            <FileText className="h-4 w-4 mr-2" />
             {t('knowledge.reportIssue')}
           </Button>
         </CardContent>

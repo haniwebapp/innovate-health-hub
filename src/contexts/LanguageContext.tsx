@@ -1,14 +1,12 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 
-// Define supported languages
-type Language = 'en' | 'ar';
+// Define supported languages - removing Arabic
+type Language = 'en';
 
 // Context type definition
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  dir: 'ltr' | 'rtl';
   t: (key: string) => string;
   isLoading: boolean;
 }
@@ -17,7 +15,6 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
   setLanguage: () => {},
-  dir: 'ltr',
   t: (key) => key,
   isLoading: true,
 });
@@ -25,7 +22,7 @@ const LanguageContext = createContext<LanguageContextType>({
 // Hook for using the language context
 export const useLanguage = () => useContext(LanguageContext);
 
-// Translation data
+// Translation data - keeping only English
 type Translations = Record<Language, Record<string, string>>;
 
 const translations: Translations = {
@@ -163,7 +160,7 @@ const translations: Translations = {
     'footer.emailPlaceholder': 'your@email.com',
     'footer.mohLogo': 'Ministry of Health Logo',
     
-    // Profile page - Added missing translations
+    // Profile page
     'profile.title': 'Profile',
     'profile.description': 'Update your account profile details here.',
     'profile.accountSettings': 'Account Settings',
@@ -185,193 +182,17 @@ const translations: Translations = {
     'profile.profileInfoDesc': 'Update your account profile details here.',
     'profile.memberSince': 'Member since',
   },
-  
-  ar: {
-    // Common
-    'app.name': 'منصة وزارة الصحة للابتكار',
-    'app.slogan': 'تمكين الابتكار في الرعاية الصحية',
-    'app.lang': 'العربية',
-    
-    // Navigation
-    'nav.home': 'الرئيسية',
-    'nav.about': 'عن المنصة',
-    'nav.challenges': 'التحديات',
-    'nav.innovations': 'الابتكارات',
-    'nav.dashboard': 'لوحة التحكم',
-    'nav.login': 'تسجيل الدخول',
-    'nav.signup': 'إنشاء حساب',
-    'nav.logout': 'تسجيل الخروج',
-    'nav.profile': 'الملف الشخصي',
-    'nav.register': 'تسجيل',
-    
-    // Home page
-    'home.hero.title': 'تحويل الرعاية الصحية من خلال الابتكار',
-    'home.hero.subtitle': 'انضم إلى منصة وزارة الصحة للتعاون والابتكار وتحويل مستقبل الرعاية الصحية',
-    'home.hero.cta.explore': 'استكشاف التحديات',
-    'home.hero.cta.signup': 'إنشاء حساب',
-    
-    // Innovations section
-    'home.innovations.tag': 'معرض الابتكارات',
-    'home.innovations.title': 'معرض حلول الرعاية الصحية',
-    'home.innovations.subtitle': 'اكتشف الحلول المبتكرة التي تحول الرعاية الصحية السعودية',
-    
-    // About page
-    'about.title': 'عن المنصة',
-    'about.mission': 'مهمتنا',
-    'about.vision': 'رؤيتنا',
-    'about.mission.text': 'إنشاء منصة ابتكار مفتوحة تمكن المتخصصين في الرعاية الصحية ورواد الأعمال والمبتكرين من التعاون وتطوير حلول تعالج تحديات الرعاية الصحية الحرجة.',
-    'about.vision.text': 'نظام بيئي مزدهر حيث تزدهر الأفكار المبتكرة لتصبح حلولاً تحويلية للرعاية الصحية، وتحسين رعاية المرضى والنتائج الصحية في جميع أنحاء البلاد.',
-    
-    // Challenge related
-    'challenges.title': 'تحديات الابتكار',
-    'challenges.subtitle': 'استكشف التحديات والفرص الحالية للابتكار في الرعاية الصحية',
-    'challenges.view': 'عرض التحدي',
-    'challenges.apply': 'تقدم الآن',
-    'challenges.deadline': 'الموعد النهائي للتقديم',
-    'challenges.prize': 'الجائزة',
-    'challenges.participants': 'المشاركون',
-    
-    // Auth related
-    'auth.login': 'تسجيل الدخول إلى حسابك',
-    'auth.signup': 'إنشاء حساب جديد',
-    'auth.email': 'البريد الإلكتروني',
-    'auth.password': 'كلمة المرور',
-    'auth.confirm_password': 'تأكيد كلمة المرور',
-    'auth.forgot_password': 'نسيت كلمة المرور؟',
-    'auth.already_have_account': 'لديك حساب بالفعل؟',
-    'auth.no_account': 'ليس لديك حساب؟',
-    
-    // Login specific
-    'login.welcomeBack': 'مرحبًا بعودتك',
-    'login.platformDescription': 'منصة وزارة الصحة تربط المبتكرين والمتخصصين في الرعاية الصحية وأصحاب المصلحة لدفع تحول الرعاية الصحية.',
-    'login.signIn': 'تسجيل الدخول',
-    'login.accessAccount': 'الوصول إلى حسابك لإدارة الابتكارات والمشاركة في التحديات.',
-    'login.invalidCredentials': 'بريد إلكتروني أو كلمة مرور غير صالحة. يرجى المحاولة مرة أخرى.',
-    'login.genericError': 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.',
-    'login.signingIn': 'جاري تسجيل الدخول...',
-    'login.forgotPassword': 'نسيت كلمة المرور؟',
-    'login.dontHaveAccount': 'ليس لديك حساب بعد؟',
-    'login.termsAndPrivacy': 'بتسجيل الدخول، فإنك توافق على شروط الخدمة وسياسة الخصوصية الخاصة بنا.',
-    
-    // Register specific
-    'register.title': 'إنشاء حساب',
-    'register.description': 'انضم إلى منصتنا للتعاون في ابتكارات الرعاية الصحية.',
-    'register.firstName': 'الاسم الأول',
-    'register.lastName': 'اسم العائلة',
-    'register.email': 'البريد الإلكتروني',
-    'register.password': 'كلمة المرور',
-    'register.confirmPassword': 'تأكيد كلمة المرور',
-    'register.userType': 'نوع المستخدم',
-    'register.selectUserType': 'اختر نوع المستخدم',
-    'register.individual': 'فرد',
-    'register.healthcareProfessional': 'متخصص رعاية صحية',
-    'register.innovator': 'مبتكر',
-    'register.investor': 'مستثمر',
-    'register.organization': 'منظمة',
-    'register.organizationName': 'اسم المنظمة',
-    'register.platformBenefits': 'انضم إلى منصة وزارة الصحة للابتكار للتعاون مع المتخصصين في الرعاية الصحية، واكتشاف الفرص، وتحويل الأفكار إلى حلول.',
-    'register.joinPlatform': 'انضم إلى منصة الابتكار لدينا',
-    'register.agreeTerms': 'أوافق على شروط الخدمة وسياسة الخصوصية',
-    'register.next': 'التالي',
-    'register.back': 'السابق',
-    'register.createAccount': 'إنشاء حساب',
-    'register.creatingAccount': 'جاري إنشاء الحساب...',
-    'register.alreadyHaveAccount': 'لديك حساب بالفعل؟',
-    'register.personalInfo': 'المعلومات الشخصية',
-    'register.security': 'الأمان',
-    'register.profile': 'الملف الشخصي',
-    'register.passwordStrength': 'قوة كلمة المرور',
-    
-    // Dashboard
-    'dashboard.welcome': 'مرحبا بك في لوحة التحكم',
-    'dashboard.recent_activity': 'النشاطات الأخيرة',
-    'dashboard.my_challenges': 'تحدياتي',
-    'dashboard.my_innovations': 'ابتكاراتي',
-    'dashboard.upcoming_events': 'الفعاليات القادمة',
-    'dashboard.suggestions': 'اقتراحات لك',
-    
-    // Form actions
-    'action.submit': 'إرسال',
-    'action.cancel': 'إلغاء',
-    'action.save': 'حفظ',
-    'action.edit': 'تعديل',
-    'action.delete': 'حذف',
-    'action.search': 'بحث',
-    
-    // Notifications
-    'notification.success': 'تم بنجاح!',
-    'notification.error': 'خطأ!',
-    'notification.login_success': 'تم تسجيل الدخول بنجاح!',
-    'notification.login_error': 'فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد الخاصة بك.',
-    'notification.signup_success': 'تم إنشاء الحساب بنجاح!',
-    'notification.logout_success': 'تم تسجيل الخروج.',
-    
-    // Validation
-    'validation.required': 'هذا الحقل مطلوب.',
-    'validation.email': 'الرجاء إدخال عنوان بريد إلكتروني صالح.',
-    'validation.password_min': 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.',
-    'validation.password_match': 'كلمات المرور غير متطابقة.',
-    
-    // Investment related
-    'investment.title': 'مركز الاستثمار',
-    'investment.subtitle': 'تواصل مع المستثمرين واستكشف فرص التمويل',
-    
-    // Footer
-    'footer.emailPlaceholder': 'your@email.com',
-    'footer.mohLogo': 'Ministry of Health Logo',
-    
-    // Profile page - Added missing translations
-    'profile.title': 'الملف الشخصي',
-    'profile.description': 'تحديث تفاصيل ملفك الشخصي هنا',
-    'profile.accountSettings': 'إعدادات الحساب',
-    'profile.preferences': 'إدارة تفضيلات حسابك',
-    'profile.emailNotifications': 'إشعارات البريد الإلكتروني',
-    'profile.password': 'كلمة المرور',
-    'profile.passwordDesc': 'تغيير كلمة المرور الخاصة بك للحفاظ على أمان حسابك.',
-    'profile.passwordChange': 'تغيير كلمة المرور',
-    'profile.marketingEmails': 'رسائل التسويق',
-    'profile.marketingEmailsDesc': 'استلام رسائل البريد الإلكتروني حول الميزات والمنتجات الجديدة',
-    'profile.securityAlerts': 'تنبيهات الأمان',
-    'profile.securityAlertsDesc': 'استلام رسائل البريد الإلكتروني حول أمان حسابك',
-    'profile.serviceUpdates': 'تحديثات الخدمة',
-    'profile.serviceUpdatesDesc': 'استلام رسائل البريد الإلكتروني حول تحديثات المنصة',
-    'profile.syncSettings': 'سيتم مزامنة هذه الإعدادات عبر جميع أجهزتك.',
-    'profile.retryLoading': 'حاول مرة أخرى',
-    'profile.loadError': 'فشل في تحميل الملف الشخصي للمستخدم. يرجى المحاولة مرة أخرى.',
-    'profile.profileInfo': 'معلومات الملف الشخصي',
-    'profile.profileInfoDesc': 'تحديث تفاصيل ملفك الشخصي هنا',
-    'profile.memberSince': 'عضو منذ',
-  },
 };
 
 // Provider component
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  // Get initial language from localStorage or default to 'en'
-  const getInitialLanguage = (): Language => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language') as Language;
-      return savedLanguage === 'ar' || savedLanguage === 'en' ? savedLanguage : 'en';
-    }
-    return 'en';
-  };
-
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+  // Always use English as the language
+  const [language, setLanguageState] = useState<Language>('en');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Set direction based on language
-  const dir = language === 'ar' ? 'rtl' : 'ltr';
-
-  // Update language and save to localStorage
+  // Update language - now only supports English
   const setLanguage = (newLanguage: Language) => {
-    setLanguageState(newLanguage);
-    localStorage.setItem('language', newLanguage);
-    // Update document direction
-    document.documentElement.dir = newLanguage === 'ar' ? 'rtl' : 'ltr';
-    if (newLanguage === 'ar') {
-      document.documentElement.classList.add('lang-ar', 'rtl-mode');
-    } else {
-      document.documentElement.classList.remove('lang-ar', 'rtl-mode');
-    }
+    setLanguageState('en'); // Always set to English regardless of input
   };
 
   // Translation function
@@ -379,21 +200,13 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     return translations[language][key] || key;
   };
 
-  // Set initial direction on mount
+  // Set initial state on mount
   useEffect(() => {
-    document.documentElement.dir = dir;
-    
-    if (language === 'ar') {
-      document.documentElement.classList.add('lang-ar', 'rtl-mode');
-    } else {
-      document.documentElement.classList.remove('lang-ar', 'rtl-mode');
-    }
-    
     setIsLoading(false);
-  }, [language, dir]);
+  }, []);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, dir, t, isLoading }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, isLoading }}>
       {!isLoading && children}
     </LanguageContext.Provider>
   );
