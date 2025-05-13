@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
@@ -23,6 +24,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
 }
 
+// Create the context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
@@ -54,8 +56,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(session?.user ? session.user as ExtendedUser : null);
       
       if (session?.user) {
-        checkIfUserIsAdmin(session.user.id);
-        fetchUserProfile(session.user.id);
+        // Defer Supabase calls to prevent potential auth deadlocks
+        setTimeout(() => {
+          checkIfUserIsAdmin(session.user.id);
+          fetchUserProfile(session.user.id);
+        }, 0);
       } else {
         setIsAdmin(false);
       }

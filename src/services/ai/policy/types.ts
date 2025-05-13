@@ -1,9 +1,13 @@
 
+// Policy Annotation Types
 export interface PolicyAnnotation {
-  section: string;
-  annotation: string;
-  guidelines: string[];
-  challenges: string[];
+  id: string;
+  text: string;
+  startIndex: number;
+  endIndex: number;
+  category: string;
+  insights: string;
+  sentiment: 'positive' | 'neutral' | 'negative';
 }
 
 export interface PolicyAnnotationResult {
@@ -11,19 +15,6 @@ export interface PolicyAnnotationResult {
   overallAnalysis: string;
   keyTakeaways: string[];
   error?: string;
-}
-
-export interface ImplementationGuidanceResult {
-  implementationSteps: string[];
-  requiredResources: string[];
-  timeline: {
-    shortTerm: string[];
-    mediumTerm: string[];
-    longTerm: string[];
-  };
-  stakeholders: string[];
-  potentialChallenges: string[];
-  successMetrics: string[];
 }
 
 export interface PolicyQAResult {
@@ -34,38 +25,21 @@ export interface PolicyQAResult {
   error?: string;
 }
 
-export interface PolicyData {
-  name: string;
-  sector: string;
-  description: string;
-  stakeholders?: string[];
+export interface ImplementationGuidanceResult {
+  steps: {
+    title: string;
+    description: string;
+    timeframe: string;
+    resources: string[];
+  }[];
+  keyStakeholders: string[];
+  potentialChallenges: string[];
+  successMetrics: string[];
+  summary: string;
+  error?: string;
 }
 
-export interface PolicyImpactResult {
-  economicImpact: {
-    score: number;
-    description: string;
-    details: string[];
-  };
-  socialImpact: {
-    score: number;
-    description: string;
-    details: string[];
-  };
-  healthcareImpact: {
-    score: number;
-    description: string;
-    details: string[];
-  };
-  timeframeImpact: {
-    short: string[];
-    medium: string[];
-    long: string[];
-  };
-  recommendations: string[];
-  overallScore: number;
-}
-
+// Vision Alignment Types
 export interface Vision2030AlignmentResult {
   score: number;
   alignmentAreas: string[];
@@ -74,50 +48,68 @@ export interface Vision2030AlignmentResult {
   vision2030Impact: string;
 }
 
-export interface PolicyBestPracticesResult {
-  bestPractices: string[];
-  caseStudies: {
-    title: string;
-    description: string;
-    outcomes: string[];
-    lessons: string[];
-  }[];
-  recommendations: string[];
-}
-
-export interface PolicyImpactSimulation {
-  economicOutcomes: string[];
-  healthcareOutcomes: string[];
-  socialOutcomes: string[];
-  implementationChallenges: string[];
-  timeframeAssessment: string;
-}
-
-export interface BenchmarkData {
-  policyName: string;
-  sector: string;
-  score: number;
-  strengths: string[];
-  weaknesses: string[];
-}
-
+// Strategy Gap Types
 export interface StrategyMetric {
   name: string;
   value: number;
   target: number;
-  trend: 'up' | 'down' | 'stable';
+  unit: string;
+  description?: string;
+}
+
+export interface StrategyGap {
+  title: string;
+  description: string;
+  severity: 'high' | 'medium' | 'low';
+  potentialImpact: string;
+}
+
+export interface BenchmarkData {
+  name: string;
+  value: number;
+  metrics: StrategyMetric[];
 }
 
 export interface StrategyGapAnalysisResult {
-  currentStateAssessment: string;
-  desiredStateDescription: string;
-  gaps: {
+  score: number;
+  gaps: StrategyGap[];
+  recommendations: {
     title: string;
     description: string;
-    severity: 'low' | 'medium' | 'high';
-    potentialImpact: string;
+    priority: string;
+    expectedOutcome: string;
   }[];
+  benchmarkComparison: {
+    currentScore: number;
+    benchmarkScore: number;
+    differencePercentage: number;
+  };
+}
+
+// Best Practices Types
+export interface PolicyBestPracticesResult {
+  score: number;
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  bestPractices: {
+    title: string;
+    description: string;
+    implementationTips: string[];
+  }[];
+}
+
+// Impact Simulation Types
+export interface PolicyImpactSimulation {
+  impactScore: number;
+  stakeholderImpact: {
+    [key: string]: {
+      score: number;
+      description: string;
+    };
+  };
+  economicImpact: string;
+  healthcareOutcomeImpact: string;
+  implementationComplexity: string;
   recommendations: string[];
-  metrics: StrategyMetric[];
-  benchmarks: BenchmarkData[];
 }

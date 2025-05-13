@@ -1,425 +1,197 @@
+import React, { useState, useCallback } from 'react';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
+import { Loader2, AlertCircle, FileText, MessageSquare } from 'lucide-react';
+import { PolicyAnnotationService } from '@/services/ai/policy'; // Import from index file
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2, FileText, Highlighter, BookOpen, MessageSquareDiff, CalendarCheck } from "lucide-react";
-import { PolicyAIService } from "@/services/ai/PolicyAIService";
-import { PolicyAnnotationService } from "@/services/ai/policy/PolicyAnnotationService";
-import { PolicyAnnotationResult, PolicyAnnotation, ImplementationGuidanceResult, PolicyQAResult } from "@/services/ai/policy/types";
+interface Annotation {
+  id: string;
+  text: string;
+  startIndex: number;
+  endIndex: number;
+  category: string;
+  insights: string;
+  sentiment: 'positive' | 'neutral' | 'negative';
+}
 
-export function PolicyAnnotator() {
-  const [policyText, setPolicyText] = useState("");
-  const [policyName, setPolicyName] = useState("");
-  const [activeTab, setActiveTab] = useState("document");
-  const [isLoading, setIsLoading] = useState(false);
-  const [annotationResults, setAnnotationResults] = useState<PolicyAnnotationResult | null>(null);
-  const [implementationGuidance, setImplementationGuidance] = useState<ImplementationGuidanceResult | null>(null);
-  const [question, setQuestion] = useState("");
-  const [qaResult, setQAResult] = useState<PolicyQAResult | null>(null);
-  const [isAskingQuestion, setIsAskingQuestion] = useState(false);
-  
-  const { toast } = useToast();
-  
-  const handleAnnotatePolicy = async () => {
-    if (!policyText.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Missing policy text",
-        description: "Please enter a policy document to analyze",
-      });
-      return;
-    }
-    
+interface PolicyAnalysisResult {
+  annotations: Annotation[];
+  overallAnalysis: string;
+  keyTakeaways: string[];
+  error?: string;
+}
+
+const PolicyAnnotator: React.FC = () => {
+  const [policyText, setPolicyText] = useState<string>('');
+  const [analysisResult, setAnalysisResult] = useState<PolicyAnalysisResult | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"analysis" | "qa">("analysis");
+  const [question, setQuestion] = useState<string>('');
+  const [answer, setAnswer] = useState<string>('');
+
+  const handlePolicyAnalysis = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const results = await PolicyAnnotationService.annotatePolicy(policyText, policyName || "Unnamed Policy");
-      setAnnotationResults(results);
-      setActiveTab("annotations");
-      
-      toast({
-        title: "Annotation Complete",
-        description: "Policy analysis and annotations have been generated",
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Annotation failed",
-        description: error.message || "An error occurred during analysis",
-      });
+      const result = await PolicyAnnotationService.annotatePolicy(policyText);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setAnalysisResult({
+          annotations: result.annotations || [],
+          overallAnalysis: result.overallAnalysis || 'No analysis available.',
+          keyTakeaways: result.keyTakeaways || [],
+          error: result.error,
+        });
+      }
+    } catch (err: any) {
+      console.error("Error during policy analysis:", err);
+      setError(err.message || 'Failed to analyze policy. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  };
-  
-  const handleGetImplementationGuidance = async () => {
-    if (!policyText.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Missing policy text",
-        description: "Please enter a policy document to analyze",
-      });
-      return;
-    }
-    
+  }, [policyText]);
+
+  const handleAskQuestion = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const guidance = await PolicyAnnotationService.getImplementationGuidance(
-        policyText,
-        policyName || "Unnamed Policy"
-      );
-      
-      setImplementationGuidance(guidance);
-      setActiveTab("implementation");
-      
-      toast({
-        title: "Implementation Guide Ready",
-        description: "Implementation guidance has been generated",
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Failed to generate guidance",
-        description: error.message || "An error occurred during analysis",
-      });
+      const result = await PolicyAnnotationService.askPolicyQuestion(policyText, question);
+      if (result.error) {
+        setError(result.error);
+        setAnswer('Unable to retrieve an answer due to an error.');
+      } else {
+        setAnswer(result.answer || 'No answer available.');
+      }
+    } catch (err: any) {
+      console.error("Error asking policy question:", err);
+      setError(err.message || 'Failed to get answer. Please try again.');
+      setAnswer('Unable to retrieve an answer due to an error.');
     } finally {
       setIsLoading(false);
     }
-  };
-  
-  const handleAskQuestion = async () => {
-    if (!policyText.trim() || !question.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please enter both policy text and a question",
-      });
-      return;
-    }
-    
-    setIsAskingQuestion(true);
-    try {
-      const result = await PolicyAnnotationService.askQuestion(
-        policyText,
-        question,
-        policyName || "Policy Q&A"
-      );
-      
-      setQAResult(result);
-      
-      toast({
-        title: "Question Answered",
-        description: "An answer has been generated based on the policy",
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Failed to answer question",
-        description: error.message || "An error occurred",
-      });
-    } finally {
-      setIsAskingQuestion(false);
-    }
-  };
-  
+  }, [policyText, question]);
+
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Highlighter className="h-5 w-5 text-moh-green" />
-          Policy Analysis & Annotation
-        </CardTitle>
-        <CardDescription>
-          Analyze policy documents to get annotations, implementation guidance, and answers to specific questions
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-3 mb-6">
-            <TabsTrigger value="document">Document</TabsTrigger>
-            <TabsTrigger value="annotations" disabled={!annotationResults}>Annotations</TabsTrigger>
-            <TabsTrigger value="implementation" disabled={!implementationGuidance}>Implementation</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="document" className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                placeholder="Policy Name or Title (Optional)"
-                value={policyName}
-                onChange={(e) => setPolicyName(e.target.value)}
-                className="mb-2"
-              />
-              
-              <Textarea
-                placeholder="Paste policy document text here..."
-                value={policyText}
-                onChange={(e) => setPolicyText(e.target.value)}
-                className="min-h-[300px]"
-              />
-            </div>
-            
-            <div className="flex flex-col gap-4 mt-6">
-              <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-medium">Ask a Question</h3>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Ask a question about this policy..."
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    disabled={isAskingQuestion}
-                  />
-                  <Button 
-                    onClick={handleAskQuestion} 
-                    disabled={isAskingQuestion || !policyText.trim() || !question.trim()}
-                  >
-                    {isAskingQuestion ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                    Ask
-                  </Button>
-                </div>
-                
-                {qaResult && (
-                  <Card className="mt-4">
-                    <CardHeader className="py-3">
-                      <CardTitle className="text-base flex items-center gap-1">
-                        <MessageSquareDiff className="h-4 w-4 text-moh-green" />
-                        Answer ({qaResult.confidence} confidence)
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p>{qaResult.answer}</p>
-                      
-                      {qaResult.relevantSections.length > 0 && (
-                        <div className="mt-4">
-                          <h4 className="text-sm font-medium text-muted-foreground">Relevant Sections</h4>
-                          <ul className="list-disc pl-5 text-sm">
-                            {qaResult.relevantSections.map((section, index) => (
-                              <li key={index}>{section}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-              
-              <Separator className="my-4" />
-              
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  onClick={handleAnnotatePolicy}
-                  className="flex-1"
-                  disabled={isLoading || !policyText.trim()}
-                >
-                  {isLoading && activeTab === "document" ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Highlighter className="h-4 w-4 mr-2" />}
-                  Annotate Policy
-                </Button>
-                
-                <Button
-                  onClick={handleGetImplementationGuidance}
-                  className="flex-1"
-                  disabled={isLoading || !policyText.trim()}
-                  variant="secondary"
-                >
-                  {isLoading && activeTab === "document" ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CalendarCheck className="h-4 w-4 mr-2" />}
-                  Get Implementation Guide
-                </Button>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="annotations" className="space-y-4">
-            {annotationResults && (
+      <CardContent className="space-y-4">
+        <Textarea
+          placeholder="Paste policy text here..."
+          value={policyText}
+          onChange={(e) => setPolicyText(e.target.value)}
+          className="mb-4"
+        />
+
+        <div className="flex justify-between items-center">
+          <Button onClick={handlePolicyAnalysis} disabled={isLoading}>
+            {isLoading ? (
               <>
-                <div className="mb-6">
-                  <h3 className="text-lg font-medium">Overall Analysis</h3>
-                  <p className="text-muted-foreground">{annotationResults.overallAnalysis}</p>
-                  
-                  <h3 className="text-lg font-medium mt-4">Key Takeaways</h3>
-                  <ul className="list-disc pl-5">
-                    {annotationResults.keyTakeaways.map((takeaway, index) => (
-                      <li key={index}>{takeaway}</li>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <FileText className="mr-2 h-4 w-4" />
+                Analyze Policy
+              </>
+            )}
+          </Button>
+        </div>
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+          <TabsList>
+            <TabsTrigger value="analysis">Policy Analysis</TabsTrigger>
+            <TabsTrigger value="qa">Question & Answer</TabsTrigger>
+          </TabsList>
+          <TabsContent value="analysis" className="space-y-2">
+            {analysisResult ? (
+              <>
+                <h3 className="text-lg font-semibold">Overall Analysis</h3>
+                <p>{analysisResult.overallAnalysis}</p>
+
+                <h3 className="text-lg font-semibold">Key Takeaways</h3>
+                <ul>
+                  {analysisResult.keyTakeaways.map((takeaway, index) => (
+                    <li key={index} className="list-disc ml-5">
+                      {takeaway}
+                    </li>
+                  ))}
+                </ul>
+
+                <h3 className="text-lg font-semibold">Annotations</h3>
+                {analysisResult.annotations.length > 0 ? (
+                  <ul>
+                    {analysisResult.annotations.map((annotation) => (
+                      <li key={annotation.id} className="mb-2 p-2 border rounded-md">
+                        <p>
+                          <strong>Category:</strong> {annotation.category}
+                        </p>
+                        <p>
+                          <strong>Text:</strong> {annotation.text}
+                        </p>
+                        <p>
+                          <strong>Insights:</strong> {annotation.insights}
+                        </p>
+                        <p>
+                          <strong>Sentiment:</strong> {annotation.sentiment}
+                        </p>
+                      </li>
                     ))}
                   </ul>
-                </div>
-                
-                <h3 className="text-lg font-medium">Section Annotations</h3>
-                
-                <div className="space-y-4">
-                  {annotationResults.annotations.map((annotation, idx) => (
-                    <Card key={idx}>
-                      <CardHeader className="py-4 bg-muted/20">
-                        <CardTitle className="text-base">Section Text</CardTitle>
-                      </CardHeader>
-                      <CardContent className="py-3">
-                        <p className="whitespace-pre-line text-sm">{annotation.section}</p>
-                        
-                        <Separator className="my-3" />
-                        
-                        <h4 className="font-medium">Annotation</h4>
-                        <p className="text-sm mb-3">{annotation.annotation}</p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                          <div>
-                            <h4 className="text-sm font-medium">Guidelines</h4>
-                            <ul className="list-disc pl-5 text-sm">
-                              {annotation.guidelines.map((guideline, gidx) => (
-                                <li key={gidx}>{guideline}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium">Challenges</h4>
-                            <ul className="list-disc pl-5 text-sm">
-                              {annotation.challenges.map((challenge, cidx) => (
-                                <li key={cidx}>{challenge}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                ) : (
+                  <p>No annotations available.</p>
+                )}
               </>
+            ) : (
+              <p>No analysis available. Please analyze the policy text.</p>
             )}
-            
-            <Button variant="outline" onClick={() => setActiveTab("document")} className="mt-4">
-              Back to Document
-            </Button>
           </TabsContent>
-          
-          <TabsContent value="implementation" className="space-y-4">
-            {implementationGuidance && (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">Implementation Steps</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ol className="list-decimal pl-5 space-y-1">
-                        {implementationGuidance.implementationSteps.map((step, idx) => (
-                          <li key={idx}>{step}</li>
-                        ))}
-                      </ol>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">Required Resources</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="list-disc pl-5 space-y-1">
-                        {implementationGuidance.requiredResources.map((resource, idx) => (
-                          <li key={idx}>{resource}</li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Timeline</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      <div>
-                        <h4 className="font-medium">Short Term</h4>
-                        <ul className="list-disc pl-5 text-sm">
-                          {implementationGuidance.timeline.shortTerm.map((item, idx) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Medium Term</h4>
-                        <ul className="list-disc pl-5 text-sm">
-                          {implementationGuidance.timeline.mediumTerm.map((item, idx) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Long Term</h4>
-                        <ul className="list-disc pl-5 text-sm">
-                          {implementationGuidance.timeline.longTerm.map((item, idx) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">Key Stakeholders</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="list-disc pl-5 space-y-1">
-                        {implementationGuidance.stakeholders.map((stakeholder, idx) => (
-                          <li key={idx}>{stakeholder}</li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">Potential Challenges</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="list-disc pl-5 space-y-1">
-                        {implementationGuidance.potentialChallenges.map((challenge, idx) => (
-                          <li key={idx}>{challenge}</li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Success Metrics</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc pl-5 space-y-1">
-                      {implementationGuidance.successMetrics.map((metric, idx) => (
-                        <li key={idx}>{metric}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </>
+          <TabsContent value="qa" className="space-y-2">
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                placeholder="Ask a question about the policy..."
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+              />
+              <Button onClick={handleAskQuestion} disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Asking...
+                  </>
+                ) : (
+                  <>
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Ask
+                  </>
+                )}
+              </Button>
+            </div>
+            {answer && (
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">Answer</h3>
+                <p>{answer}</p>
+              </div>
             )}
-            
-            <Button variant="outline" onClick={() => setActiveTab("document")} className="mt-4">
-              Back to Document
-            </Button>
           </TabsContent>
         </Tabs>
       </CardContent>
-      
-      <CardFooter className="border-t pt-4 flex justify-between">
-        {activeTab === "document" ? (
-          <p className="text-xs text-muted-foreground">
-            Enter a policy document to annotate, analyze implementation requirements, or ask specific questions
-          </p>
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            Analysis powered by AI. Results should be reviewed by domain experts.
-          </p>
-        )}
-      </CardFooter>
     </Card>
   );
-}
+};
+
+export default PolicyAnnotator;
