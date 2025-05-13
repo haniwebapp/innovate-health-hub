@@ -1,3 +1,4 @@
+
 export interface Innovation {
   id: string;
   title: string;
@@ -28,27 +29,8 @@ export interface Innovation {
   };
   teamSize?: number;         // Added for organization details
   fundingStage?: "Pre-seed" | "Seed" | "Series A" | "Series B" | "Series C+" | "Bootstrapped";
-  targetUsers?: string[];    // Added for better describe the target audience
+  targetUsers?: string[];    // Added to better describe the target audience
   uniqueSellingPoints?: string[]; // Added for marketing highlights
-
-  // New fields for the marketplace
-  ipStatus?: string; // Values: 'patent_granted', 'patent_pending', 'patent_in_preparation', 'trade_secret', 'copyright', etc.
-  patentId?: string; // Reference to a patent document
-  ipFilingDate?: string;
-  ipExpiryDate?: string;
-  licensingStatus?: string; // Values: 'available', 'exclusive', 'non_exclusive', 'negotiating', 'licensed', etc.
-  licensingTerms?: {
-    type: string; // 'exclusive', 'non-exclusive', etc.
-    territories: string[];
-    minimumPayment?: number;
-    royaltyRate?: string;
-    upfrontFee?: number;
-    term?: string; // duration of license
-  };
-  trl?: number; // Technology Readiness Level (1-9)
-  developmentStage?: string; // 'concept', 'prototype', 'validated', 'commercial'
-  commercializationPartner?: string;
-  valuation?: number;
 }
 
 export const statusColors: Record<string, string> = {
@@ -146,55 +128,4 @@ export interface UserJourneyStep {
   description: string;
   completed: boolean;
   nextSteps?: string[];
-}
-
-// Additional types for IP management
-export interface PatentRecord {
-  id: string;
-  innovationId: string;
-  patentNumber?: string;
-  title: string;
-  status: 'draft' | 'filed' | 'published' | 'granted' | 'abandoned' | 'expired';
-  filingDate?: string;
-  grantDate?: string;
-  expiryDate?: string;
-  inventors: string[];
-  assignees: string[];
-  abstract: string;
-  claims?: string[];
-  documents?: {
-    id: string;
-    name: string;
-    url: string;
-    type: 'application' | 'office_action' | 'response' | 'grant' | 'other';
-    uploadDate: string;
-  }[];
-  jurisdictions: string[];
-}
-
-export interface LicenseAgreement {
-  id: string;
-  innovationId: string;
-  licenseeId: string;
-  licenseeName: string;
-  licensorId: string;
-  licensorName: string;
-  status: 'draft' | 'negotiating' | 'active' | 'expired' | 'terminated';
-  type: 'exclusive' | 'non_exclusive' | 'sole' | 'cross_license';
-  effectiveDate?: string;
-  expirationDate?: string;
-  territories: string[];
-  fieldOfUse?: string;
-  financialTerms: {
-    upfrontPayment?: number;
-    minimumPayment?: number;
-    royaltyRate?: string;
-    milestonePayments?: {
-      milestone: string;
-      amount: number;
-    }[];
-  };
-  submissionDate: string;
-  lastUpdated: string;
-  documentUrl?: string;
 }

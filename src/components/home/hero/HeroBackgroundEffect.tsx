@@ -1,47 +1,52 @@
 
-import { GradientBlobs } from "./animations/GradientBlobs";
-import { GradientOrbs } from "./animations/GradientOrbs";
-import { BackgroundParticles } from "./animations/BackgroundParticles";
-import { FloatingParticles } from "./animations/FloatingParticles";
-import { GeneticLetters } from "./animations/GeneticLetters";
 import { DNAHelixAnimations } from "./animations/DNAHelixAnimations";
 import { DataStreamEffect } from "./animations/DataStreamEffect";
-import { PulseRings } from "./animations/PulseRings";
-import { SparkleIcons } from "./animations/SparkleIcons";
+import { FloatingParticles } from "./animations/FloatingParticles";
+import { GeneticLetters } from "./animations/GeneticLetters";
+import { GradientOrbs } from "./animations/GradientOrbs";
 import { MedicalIcons } from "./animations/MedicalIcons";
+import { PulseRings } from "./animations/PulseRings";
+import { Sparkles } from "./animations/Sparkles";
+import { CircuitPattern } from "./animations/CircuitPattern";
 
 export function HeroBackgroundEffect() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Background gradient blobs */}
-      <GradientBlobs />
+      {/* DNA pattern overlay */}
+      <div className="absolute inset-0 bg-[url('/dna-pattern.svg')] opacity-[0.07] bg-repeat"></div>
       
-      {/* Large gradient orbs */}
-      <GradientOrbs />
-      
-      {/* Animated particles */}
-      <BackgroundParticles />
-      
-      {/* Floating colored particles */}
+      {/* Animated DNA double helix */}
+      <div className="absolute inset-0 bg-[url('/dna-pattern-circle.svg')] opacity-[0.07] bg-repeat-y bg-center"></div>
+
+      {/* Floating particles with improved effects */}
       <FloatingParticles />
-      
-      {/* DNA-based letter animations */}
+
+      {/* Animated genetic code letters */}
       <GeneticLetters />
       
-      {/* DNA helix visual elements */}
+      {/* 50 Animated medical icons */}
+      <MedicalIcons />
+
+      {/* Enhanced gradient orbs */}
+      <GradientOrbs />
+      
+      {/* Digital health circuit pattern */}
+      <CircuitPattern />
+      
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+      
+      {/* DNA helix animations */}
       <DNAHelixAnimations />
       
-      {/* Data stream effect for tech feel */}
+      {/* Medical data stream effect */}
       <DataStreamEffect />
       
-      {/* Pulse rings animation */}
+      {/* Animated pulse rings */}
       <PulseRings />
       
-      {/* Sparkling icon animations */}
-      <SparkleIcons />
-      
-      {/* Medical themed icons */}
-      <MedicalIcons />
+      {/* Medical sparkles effect */}
+      <Sparkles />
     </div>
   );
 }
