@@ -1,154 +1,220 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIServiceUtils } from "../AIService";
-import { PolicyData, StrategyGapResult } from "./types";
+import { AIService } from "../AIService";
+import { BenchmarkData, StrategyGapAnalysisResult, StrategyMetric, StrategyGap } from "./types";
 
 /**
- * Interface representing a strategy gap analysis request
- */
-export interface StrategyGapAnalysisRequest {
-  policyData: PolicyData;
-  benchmarkIds?: string[];
-}
-
-/**
- * Interface representing a time period for analysis
- */
-export interface TimePeriodAnalysis {
-  period: string;
-  coverage: number;
-  gaps: string[];
-  opportunities: string[];
-}
-
-/**
- * Interface representing a strategy coverage metric
- */
-export interface StrategyCoverageMetric {
-  category: string;
-  currentCoverage: number;
-  benchmarkCoverage: number;
-  gap: number;
-  impact: 'low' | 'medium' | 'high';
-}
-
-/**
- * Service for strategy gap analysis and recommendations
+ * Service for analyzing strategy gaps against benchmarks
  */
 export class StrategyGapService {
   /**
-   * Analyzes gaps between current healthcare policy/strategy and benchmark strategies
+   * Fetches available benchmark datasets
+   */
+  static async getAvailableBenchmarks(): Promise<BenchmarkData[]> {
+    // In a real implementation, this would fetch from the database or an API
+    // For now, we'll return mock data
+    return [
+      {
+        id: "who-2023",
+        name: "WHO Healthcare Standards 2023",
+        source: "World Health Organization",
+        scope: "global",
+        value: 75, // Added missing value property
+        metrics: [
+          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 75, target: 90, unit: "%" },
+          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 80, target: 95, unit: "%" },
+          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 85, target: 95, unit: "%" },
+          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 82, target: 90, unit: "%" },
+          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 76, target: 85, unit: "per 10,000" }
+        ]
+      },
+      {
+        id: "gcc-2023",
+        name: "GCC Healthcare Benchmark 2023",
+        source: "Gulf Cooperation Council",
+        scope: "regional",
+        value: 70, // Added missing value property
+        metrics: [
+          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 70, target: 85, unit: "%" },
+          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 73, target: 90, unit: "%" },
+          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 79, target: 90, unit: "%" },
+          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 77, target: 88, unit: "%" },
+          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 65, target: 80, unit: "per 10,000" }
+        ]
+      },
+      {
+        id: "best-practice-2023",
+        name: "Healthcare Best Practices 2023",
+        source: "International Health Policy Center",
+        scope: "global",
+        value: 85, // Added missing value property
+        metrics: [
+          { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", value: 85, target: 95, unit: "%" },
+          { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", value: 87, target: 98, unit: "%" },
+          { id: "accessibility", name: "Healthcare Accessibility", category: "Access", value: 90, target: 99, unit: "%" },
+          { id: "quality-care", name: "Quality of Care", category: "Quality", value: 88, target: 95, unit: "%" },
+          { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", value: 82, target: 90, unit: "per 10,000" }
+        ]
+      }
+    ];
+  }
+
+  /**
+   * Gets current strategy metrics
+   */
+  static async getCurrentStrategyMetrics(): Promise<StrategyMetric[]> {
+    // In a real implementation, this would fetch from the database
+    // For now, we'll return mock data
+    return [
+      { id: "digital-adoption", name: "Digital Health Adoption", category: "Digital Transformation", currentValue: 58, value: 58, target: 80, unit: "%" },
+      { id: "preventive-care", name: "Preventive Care Coverage", category: "Prevention", currentValue: 65, value: 65, target: 85, unit: "%" },
+      { id: "accessibility", name: "Healthcare Accessibility", category: "Access", currentValue: 72, value: 72, target: 90, unit: "%" },
+      { id: "quality-care", name: "Quality of Care", category: "Quality", currentValue: 70, value: 70, target: 85, unit: "%" },
+      { id: "workforce", name: "Healthcare Workforce Density", category: "Workforce", currentValue: 55, value: 55, target: 75, unit: "per 10,000" }
+    ];
+  }
+
+  /**
+   * Analyzes gaps between current strategy and benchmarks
    */
   static async analyzeStrategyGaps(
-    policyData: PolicyData,
-    benchmarkIds?: string[]
-  ): Promise<StrategyGapResult> {
+    currentMetrics: StrategyMetric[],
+    benchmarkId: string
+  ): Promise<StrategyGapAnalysisResult> {
     try {
-      // Call the edge function for strategy gap analysis
-      const { data, error } = await supabase.functions.invoke("strategy-gap-analysis", {
-        body: { policyData, benchmarkIds } 
+      const trace = AIService.createTrace("strategy-gap-analysis", "gap-analysis");
+      
+      // In a real implementation, we would call an edge function
+      // For the POC, we'll simulate the analysis with logic here
+      
+      const benchmarks = await this.getAvailableBenchmarks();
+      const selectedBenchmark = benchmarks.find(b => b.id === benchmarkId);
+      
+      if (!selectedBenchmark) {
+        throw new Error(`Benchmark with ID ${benchmarkId} not found`);
+      }
+      
+      // Calculate gaps for each metric
+      const gaps: StrategyGap[] = currentMetrics.map(metric => {
+        const benchmarkMetric = selectedBenchmark.metrics.find(bm => bm.id === metric.id);
+        if (!benchmarkMetric) return null;
+        
+        const gap = benchmarkMetric.value - metric.value;
+        const gapPercentage = (gap / benchmarkMetric.value) * 100;
+        
+        let priority: "critical" | "high" | "medium" | "low" = "medium";
+        if (gapPercentage > 30) priority = "critical";
+        else if (gapPercentage > 20) priority = "high";
+        else if (gapPercentage < 10) priority = "low";
+        
+        return {
+          title: `Gap in ${metric.name}`,
+          description: `Current value (${metric.value}${metric.unit}) is below benchmark (${benchmarkMetric.value}${benchmarkMetric.unit})`,
+          severity: priority === "critical" ? "high" : (priority === "high" ? "medium" : "low") as "high" | "medium" | "low",
+          potentialImpact: `Addressing this gap could improve healthcare outcomes and align better with standards`,
+          metricId: metric.id,
+          metricName: metric.name,
+          category: metric.category,
+          currentValue: metric.value,
+          benchmarkValue: benchmarkMetric.value,
+          gap,
+          gapPercentage,
+          priority
+        };
+      }).filter(Boolean) as StrategyGap[];
+      
+      // Calculate category scores
+      const categories = [...new Set(currentMetrics.map(m => m.category).filter(Boolean))];
+      const categoryScores = categories.map(category => {
+        const categoryMetrics = currentMetrics.filter(m => m.category === category);
+        const categoryGaps = gaps.filter(g => g.category === category);
+        const categoryScore = 100 - (categoryGaps.reduce((acc, g) => acc + (g.gapPercentage || 0), 0) / categoryGaps.length);
+        
+        return {
+          category: category as string,
+          score: Math.round(categoryScore),
+          benchmarkComparison: Math.round(categoryScore)
+        };
       });
       
-      if (error) throw error;
-      return data as StrategyGapResult;
+      // Calculate overall score
+      const overallScore = Math.round(categoryScores.reduce((acc, cs) => acc + cs.score, 0) / categoryScores.length);
+      
+      // Generate recommendations
+      const recommendations = this.generateRecommendations(gaps, categoryScores);
+      
+      return {
+        overallScore,
+        categoryScores,
+        gaps,
+        recommendations,
+        benchmarkSource: selectedBenchmark.name
+      };
+      
     } catch (error: any) {
       console.error("Error analyzing strategy gaps:", error);
-      return this.getFallbackStrategyGapResult(error.message);
+      return {
+        overallScore: 0,
+        categoryScores: [],
+        gaps: [],
+        recommendations: [],
+        benchmarkSource: "",
+        error: error.message
+      };
     }
   }
 
   /**
-   * Generate a strategy gap report based on analysis
+   * Generate recommendations based on gap analysis
+   * @private
    */
-  static async generateStrategyGapReport(
-    policyData: PolicyData,
-    format: 'executive' | 'comprehensive' | 'technical' = 'comprehensive'
-  ): Promise<string> {
-    try {
-      // First get the analysis
-      const analysis = await this.analyzeStrategyGaps(policyData);
+  private static generateRecommendations(
+    gaps: StrategyGapAnalysisResult["gaps"],
+    categoryScores: StrategyGapAnalysisResult["categoryScores"]
+  ): StrategyGapAnalysisResult["recommendations"] {
+    const recommendations: StrategyGapAnalysisResult["recommendations"] = [];
+    
+    // Sort categories by lowest score
+    const sortedCategories = [...(categoryScores || [])].sort((a, b) => a.score - b.score);
+    
+    // Generate recommendations for the lowest scoring categories
+    sortedCategories.slice(0, 3).forEach(category => {
+      const categoryGaps = gaps.filter(g => g.category === category.category);
       
-      // Then generate report from analysis
-      const { data, error } = await supabase.functions.invoke("strategy-report-generator", {
-        body: { 
-          policyData,
-          analysis,
-          format
-        }
+      if (category.score < 70) {
+        recommendations.push({
+          title: `Improve ${category.category}`,
+          description: `Develop a comprehensive improvement plan for ${category.category} with specific targets and milestones.`,
+          expectedImpact: "Significant improvements in overall healthcare outcomes and alignment with global standards.",
+          timeframe: "medium",
+          category: category.category
+        });
+      }
+      
+      // Add recommendations for critical gaps
+      const criticalGaps = categoryGaps.filter(g => g.priority === "critical");
+      if (criticalGaps.length > 0) {
+        recommendations.push({
+          title: `Address Critical Gaps in ${category.category}`,
+          description: `Address critical gaps in ${criticalGaps.map(g => g.metricName).join(", ")}.`,
+          expectedImpact: "Rapid improvement in key healthcare indicators and better patient outcomes.",
+          timeframe: "short",
+          category: category.category
+        });
+      }
+    });
+    
+    // Add general recommendations
+    if (recommendations.length < 3) {
+      recommendations.push({
+        title: "Establish Monitoring System",
+        description: "Establish a continuous monitoring system for healthcare strategy metrics with quarterly reviews.",
+        expectedImpact: "More agile response to changing healthcare needs and improved strategic alignment.",
+        timeframe: "medium",
+        category: "General"
       });
-      
-      if (error) throw error;
-      return data.report;
-    } catch (error: any) {
-      console.error("Error generating strategy report:", error);
-      return `Unable to generate strategy gap report due to an error: ${error.message}`;
     }
-  }
-  
-  /**
-   * Get recommendations for addressing strategy gaps
-   */
-  static async getGapRecommendations(
-    gapAnalysis: StrategyGapResult
-  ): Promise<string[]> {
-    try {
-      const trace = AIServiceUtils.createTrace("strategy-gap-recommendations", "strategy-analysis");
-      
-      const { data, error } = await supabase.functions.invoke("strategy-recommendations", {
-        body: { 
-          gapAnalysis,
-          trace
-        }
-      });
-      
-      if (error) throw error;
-      
-      // Log the AI operation
-      await AIServiceUtils.logAIOperation(
-        "strategy-gap-recommendations",
-        "strategy-analysis",
-        { gapAnalysis },
-        data,
-        undefined
-      );
-      
-      return data.recommendations;
-    } catch (error: any) {
-      console.error("Error getting gap recommendations:", error);
-      return [
-        "Review your current strategy against industry benchmarks",
-        "Consider incorporating emerging healthcare technologies",
-        "Address identified policy implementation gaps",
-        "Error occurred during detailed recommendation generation"
-      ];
-    }
-  }
-  
-  /**
-   * Returns a fallback strategy gap result when the analysis fails
-   */
-  private static getFallbackStrategyGapResult(errorMessage: string): StrategyGapResult {
-    return {
-      overallGapScore: 50,
-      coverageMetrics: [
-        { 
-          category: "Error", 
-          currentCoverage: 0, 
-          benchmarkCoverage: 100, 
-          gap: 100, 
-          impact: "high" 
-        }
-      ],
-      topGapAreas: ["Unable to analyze gap areas due to an error"],
-      timePeriodAnalysis: [{
-        period: "Error",
-        coverage: 0,
-        gaps: ["Analysis failed"],
-        opportunities: []
-      }],
-      recommendations: ["Unable to generate recommendations due to an error"],
-      benchmarkComparison: {},
-      error: errorMessage
-    };
+    
+    return recommendations;
   }
 }

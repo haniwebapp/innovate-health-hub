@@ -1,9 +1,8 @@
 
 // Main service
-export { AIServiceUtils, AIServiceType } from './AIService';
-export type { AIService, CallTrace, AIServiceStaticReferences } from './AIService';
+export * from './AIService';
 
-// Types - explicitly re-export as types to avoid ambiguity
+// Types
 export * from './types/AIServiceTypes';
 
 // Utilities

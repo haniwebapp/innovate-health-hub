@@ -36,7 +36,7 @@ export function ComplianceAnalysisResults({
         refetchData();
       }
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error updating compliance status",
         description: error instanceof Error ? error.message : "An unknown error occurred",

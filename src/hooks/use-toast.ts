@@ -1,4 +1,3 @@
-
 import * as React from "react"
 
 import type {
@@ -9,7 +8,7 @@ import type {
 const TOAST_LIMIT = 10
 const TOAST_REMOVE_DELAY = 1000000
 
-export type ToastType = Omit<ToastProps, "children"> & {
+type ToastType = Omit<ToastProps, "children"> & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode

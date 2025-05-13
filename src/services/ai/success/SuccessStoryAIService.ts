@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIServiceUtils } from "../AIService";
+import { AIService } from "../AIService";
 
 export interface StoryGenerationPrompt {
   innovation: string;
@@ -44,7 +44,7 @@ export class SuccessStoryAIService {
       return data as StoryGenerationResult;
     } catch (error: any) {
       console.error("Error generating success story:", error);
-      throw AIServiceUtils.handleError(error, "generateStory", "success");
+      throw AIService.handleError(error, "generateStory", "success");
     }
   }
 
@@ -67,7 +67,7 @@ export class SuccessStoryAIService {
       return data as StoryAnalysisResult;
     } catch (error: any) {
       console.error("Error analyzing success story:", error);
-      throw AIServiceUtils.handleError(error, "analyzeStory", "success");
+      throw AIService.handleError(error, "analyzeStory", "success");
     }
   }
 
@@ -96,7 +96,7 @@ export class SuccessStoryAIService {
       return data;
     } catch (error: any) {
       console.error("Error suggesting related stories:", error);
-      throw AIServiceUtils.handleError(error, "suggestRelatedStories", "success");
+      throw AIService.handleError(error, "suggestRelatedStories", "success");
     }
   }
 }

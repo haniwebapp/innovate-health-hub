@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIServiceUtils } from "../AIService";
+import { AIService } from "../AIService";
 import { PolicyData, PolicyImpactResult, PolicyImpactSimulation } from "./types";
 import { CallTrace } from "@/types/ai";
 
@@ -18,7 +18,7 @@ export class ImpactSimulationService {
     context?: string
   ): Promise<PolicyImpactSimulation> {
     try {
-      const trace = AIServiceUtils.createTrace("policy-impact-simulation", context || "impact-analysis");
+      const trace = AIService.createTrace("policy-impact-simulation", context || "impact-analysis");
       
       const { data, error } = await supabase.functions.invoke("policy-impact-simulation", {
         body: { 
@@ -32,7 +32,7 @@ export class ImpactSimulationService {
       if (error) throw error;
       
       // Log the AI operation for analytics and improvement
-      await AIServiceUtils.logAIOperation(
+      await AIService.logAIOperation(
         "policy-impact-simulation",
         context || "impact-analysis",
         { policyDescription, targetSectors, timeframe },

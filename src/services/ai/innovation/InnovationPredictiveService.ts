@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIServiceUtils } from "../AIService";
+import { AIService } from "../AIService";
 
 export interface SuccessPredictionParams {
   title: string;
@@ -57,7 +57,7 @@ export class InnovationPredictiveService {
       return data as SuccessPredictionResult;
     } catch (error: any) {
       console.error("Error predicting innovation success:", error);
-      throw AIServiceUtils.handleError(error, "predictSuccessProbability", "innovation");
+      throw AIService.handleError(error, "predictSuccessProbability", "innovation");
     }
   }
 
@@ -80,7 +80,7 @@ export class InnovationPredictiveService {
       return data as MarketFitAnalysisResult;
     } catch (error: any) {
       console.error("Error analyzing market fit:", error);
-      throw AIServiceUtils.handleError(error, "analyzeMarketFit", "innovation");
+      throw AIService.handleError(error, "analyzeMarketFit", "innovation");
     }
   }
 
@@ -102,7 +102,7 @@ export class InnovationPredictiveService {
       return data;
     } catch (error: any) {
       console.error("Error getting success factors:", error);
-      throw AIServiceUtils.handleError(error, "getSuccessFactorsBySector", "innovation");
+      throw AIService.handleError(error, "getSuccessFactorsBySector", "innovation");
     }
   }
 }

@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { AIServiceUtils } from "../AIService";
+import { AIService } from "../AIService";
 import { PolicyData, Vision2030AlignmentResult } from "./types";
 import { CallTrace } from "@/types/ai";
 
@@ -17,7 +17,7 @@ export class VisionAlignmentService {
     context?: string
   ): Promise<Vision2030AlignmentResult> {
     try {
-      const trace = AIServiceUtils.createTrace("vision2030-alignment", context || "policy-alignment");
+      const trace = AIService.createTrace("vision2030-alignment", context || "policy-alignment");
       
       const { data, error } = await supabase.functions.invoke("vision-2030-alignment", {
         body: { policyData: { description, sector }, trace }
@@ -26,7 +26,7 @@ export class VisionAlignmentService {
       if (error) throw error;
       
       // Log the AI operation for analytics and improvement
-      await AIServiceUtils.logAIOperation(
+      await AIService.logAIOperation(
         "vision2030-alignment",
         context || "policy-alignment",
         { description, sector },

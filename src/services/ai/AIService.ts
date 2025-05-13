@@ -1,69 +1,42 @@
 
-// Base interface for all AI services
-export interface AIService {
-  serviceType: AIServiceType;
-  isAvailable(): Promise<boolean>;
-  getStaticReferences(): AIServiceStaticReferences;
-  recordCall(trace: CallTrace): Promise<void>;
-}
+import { AIServiceType } from "./AIServiceRegistry";
+import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
+import { handleError } from "./utils/AIServiceErrors";
 
-export enum AIServiceType {
-  Admin = "admin",
-  Clinical = "clinical",
-  Community = "community",
-  Compliance = "compliance",
-  Events = "events",
-  Innovation = "innovation",
-  Regulatory = "regulatory",
-  Strategy = "strategy",
-  Vision = "vision",
-  Chat = "chat",
-  Policy = "policy",
-  Knowledge = "knowledge",
-  Investment = "investment",
-  Support = "support",
-  Quotation = "quotation"
-}
-
-export interface CallTrace {
-  userId?: string;
-  action: string;
-  parameters?: Record<string, any>;
-  timestamp: string;
-  result?: string;
-  success: boolean;
-  error?: string;
-  operation?: string;
-  context?: string;
-}
-
-export interface AIServiceStaticReferences {
-  [key: string]: any;
-}
-
-// Add AIService utility class for static methods
-export class AIServiceUtils {
-  static createTrace(action: string, context?: string): CallTrace {
+export abstract class AIService {
+  abstract serviceType: AIServiceType;
+  
+  constructor() {}
+  
+  abstract isAvailable(): Promise<boolean>;
+  
+  abstract getStaticReferences(): AIServiceStaticReferences;
+  
+  abstract recordCall(trace: CallTrace): Promise<void>;
+  
+  // Static utility methods
+  static createTrace(operation: string, context: string): CallTrace {
     return {
-      action,
+      traceId: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      operation,
       context,
       timestamp: new Date().toISOString(),
-      success: true
+      metadata: {}
     };
   }
   
   static async logAIOperation(
-    action: string,
+    operation: string,
     context: string,
-    parameters?: Record<string, any>,
-    result?: any,
-    error?: Error
+    input: any,
+    output: any,
+    error?: any
   ): Promise<void> {
-    console.log(`AI Operation: ${action}, Context: ${context}`, parameters);
+    console.log(`AI Operation Log: ${operation} (${context})`);
+    // In a real implementation, this would log to a database
   }
   
-  static handleError(error: Error, operation: string, service: string): Error {
-    console.error(`Error in ${service} service (${operation}):`, error);
-    return error;
+  static handleError(error: any, operation: string, context: string): Error {
+    return handleError(error, operation, context);
   }
 }

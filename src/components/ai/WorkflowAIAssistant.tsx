@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Bot, Sparkles } from "lucide-react";
-import { callAIAssistant } from "@/utils/aiUtils";
-import { AIMessage } from "@/types/chatTypes";
+import { callAIAssistant, AIMessage } from "@/utils/aiUtils";
 
 const WORKFLOW_TYPES = [
   { id: "onboarding", name: "User Onboarding" },

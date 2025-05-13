@@ -1,5 +1,6 @@
 
-import { AIService, AIServiceType } from "../AIService";
+import { AIService } from "../AIService";
+import { AIServiceType } from "../AIServiceRegistry";
 import { AIServiceStaticReferences, CallTrace } from "../types/AIServiceTypes";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -29,12 +30,14 @@ export interface QuotationResponse {
   followUpQuestions?: string[];
 }
 
-export class QuotationAIService implements AIService {
+export class QuotationAIService extends AIService {
   serviceType = AIServiceType.Quotation;
   private static instance: QuotationAIService;
   private messageHistory: {role: 'user' | 'assistant', content: string}[] = [];
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   public static getInstance(): QuotationAIService {
     if (!QuotationAIService.instance) {
