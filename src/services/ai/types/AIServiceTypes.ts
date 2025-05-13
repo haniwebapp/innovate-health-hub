@@ -20,5 +20,21 @@ export interface AIServiceStaticReferences {
   admin: any;
   compliance: any;
   community: any;
-  quotation: any; // Add quotation service reference
+  quotation: any;
+}
+
+export interface AIServiceHealth {
+  investment: boolean;
+  regulatory: boolean;
+  innovation: boolean;
+  knowledge: boolean;
+  policy: boolean;
+  challenge: boolean;
+  support: boolean;
+  clinical: boolean;
+  events: boolean;
+  admin: boolean;
+  compliance: boolean;
+  community: boolean;
+  overall: boolean;
 }

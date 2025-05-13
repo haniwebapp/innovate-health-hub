@@ -1,273 +1,269 @@
 
-import React, { useState, useEffect } from "react";
-import AdminLayout from "@/components/layouts/AdminLayout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState, useEffect } from 'react';
+import AdminLayout from '@/components/layouts/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { FileText, AlertTriangle, CheckCircle, ChevronDown, Download } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
-
-// Mock data - in a real app, this would come from an API
-const performanceData = [
-  { name: "Admin Assistant", avgResponseTime: 850, successRate: 96, callVolume: 1245 },
-  { name: "Compliance Matcher", avgResponseTime: 420, successRate: 98, callVolume: 890 },
-  { name: "Regulatory Analysis", avgResponseTime: 1200, successRate: 94, callVolume: 560 },
-  { name: "Ethics Assessment", avgResponseTime: 680, successRate: 97, callVolume: 720 },
-  { name: "Market Analysis", avgResponseTime: 950, successRate: 95, callVolume: 450 },
-];
-
-const usageData = [
-  { month: "Jan", apiCalls: 4500, uniqueUsers: 320 },
-  { month: "Feb", apiCalls: 5200, uniqueUsers: 350 },
-  { month: "Mar", apiCalls: 6800, uniqueUsers: 410 },
-  { month: "Apr", apiCalls: 7400, uniqueUsers: 480 },
-  { month: "May", apiCalls: 9200, uniqueUsers: 520 },
-  { month: "Jun", apiCalls: 8700, uniqueUsers: 490 },
-];
+import { BarChart, LineChart, PieChart } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ReportsPage() {
-  const [timeFrame, setTimeFrame] = useState("30days");
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('overview');
   const [isLoading, setIsLoading] = useState(false);
-  
-  const handleDownloadReport = () => {
+  const [reportData, setReportData] = useState<any>(null);
+
+  useEffect(() => {
+    loadReportData('overview');
+  }, []);
+
+  const loadReportData = (reportType: string) => {
     setIsLoading(true);
     
-    // Fix: Create a promise first, then use toast.promise, then handle completion separately
-    const downloadPromise = new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast.promise(downloadPromise, {
-      loading: "Generating report...",
-      success: "Report downloaded successfully",
-      error: "Failed to generate report",
+    // Simulate API call to fetch report data
+    const loadPromise = new Promise<void>((resolve) => {
+      // In a real implementation, this would be an API call
+      setTimeout(() => {
+        const mockData = generateMockData(reportType);
+        setReportData(mockData);
+        resolve();
+      }, 1500);
+    });
+
+    toast.promise(loadPromise, {
+      loading: 'Loading report data...',
+      success: 'Report data loaded!',
+      error: 'Failed to load report data',
     });
     
-    // Handle the loading state separately
-    downloadPromise.then(() => {
+    // Handle loading state separately
+    loadPromise.then(() => {
+      setIsLoading(false);
+    }).catch(() => {
       setIsLoading(false);
     });
   };
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    loadReportData(value);
+  };
+
+  const generateMockData = (reportType: string) => {
+    switch (reportType) {
+      case 'overview':
+        return {
+          title: 'Platform Overview Report',
+          metrics: {
+            totalUsers: 1245,
+            activeUsers: 892,
+            totalInnovations: 87,
+            activeChallenges: 12,
+          },
+        };
+      case 'user':
+        return {
+          title: 'User Activity Report',
+          metrics: {
+            newUsers: 85,
+            returningUsers: 420,
+            averageSessionTime: '12m 30s',
+            topUserLocations: ['Riyadh', 'Jeddah', 'Dammam'],
+          },
+        };
+      case 'innovation':
+        return {
+          title: 'Innovation Metrics Report',
+          metrics: {
+            submissionRate: '23%',
+            approvalRate: '68%',
+            averageProcessingTime: '8 days',
+            topCategories: ['Digital Health', 'Medical Devices', 'Healthcare AI'],
+          },
+        };
+      default:
+        return null;
+    }
+  };
+
+  const generateDownloadReport = () => {
+    toast({
+      title: "Report generation started",
+      description: "Your report will be ready for download shortly.",
+    });
+    // In a real implementation, this would generate and download a PDF or Excel file
+  };
+
   return (
-    <AdminLayout 
-      title="AI Performance Reports" 
-      description="Monitor and analyze AI service performance metrics"
+    <AdminLayout
+      title="Reports & Analytics"
+      description="Generate and view platform reports"
       actions={
-        <Button 
-          variant="outline" 
-          className="flex items-center gap-2" 
-          onClick={handleDownloadReport}
-          disabled={isLoading}
-        >
-          <Download className="w-4 h-4" />
-          Export Report
+        <Button onClick={generateDownloadReport} disabled={isLoading}>
+          Export to Excel
         </Button>
       }
     >
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="space-y-1">
-            <h3 className="text-xl font-medium">AI Services Dashboard</h3>
-            <p className="text-sm text-muted-foreground">
-              Performance metrics across all AI services and edge functions
-            </p>
-          </div>
-          <Select value={timeFrame} onValueChange={setTimeFrame}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Time period" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7days">Last 7 days</SelectItem>
-              <SelectItem value="30days">Last 30 days</SelectItem>
-              <SelectItem value="90days">Last 90 days</SelectItem>
-              <SelectItem value="12months">Last 12 months</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">
+            <BarChart className="h-4 w-4 mr-2" />
+            Platform Overview
+          </TabsTrigger>
+          <TabsTrigger value="user">
+            <LineChart className="h-4 w-4 mr-2" />
+            User Activity
+          </TabsTrigger>
+          <TabsTrigger value="innovation">
+            <PieChart className="h-4 w-4 mr-2" />
+            Innovation Metrics
+          </TabsTrigger>
+        </TabsList>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">API Calls</CardTitle>
-              <CardDescription>Total API calls across all services</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-moh-green">42,680</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                <span className="text-green-500 font-medium">↑ 18.2%</span> compared to previous period
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Success Rate</CardTitle>
-              <CardDescription>Average success rate across all services</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-moh-green">96.4%</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                <span className="text-green-500 font-medium">↑ 1.2%</span> compared to previous period
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Avg Response Time</CardTitle>
-              <CardDescription>Average response time in milliseconds</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-moh-green">820ms</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                <span className="text-green-500 font-medium">↓ 15.3%</span> compared to previous period
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <Tabs defaultValue="performance" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="performance">Performance</TabsTrigger>
-            <TabsTrigger value="usage">Usage</TabsTrigger>
-            <TabsTrigger value="errors">Errors</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="performance" className="space-y-4">
+        <TabsContent value="overview" className="space-y-4">
+          {isLoading ? (
             <Card>
-              <CardHeader>
-                <CardTitle>AI Service Performance</CardTitle>
-                <CardDescription>
-                  Response time and success rate by service
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={performanceData}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                      <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                      <Tooltip />
-                      <Legend />
-                      <Bar yAxisId="left" dataKey="avgResponseTime" name="Avg Response Time (ms)" fill="#8884d8" />
-                      <Bar yAxisId="right" dataKey="successRate" name="Success Rate (%)" fill="#82ca9d" />
-                    </BarChart>
-                  </ResponsiveContainer>
+              <CardContent className="pt-6">
+                <div className="flex justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-          
-          <TabsContent value="usage" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Monthly Usage Trends</CardTitle>
-                <CardDescription>
-                  API calls and unique users by month
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={usageData}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                      <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                      <Tooltip />
-                      <Legend />
-                      <Bar yAxisId="left" dataKey="apiCalls" name="API Calls" fill="#8884d8" />
-                      <Bar yAxisId="right" dataKey="uniqueUsers" name="Unique Users" fill="#82ca9d" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="errors" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Error Analysis</CardTitle>
-                <CardDescription>
-                  Top errors and their frequency
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    {
-                      error: "Rate limit exceeded",
-                      count: 215,
-                      service: "Admin Assistant",
-                      impact: "Medium"
-                    },
-                    {
-                      error: "Context length exceeded",
-                      count: 187,
-                      service: "Regulatory Analysis",
-                      impact: "High"
-                    },
-                    {
-                      error: "Timeout during processing",
-                      count: 142,
-                      service: "Market Analysis",
-                      impact: "Medium"
-                    },
-                    {
-                      error: "Invalid input format",
-                      count: 98,
-                      service: "Ethics Assessment",
-                      impact: "Low"
-                    },
-                    {
-                      error: "Service temporarily unavailable",
-                      count: 76,
-                      service: "Multiple services",
-                      impact: "High"
-                    }
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-start gap-3">
-                        <AlertTriangle className={`h-5 w-5 mt-0.5 ${
-                          item.impact === "High" ? "text-red-500" : 
-                          item.impact === "Medium" ? "text-amber-500" : "text-blue-500"
-                        }`} />
-                        <div>
-                          <p className="font-medium">{item.error}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Service: {item.service} • Impact: {item.impact}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-xl font-bold">{item.count}</div>
+          ) : reportData && (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{reportData.title}</CardTitle>
+                  <CardDescription>
+                    Summary of key platform metrics
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-muted p-4 rounded-lg text-center">
+                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.totalUsers}</h3>
+                      <p className="text-sm text-muted-foreground">Total Users</p>
                     </div>
-                  ))}
+                    <div className="bg-muted p-4 rounded-lg text-center">
+                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.activeUsers}</h3>
+                      <p className="text-sm text-muted-foreground">Active Users</p>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg text-center">
+                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.totalInnovations}</h3>
+                      <p className="text-sm text-muted-foreground">Total Innovations</p>
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg text-center">
+                      <h3 className="text-2xl font-bold text-primary">{reportData.metrics.activeChallenges}</h3>
+                      <p className="text-sm text-muted-foreground">Active Challenges</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>User Growth</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[200px] flex items-center justify-center bg-muted text-muted-foreground">
+                      Chart visualization placeholder
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Activity Trends</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[200px] flex items-center justify-center bg-muted text-muted-foreground">
+                      Chart visualization placeholder
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="user" className="space-y-4">
+          {isLoading ? (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+          ) : reportData && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{reportData.title}</CardTitle>
+                <CardDescription>User engagement and activity metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.newUsers}</h3>
+                    <p className="text-sm text-muted-foreground">New Users</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.returningUsers}</h3>
+                    <p className="text-sm text-muted-foreground">Returning Users</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.averageSessionTime}</h3>
+                    <p className="text-sm text-muted-foreground">Avg. Session Time</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.topUserLocations[0]}</h3>
+                    <p className="text-sm text-muted-foreground">Top Location</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="innovation" className="space-y-4">
+          {isLoading ? (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : reportData && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{reportData.title}</CardTitle>
+                <CardDescription>Innovation submission and processing metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.submissionRate}</h3>
+                    <p className="text-sm text-muted-foreground">Submission Rate</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.approvalRate}</h3>
+                    <p className="text-sm text-muted-foreground">Approval Rate</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.averageProcessingTime}</h3>
+                    <p className="text-sm text-muted-foreground">Processing Time</p>
+                  </div>
+                  <div className="bg-muted p-4 rounded-lg text-center">
+                    <h3 className="text-2xl font-bold text-primary">{reportData.metrics.topCategories.length}</h3>
+                    <p className="text-sm text-muted-foreground">Categories</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+      </Tabs>
     </AdminLayout>
   );
 }
