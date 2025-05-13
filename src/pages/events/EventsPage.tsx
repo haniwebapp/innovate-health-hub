@@ -33,7 +33,8 @@ export default function EventsPage() {
           <div className="container mx-auto px-4 py-12 max-w-7xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.5 }}
               className="mb-12"
             >
@@ -42,7 +43,8 @@ export default function EventsPage() {
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mb-16"
             >
@@ -51,16 +53,19 @@ export default function EventsPage() {
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
               className="mb-16"
+              id="upcoming"
             >
               <UpcomingEvents />
             </motion.div>
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="mb-8"
             >
@@ -70,7 +75,8 @@ export default function EventsPage() {
             {/* Events page footer section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.5 }}
               className="mt-16 p-8 rounded-xl bg-gradient-to-br from-moh-green/5 to-moh-green/10 border border-moh-green/10 text-center"
             >
