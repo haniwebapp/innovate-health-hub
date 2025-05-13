@@ -1,5 +1,4 @@
 
-import { useToast } from "@/hooks/use-toast";
 import { PageSection, PageContent, WebsitePageFormData } from "@/types/pageTypes";
 import { PageService } from "@/services/page/PageService";
 import { PageFormValues } from "@/components/cms/pages/editor/PageForm";
@@ -9,11 +8,11 @@ export const createPageSubmission = async (
   sections: PageSection[],
   isNewPage: boolean,
   pageId: string | undefined,
-  toast: ReturnType<typeof useToast>,
+  { toast }: { toast: any },
   validatePageContent: (content: PageContent, slug: string) => Promise<boolean>
 ) => {
   if (sections.length === 0) {
-    toast.toast({
+    toast({
       title: "Error",
       description: "At least one content section is required.",
       variant: "destructive",
@@ -39,19 +38,19 @@ export const createPageSubmission = async (
   try {
     if (isNewPage) {
       await PageService.createPage(pageData);
-      toast.toast({
+      toast({
         title: "Page Created",
         description: "Your page has been successfully created.",
       });
     } else {
       const result = await PageService.updatePage(pageId!, pageData);
-      toast.toast({
+      toast({
         title: "Page Updated",
         description: "Your changes have been saved successfully.",
       });
       
       if (values.published && result.published) {
-        toast.toast({
+        toast({
           title: "Page Published",
           description: "The page is now live on the website.",
         });
@@ -61,7 +60,7 @@ export const createPageSubmission = async (
     return true;
   } catch (error) {
     console.error("Error saving page:", error);
-    toast.toast({
+    toast({
       title: "Error",
       description: "Failed to save page. Please try again.",
       variant: "destructive",

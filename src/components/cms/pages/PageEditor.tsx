@@ -44,7 +44,7 @@ export function PageEditor() {
         sections, 
         isNewPage, 
         id, 
-        toast, 
+        { toast }, 
         validatePageContent
       );
       
