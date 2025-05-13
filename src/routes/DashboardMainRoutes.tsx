@@ -19,6 +19,7 @@ import { DashboardRegulatoryRoutes } from './DashboardRegulatoryRoutes';
 import { DashboardKnowledgeRoutes } from './DashboardKnowledgeRoutes';
 import { DashboardCollaborationRoutes } from './DashboardCollaborationRoutes';
 import { AdminRoutes } from './AdminRoutes';
+import AdminLayout from '@/components/layouts/AdminLayout';
 
 export const DashboardMainRoutes = (
   <Route path="/dashboard" element={
@@ -46,7 +47,7 @@ export const DashboardMainRoutes = (
     {DashboardCollaborationRoutes}
     
     {/* Admin routes nested inside the DashboardLayout */}
-    <Route path="admin">
+    <Route path="admin" element={<AdminLayout />}>
       {AdminRoutes}
     </Route>
   </Route>
