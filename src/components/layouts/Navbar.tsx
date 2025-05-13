@@ -68,8 +68,8 @@ export default function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
+          <div className="flex items-center justify-between">
+            <div className="flex-shrink-0">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link to="/" className="flex items-center group">
                   <motion.img 
@@ -81,9 +81,11 @@ export default function Navbar() {
               </motion.div>
             </div>
             
-            <NavbarMainLinks isRouteActive={isRouteActive} />
+            <div className="flex-grow flex justify-center px-4">
+              <NavbarMainLinks isRouteActive={isRouteActive} />
+            </div>
             
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
               <Button 
                 variant="ghost" 
                 size="icon" 
