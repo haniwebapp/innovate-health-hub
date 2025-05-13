@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Globe, Eye, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { Pencil, Globe, Eye, Trash2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +22,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 export function PageList() {
   const [pages, setPages] = useState<WebsitePage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -33,13 +34,26 @@ export function PageList() {
   const loadPages = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await PageService.getAllPages();
       setPages(data);
     } catch (error) {
       console.error("Failed to load pages:", error);
+      let errorMessage = "Failed to load pages. Please try again.";
+      
+      // Provide more specific error message for common issues
+      if (error instanceof Error) {
+        if (error.message.includes("infinite recursion")) {
+          errorMessage = "Database policy error: Infinite recursion detected. Please check your Supabase Row Level Security policies for the profiles table.";
+        } else {
+          errorMessage = `Error: ${error.message}`;
+        }
+      }
+      
+      setError(errorMessage);
       toast({
         title: "Error",
-        description: "Failed to load pages. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -119,6 +133,31 @@ export function PageList() {
           </Card>
         ))}
       </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <Card className="bg-red-50/30 p-8 text-center">
+        <CardContent className="pt-6">
+          <div className="flex flex-col items-center justify-center">
+            <AlertCircle className="h-12 w-12 text-red-500 mb-2" />
+            <h3 className="text-lg font-medium mb-1">Error Loading Pages</h3>
+            <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
+              {error}
+            </p>
+            <div className="space-x-4">
+              <Button onClick={loadPages}>
+                Try Again
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/dashboard/admin")}>
+                Return to Dashboard
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
