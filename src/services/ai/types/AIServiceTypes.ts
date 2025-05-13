@@ -1,40 +1,42 @@
 
-export interface CallTrace {
-  traceId: string;
-  operation: string;
-  context: string;
-  timestamp: string;
-  metadata: Record<string, any>;
-}
+import { AIServiceType } from '../AIService';
 
+// Common types for AI service implementations
 export interface AIServiceStaticReferences {
-  investment?: any;
-  regulatory?: any;
-  innovation?: any;
-  knowledge?: any;
-  policy?: any;
-  challenge?: any;
-  support?: any;
-  clinical?: any;
-  events?: any;
-  admin?: any;
-  compliance?: any;
-  community?: any;
-  quotation?: any;
+  [key: string]: any;
 }
 
-export interface AIServiceHealth {
-  investment: boolean;
-  regulatory: boolean;
-  innovation: boolean;
-  knowledge: boolean;
-  policy: boolean;
-  challenge: boolean;
-  support: boolean;
-  clinical: boolean;
-  events: boolean;
-  admin: boolean;
-  compliance: boolean;
-  community: boolean;
-  overall: boolean;
+export interface CallTrace {
+  userId?: string;
+  action: string;
+  parameters?: Record<string, any>;
+  timestamp: string;
+  result?: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant' | 'function';
+  content: string;
+  name?: string;
+  function_call?: any;
+}
+
+export interface AIRequestOptions {
+  temperature?: number;
+  maxTokens?: number;
+  includeHistory?: boolean;
+  tools?: any[];
+}
+
+export interface AICompletionResponse {
+  message: string;
+  error?: string;
+}
+
+export interface AIStreamOptions {
+  onMessage: (message: string) => void;
+  onError: (error: string) => void;
+  onComplete: () => void;
 }

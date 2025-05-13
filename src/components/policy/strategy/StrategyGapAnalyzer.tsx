@@ -1,217 +1,250 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Loader2, AlertCircle, Lightbulb, FileStack, GanttChart } from "lucide-react";
+import { useAI } from "@/context/AIContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-export const StrategyGapAnalyzer = () => {
-  const [analyzing, setAnalyzing] = useState(false);
-  const [results, setResults] = useState<null | boolean>(null);
+interface GapAnalysisResult {
+  gaps: {
+    title: string;
+    description: string;
+    severity: "low" | "medium" | "high";
+    potentialImpact: string;
+  }[];
+  recommendations: string[];
+  overallAnalysis: string;
+}
+
+export function StrategyGapAnalyzer() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [objectives, setObjectives] = useState("");
+  const [currentState, setCurrentState] = useState("");
+  const [desiredState, setDesiredState] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<GapAnalysisResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
-  const handleAnalyze = () => {
-    setAnalyzing(true);
-    // Simulate analysis
-    setTimeout(() => {
-      setAnalyzing(false);
-      setResults(true);
-    }, 2000);
+  const { toast } = useToast();
+  
+  const handleAnalyze = async () => {
+    if (!title || !description || !objectives) {
+      toast({
+        title: "Missing information",
+        description: "Please provide the policy title, description, and objectives.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const objectivesArray = objectives.split("\n").filter(o => o.trim());
+      
+      const { data, error } = await supabase.functions.invoke("strategy-gap-analysis", {
+        body: {
+          policyDetails: {
+            title,
+            description,
+            objectives: objectivesArray,
+          },
+          currentState,
+          desiredState,
+        }
+      });
+      
+      if (error) throw new Error(error.message);
+      
+      setAnalysisResult(data);
+    } catch (err: any) {
+      console.error("Error analyzing strategy gaps:", err);
+      setError(err.message || "Failed to analyze strategy gaps");
+      toast({
+        title: "Analysis Failed",
+        description: err.message || "Failed to analyze strategy gaps",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   
-  const resetAnalysis = () => {
-    setResults(null);
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case "low": return "bg-green-100 text-green-800";
+      case "medium": return "bg-yellow-100 text-yellow-800";
+      case "high": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
   };
   
   return (
-    <Card className="border-moh-green/20">
-      <CardHeader>
-        <CardTitle className="text-xl text-moh-darkGreen">Strategy Gap Analysis</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {!results ? (
-          <>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">
-                  Strategy or Policy Document*
-                </label>
-                <Select defaultValue="strategy">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a strategy document" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="strategy">Digital Health Strategy 2025</SelectItem>
-                    <SelectItem value="policy1">Healthcare Access Policy</SelectItem>
-                    <SelectItem value="policy2">Telehealth Framework 2024</SelectItem>
-                    <SelectItem value="policy3">Healthcare AI Regulations</SelectItem>
-                    <SelectItem value="custom">Upload Custom Document</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">
-                  Analysis Focus Areas
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="flex items-center space-x-2">
-                    <Input type="checkbox" id="implementation" defaultChecked className="h-4 w-4" />
-                    <label htmlFor="implementation" className="text-sm">Implementation Status</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Input type="checkbox" id="resources" defaultChecked className="h-4 w-4" />
-                    <label htmlFor="resources" className="text-sm">Resource Allocation</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Input type="checkbox" id="stakeholders" defaultChecked className="h-4 w-4" />
-                    <label htmlFor="stakeholders" className="text-sm">Stakeholder Alignment</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Input type="checkbox" id="outcomes" defaultChecked className="h-4 w-4" />
-                    <label htmlFor="outcomes" className="text-sm">Outcome Measures</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Input type="checkbox" id="timeline" defaultChecked className="h-4 w-4" />
-                    <label htmlFor="timeline" className="text-sm">Timeline Adherence</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Input type="checkbox" id="risks" defaultChecked className="h-4 w-4" />
-                    <label htmlFor="risks" className="text-sm">Risk Identification</label>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">
-                  Additional Context or Notes (Optional)
-                </label>
-                <Textarea placeholder="Add any specific concerns or areas you'd like the analysis to focus on..." className="min-h-[100px]" />
-              </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <GanttChart className="mr-2 h-5 w-5" />
+            Strategy Gap Analyzer
+          </CardTitle>
+          <CardDescription>
+            Analyze gaps between your healthcare policy and its implementation goals
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="title" className="text-sm font-medium">Policy Title</label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="E.g., National Digital Health Strategy"
+              disabled={isLoading}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <label htmlFor="description" className="text-sm font-medium">Policy Description</label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the policy's purpose and scope..."
+              className="min-h-[100px]"
+              disabled={isLoading}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <label htmlFor="objectives" className="text-sm font-medium">Policy Objectives</label>
+            <Textarea
+              id="objectives"
+              value={objectives}
+              onChange={(e) => setObjectives(e.target.value)}
+              placeholder="List policy objectives, one per line..."
+              className="min-h-[100px]"
+              disabled={isLoading}
+            />
+            <p className="text-xs text-muted-foreground">
+              Enter each objective on a new line
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="currentState" className="text-sm font-medium">Current State (Optional)</label>
+              <Textarea
+                id="currentState"
+                value={currentState}
+                onChange={(e) => setCurrentState(e.target.value)}
+                placeholder="Describe the current state of implementation..."
+                className="min-h-[100px]"
+                disabled={isLoading}
+              />
             </div>
             
-            <Separator />
-            
-            <Button 
-              onClick={handleAnalyze} 
-              className="w-full bg-moh-green hover:bg-moh-darkGreen"
-              disabled={analyzing}
-            >
-              {analyzing ? "Analyzing..." : "Analyze Strategy Gaps"}
-            </Button>
-          </>
-        ) : (
-          <div className="space-y-6">
-            <div className="p-4 bg-moh-lightGreen/20 rounded-lg border border-moh-green/20">
-              <div className="flex items-center mb-2">
-                <div className="mr-3 p-1.5 bg-moh-green/10 rounded-full">
-                  <CheckCircle2 className="h-5 w-5 text-moh-green" />
-                </div>
-                <h3 className="text-lg font-medium text-moh-darkGreen">Analysis Complete</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                We've analyzed the Digital Health Strategy 2025 document and identified several gaps in implementation, resource allocation, and stakeholder alignment.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-base font-medium mb-3 flex items-center gap-2">
-                <Badge variant="outline" className="rounded-sm bg-moh-lightGreen text-moh-darkGreen px-1.5 py-0">
-                  87%
-                </Badge>
-                Overall Alignment Score
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between items-center text-sm mb-1">
-                    <span className="font-medium">Implementation Status</span>
-                    <span className="text-moh-green">92%</span>
-                  </div>
-                  <div className="w-full bg-moh-lightGreen/30 rounded-full h-2">
-                    <div className="bg-moh-green h-2 rounded-full" style={{ width: "92%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Excellent progress on most initiatives</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center text-sm mb-1">
-                    <span className="font-medium">Resource Allocation</span>
-                    <span className="text-amber-600">74%</span>
-                  </div>
-                  <div className="w-full bg-amber-100 rounded-full h-2">
-                    <div className="bg-amber-500 h-2 rounded-full" style={{ width: "74%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Some budget gaps for rural healthcare initiatives</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center text-sm mb-1">
-                    <span className="font-medium">Stakeholder Alignment</span>
-                    <span className="text-amber-600">68%</span>
-                  </div>
-                  <div className="w-full bg-amber-100 rounded-full h-2">
-                    <div className="bg-amber-500 h-2 rounded-full" style={{ width: "68%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Private sector engagement needs improvement</p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between items-center text-sm mb-1">
-                    <span className="font-medium">Timeline Adherence</span>
-                    <span className="text-rose-600">58%</span>
-                  </div>
-                  <div className="w-full bg-rose-100 rounded-full h-2">
-                    <div className="bg-rose-500 h-2 rounded-full" style={{ width: "58%" }}></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">Several key milestones are behind schedule</p>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-base font-medium mb-3">Critical Gaps Identified</h3>
-              <div className="space-y-2">
-                <div className="p-2 flex items-start bg-rose-50 rounded-md border border-rose-200">
-                  <AlertTriangle className="text-rose-600 h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-rose-800">Rural Telehealth Implementation</p>
-                    <p className="text-xs text-muted-foreground">18-month delay in rural telehealth center deployment</p>
-                  </div>
-                </div>
-                
-                <div className="p-2 flex items-start bg-amber-50 rounded-md border border-amber-200">
-                  <AlertTriangle className="text-amber-600 h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-amber-800">Healthcare AI Policy Framework</p>
-                    <p className="text-xs text-muted-foreground">Lack of clear regulatory guidelines for AI diagnostic tools</p>
-                  </div>
-                </div>
-                
-                <div className="p-2 flex items-start bg-amber-50 rounded-md border border-amber-200">
-                  <AlertTriangle className="text-amber-600 h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-amber-800">Private Sector Engagement</p>
-                    <p className="text-xs text-muted-foreground">Limited participation from technology startups</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex gap-3">
-              <Button className="flex-1 bg-moh-green hover:bg-moh-darkGreen">
-                Download Full Report
-              </Button>
-              <Button variant="outline" onClick={resetAnalysis} className="flex-1 border-moh-green text-moh-green hover:bg-moh-lightGreen/20">
-                Start New Analysis
-              </Button>
+            <div className="space-y-2">
+              <label htmlFor="desiredState" className="text-sm font-medium">Desired State (Optional)</label>
+              <Textarea
+                id="desiredState"
+                value={desiredState}
+                onChange={(e) => setDesiredState(e.target.value)}
+                placeholder="Describe the desired outcomes..."
+                className="min-h-[100px]"
+                disabled={isLoading}
+              />
             </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+          
+          {error && (
+            <div className="bg-destructive/10 text-destructive p-3 rounded-md flex items-start gap-2">
+              <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Button
+            onClick={handleAnalyze}
+            disabled={isLoading || !title || !description || !objectives}
+            className="w-full"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <GanttChart className="mr-2 h-4 w-4" />
+                Analyze Strategy Gaps
+              </>
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
+      
+      {analysisResult && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <FileStack className="mr-2 h-5 w-5" />
+              Gap Analysis Results
+            </CardTitle>
+            <CardDescription>
+              Analysis for "{title}"
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium mb-2">Overall Analysis</h3>
+              <p className="text-muted-foreground">{analysisResult.overallAnalysis}</p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-medium mb-2">Identified Gaps</h3>
+              <div className="space-y-3">
+                {analysisResult.gaps.map((gap, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start mb-1">
+                        <h4 className="font-medium">{gap.title}</h4>
+                        <Badge className={getSeverityColor(gap.severity)}>
+                          {gap.severity}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">{gap.description}</p>
+                      <div className="text-xs">
+                        <span className="font-semibold">Potential Impact: </span>
+                        <span>{gap.potentialImpact}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-medium mb-2">Recommendations</h3>
+              <ul className="space-y-2">
+                {analysisResult.recommendations.map((rec, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <Lightbulb className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span>{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
-};
+}

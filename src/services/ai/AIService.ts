@@ -1,42 +1,35 @@
 
-import { AIServiceType } from "./AIServiceRegistry";
-import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
-import { handleError } from "./utils/AIServiceErrors";
+// Base interface for all AI services
+export interface AIService {
+  serviceType: AIServiceType;
+  isAvailable(): Promise<boolean>;
+  getStaticReferences(): AIServiceStaticReferences;
+  recordCall(trace: CallTrace): Promise<void>;
+}
 
-export abstract class AIService {
-  abstract serviceType: AIServiceType;
-  
-  constructor() {}
-  
-  abstract isAvailable(): Promise<boolean>;
-  
-  abstract getStaticReferences(): AIServiceStaticReferences;
-  
-  abstract recordCall(trace: CallTrace): Promise<void>;
-  
-  // Static utility methods
-  static createTrace(operation: string, context: string): CallTrace {
-    return {
-      traceId: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-      operation,
-      context,
-      timestamp: new Date().toISOString(),
-      metadata: {}
-    };
-  }
-  
-  static async logAIOperation(
-    operation: string,
-    context: string,
-    input: any,
-    output: any,
-    error?: any
-  ): Promise<void> {
-    console.log(`AI Operation Log: ${operation} (${context})`);
-    // In a real implementation, this would log to a database
-  }
-  
-  static handleError(error: any, operation: string, context: string): Error {
-    return handleError(error, operation, context);
-  }
+export enum AIServiceType {
+  Admin = "admin",
+  Clinical = "clinical",
+  Community = "community",
+  Compliance = "compliance",
+  Events = "events",
+  Innovation = "innovation",
+  Regulatory = "regulatory",
+  Strategy = "strategy",
+  Vision = "vision",
+  Chat = "chat"
+}
+
+export interface CallTrace {
+  userId?: string;
+  action: string;
+  parameters?: Record<string, any>;
+  timestamp: string;
+  result?: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface AIServiceStaticReferences {
+  [key: string]: any;
 }

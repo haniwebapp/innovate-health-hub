@@ -1,77 +1,27 @@
 
-import { AIService } from "./AIService";
-import { AIServiceStaticReferences } from "./types/AIServiceTypes";
+import { AIService, AIServiceType } from './AIService';
 
-export { AIService }; // Export AIService from this file as well
-
-export enum AIServiceType {
-  Investment = "investment",
-  Regulatory = "regulatory",
-  Innovation = "innovation",
-  Knowledge = "knowledge",
-  Policy = "policy",
-  Challenge = "challenge",
-  Support = "support",
-  Clinical = "clinical",
-  Events = "events",
-  Admin = "admin",
-  Compliance = "compliance",
-  Community = "community",
-  Quotation = "quotation"
-}
-
-export enum AIOperationType {
-  Analysis = "analysis",
-  Generation = "generation",
-  Recommendation = "recommendation",
-  Prediction = "prediction",
-  Classification = "classification",
-  Scoring = "scoring",
-  Matching = "matching",
-  Search = "search",
-  Translation = "translation"
-}
-
+// Registry to store and retrieve AI services
 export class AIServiceRegistry {
   private static services: Map<AIServiceType, AIService> = new Map();
-  
+
+  // Register a service
   static registerService(service: AIService): void {
-    this.services.set(service.serviceType, service);
+    AIServiceRegistry.services.set(service.serviceType, service);
   }
-  
-  static getService(type: AIServiceType): AIService | undefined {
-    return this.services.get(type);
+
+  // Get a service by type
+  static getService<T extends AIService>(type: AIServiceType): T | undefined {
+    return AIServiceRegistry.services.get(type) as T | undefined;
   }
-  
-  static getAllServices(): Map<AIServiceType, AIService> {
-    return this.services;
+
+  // Check if a service is registered
+  static hasService(type: AIServiceType): boolean {
+    return AIServiceRegistry.services.has(type);
   }
-  
-  static async checkServiceHealth(): Promise<{ [key in AIServiceType]?: boolean }> {
-    const health: { [key in AIServiceType]?: boolean } = {};
-    
-    for (const [type, service] of this.services.entries()) {
-      try {
-        health[type] = await service.isAvailable();
-      } catch (error) {
-        console.error(`Error checking service health for ${type}:`, error);
-        health[type] = false;
-      }
-    }
-    
-    return health;
-  }
-  
-  static getStaticReferences(): AIServiceStaticReferences {
-    const references: AIServiceStaticReferences = {};
-    
-    for (const [type, service] of this.services.entries()) {
-      const serviceRefs = service.getStaticReferences();
-      if (Object.keys(serviceRefs).length > 0) {
-        references[type] = serviceRefs;
-      }
-    }
-    
-    return references;
+
+  // Get all registered service types
+  static getAvailableServices(): AIServiceType[] {
+    return Array.from(AIServiceRegistry.services.keys());
   }
 }
