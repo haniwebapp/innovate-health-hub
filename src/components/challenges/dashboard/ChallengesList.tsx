@@ -3,19 +3,22 @@ import { Challenge, Submission } from "@/types/challenges";
 import ChallengeCard from "./ChallengeCard";
 import ChallengeSkeleton from "./ChallengeSkeleton";
 import { ReactNode } from "react";
+import { mockChallenges, mockSubmissions } from "./mockData";
 
 interface ChallengesListProps {
   challenges?: Challenge[];
   submissions?: Record<string, Submission>;
   isLoading: boolean;
   emptyState: ReactNode;
+  useFallbackData?: boolean;
 }
 
 export default function ChallengesList({
   challenges,
   submissions = {},
   isLoading,
-  emptyState
+  emptyState,
+  useFallbackData = false
 }: ChallengesListProps) {
   if (isLoading) {
     return (
@@ -27,17 +30,22 @@ export default function ChallengesList({
     );
   }
 
-  if (!challenges?.length) {
+  // If no challenges and we're not using fallback, show empty state
+  if (!challenges?.length && !useFallbackData) {
     return <>{emptyState}</>;
   }
 
+  // Use provided challenges or fall back to mock data if explicitly requested
+  const displayChallenges = challenges?.length ? challenges : (useFallbackData ? mockChallenges : []);
+  const displaySubmissions = Object.keys(submissions).length ? submissions : (useFallbackData ? mockSubmissions : {});
+
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {challenges.map((challenge) => (
+      {displayChallenges.map((challenge) => (
         <ChallengeCard
           key={challenge.id}
           challenge={challenge}
-          submission={submissions[challenge.id]}
+          submission={displaySubmissions[challenge.id]}
         />
       ))}
     </div>

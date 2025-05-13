@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { mockResources, resourceTypeIcons } from "./mockData";
 
 interface ResourceCardProps {
   resource: {
@@ -43,6 +44,11 @@ export function ResourceCard({ resource, className, onSave }: ResourceCardProps)
         : "Resource has been added to your saved items"
     });
   };
+
+  // Get the appropriate icon based on resource type
+  const TypeIcon = resource.type && resourceTypeIcons[resource.type] 
+    ? resourceTypeIcons[resource.type] 
+    : FileText;
   
   return (
     <Card className={cn("overflow-hidden transition-all hover:shadow-md", className)}>
@@ -55,7 +61,7 @@ export function ResourceCard({ resource, className, onSave }: ResourceCardProps)
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted">
-            <FileText className="h-10 w-10 text-muted-foreground" />
+            <TypeIcon className="h-10 w-10 text-muted-foreground" />
           </div>
         )}
         <div className="absolute top-2 right-2 flex gap-1">
@@ -83,7 +89,7 @@ export function ResourceCard({ resource, className, onSave }: ResourceCardProps)
         </Badge>
         <CardTitle className="text-base line-clamp-1">{resource.title}</CardTitle>
         <CardDescription className="flex items-center text-xs">
-          <FileText className="h-3 w-3 mr-1" />
+          <TypeIcon className="h-3 w-3 mr-1" />
           {resource.type}
           {resource.downloadCount !== undefined && (
             <span className="ml-2 flex items-center">
@@ -116,4 +122,11 @@ export function ResourceCard({ resource, className, onSave }: ResourceCardProps)
       </CardFooter>
     </Card>
   );
+}
+
+// If no resources are provided, this component can be used with mock data
+export function ResourceCardWithFallback({ resource, className, onSave }: Partial<ResourceCardProps>) {
+  // Use the first mock resource if none is provided
+  const fallbackResource = resource || mockResources[0];
+  return <ResourceCard resource={fallbackResource} className={className} onSave={onSave} />;
 }
