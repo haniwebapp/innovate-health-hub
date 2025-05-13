@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -80,18 +81,32 @@ export default function AdminEventForm({ onEventAdded }: AdminEventFormProps) {
     setIsSubmitting(true);
     
     try {
-      // Format the data for the database
+      // Format the data for the database - map camelCase to snake_case for Supabase
       const eventData = {
-        ...data,
-        maxAttendees: data.maxAttendees ? parseInt(data.maxAttendees) : null,
-        startDate: new Date(data.startDate).toISOString(),
-        endDate: new Date(data.endDate).toISOString(),
+        title: data.title,
+        description: data.description,
+        event_type: data.eventType,
+        start_date: new Date(data.startDate).toISOString(),
+        end_date: new Date(data.endDate).toISOString(),
+        location: data.location || null,
+        is_virtual: data.isVirtual,
+        event_url: data.eventUrl || null,
+        registration_url: data.registrationUrl || null,
+        presenter: data.presenter || null,
+        presenter_title: data.presenterTitle || null,
+        presenter_organization: data.presenterOrganization || null,
+        featured: data.featured,
+        category: data.category,
+        max_attendees: data.maxAttendees ? parseInt(data.maxAttendees) : null,
+        status: 'upcoming', // Default status
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
 
       // Insert directly using Supabase client
       const { error } = await supabase
         .from('events')
-        .insert([eventData]);
+        .insert(eventData);
       
       if (error) throw error;
       

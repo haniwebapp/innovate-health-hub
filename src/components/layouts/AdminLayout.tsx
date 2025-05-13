@@ -12,7 +12,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ 
-  children, 
+  children = null, 
   title = "Admin Dashboard", 
   description = "Manage platform settings and users",
   actions

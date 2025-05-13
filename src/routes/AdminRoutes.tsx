@@ -1,7 +1,7 @@
 
 import { Route } from 'react-router-dom';
 import AdminLayout from '@/components/layouts/AdminLayout';
-import AdminDashboard from '@/pages/admin/index';
+import AdminDashboard from '@/pages/admin/dashboard/AdminDashboardPage';
 import AdminSettingsPage from '@/pages/admin/settings/index';
 import AdminEventsPage from '@/pages/admin/events/index';
 import AdminReportsPage from '@/pages/admin/reports/index';
@@ -25,26 +25,26 @@ import AdminCMSEditPage from '@/pages/admin/cms/pages/edit';
 
 export const AdminRoutes = (
   <Route element={<AdminLayout />}>
-    <Route path="/admin" element={<AdminDashboard />} />
-    <Route path="/admin/settings" element={<AdminSettingsPage />} />
-    <Route path="/admin/events" element={<AdminEventsPage />} />
-    <Route path="/admin/reports" element={<AdminReportsPage />} />
-    <Route path="/admin/users" element={<AdminUsersPage />} />
-    <Route path="/admin/users/edit/:id" element={<AdminEditUserPage />} />
-    <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
-    <Route path="/admin/activity" element={<AdminActivityPage />} />
-    <Route path="/admin/integrations" element={<AdminIntegrationsPage />} />
-    <Route path="/admin/integrations/:id" element={<AdminIntegrationDetailsPage />} />
-    <Route path="/admin/sandbox" element={<AdminSandboxPage />} />
-    <Route path="/admin/sandbox/:id" element={<AdminSandboxDetailsPage />} />
-    <Route path="/admin/innovations" element={<AdminInnovationsPage />} />
-    <Route path="/admin/challenges" element={<AdminChallengesPage />} />
-    <Route path="/admin/investment" element={<AdminInvestmentPage />} />
-    <Route path="/admin/knowledge" element={<AdminKnowledgePage />} />
-    <Route path="/admin/notifications" element={<AdminNotificationsPage />} />
-    <Route path="/admin/cms" element={<AdminCMSPage />} />
-    <Route path="/admin/cms/pages" element={<AdminCMSPagesPage />} />
-    <Route path="/admin/cms/pages/new" element={<AdminCMSNewPage />} />
-    <Route path="/admin/cms/pages/edit/:id" element={<AdminCMSEditPage />} />
+    <Route index element={<AdminDashboard />} />
+    <Route path="settings" element={<AdminSettingsPage />} />
+    <Route path="events" element={<AdminEventsPage />} />
+    <Route path="reports" element={<AdminReportsPage />} />
+    <Route path="users" element={<AdminUsersPage />} />
+    <Route path="users/edit/:id" element={<AdminEditUserPage />} />
+    <Route path="analytics" element={<AdminAnalyticsPage />} />
+    <Route path="activity" element={<AdminActivityPage />} />
+    <Route path="integrations" element={<AdminIntegrationsPage />} />
+    <Route path="integrations/:id" element={<AdminIntegrationDetailsPage />} />
+    <Route path="sandbox" element={<AdminSandboxPage />} />
+    <Route path="sandbox/:id" element={<AdminSandboxDetailsPage />} />
+    <Route path="innovations" element={<AdminInnovationsPage />} />
+    <Route path="challenges" element={<AdminChallengesPage />} />
+    <Route path="investment" element={<AdminInvestmentPage />} />
+    <Route path="knowledge" element={<AdminKnowledgePage />} />
+    <Route path="notifications" element={<AdminNotificationsPage />} />
+    <Route path="cms" element={<AdminCMSPage />} />
+    <Route path="cms/pages" element={<AdminCMSPagesPage />} />
+    <Route path="cms/pages/new" element={<AdminCMSNewPage />} />
+    <Route path="cms/pages/edit/:id" element={<AdminCMSEditPage />} />
   </Route>
 );
