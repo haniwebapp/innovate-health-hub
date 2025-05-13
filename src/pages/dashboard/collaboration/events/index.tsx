@@ -88,10 +88,17 @@ export default function EventsPage() {
           ]}
         />
         
-        <Button>
-          <Calendar className="h-4 w-4 mr-2" />
-          View in Calendar
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link to="/events">
+              Public Events
+            </Link>
+          </Button>
+          <Button>
+            <Calendar className="h-4 w-4 mr-2" />
+            View in Calendar
+          </Button>
+        </div>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

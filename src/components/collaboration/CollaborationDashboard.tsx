@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -372,7 +371,7 @@ export function CollaborationDashboard() {
             </CardContent>
             <CardFooter>
               <Button asChild>
-                <Link to="/dashboard/collaboration/events">
+                <Link to="/events">
                   View All Events
                 </Link>
               </Button>

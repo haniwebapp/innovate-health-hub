@@ -7,6 +7,7 @@ import { DashboardMainRoutes } from './DashboardMainRoutes';
 import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 import AIEnhancedPage from '@/pages/ai-enhanced/index';
+import EventsPage from '@/pages/events/index';
 
 export function AppRoutes() {
   return (
@@ -25,6 +26,9 @@ export function AppRoutes() {
       
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />
+      
+      {/* Events Page */}
+      <Route path="/events" element={<EventsPage />} />
       
       {/* AI Enhanced Features Page */}
       <Route path="/ai-enhanced" element={<AIEnhancedPage />} />
