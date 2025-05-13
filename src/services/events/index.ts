@@ -21,8 +21,18 @@ export class EventService {
   static submitEventFeedback = EventRegistrationService.submitEventFeedback;
   static getUserEventRegistrations = EventRegistrationService.getUserEventRegistrations;
   
-  // Re-export protected methods via static methods for backward compatibility
-  static mapDbEventsToClient = EventQueryService.mapDbEventsToClient.bind(EventQueryService);
-  static mapDbEventToClient = EventQueryService.mapDbEventToClient.bind(EventQueryService);
-  static mapDbRegistrationToClient = EventQueryService.mapDbRegistrationToClient.bind(EventQueryService);
+  // Instead of trying to re-export protected methods, create public wrapper methods
+  // that internally call the protected methods from the appropriate service classes
+  static mapDbEventsToClient(dbEvents: any[]): any[] {
+    // Since EventQueryService inherits from EventBaseService, it has access to the protected methods
+    return EventQueryService["mapDbEventsToClient"](dbEvents);
+  }
+
+  static mapDbEventToClient(dbEvent: any): any {
+    return EventQueryService["mapDbEventToClient"](dbEvent);
+  }
+
+  static mapDbRegistrationToClient(dbReg: any): any {
+    return EventQueryService["mapDbRegistrationToClient"](dbReg);
+  }
 }
