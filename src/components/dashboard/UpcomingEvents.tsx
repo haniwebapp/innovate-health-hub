@@ -1,77 +1,63 @@
 
+import React from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { Calendar } from "lucide-react";
 
 export function UpcomingEvents() {
-  const { language } = useLanguage();
-  const isRTL = language === 'ar';
-  
+  // Mock data
   const events = [
     {
       id: 1,
-      title: isRTL ? "ندوة الذكاء الاصطناعي في الرعاية الصحية" : "AI in Healthcare Webinar",
-      date: "May 15, 2025",
-      time: "10:00 AM",
-      type: "webinar",
-      status: "Registered"
+      title: "Healthcare Innovation Summit",
+      date: "June 15, 2025",
+      type: "Conference",
     },
     {
       id: 2,
-      title: isRTL ? "معرض الابتكار الصحي" : "Health Innovation Expo",
-      date: "June 3-5, 2025",
-      time: "All day",
-      type: "conference",
-      status: "Upcoming"
+      title: "AI in Medical Imaging Workshop",
+      date: "June 22, 2025",
+      type: "Workshop",
     },
     {
       id: 3,
-      title: isRTL ? "يوم العرض التقديمي للمستثمرين" : "Investor Pitch Day",
-      date: "May 22, 2025",
-      time: "2:00 PM",
-      type: "pitch",
-      status: "Scheduled"
-    }
+      title: "Regulatory Compliance Webinar",
+      date: "June 30, 2025",
+      type: "Webinar",
+    },
   ];
 
   return (
-    <Card className="border-gray-200">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-medium text-moh-darkGreen flex items-center">
-          <Calendar className="mr-2 h-5 w-5 text-moh-green" />
-          {isRTL ? "الفعاليات القادمة" : "Upcoming Events"}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg font-bold text-moh-darkGreen">Upcoming Events</CardTitle>
+          <Calendar className="h-4 w-4 text-moh-green" />
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {events.map((event) => (
-            <div 
-              key={event.id} 
-              className="p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors"
+          {events.map((event, index) => (
+            <motion.div 
+              key={event.id}
+              className="p-3 rounded-lg border border-gray-100 hover:border-moh-green transition-colors duration-300"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              <div className="flex justify-between items-start">
-                <h4 className="text-sm font-medium text-gray-900">{event.title}</h4>
-                <span className="text-xs px-2 py-0.5 bg-moh-lightGreen/30 text-moh-darkGreen rounded-full">
-                  {event.status}
-                </span>
-              </div>
-              
-              <div className="flex items-center text-xs text-gray-500 mt-2">
-                <Calendar className="h-3 w-3 mr-1" />
-                <span>{event.date}, {event.time}</span>
-              </div>
-            </div>
+              <span className="text-xs font-medium bg-moh-lightGreen bg-opacity-50 text-moh-darkGreen px-2 py-0.5 rounded">
+                {event.type}
+              </span>
+              <h4 className="font-medium text-gray-900 mt-1">{event.title}</h4>
+              <p className="text-gray-500 text-sm">{event.date}</p>
+            </motion.div>
           ))}
         </div>
-        
-        <Button variant="link" className="text-moh-green p-0 h-auto mt-3 w-full justify-end" asChild>
-          <Link to="/dashboard/events" className="flex items-center text-xs">
-            <span>{isRTL ? "عرض جميع الفعاليات" : "View all events"}</span>
-            <ChevronRight className={`ml-1 h-3 w-3 ${isRTL ? "rotate-180" : ""}`} />
-          </Link>
-        </Button>
+        <div className="mt-4 text-center">
+          <a href="/dashboard/events" className="text-moh-green hover:text-moh-darkGreen text-sm font-medium">
+            View All Events
+          </a>
+        </div>
       </CardContent>
     </Card>
   );

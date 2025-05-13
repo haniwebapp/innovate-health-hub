@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartIcon, Users, Award, FileText } from "lucide-react";
+import { BarChart, Users, Award, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function DashboardStats() {
@@ -31,7 +31,7 @@ export function DashboardStats() {
       title: "Success Rate",
       value: "68%",
       change: "+2.5%",
-      icon: <ChartIcon className="h-4 w-4 text-purple-500" />,
+      icon: <BarChart className="h-4 w-4 text-purple-500" />,
       trend: "up"
     }
   ];

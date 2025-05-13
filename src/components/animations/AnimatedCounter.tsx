@@ -7,13 +7,21 @@ export interface AnimatedCounterProps {
   className?: string;
   duration?: number;
   decimals?: number;
+  suffix?: string;
+  delay?: number;
+  scaleDuration?: boolean;
+  importance?: 'low' | 'medium' | 'high';
 }
 
 export function AnimatedCounter({ 
   value, 
   className = "", 
-  duration = 2, 
-  decimals = 0 
+  duration = 2,
+  delay = 0,
+  decimals = 0,
+  suffix = "",
+  scaleDuration = false,
+  importance
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -22,9 +30,24 @@ export function AnimatedCounter({
   useEffect(() => {
     if (inView) {
       let startTime: number | null = null;
+      
+      // Adjust duration based on importance or value size if scaleDuration is true
+      let finalDuration = duration;
+      if (scaleDuration) {
+        if (importance === 'high') {
+          finalDuration = Math.min(duration * 1.5, 4);
+        } else if (importance === 'low') {
+          finalDuration = Math.max(duration * 0.6, 1);
+        }
+        
+        // Scale by value size as well (larger numbers animate longer)
+        const valueScale = Math.log10(Math.max(value, 10)) / 2;
+        finalDuration = finalDuration * valueScale;
+      }
+      
       const animateValue = (timestamp: number) => {
         if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+        const progress = Math.min((timestamp - startTime) / (finalDuration * 1000), 1);
         
         // Easing function: cubic-bezier(0.17, 0.67, 0.83, 0.67)
         const easeProgress = progress < 0.5
@@ -41,9 +64,14 @@ export function AnimatedCounter({
         }
       };
       
-      requestAnimationFrame(animateValue);
+      // Use setTimeout to respect the delay prop
+      const timeoutId = setTimeout(() => {
+        requestAnimationFrame(animateValue);
+      }, delay * 1000);
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [inView, value, duration]);
+  }, [inView, value, duration, delay, importance, scaleDuration]);
   
   const formattedValue = decimals > 0
     ? displayValue.toFixed(decimals)
@@ -57,7 +85,7 @@ export function AnimatedCounter({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {formattedValue}
+      {formattedValue}{suffix}
     </motion.span>
   );
 }

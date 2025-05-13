@@ -1,99 +1,127 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, ClipboardCheck, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
+import React from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ComplianceTools() {
-  const { language } = useLanguage();
-  const isRTL = language === 'ar';
-  
   const tools = [
     {
-      id: 1,
-      title: isRTL ? "أداة التحقق من الامتثال" : "Compliance Checker Tool",
-      description: isRTL ? "تقييم سريع لمشروعك لتحديد متطلبات الامتثال المطبقة" : "Quick assessment of your project to identify applicable compliance requirements",
-      icon: <CheckCircle2 className="h-10 w-10 text-moh-green" />,
-      url: "/policy/compliance-checker"
+      category: "assessment",
+      title: "Compliance Self-Assessment",
+      description: "Evaluate your innovation against current regulatory standards",
+      icon: "📝",
+      action: "Start Assessment"
     },
     {
-      id: 2,
-      title: isRTL ? "قوائم التحقق من المعايير" : "Standards Checklists",
-      description: isRTL ? "قوائم التحقق التفصيلية حسب نوع الابتكار والمجال" : "Detailed checklists by innovation type and domain",
-      icon: <ClipboardCheck className="h-10 w-10 text-moh-green" />,
-      url: "/policy/standards-checklists"
+      category: "assessment",
+      title: "Gap Analysis Tool",
+      description: "Identify compliance gaps in your innovation",
+      icon: "🔍",
+      action: "Run Analysis"
     },
     {
-      id: 3,
-      title: isRTL ? "أداة تقييم مواءمة رؤية 2030" : "Vision 2030 Alignment Evaluator",
-      description: isRTL ? "تقييم كيفية مساهمة ابتكارك في أهداف رؤية 2030" : "Evaluate how your innovation contributes to Vision 2030 objectives",
-      icon: <ExternalLink className="h-10 w-10 text-moh-green" />,
-      url: "/policy/vision-alignment"
+      category: "validation",
+      title: "Documentation Validator",
+      description: "Validate your documentation against regulatory requirements",
+      icon: "📄",
+      action: "Upload Documents"
+    },
+    {
+      category: "validation",
+      title: "Standards Checker",
+      description: "Check which standards apply to your innovation",
+      icon: "✓",
+      action: "Check Standards"
+    },
+    {
+      category: "resources",
+      title: "Compliance Templates",
+      description: "Download templates for compliance documentation",
+      icon: "📋",
+      action: "Get Templates"
+    },
+    {
+      category: "resources",
+      title: "Regulatory Updates",
+      description: "Stay informed about regulatory changes",
+      icon: "🔔",
+      action: "Subscribe"
     }
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-white to-gray-50">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-12">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
           <h2 className="text-3xl font-bold text-moh-darkGreen mb-4">
-            {isRTL ? "أدوات الامتثال والتقييم" : "Compliance & Evaluation Tools"}
+            Compliance Tools
           </h2>
-          <p className="text-gray-600">
-            {isRTL ? 
-              "استخدم أدواتنا التفاعلية لتبسيط تقييم الامتثال وتسريع عملية المراجعة التنظيمية لابتكارات الرعاية الصحية الخاصة بك." : 
-              "Use our interactive tools to streamline compliance assessment and accelerate the regulatory review process for your healthcare innovations."}
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Streamline your regulatory compliance journey with our comprehensive suite of tools 
+            designed to help innovators navigate complex requirements.
           </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {tools.map((tool, index) => (
-            <ScrollFadeIn key={tool.id} delay={index * 0.1}>
-              <Card className="text-center h-full hover:shadow-md transition-shadow border-gray-200">
-                <CardHeader>
-                  <div className="flex justify-center mb-4">
-                    {tool.icon}
-                  </div>
-                  <CardTitle className="text-xl text-moh-darkGreen">
-                    {tool.title}
-                  </CardTitle>
-                  <CardDescription className="text-sm">
-                    {tool.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button className="w-full bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white" asChild>
-                    <Link to={tool.url}>
-                      {isRTL ? "الوصول إلى الأداة" : "Access Tool"}
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </ScrollFadeIn>
+        </motion.div>
+
+        <Tabs defaultValue="assessment" className="w-full">
+          <TabsList className="mx-auto flex justify-center gap-2 mb-8">
+            <TabsTrigger value="assessment">Assessment Tools</TabsTrigger>
+            <TabsTrigger value="validation">Validation Tools</TabsTrigger>
+            <TabsTrigger value="resources">Resources</TabsTrigger>
+          </TabsList>
+          
+          {["assessment", "validation", "resources"].map((category) => (
+            <TabsContent key={category} value={category}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {tools
+                  .filter(tool => tool.category === category)
+                  .map((tool, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <Card className="h-full border-gray-200 hover:border-moh-green hover:shadow-md transition-all duration-300">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                          <CardTitle className="text-xl font-semibold text-moh-darkGreen">
+                            {tool.title}
+                          </CardTitle>
+                          <span className="text-3xl">{tool.icon}</span>
+                        </CardHeader>
+                        <CardContent className="pb-6">
+                          <p className="text-gray-600 mb-4">{tool.description}</p>
+                          <button className="bg-moh-green hover:bg-moh-darkGreen text-white px-4 py-2 rounded-md transition-colors duration-300">
+                            {tool.action}
+                          </button>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+              </div>
+            </TabsContent>
           ))}
-        </div>
-        
-        <div className="bg-moh-lightGreen/20 p-6 rounded-xl max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h3 className="text-xl font-semibold text-moh-darkGreen mb-2">
-                {isRTL ? "هل تحتاج إلى مساعدة في الامتثال؟" : "Need Help with Compliance?"}
-              </h3>
-              <p className="text-gray-700">
-                {isRTL ?
-                  "يمكن لفريق خبراء السياسات لدينا مساعدتك في التنقل في متطلبات الامتثال المعقدة." :
-                  "Our policy experts team can help you navigate complex compliance requirements."}
-              </p>
-            </div>
-            <Button className="bg-white text-moh-darkGreen hover:bg-gray-100 shadow-sm" asChild>
-              <Link to="/policy/consultation">
-                {isRTL ? "طلب استشارة" : "Request Consultation"}
-              </Link>
-            </Button>
-          </div>
-        </div>
+        </Tabs>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="mt-12 bg-gray-50 rounded-lg p-6 text-center"
+        >
+          <h3 className="text-xl font-bold text-moh-darkGreen mb-3">Need Custom Compliance Support?</h3>
+          <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
+            Our team of regulatory experts can provide personalized guidance for your specific innovation needs.
+          </p>
+          <button className="bg-moh-darkGreen hover:bg-opacity-90 text-white px-6 py-3 rounded-md transition-colors duration-300">
+            Request Consultation
+          </button>
+        </motion.div>
       </div>
     </section>
   );
