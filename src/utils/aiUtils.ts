@@ -1,7 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AIMessage } from "@/types/chatTypes";
 
 // Standard error handling for AI functionality
 export class AIError extends Error {
@@ -11,13 +10,15 @@ export class AIError extends Error {
   }
 }
 
-// Export AIMessage type
-export { AIMessage };
+// Export AIMessage type as a type
+export type { AIMessage } from "@/types/chatTypes";
 
 // Add AIResponse type
 export interface AIResponse<T = any> {
   data: T | null;
   error: Error | null;
+  message?: string;
+  insights?: string[];
 }
 
 // Helper function to call AI assistants via edge functions
@@ -25,7 +26,7 @@ export async function callAIAssistant(
   messages: AIMessage[],
   context: string = "general",
   options: { temperature?: number; maxTokens?: number } = {}
-): Promise<{ message: string; error?: string }> {
+): Promise<{ message: string; error?: string; insights?: string[] }> {
   try {
     const { data, error } = await supabase.functions.invoke("ai-assistant", {
       body: {
@@ -60,11 +61,11 @@ export function useAI() {
       errorMessage?: string 
     } = {}
   ) => {
-    const toastId = options.loadingMessage ? 
+    const toastOptions = options.loadingMessage ? 
       toast({
         title: options.loadingMessage,
         variant: "default",
-      }).id : undefined;
+      }) : undefined;
     
     try {
       const { data, error } = await supabase.functions.invoke(functionName, {
@@ -73,9 +74,8 @@ export function useAI() {
       
       if (error) throw new Error(error.message);
       
-      if (toastId && options.successMessage) {
+      if (toastOptions && options.successMessage) {
         toast({
-          id: toastId,
           title: options.successMessage,
           variant: "success",
         });
@@ -85,9 +85,8 @@ export function useAI() {
     } catch (error: any) {
       console.error(`Error calling ${functionName}:`, error);
       
-      if (toastId) {
+      if (toastOptions) {
         toast({
-          id: toastId,
           title: options.errorMessage || error.message || `Failed to complete AI operation`,
           variant: "destructive",
         });

@@ -20,7 +20,9 @@ export enum AIServiceType {
   Chat = "chat",
   Policy = "policy",
   Knowledge = "knowledge",
-  Investment = "investment"
+  Investment = "investment",
+  Support = "support",
+  Quotation = "quotation"
 }
 
 export interface CallTrace {

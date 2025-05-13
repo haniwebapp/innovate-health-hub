@@ -1,6 +1,6 @@
 
 import { AIService } from './AIService';
-import { AIServiceType } from './AIServiceRegistry';
+import { AIServiceType } from './AIService';
 import { AIServiceStaticReferences, CallTrace } from './types/AIServiceTypes';
 
 export class PolicyAIService implements AIService {

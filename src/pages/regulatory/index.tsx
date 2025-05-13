@@ -1,9 +1,10 @@
+
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { callAIAssistant, AIResponse } from "@/utils/aiUtils";
+import { callAIAssistant } from "@/utils/aiUtils";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/home/Footer";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
@@ -34,7 +35,7 @@ export default function RegulatoryPage() {
     setIsLoadingAI(true);
     
     try {
-      const response: AIResponse = await callAIAssistant([
+      const response = await callAIAssistant([
         {
           role: "user",
           content: "Generate regulatory compliance recommendations for healthcare innovations"
@@ -45,13 +46,14 @@ export default function RegulatoryPage() {
         throw new Error(response.error);
       }
       
+      // Use response.insights if available, otherwise fall back to an array with just the message
       setAiRecommendations(response.insights || [response.message]);
       
       toast({
         title: "AI Compliance Analysis Complete",
         description: "Review your personalized regulatory guidance.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating AI recommendations:", error);
       toast({
         title: "Could not generate recommendations",
@@ -77,7 +79,7 @@ export default function RegulatoryPage() {
     setIsAnalyzingCompliance(true);
     
     try {
-      const response: AIResponse = await callAIAssistant([
+      const response = await callAIAssistant([
         {
           role: "user",
           content: `Analyze regulatory compliance requirements for a ${innovationType} innovation in healthcare with this description: "${innovationDescription}". Provide a detailed compliance pathway and document requirements.`
@@ -145,7 +147,7 @@ export default function RegulatoryPage() {
         title: "Compliance Analysis Complete",
         description: "Review your regulatory pathway and requirements.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error analyzing compliance:", error);
       toast({
         title: "Analysis Failed",

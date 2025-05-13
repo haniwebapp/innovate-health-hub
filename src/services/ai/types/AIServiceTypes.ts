@@ -14,6 +14,7 @@ export interface CallTrace {
   result?: string;
   success: boolean;
   error?: string;
+  operation?: string; // Add this to fix the AIServiceTracing error
 }
 
 export interface ChatMessage {
@@ -39,6 +40,32 @@ export interface AIStreamOptions {
   onMessage: (message: string) => void;
   onError: (error: string) => void;
   onComplete: () => void;
+}
+
+export interface AIServiceHealth {
+  investment: boolean;
+  regulatory: boolean;
+  innovation: boolean;
+  knowledge: boolean;
+  policy: boolean;
+  challenge: boolean;
+  support: boolean;
+  clinical: boolean;
+  events: boolean;
+  admin: boolean;
+  compliance: boolean;
+  community: boolean;
+  overall: boolean;
+}
+
+// Add the missing AIOperationType
+export enum AIOperationType {
+  Completion = "completion",
+  Chat = "chat",
+  Embedding = "embedding",
+  ImageGeneration = "image_generation",
+  Analysis = "analysis",
+  Recommendation = "recommendation"
 }
 
 // Re-export AIServiceType to avoid import issues

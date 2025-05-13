@@ -26,5 +26,5 @@ export class AIServiceRegistry {
   }
 }
 
-// Re-export AIServiceType to make it accessible
+// Re-export AIServiceType for consistency
 export { AIServiceType } from './AIService';
