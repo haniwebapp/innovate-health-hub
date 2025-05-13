@@ -102,6 +102,11 @@
 
 /* Animation Utilities */
 @layer utilities {
+  /* Define the missing card-hover shadow */
+  .shadow-card-hover {
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+  }
+
   /* Animation delay utilities */
   .animation-delay-100 {
     animation-delay: 100ms;

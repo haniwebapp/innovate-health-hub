@@ -12,6 +12,16 @@ import { InteractiveWave } from "./animations/InteractiveWave";
 import { GlowingDots } from "./animations/GlowingDots";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import type {
+  FloatingParticlesProps,
+  GradientOrbsProps,
+  DNAHelixAnimationsProps,
+  DataStreamEffectProps,
+  PulseRingsProps,
+  SparklesProps,
+  InteractiveWaveProps,
+  GlowingDotsProps
+} from "./animations/types";
 
 interface HeroBackgroundEffectProps {
   isInteracting?: boolean;

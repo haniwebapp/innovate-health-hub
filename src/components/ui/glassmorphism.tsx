@@ -1,16 +1,18 @@
 
 import React from "react";
-import { motion, MotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type GlassCardVariant = "green" | "gold" | "white" | "subtle";
 
-interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement>, MotionProps {
+interface GlassCardProps {
   variant?: GlassCardVariant;
   bordered?: boolean;
   hover?: boolean;
   intensity?: "low" | "medium" | "high";
   children: React.ReactNode;
+  className?: string;
+  [key: string]: any; // Allow any other props from motion.div
 }
 
 export const GlassCard = ({
@@ -71,12 +73,19 @@ export const GlassCard = ({
   );
 };
 
+interface GlassButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  variant?: "green" | "gold";
+  [key: string]: any; // Allow any other props from motion.button
+}
+
 export const GlassButton = ({
   children,
   className,
   variant = "green",
   ...props
-}: Omit<GlassCardProps, "bordered" | "intensity"> & { variant?: "green" | "gold" }) => {
+}: GlassButtonProps) => {
   const variantStyles = {
     green: "bg-moh-glassGreen text-moh-darkGreen border-moh-green/20 hover:bg-moh-green/20",
     gold: "bg-moh-glassGold text-moh-darkGold border-moh-gold/20 hover:bg-moh-gold/20"
