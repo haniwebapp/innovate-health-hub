@@ -36,7 +36,7 @@ const FundingOpportunitiesSection = () => {
       title: "Innovation Challenges",
       description: "Participate in funded challenges with prizes and implementation opportunities",
       icon: <DollarSign className="h-8 w-8 text-white" />,
-      color: "bg-blue-500",
+      color: "bg-moh-darkGold",
       amount: "Prizes + Support"
     }
   ];
@@ -68,7 +68,7 @@ const FundingOpportunitiesSection = () => {
             >
               <Card className="h-full border-t-4" style={{ borderTopColor: item.color.replace('bg-', '') === 'bg-moh-green' ? '#10B981' : 
                                                           item.color.replace('bg-', '') === 'bg-moh-darkGreen' ? '#047857' :
-                                                          item.color.replace('bg-', '') === 'bg-moh-gold' ? '#F59E0B' : '#3B82F6' }}>
+                                                          item.color.replace('bg-', '') === 'bg-moh-gold' ? '#F59E0B' : '#C3A86B' }}>
                 <CardContent className="pt-6 pb-4 px-5 h-full flex flex-col">
                   <div className={`${item.color} p-3 rounded-full inline-flex w-14 h-14 items-center justify-center mb-4`}>
                     {item.icon}
@@ -138,7 +138,7 @@ const FundingOpportunitiesSection = () => {
                     <span className="font-medium">92% Success</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: '92%' }}></div>
+                    <div className="bg-moh-darkGold h-2 rounded-full" style={{ width: '92%' }}></div>
                   </div>
                 </div>
               </div>
