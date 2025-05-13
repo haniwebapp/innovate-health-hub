@@ -42,7 +42,7 @@ export function ChatContent({
   return (
     <div 
       ref={chatContentRef}
-      className="flex-1 overflow-y-auto h-[350px] px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scroll-smooth"
+      className="flex-1 overflow-y-auto h-[350px] max-h-full px-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent scroll-smooth"
       role="log"
       aria-live="polite"
       aria-label="Chat messages"

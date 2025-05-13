@@ -209,6 +209,10 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
           role="dialog"
           aria-label="Chat with MOH Assistant"
           aria-modal="true"
+          style={{
+            height: minimized ? "3.5rem" : "500px",
+            maxHeight: "80vh"
+          }}
         >
           {/* Chatbot Header */}
           <ChatHeader 
@@ -226,7 +230,7 @@ export default function FahadChatbot({ isOpen, onClose }: FahadChatbotProps) {
                 defaultValue="chat" 
                 value={activeTab}
                 onValueChange={setActiveTab}
-                className="flex-1 flex flex-col"
+                className="flex-1 flex flex-col h-full overflow-hidden"
               >
                 <TabsList className="grid grid-cols-2 p-1 mx-4 mt-2 bg-moh-green/10">
                   <TabsTrigger 

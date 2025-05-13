@@ -119,3 +119,14 @@
   animation: bubble-rise 20s ease-in-out infinite;
   animation-delay: var(--delay, 0s);
 }
+
+/* Chat-specific styles */
+.chat-container {
+  height: 100vh; /* or set a fixed height */
+  overflow-y: auto;
+}
+
+.chat-messages {
+  max-height: 100%;
+  overflow-y: scroll;
+}
