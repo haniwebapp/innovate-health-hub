@@ -28,7 +28,7 @@ export function HeroButtons() {
   
   return (
     <motion.div 
-      className="flex flex-col sm:flex-row justify-center flex-wrap gap-4" 
+      className="flex flex-col sm:flex-row justify-center lg:justify-start flex-wrap gap-4" 
       variants={containerVariants} 
       initial="hidden" 
       animate="visible"
@@ -36,7 +36,7 @@ export function HeroButtons() {
       <motion.div variants={itemVariants}>
         <Button 
           size="lg" 
-          className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white shadow-md group w-full sm:w-auto" 
+          className="bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold text-white shadow-md group w-full sm:w-auto border-0" 
           asChild
         >
           <Link to="/innovations">
@@ -56,7 +56,7 @@ export function HeroButtons() {
         <Button 
           size="lg" 
           variant="outline" 
-          className="border-moh-gold text-moh-darkGold hover:bg-moh-lightGold hover:text-moh-darkGold/90 shadow-sm group w-full sm:w-auto" 
+          className="border-white/70 text-white hover:bg-white/10 hover:text-white shadow-sm group w-full sm:w-auto" 
           asChild
         >
           <Link to="/challenges">
@@ -75,7 +75,7 @@ export function HeroButtons() {
         <Button 
           size="lg" 
           variant="outline" 
-          className="border-moh-green text-moh-green hover:bg-moh-lightGreen shadow-sm w-full sm:w-auto" 
+          className="border-white/70 text-white hover:bg-white/10 shadow-sm w-full sm:w-auto" 
           asChild
         >
           <Link to="/innovations/submit">
@@ -89,7 +89,7 @@ export function HeroButtons() {
         <Button 
           size="lg" 
           variant="outline" 
-          className="border-moh-darkGold text-moh-darkGold hover:bg-moh-lightGold/50 shadow-sm w-full sm:w-auto" 
+          className="border-white/70 text-white hover:bg-white/10 shadow-sm w-full sm:w-auto" 
           asChild
         >
           <Link to="/investment">
