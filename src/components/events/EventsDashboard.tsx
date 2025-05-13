@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Users, TrendingUp, Activity } from "lucide-react";
@@ -20,10 +21,10 @@ export default function EventsDashboard() {
       transition={{ duration: 0.5, delay: 0.3 }}
     >
       <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-xl overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-moh-green/5 to-moh-gold/5 pointer-events-none" />
         <CardContent className="p-5">
           <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Activity className="h-5 w-5" />
+            <Activity className="h-5 w-5 text-moh-green" />
             Events Dashboard
           </h3>
           
@@ -38,7 +39,7 @@ export default function EventsDashboard() {
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-moh-green/20 flex items-center justify-center">
-                  <CalendarDays className="h-5 w-5" />
+                  <CalendarDays className="h-5 w-5 text-moh-green" />
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Upcoming Events</p>
@@ -57,7 +58,7 @@ export default function EventsDashboard() {
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-moh-gold/20 flex items-center justify-center">
-                  <Users className="h-5 w-5" />
+                  <Users className="h-5 w-5 text-moh-gold" />
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Categories</p>
@@ -76,7 +77,7 @@ export default function EventsDashboard() {
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-moh-green/20 flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5" />
+                  <TrendingUp className="h-5 w-5 text-moh-green" />
                 </div>
                 <div>
                   <p className="text-sm opacity-80">Attendance Rate</p>
@@ -95,7 +96,7 @@ export default function EventsDashboard() {
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-moh-gold/20 flex items-center justify-center">
-                  <Users className="h-5 w-5" />
+                  <Users className="h-5 w-5 text-moh-gold" />
                 </div>
                 <div>
                   <p className="text-sm opacity-80">New Registrations</p>
@@ -122,7 +123,7 @@ export default function EventsDashboard() {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-moh-green to-moh-darkGreen"
+                    className="h-full bg-moh-green"
                     initial={{ width: 0 }}
                     animate={{ width: "45%" }}
                     transition={{ delay: 1, duration: 0.8 }}
@@ -138,7 +139,7 @@ export default function EventsDashboard() {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-moh-gold to-moh-darkGold"
+                    className="h-full bg-moh-gold"
                     initial={{ width: 0 }}
                     animate={{ width: "25%" }}
                     transition={{ delay: 1.1, duration: 0.8 }}
@@ -154,7 +155,7 @@ export default function EventsDashboard() {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-moh-green to-moh-darkGreen"
+                    className="h-full bg-moh-green"
                     initial={{ width: 0 }}
                     animate={{ width: "20%" }}
                     transition={{ delay: 1.2, duration: 0.8 }}
@@ -170,7 +171,7 @@ export default function EventsDashboard() {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-moh-gold to-moh-darkGold"
+                    className="h-full bg-moh-gold"
                     initial={{ width: 0 }}
                     animate={{ width: "10%" }}
                     transition={{ delay: 1.3, duration: 0.8 }}
