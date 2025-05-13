@@ -1,220 +1,163 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  Loader2, FileSearch, AlertTriangle, CheckCircle, XCircle, 
-  TrendingUp, Download, Share2
-} from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { PolicyAIService } from "@/services/ai/PolicyAIService";
+import { AlertTriangle, ChevronRight, CheckCircle2, XCircle } from "lucide-react";
 
-export function StrategyGapAnalyzer() {
-  const [policyText, setPolicyText] = useState('');
-  const [policyTitle, setPolicyTitle] = useState('');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
-  const [healthcareSector, setHealthcareSector] = useState('general');
-  const { toast } = useToast();
-
-  const analyzePolicy = async () => {
-    if (!policyText.trim()) {
-      toast({
-        title: "Missing information",
-        description: "Please enter the policy text to analyze",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsAnalyzing(true);
-    try {
-      const result = await PolicyAIService.analyzeVisionAlignment(policyText, policyTitle);
-      setAnalysisResult(result);
-      
-      toast({
-        title: "Analysis Complete",
-        description: "Policy has been analyzed successfully.",
-      });
-    } catch (error: any) {
-      console.error("Error analyzing policy:", error);
-      toast({
-        title: "Analysis Error",
-        description: error.message || "Failed to analyze the policy.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const getScoreBadge = (score: number) => {
-    if (score >= 80) return "bg-green-100 text-green-800";
-    if (score >= 60) return "bg-yellow-100 text-yellow-800";
-    return "bg-red-100 text-red-800";
-  };
-
+export const StrategyGapAnalyzer: React.FC = () => {
+  const [selectedArea, setSelectedArea] = useState("digital-health");
+  const [confidence, setConfidence] = useState([75]);
+  
   return (
-    <Card className="border-moh-green/20">
-      <CardHeader>
-        <CardTitle className="text-moh-darkGreen flex items-center gap-2">
-          <FileSearch className="h-5 w-5" />
-          Vision 2030 Alignment Analyzer
-        </CardTitle>
-        <CardDescription>
-          Analyze how well your policy aligns with Saudi Vision 2030 goals
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Healthcare Strategy Gap Analyzer</CardTitle>
+          <CardDescription>
+            Identify potential gaps between current healthcare policy and strategic objectives
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="policy-title">Policy Title</Label>
-                <Input 
-                  id="policy-title" 
-                  placeholder="Enter policy title" 
-                  value={policyTitle}
-                  onChange={(e) => setPolicyTitle(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="healthcare-sector">Healthcare Sector</Label>
-                <Select value={healthcareSector} onValueChange={setHealthcareSector}>
-                  <SelectTrigger id="healthcare-sector">
-                    <SelectValue placeholder="Select sector" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="general">General Healthcare</SelectItem>
-                    <SelectItem value="preventive">Preventive Care</SelectItem>
-                    <SelectItem value="digital">Digital Health</SelectItem>
-                    <SelectItem value="access">Healthcare Access</SelectItem>
-                    <SelectItem value="quality">Quality of Care</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
             <div>
-              <Label htmlFor="policy-text">Policy Text</Label>
-              <Textarea 
-                id="policy-text" 
-                placeholder="Paste or enter your policy text here for analysis" 
-                className="min-h-[200px]"
-                value={policyText}
-                onChange={(e) => setPolicyText(e.target.value)}
-              />
+              <label className="text-sm font-medium mb-1 block">Healthcare Focus Area</label>
+              <Select value={selectedArea} onValueChange={setSelectedArea}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a focus area" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="digital-health">Digital Health Transformation</SelectItem>
+                  <SelectItem value="primary-care">Primary Care Enhancement</SelectItem>
+                  <SelectItem value="specialized-care">Specialized Care Access</SelectItem>
+                  <SelectItem value="preventative">Preventative Medicine</SelectItem>
+                  <SelectItem value="workforce">Healthcare Workforce</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Button 
-              onClick={analyzePolicy}
-              disabled={isAnalyzing || !policyText.trim()}
-              className="w-full"
-            >
-              {isAnalyzing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <FileSearch className="mr-2 h-4 w-4" />
-                  Analyze Vision 2030 Alignment
-                </>
-              )}
-            </Button>
+            
+            <div>
+              <div className="flex justify-between mb-1">
+                <label className="text-sm font-medium">Confidence Threshold</label>
+                <span className="text-sm">{confidence}%</span>
+              </div>
+              <Slider
+                value={confidence}
+                onValueChange={setConfidence}
+                min={50}
+                max={95}
+                step={5}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Set the minimum confidence level for identified gaps
+              </p>
+            </div>
           </div>
           
-          <div>
-            {analysisResult ? (
-              <div className="space-y-4">
-                <div className="p-4 border rounded-lg bg-muted/10">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-lg">Alignment Score</h3>
-                    <Badge className={getScoreBadge(analysisResult.score)}>
-                      {analysisResult.score}/100
-                    </Badge>
+          <div className="pt-4 border-t">
+            <h3 className="font-medium mb-4">
+              {selectedArea === 'digital-health' && 'Digital Health Transformation'}
+              {selectedArea === 'primary-care' && 'Primary Care Enhancement'}
+              {selectedArea === 'specialized-care' && 'Specialized Care Access'}
+              {selectedArea === 'preventative' && 'Preventative Medicine'}
+              {selectedArea === 'workforce' && 'Healthcare Workforce'}
+              {' '}Gap Analysis
+            </h3>
+            
+            <div className="space-y-4">
+              {selectedArea === 'digital-health' && (
+                <>
+                  <GapItem 
+                    title="Telehealth Coverage Regulations"
+                    status="aligned"
+                    description="Current policies adequately address telehealth coverage and reimbursement."
+                    impact="high"
+                  />
+                  <GapItem 
+                    title="Cross-border Telehealth Services"
+                    status="gap"
+                    description="Policies do not fully address international telehealth service provision."
+                    impact="medium"
+                  />
+                  <GapItem 
+                    title="AI in Clinical Decision Support"
+                    status="partial"
+                    description="Current regulations partially address AI-based clinical decision support tools."
+                    impact="high"
+                  />
+                </>
+              )}
+              {selectedArea === 'primary-care' && (
+                <>
+                  <GapItem 
+                    title="Rural Primary Care Access"
+                    status="gap"
+                    description="Significant gap in policies supporting rural primary care access."
+                    impact="high"
+                  />
+                  <GapItem 
+                    title="Primary Care Workforce Incentives"
+                    status="aligned"
+                    description="Current incentive programs effectively support primary care workforce development."
+                    impact="medium"
+                  />
+                </>
+              )}
+              {(selectedArea !== 'digital-health' && selectedArea !== 'primary-care') && (
+                <div className="flex items-center justify-center p-8 text-center">
+                  <div>
+                    <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+                    <p className="text-muted-foreground">
+                      Select Digital Health or Primary Care to view sample gap analysis results. Other areas are under development.
+                    </p>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-                    <div 
-                      className={`h-3 rounded-full ${
-                        analysisResult.score >= 80 ? 'bg-green-600' : 
-                        analysisResult.score >= 60 ? 'bg-yellow-500' : 
-                        'bg-red-500'
-                      }`} 
-                      style={{ width: `${analysisResult.score}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{analysisResult.vision2030Impact}</p>
                 </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Strong Alignment Areas</h3>
-                  {analysisResult.alignmentAreas.map((area: string, i: number) => (
-                    <Alert key={i} className="bg-green-50 text-green-800 border-green-200">
-                      <CheckCircle className="h-4 w-4" />
-                      <AlertTitle className="ml-2">{area}</AlertTitle>
-                    </Alert>
-                  ))}
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Gap Areas</h3>
-                  {analysisResult.gapAreas.map((area: string, i: number) => (
-                    <Alert key={i} className="bg-amber-50 text-amber-800 border-amber-200">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle className="ml-2">{area}</AlertTitle>
-                    </Alert>
-                  ))}
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Recommendations</h3>
-                  <div className="p-4 border rounded-lg bg-blue-50">
-                    <ul className="space-y-2">
-                      {analysisResult.recommendations.map((rec: string, i: number) => (
-                        <li key={i} className="flex items-start">
-                          <TrendingUp className="h-4 w-4 mr-2 mt-1 text-blue-600 flex-shrink-0" />
-                          <span className="text-sm">{rec}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export Report
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full p-6 text-center border border-dashed rounded-lg bg-muted/5">
-                <FileSearch className="h-16 w-16 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No Analysis Yet</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Enter your policy text and click "Analyze" to check alignment with Saudi Vision 2030 goals
-                </p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full">
+            Generate Complete Gap Analysis
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
+};
+
+interface GapItemProps {
+  title: string;
+  status: 'aligned' | 'gap' | 'partial';
+  description: string;
+  impact: 'high' | 'medium' | 'low';
 }
+
+const GapItem: React.FC<GapItemProps> = ({ title, status, description, impact }) => {
+  return (
+    <div className="border rounded-md p-4">
+      <div className="flex justify-between items-start mb-2">
+        <h4 className="font-medium">{title}</h4>
+        {status === 'aligned' && <Badge className="bg-green-500">Aligned</Badge>}
+        {status === 'gap' && <Badge variant="destructive">Gap Identified</Badge>}
+        {status === 'partial' && <Badge className="bg-amber-500">Partial Alignment</Badge>}
+      </div>
+      <p className="text-sm text-muted-foreground mb-3">{description}</p>
+      <div className="flex items-center text-sm">
+        <span className="text-muted-foreground mr-2">Strategic Impact:</span>
+        {impact === 'high' && (
+          <Badge variant="outline" className="text-red-500 border-red-200">High</Badge>
+        )}
+        {impact === 'medium' && (
+          <Badge variant="outline" className="text-amber-500 border-amber-200">Medium</Badge>
+        )}
+        {impact === 'low' && (
+          <Badge variant="outline" className="text-green-500 border-green-200">Low</Badge>
+        )}
+      </div>
+    </div>
+  );
+};
