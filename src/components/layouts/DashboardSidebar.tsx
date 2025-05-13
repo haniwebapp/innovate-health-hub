@@ -48,7 +48,7 @@ export default function DashboardSidebar({
           {/* Platform Navigation */}
           <SidebarPlatformNav isCollapsed={isCollapsed} />
           
-          {/* Admin Navigation */}
+          {/* Admin Navigation - Only show for admin users */}
           {isAdmin && <SidebarAdminNav isCollapsed={isCollapsed} />}
         </div>
         
