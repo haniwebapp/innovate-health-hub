@@ -8,6 +8,9 @@ import { MedicalIcons } from "./animations/MedicalIcons";
 import { PulseRings } from "./animations/PulseRings";
 import { Sparkles } from "./animations/Sparkles";
 import { CircuitPattern } from "./animations/CircuitPattern";
+import { InteractiveWave } from "./animations/InteractiveWave";
+import { GlowingDots } from "./animations/GlowingDots";
+import { motion } from "framer-motion";
 
 export function HeroBackgroundEffect() {
   return (
@@ -18,7 +21,7 @@ export function HeroBackgroundEffect() {
       {/* Animated DNA double helix */}
       <div className="absolute inset-0 bg-[url('/dna-pattern-circle.svg')] opacity-[0.07] bg-repeat-y bg-center"></div>
 
-      {/* Floating particles with improved effects */}
+      {/* Enhanced floating particles with multi-shape variations */}
       <FloatingParticles />
 
       {/* Animated genetic code letters */}
@@ -34,7 +37,17 @@ export function HeroBackgroundEffect() {
       <CircuitPattern />
       
       {/* Animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
+      <motion.div 
+        className="absolute inset-0 bg-gradient-radial from-white/5 via-transparent to-white/10"
+        animate={{ 
+          opacity: [0.3, 0.5, 0.3] 
+        }}
+        transition={{ 
+          duration: 8, 
+          repeat: Infinity, 
+          repeatType: "mirror" 
+        }}
+      />
       
       {/* DNA helix animations */}
       <DNAHelixAnimations />
@@ -47,6 +60,15 @@ export function HeroBackgroundEffect() {
       
       {/* Medical sparkles effect */}
       <Sparkles />
+
+      {/* New wave animations */}
+      <InteractiveWave />
+      
+      {/* Glowing dots animation */}
+      <GlowingDots />
+
+      {/* Dynamic noise texture overlay */}
+      <div className="absolute inset-0 bg-noise opacity-[0.02] mix-blend-overlay"></div>
     </div>
   );
 }
