@@ -1,9 +1,9 @@
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Innovation } from "./types";
 import { InnovationCard } from "./InnovationCard";
+import { CarouselNavButton } from "./CarouselNavButton";
+import { EmptyStateMessage } from "./EmptyStateMessage";
 import "./styles.css";
 
 interface InnovationCarouselProps {
@@ -61,29 +61,28 @@ export const InnovationCarousel = ({ innovations }: InnovationCarouselProps) => 
     };
   }, []);
 
+  const maxScroll = scrollContainerRef.current 
+    ? scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth - 10
+    : 0;
+
+  const isAtStart = scrollPosition <= 0;
+  const isAtEnd = scrollPosition >= maxScroll;
+
   return (
     <div className="relative">
       {isScrollable && (
         <>
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm border-moh-lightGreen hover:bg-moh-lightGreen/20 shadow-md"
+          <CarouselNavButton 
+            direction="left"
             onClick={scrollLeft}
-            disabled={scrollPosition <= 0}
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
+            disabled={isAtStart}
+          />
           
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-sm border-moh-lightGreen hover:bg-moh-lightGreen/20 shadow-md"
+          <CarouselNavButton 
+            direction="right"
             onClick={scrollRight}
-            disabled={scrollContainerRef.current && scrollPosition >= scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth - 10}
-          >
-            <ChevronRight className="h-5 w-5" />
-          </Button>
+            disabled={isAtEnd}
+          />
         </>
       )}
       
@@ -92,23 +91,31 @@ export const InnovationCarousel = ({ innovations }: InnovationCarouselProps) => 
         className="flex overflow-x-auto pb-6 snap-x hide-scrollbar"
       >
         {innovations.length > 0 ? (
-          innovations.map((innovation) => (
-            <div 
-              key={innovation.id} 
-              className="min-w-[300px] md:min-w-[350px] w-80 flex-shrink-0 snap-center px-3"
-            >
-              <InnovationCard innovation={innovation} />
-            </div>
-          ))
+          <CarouselContent innovations={innovations} />
         ) : (
-          <div className="min-w-full flex items-center justify-center py-12">
-            <div className="text-center text-gray-500">
-              <p className="text-xl font-medium mb-2">No innovations found</p>
-              <p>Try adjusting your filters to see more results.</p>
-            </div>
-          </div>
+          <EmptyStateMessage />
         )}
       </div>
     </div>
+  );
+};
+
+// Extracted carousel content component
+interface CarouselContentProps {
+  innovations: Innovation[];
+}
+
+const CarouselContent = ({ innovations }: CarouselContentProps) => {
+  return (
+    <>
+      {innovations.map((innovation) => (
+        <div 
+          key={innovation.id} 
+          className="min-w-[300px] md:min-w-[350px] w-80 flex-shrink-0 snap-center px-3"
+        >
+          <InnovationCard innovation={innovation} />
+        </div>
+      ))}
+    </>
   );
 };
