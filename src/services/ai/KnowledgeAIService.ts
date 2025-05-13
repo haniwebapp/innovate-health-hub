@@ -16,15 +16,26 @@ export interface DocumentMetadata {
   category: string;
 }
 
+export interface SearchParams {
+  query: string;
+  filters?: {
+    categories?: string[];
+    types?: string[];
+    tags?: string[];
+  };
+}
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  snippet: string;
+  relevanceScore: number;
+  category: string;
+  type: string;
+}
+
 export interface SearchResults {
-  results: {
-    id: string;
-    title: string;
-    snippet: string;
-    relevanceScore: number;
-    category: string;
-    type: string;
-  }[];
+  results: SearchResult[];
   totalResults: number;
   queryExpansion?: string[];
   suggestedQueries?: string[];
@@ -72,8 +83,8 @@ export class KnowledgeAIService implements AIService {
     };
   }
 
-  static async semanticSearch(query: string, filters?: Record<string, string>): Promise<SearchResults> {
-    console.log('Performing semantic search for:', query, filters);
+  static async semanticSearch(params: SearchParams): Promise<SearchResults> {
+    console.log('Performing semantic search for:', params.query, params.filters);
     
     // Mock implementation
     return {

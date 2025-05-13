@@ -3,24 +3,29 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   location?: string;
   isVirtual: boolean;
   category: string;
   tags?: string[];
   presenter?: string;
   registrationUrl?: string;
-  eventType: string;  // Added this property
-  status: string;     // Added this property
-  recordingUrl?: string; // Added this property
+  eventType: string;
+  status: string;
+  recordingUrl?: string;
+  presenterTitle?: string;
+  presenterOrganization?: string;
+  featured?: boolean;
+  eventUrl?: string;
+  maxAttendees?: number;
 }
 
 export interface EventRegistration {
   id: string;
   eventId: string;
   userId: string;
-  registrationDate: string;
+  registrationDate: Date;
   attended: boolean;
   feedback?: string;
   rating?: number;

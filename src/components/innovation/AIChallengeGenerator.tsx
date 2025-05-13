@@ -117,7 +117,7 @@ export function AIChallengeGenerator() {
               <CardHeader>
                 <CardTitle>{idea.title}</CardTitle>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {idea.relevantTags.map((tag, tagIdx) => (
+                  {idea.relevantTags && idea.relevantTags.map((tag, tagIdx) => (
                     <Badge key={tagIdx} variant="outline" className="bg-moh-lightGreen/20">
                       <Tag className="h-3 w-3 mr-1" /> {tag}
                     </Badge>

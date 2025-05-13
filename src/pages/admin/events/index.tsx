@@ -8,11 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
+import { Event } from '@/types/eventTypes';
 
 export default function EventsAdminPage() {
   const { data: events, isLoading, error, refetch } = useQuery({
     queryKey: ['admin-events'],
-    queryFn: () => EventService.getAllEvents(),
+    queryFn: async () => {
+      const eventData = await EventService.getAllEvents();
+      return eventData as Event[];
+    },
   });
 
   const handleEventAdded = () => {

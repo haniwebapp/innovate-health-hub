@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/knowledge/LanguageSwitcher';
 import { SemanticSearchBar, SemanticSearchParams as UISearchParams } from '@/components/knowledge/SemanticSearchBar';
 import { SearchResultsList } from '@/components/knowledge/SearchResultsList';
-import { KnowledgeAIService, SearchResults } from '@/services/ai/KnowledgeAIService';
+import { KnowledgeAIService, SearchParams, SearchResults } from '@/services/ai/KnowledgeAIService';
 import { useToast } from '@/hooks/use-toast';
 
 export default function SearchResultsPage() {
@@ -27,7 +27,7 @@ export default function SearchResultsPage() {
     
     try {
       // Convert UI params to API params
-      const apiParams = {
+      const apiParams: SearchParams = {
         query: params.query,
         filters: params.filters ? {
           categories: params.filters.category ? [params.filters.category] : undefined,

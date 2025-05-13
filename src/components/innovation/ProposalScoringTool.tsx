@@ -60,7 +60,7 @@ export function ProposalScoringTool() {
   };
   
   const getCriterionIcon = (criterion: string) => {
-    const icons = {
+    const icons: Record<string, React.ReactNode> = {
       innovation: <Zap className="h-4 w-4" />,
       feasibility: <CheckCircle className="h-4 w-4" />,
       impact: <Star className="h-4 w-4" />,
@@ -68,7 +68,7 @@ export function ProposalScoringTool() {
       sustainability: <ThumbsUp className="h-4 w-4" />
     };
     
-    return icons[criterion as keyof typeof icons] || <Star className="h-4 w-4" />;
+    return icons[criterion] || <Star className="h-4 w-4" />;
   };
   
   const getScoreColor = (score: number) => {
@@ -195,7 +195,7 @@ export function ProposalScoringTool() {
                     </div>
                     <span className="font-medium">{score}%</span>
                   </div>
-                  <Progress value={score} className="h-2" indicatorClassName={getScoreColor(score)} />
+                  <Progress value={score} className="h-2" />
                 </div>
               ))}
             </div>
@@ -224,7 +224,7 @@ export function ProposalScoringTool() {
               </ul>
             </div>
 
-            {result.vision2030Alignment && (
+            {result.vision2030Alignment !== undefined && (
               <Alert className="bg-moh-lightGreen/20 border-moh-green">
                 <AlertTitle className="flex items-center">
                   <Star className="h-4 w-4 mr-2 text-moh-green" />

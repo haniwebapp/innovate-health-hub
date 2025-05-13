@@ -30,7 +30,7 @@ export interface QuotationResponse {
 export class QuotationAIService extends AIService {
   private static instance: QuotationAIService;
 
-  private constructor() {
+  constructor() {
     super('quotation');
   }
 

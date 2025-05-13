@@ -62,7 +62,7 @@ export function ChallengeIdeaGenerator() {
   };
 
   const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty.toLowerCase()) {
+    switch (difficulty?.toLowerCase()) {
       case "easy": return "bg-green-100 text-green-800";
       case "medium": return "bg-yellow-100 text-yellow-800";
       case "high": return "bg-red-100 text-red-800";
@@ -136,9 +136,11 @@ export function ChallengeIdeaGenerator() {
               <CardHeader className="pb-2 bg-gradient-to-r from-moh-lightGreen/10 to-moh-green/5">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{idea.title}</CardTitle>
-                  <Badge className={getDifficultyColor(idea.estimatedDifficulty)}>
-                    {idea.estimatedDifficulty}
-                  </Badge>
+                  {idea.estimatedDifficulty && (
+                    <Badge className={getDifficultyColor(idea.estimatedDifficulty)}>
+                      {idea.estimatedDifficulty}
+                    </Badge>
+                  )}
                 </div>
                 <CardDescription>{idea.description}</CardDescription>
               </CardHeader>
@@ -165,7 +167,7 @@ export function ChallengeIdeaGenerator() {
                 </div>
                 
                 <div className="flex flex-wrap gap-2">
-                  {idea.relevantTags.map((tag, idx) => (
+                  {idea.relevantTags && idea.relevantTags.map((tag, idx) => (
                     <Badge key={idx} variant="outline" className="bg-muted/50">
                       {tag}
                     </Badge>

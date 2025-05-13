@@ -101,7 +101,8 @@ export class AIServiceRegistry {
     });
 
     import("./challenge/ChallengeAIService").then(({ ChallengeAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Challenge, new ChallengeAIService());
+      // Register without instantiation since it's a static class
+      AIServiceRegistry.register(AIServiceType.Challenge, ChallengeAIService);
     });
 
     import("./support/SupportAIService").then(({ SupportAIService }) => {
@@ -129,7 +130,7 @@ export class AIServiceRegistry {
     });
 
     import("./quotation/QuotationAIService").then(({ QuotationAIService }) => {
-      AIServiceRegistry.register(AIServiceType.Quotation, new QuotationAIService());
+      AIServiceRegistry.register(AIServiceType.Quotation, QuotationAIService.getInstance());
     });
   }
 }

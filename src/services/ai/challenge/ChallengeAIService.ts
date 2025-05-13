@@ -1,182 +1,123 @@
 
-import { AIService, AIServiceType } from '../AIServiceRegistry';
-import { AIServiceStaticReferences, CallTrace } from '../types/AIServiceTypes';
+import { AIService } from "@/services/ai/AIService";
 
 export interface ChallengeIdea {
   title: string;
   description: string;
-  category: string;
   potentialImpact: string;
   targetAudience: string;
-  complexity: 'Low' | 'Medium' | 'High';
-}
-
-export interface ProposalScoreResult {
-  totalScore: number;
-  categoryScores: {
-    innovation: number;
-    feasibility: number;
-    impact: number;
-    presentation: number;
-  };
-  strengths: string[];
-  weaknesses: string[];
-  suggestedImprovements: string[];
+  estimatedDifficulty: string;
+  relevantTags: string[];
+  vision2030Alignment: string;
 }
 
 export interface ReviewerMatchResult {
-  matchedReviewers: {
-    reviewerId: string;
-    reviewerName: string;
-    matchScore: number;
-    expertise: string[];
-  }[];
+  reviewerId: string;
+  matchScore: number;
+  matchReason: string;
+  expertise: string[];
 }
 
-export class ChallengeAIService implements AIService {
-  serviceType = AIServiceType.Challenge;
+export interface ProposalScoreResult {
+  overallScore: number;
+  criteria: Record<string, number>;
+  strengths: string[];
+  improvements: string[];
+  vision2030Alignment: number;
+}
 
-  constructor() {}
+export class ChallengeAIService {
+  static async generateChallengeIdeas(sector: string, focus?: string): Promise<ChallengeIdea[]> {
+    try {
+      console.log(`Generating challenge ideas for ${sector} sector with focus on ${focus || 'general'}`);
+      
+      const response = await fetch('/supabase/functions/v1/challenge-ideas-generator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sector, focus })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to generate ideas: ${errorText}`);
+      }
 
-  static getInstance(): ChallengeAIService {
-    return new ChallengeAIService();
-  }
-
-  async isAvailable(): Promise<boolean> {
-    return true;
-  }
-
-  getStaticReferences(): AIServiceStaticReferences {
-    return {};
-  }
-
-  async recordCall(trace: CallTrace): Promise<void> {
-    console.log('Challenge AI Service call recorded:', trace);
-  }
-
-  static async generateChallengeIdeas(
-    keywords: string[],
-    category: string,
-    count: number = 3
-  ): Promise<ChallengeIdea[]> {
-    console.log(`Generating ${count} challenge ideas for category ${category} with keywords:`, keywords);
-    
-    // Mock implementation
-    return Array(count).fill(null).map((_, i) => ({
-      title: `AI-Generated Challenge Idea ${i + 1}`,
-      description: `This is an AI-generated challenge idea based on your keywords: ${keywords.join(', ')}`,
-      category: category,
-      potentialImpact: "This challenge could significantly improve healthcare outcomes by leveraging new approaches.",
-      targetAudience: "Healthcare professionals and innovators",
-      complexity: i % 3 === 0 ? 'Low' : i % 3 === 1 ? 'Medium' : 'High'
-    }));
-  }
-
-  static async detectDuplicateChallenges(
-    challengeTitle: string,
-    challengeDescription: string
-  ): Promise<{ isDuplicate: boolean; similarChallenges: any[]; similarityScore: number }> {
-    console.log(`Checking for duplicate challenges for: ${challengeTitle}`);
-    
-    // Mock implementation
-    const mockSimilarity = Math.random();
-    const isDuplicate = mockSimilarity > 0.7;
-    
-    return {
-      isDuplicate: isDuplicate,
-      similarChallenges: isDuplicate ? [
-        {
-          id: "challenge-123",
-          title: "Very Similar Challenge",
-          description: "This challenge has similar goals and approaches",
-          similarityScore: mockSimilarity
-        }
-      ] : [],
-      similarityScore: mockSimilarity
-    };
-  }
-
-  static async scoreProposal(
-    proposalText: string,
-    challengeCriteria: string[]
-  ): Promise<ProposalScoreResult> {
-    console.log(`Scoring proposal against ${challengeCriteria.length} criteria`);
-    
-    // Mock implementation
-    return {
-      totalScore: 82,
-      categoryScores: {
-        innovation: 85,
-        feasibility: 78,
-        impact: 89,
-        presentation: 76
-      },
-      strengths: [
-        "Innovative approach to the problem",
-        "Clear articulation of potential impact",
-        "Well-structured presentation of ideas"
-      ],
-      weaknesses: [
-        "Implementation timeline may be optimistic",
-        "Cost considerations could be more detailed"
-      ],
-      suggestedImprovements: [
-        "Provide more details on technical feasibility",
-        "Strengthen the sustainability section",
-        "Include more details about target beneficiaries"
-      ]
-    };
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error('Error in generateChallengeIdeas:', error);
+      throw error;
+    }
   }
 
   static async matchReviewers(
-    proposalSummary: string,
-    expertiseNeeded: string[]
-  ): Promise<ReviewerMatchResult> {
-    console.log(`Matching reviewers with expertise in: ${expertiseNeeded.join(', ')}`);
-    
-    // Mock implementation
-    return {
-      matchedReviewers: [
-        {
-          reviewerId: "reviewer-123",
-          reviewerName: "Dr. Jane Smith",
-          matchScore: 92,
-          expertise: ["Digital Health", "Patient Experience"]
-        },
-        {
-          reviewerId: "reviewer-456",
-          reviewerName: "Prof. Ahmed Hassan",
-          matchScore: 87,
-          expertise: ["Medical Devices", "Healthcare Innovation"]
-        },
-        {
-          reviewerId: "reviewer-789",
-          reviewerName: "Dr. Maria Rodriguez",
-          matchScore: 81,
-          expertise: ["Clinical Research", "Public Health"]
-        }
-      ]
-    };
-  }
+    challengeDescription: string,
+    requiredExpertise: string[]
+  ): Promise<ReviewerMatchResult[]> {
+    try {
+      console.log(`Finding reviewers for challenge with expertise: ${requiredExpertise.join(', ')}`);
+      
+      const response = await fetch('/supabase/functions/v1/reviewer-matching', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ challengeDescription, requiredExpertise })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to match reviewers: ${errorText}`);
+      }
 
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error('Error in matchReviewers:', error);
+      throw error;
+    }
+  }
+  
   static async generateSubmissionSuggestions(
-    partialSubmission: string,
-    challengeGuidelines: string
-  ): Promise<{ suggestions: string[]; missingElements: string[] }> {
-    console.log(`Generating suggestions for partial submission based on guidelines`);
-    
-    // Mock implementation
-    return {
-      suggestions: [
-        "Consider adding more details about the expected outcomes and impact metrics.",
-        "The budget section would benefit from more specific cost breakdowns.",
-        "Your implementation timeline could be more detailed with key milestones."
-      ],
-      missingElements: [
-        "Sustainability plan",
-        "Team qualifications",
-        "Risk assessment"
-      ]
-    };
+    submissionText: string,
+    challengeContext?: string
+  ): Promise<string[]> {
+    try {
+      console.log('Generating submission enhancement suggestions');
+      
+      // Mock implementation for now
+      return [
+        "Consider adding quantitative metrics to demonstrate the impact of your solution.",
+        "Elaborate on how your innovation aligns with Saudi Vision 2030 healthcare objectives.",
+        "Include more details about implementation feasibility and resource requirements.",
+        "Strengthen the user experience section with concrete examples or user stories."
+      ];
+    } catch (error) {
+      console.error('Error generating submission suggestions:', error);
+      throw error;
+    }
+  }
+  
+  static async scoreProposal(
+    proposalText: string,
+    criteria: string[]
+  ): Promise<ProposalScoreResult> {
+    try {
+      console.log(`Scoring proposal against criteria: ${criteria.join(', ')}`);
+      
+      const response = await fetch('/supabase/functions/v1/proposal-scoring', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ proposalText, criteria })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to score proposal: ${errorText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in scoreProposal:', error);
+      throw error;
+    }
   }
 }

@@ -33,10 +33,7 @@ export class EventBaseService {
       category: dbEvent.category,
       tags: dbEvent.tags,
       featured: dbEvent.featured,
-      status: dbEvent.status,
-      createdBy: dbEvent.created_by,
-      createdAt: new Date(dbEvent.created_at),
-      updatedAt: new Date(dbEvent.updated_at)
+      status: dbEvent.status
     };
   }
   
