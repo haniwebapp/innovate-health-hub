@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Calendar, CheckCircle, ArrowRightLeft, AlertTriangle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 
 export function HarmonizationTools() {
   const { t, isRTL } = useLanguage();
