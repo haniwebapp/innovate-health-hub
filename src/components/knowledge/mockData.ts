@@ -74,6 +74,9 @@ export const mockData: ResourceMockData[] = [
   }
 ];
 
+// Export mockResources for use in ResourceCard.tsx
+export const mockResources = mockData;
+
 export const resourceTypeIcons: Record<string, any> = {
   'PDF Document': FileText,
   'Interactive Guide': BookOpen,

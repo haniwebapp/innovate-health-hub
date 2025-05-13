@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/knowledge/LanguageSwitcher';
-import { SemanticSearchBar } from '@/components/knowledge/SemanticSearchBar';
+import { SemanticSearchBar, SemanticSearchParams as UISearchParams } from '@/components/knowledge/SemanticSearchBar';
 import { SearchResultsList } from '@/components/knowledge/SearchResultsList';
-import { KnowledgeAIService, SemanticSearchParams, SearchResults } from '@/services/ai/KnowledgeAIService';
+import { KnowledgeAIService, SearchResults } from '@/services/ai/KnowledgeAIService';
 import { useToast } from '@/hooks/use-toast';
 
 export default function SearchResultsPage() {
@@ -18,14 +18,25 @@ export default function SearchResultsPage() {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = async (params: SemanticSearchParams) => {
+  // Convert UI search params to API search params
+  const handleSearch = async (params: UISearchParams) => {
     if (!params.query.trim()) return;
     
     setIsSearching(true);
     setSearchQuery(params.query);
     
     try {
-      const results = await KnowledgeAIService.semanticSearch(params);
+      // Convert UI params to API params
+      const apiParams = {
+        query: params.query,
+        filters: params.filters ? {
+          categories: params.filters.category ? [params.filters.category] : undefined,
+          types: params.filters.type ? [params.filters.type] : undefined,
+          tags: undefined
+        } : undefined
+      };
+      
+      const results = await KnowledgeAIService.semanticSearch(apiParams);
       setSearchResults(results);
       setHasSearched(true);
     } catch (error: any) {
