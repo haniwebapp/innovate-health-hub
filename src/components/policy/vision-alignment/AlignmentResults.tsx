@@ -1,5 +1,5 @@
-
-import { Vision2030AlignmentResult } from "@/services/ai/PolicyAIService";
+import React from "react";
+import { Vision2030AlignmentResult } from "@/services/ai/policy/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowUpRight, Loader2, Trophy } from "lucide-react";

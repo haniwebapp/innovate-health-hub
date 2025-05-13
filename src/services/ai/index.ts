@@ -16,6 +16,7 @@ export { RegulatoryAIService } from './RegulatoryAIService';
 export { InvestmentAIService } from './InvestmentAIService';
 export { KnowledgeAIService } from './KnowledgeAIService';
 export { PolicyAIService } from './PolicyAIService';
+export { PolicyAnnotationService } from './policy/PolicyAnnotationService';
 export * from './admin/AdminAIService';
 export * from './challenge/ChallengeAIService';
 export * from './community/CommunityAIService';

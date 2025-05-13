@@ -1,5 +1,5 @@
 
-import { PolicyData } from "@/services/ai/PolicyAIService";
+import { PolicyData } from "@/services/ai/policy/types";
 
 export const initialPolicyData: PolicyData = {
   name: "",

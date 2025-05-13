@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileText, Highlighter, BookOpen, MessageSquareDiff, CalendarCheck } from "lucide-react";
-import { PolicyAIService, PolicyAnnotationResult, PolicyAnnotation, ImplementationGuidanceResult, PolicyQAResult } from "@/services/ai/PolicyAIService";
+import { PolicyAIService } from "@/services/ai/PolicyAIService";
+import { PolicyAnnotationResult, PolicyAnnotation, ImplementationGuidanceResult, PolicyQAResult } from "@/services/ai/policy/types";
 
 export function PolicyAnnotator() {
   const [policyText, setPolicyText] = useState("");
@@ -35,7 +35,7 @@ export function PolicyAnnotator() {
     
     setIsLoading(true);
     try {
-      const results = await PolicyAIService.annotatePolicy(policyText, policyName || "Unnamed Policy");
+      const results = await PolicyAnnotationService.annotatePolicy(policyText, policyName || "Unnamed Policy");
       setAnnotationResults(results);
       setActiveTab("annotations");
       
@@ -66,7 +66,7 @@ export function PolicyAnnotator() {
     
     setIsLoading(true);
     try {
-      const guidance = await PolicyAIService.getImplementationGuidance(
+      const guidance = await PolicyAnnotationService.getImplementationGuidance(
         policyText,
         policyName || "Unnamed Policy"
       );
@@ -101,7 +101,7 @@ export function PolicyAnnotator() {
     
     setIsAskingQuestion(true);
     try {
-      const result = await PolicyAIService.askPolicyQuestion(
+      const result = await PolicyAnnotationService.askQuestion(
         policyText,
         question,
         policyName || "Policy Q&A"

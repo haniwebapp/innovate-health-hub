@@ -1,106 +1,115 @@
-
-import { PolicyImpactResult } from "@/services/ai/PolicyAIService";
-import { Badge } from "@/components/ui/badge";
+import React from "react";
+import { PolicyImpactResult } from "@/services/ai/policy/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Loader2, BarChart2, AlertCircle, ArrowUpRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Download, ArrowLeft } from "lucide-react";
 
+// Fix type issues in the component by properly typing the results
 interface SimulationResultsProps {
-  isSimulating: boolean;
-  result: PolicyImpactResult | null;
+  results: PolicyImpactResult;
+  onBack: () => void;
 }
 
-export function SimulationResults({ isSimulating, result }: SimulationResultsProps) {
-  // Helper to get color based on score
-  const getScoreColor = (score: number) => {
-    if (score >= 75) return "bg-green-500";
-    if (score >= 50) return "bg-amber-500";
-    if (score >= 25) return "bg-orange-500"; 
-    return "bg-red-500";
-  };
-  
-  // Helper to get text color based on score
-  const getTextColor = (score: number) => {
-    if (score >= 75) return "text-green-500";
-    if (score >= 50) return "text-amber-500";
-    if (score >= 25) return "text-orange-500"; 
-    return "text-red-500";
-  };
-
-  if (isSimulating) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <Loader2 className="h-12 w-12 animate-spin text-moh-blue mb-4" />
-        <p className="text-muted-foreground">Simulating policy impact...</p>
-      </div>
-    );
-  }
-
-  if (!result) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center">
-        <BarChart2 className="h-12 w-12 text-moh-blue/30 mb-4" />
-        <p className="text-muted-foreground">Enter policy details and run the simulation to see impact results</p>
-      </div>
-    );
-  }
-
+export function SimulationResults({ results, onBack }: SimulationResultsProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Overall Impact Score</h3>
-        <Badge 
-          className={`${getScoreColor(result.impactScore)} px-3 py-1 text-white`}
-        >
-          {result.impactScore}/100
-        </Badge>
-      </div>
-      
-      <div className="space-y-4">
-        <h3 className="text-md font-medium border-b pb-2">Stakeholder Impact</h3>
-        
-        {Object.entries(result.stakeholderImpact).map(([stakeholder, data]) => (
-          <div key={stakeholder} className="space-y-2">
-            <div className="flex justify-between items-center">
-              <h4 className="font-medium capitalize">{stakeholder}</h4>
-              <span className={getTextColor(data.score)}>{data.score}/100</span>
-            </div>
-            <Progress 
-              value={data.score} 
-              max={100}
-              className={`h-2 ${getScoreColor(data.score)}`} 
-            />
-            <p className="text-sm text-muted-foreground">{data.description}</p>
+    <Card className="w-full">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-semibold">Policy Impact Simulation Results</CardTitle>
           </div>
-        ))}
+          <Badge className="bg-green-100 text-green-700">AI-Powered</Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Overall Impact Score</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-600">{results?.impactScore || 'N/A'}</div>
+              <p className="text-sm text-muted-foreground">Out of 100</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Economic Impact</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm">{results?.economicImpact || 'N/A'}</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Healthcare Outcome Impact</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm">{results?.healthcareOutcomeImpact || 'N/A'}</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Implementation Complexity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm">{results?.implementationComplexity || 'N/A'}</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Stakeholder Impact</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {results?.stakeholderImpact ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(results.stakeholderImpact).map(([stakeholder, impact]: any) => (
+                  <div key={stakeholder} className="space-y-2">
+                    <h4 className="text-sm font-medium">{stakeholder}</h4>
+                    <p className="text-sm">{impact?.description || 'N/A'}</p>
+                    <p className="text-xs text-muted-foreground">Score: {impact?.score || 'N/A'}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm">No stakeholder impact data available.</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Recommendations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {results?.recommendations && results.recommendations.length > 0 ? (
+              <ul className="list-disc pl-5">
+                {results.recommendations.map((recommendation, index) => (
+                  <li key={index} className="text-sm">{recommendation}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm">No specific recommendations provided.</p>
+            )}
+          </CardContent>
+        </Card>
+      </CardContent>
+      <div className="flex justify-between p-4">
+        <Button variant="outline" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Simulation
+        </Button>
+        <Button>
+          Download Report
+          <Download className="w-4 h-4 ml-2" />
+        </Button>
       </div>
-      
-      <div className="space-y-3">
-        <h3 className="text-md font-medium border-b pb-2">Economic Impact</h3>
-        <p className="text-sm">{result.economicImpact}</p>
-      </div>
-      
-      <div className="space-y-3">
-        <h3 className="text-md font-medium border-b pb-2">Healthcare Outcome Impact</h3>
-        <p className="text-sm">{result.healthcareOutcomeImpact}</p>
-      </div>
-      
-      <div className="space-y-3">
-        <h3 className="text-md font-medium border-b pb-2">Implementation Complexity</h3>
-        <p className="text-sm">{result.implementationComplexity}</p>
-      </div>
-      
-      <div className="space-y-3">
-        <h3 className="text-md font-medium border-b pb-2">Recommendations</h3>
-        <ul className="space-y-2">
-          {result.recommendations.map((recommendation, index) => (
-            <li key={index} className="flex items-start">
-              <AlertCircle className="h-4 w-4 mr-2 text-moh-blue mt-1 flex-shrink-0" />
-              <span className="text-sm">{recommendation}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    </Card>
   );
 }

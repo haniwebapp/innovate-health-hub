@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar,
-  Legend, PieChart, Pie, Cell } from 'recharts';
-import { BrainCircuit, LineChart, BarChart2, PieChart as PieChartIcon, TrendingUp, Download, RefreshCcw } from "lucide-react";
+  Legend, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { BrainCircuit, LineChart as LineChartIcon, BarChart2, PieChart as PieChartIcon, TrendingUp, Download, RefreshCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Sample data for demonstration (would be fetched from APIs in production)
