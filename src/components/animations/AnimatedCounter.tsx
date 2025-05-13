@@ -1,83 +1,63 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { animate } from 'framer-motion';
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 
-interface AnimatedCounterProps {
+export interface AnimatedCounterProps {
   value: number;
-  suffix?: string;
+  className?: string;
   duration?: number;
-  delay?: number;
-  importance?: 'low' | 'medium' | 'high';
-  scaleDuration?: boolean;
+  decimals?: number;
 }
 
 export function AnimatedCounter({ 
   value, 
-  suffix = "", 
+  className = "", 
   duration = 2, 
-  delay = 0,
-  importance = 'medium',
-  scaleDuration = false
+  decimals = 0 
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0);
-  const nodeRef = useRef<HTMLSpanElement>(null);
-  const hasAnimated = useRef(false);
-
-  // Adjust duration based on importance and scaleDuration flag
-  const getAdjustedDuration = () => {
-    if (!scaleDuration) return duration;
-    
-    if (importance === 'high') return duration * 0.8; // Faster for high importance
-    if (importance === 'low') return duration * 1.2; // Slower for low importance
-    return duration; // Default for medium importance
-  };
-
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -50px 0px" });
+  
   useEffect(() => {
-    if (hasAnimated.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated.current) {
-            hasAnimated.current = true;
-            
-            setTimeout(() => {
-              animate(0, value, {
-                duration: getAdjustedDuration(),
-                onUpdate: (latest) => {
-                  setDisplayValue(latest);
-                },
-                ease: "easeOut"
-              });
-            }, delay * 1000);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    if (nodeRef.current) {
-      observer.observe(nodeRef.current);
+    if (inView) {
+      let startTime: number | null = null;
+      const animateValue = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+        
+        // Easing function: cubic-bezier(0.17, 0.67, 0.83, 0.67)
+        const easeProgress = progress < 0.5
+          ? 4 * progress * progress * progress
+          : (progress - 1) * (2 * progress - 2) * (2 * progress - 2) + 1;
+        
+        const currentValue = Math.floor(easeProgress * value);
+        setDisplayValue(currentValue);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateValue);
+        } else {
+          setDisplayValue(value); // Ensure final value is exact
+        }
+      };
+      
+      requestAnimationFrame(animateValue);
     }
-
-    return () => {
-      if (nodeRef.current) {
-        observer.unobserve(nodeRef.current);
-      }
-    };
-  }, [value, duration, delay, scaleDuration, importance]);
-
-  // Format the display value
-  let formattedValue: string;
-  if (Number.isInteger(value)) {
-    formattedValue = Math.round(displayValue).toString();
-  } else {
-    formattedValue = displayValue.toFixed(1);
-  }
-
+  }, [inView, value, duration]);
+  
+  const formattedValue = decimals > 0
+    ? displayValue.toFixed(decimals)
+    : displayValue.toString();
+  
   return (
-    <span ref={nodeRef} className="tabular-nums">
-      {formattedValue}{suffix}
-    </span>
+    <motion.span
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {formattedValue}
+    </motion.span>
   );
 }

@@ -22,14 +22,13 @@ export function HeroStats() {
           key={index}
           className="bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center text-center"
           whileHover={{ y: -5, scale: 1.03 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
         >
           <span className="text-2xl mb-1">{stat.icon}</span>
           <AnimatedCounter 
-            value={stat.value} 
+            value={stat.value}
             className="text-2xl md:text-3xl font-bold text-moh-darkGreen" 
           />
           <span className="text-sm text-gray-600 mt-1">{stat.label}</span>
