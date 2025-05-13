@@ -1,482 +1,550 @@
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  BarChart3, 
-  LineChart, 
-  PieChart, 
-  Download,
-  Users,
-  Activity,
-  Lightbulb,
-  FileText,
-  Calendar,
-  Globe
-} from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar,
+  Legend, PieChart, Pie, Cell } from 'recharts';
+import { BrainCircuit, LineChart, BarChart2, PieChart as PieChartIcon, TrendingUp, Download, RefreshCcw } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-// Moved from index.tsx
-const mockUserGrowth = [
-  { month: 'Jan', users: 124 },
-  { month: 'Feb', users: 156 },
-  { month: 'Mar', users: 193 },
-  { month: 'Apr', users: 247 },
-  { month: 'May', users: 305 },
-  { month: 'Jun', users: 389 }
+// Sample data for demonstration (would be fetched from APIs in production)
+const innovationSuccessData = [
+  { month: 'Jan', successful: 65, failed: 25, pending: 10 },
+  { month: 'Feb', successful: 58, failed: 22, pending: 20 },
+  { month: 'Mar', successful: 72, failed: 18, pending: 10 },
+  { month: 'Apr', successful: 80, failed: 15, pending: 5 },
+  { month: 'May', successful: 85, failed: 10, pending: 5 },
+  { month: 'Jun', successful: 78, failed: 12, pending: 10 },
 ];
 
-const mockInnovationsByMonth = [
-  { month: 'Jan', count: 12 },
-  { month: 'Feb', count: 18 },
-  { month: 'Mar', count: 15 },
-  { month: 'Apr', count: 25 },
-  { month: 'May', count: 22 },
-  { month: 'Jun', count: 30 }
+const challengeResponseData = [
+  { name: 'Digital Health Solutions', completed: 67, inProgress: 33 },
+  { name: 'Preventive Care', completed: 45, inProgress: 55 },
+  { name: 'Remote Monitoring', completed: 80, inProgress: 20 },
+  { name: 'Healthcare Access', completed: 62, inProgress: 38 },
+  { name: 'Medical Education', completed: 73, inProgress: 27 },
 ];
 
-const mockUserDistribution = [
-  { type: 'Innovators', count: 453 },
-  { type: 'Healthcare Providers', count: 287 },
-  { type: 'Investors', count: 124 },
-  { type: 'Researchers', count: 198 },
-  { type: 'Administrators', count: 56 }
+const topSectors = [
+  { name: 'Digital Health', value: 35 },
+  { name: 'AI in Healthcare', value: 25 },
+  { name: 'Medical Devices', value: 18 },
+  { name: 'Telemedicine', value: 12 },
+  { name: 'Preventive Care', value: 10 },
 ];
 
-const mockChallengeSubmissions = [
-  { challenge: 'Remote Patient Monitoring', submissions: 34 },
-  { challenge: 'AI Diagnostics', submissions: 29 },
-  { challenge: 'Supply Chain Optimization', submissions: 17 },
-  { challenge: 'Mental Health Platform', submissions: 42 },
-  { challenge: 'Elderly Care', submissions: 21 }
-];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
-export default function AdminReportsPage() {
+export default function ReportsPage() {
+  const [timeframe, setTimeframe] = useState('6months');
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  
+  // Simulated refreshing of data
+  const refreshData = () => {
+    setIsLoading(true);
+    
+    setTimeout(() => {
+      setIsLoading(false);
+      toast({
+        title: "Data refreshed",
+        description: "Analytics data has been updated with the latest information.",
+      });
+    }, 1500);
+  };
+
+  // Simulated predictions data
+  const [predictions, setPredictions] = useState<any>(null);
+  
+  useEffect(() => {
+    // Simulate loading predictions
+    setIsLoading(true);
+    setTimeout(() => {
+      setPredictions({
+        successRate: {
+          digital: 78,
+          medicalDevices: 65,
+          telemedicine: 82,
+          preventive: 71,
+          aiDriven: 85
+        },
+        growthAreas: [
+          { name: 'AI-Powered Diagnostics', growth: '+42%', confidence: 'High' },
+          { name: 'Remote Patient Monitoring', growth: '+37%', confidence: 'High' },
+          { name: 'Mental Health Tech', growth: '+31%', confidence: 'Medium' },
+          { name: 'Personalized Medicine', growth: '+28%', confidence: 'Medium' }
+        ],
+        risks: [
+          { name: 'Regulatory Compliance', level: 'Medium', mitigation: 'Early engagement with authorities' },
+          { name: 'Data Privacy', level: 'High', mitigation: 'Enhanced security protocols' },
+          { name: 'Market Adoption', level: 'Medium', mitigation: 'User-centered design approach' }
+        ]
+      });
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
   return (
     <AdminLayout
       title="Analytics & Reports"
-      description="View and generate platform analytics reports"
+      description="AI-powered analytics and predictive insights"
+      actions={
+        <div className="flex items-center gap-2">
+          <Select value={timeframe} onValueChange={setTimeframe}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select timeframe" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="30days">Last 30 Days</SelectItem>
+              <SelectItem value="90days">Last 90 Days</SelectItem>
+              <SelectItem value="6months">Last 6 Months</SelectItem>
+              <SelectItem value="1year">Last Year</SelectItem>
+              <SelectItem value="all">All Time</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" onClick={refreshData} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <RefreshCcw className="h-4 w-4 mr-2 animate-spin" />
+                Refreshing...
+              </>
+            ) : (
+              <>
+                <RefreshCcw className="h-4 w-4 mr-2" />
+                Refresh
+              </>
+            )}
+          </Button>
+          <Button variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+        </div>
+      }
     >
-      <div className="flex justify-end mb-6">
-        <Button variant="outline" className="mr-2">
-          <Download className="h-4 w-4 mr-2" />
-          Export Data
-        </Button>
-        <Button>Generate Report</Button>
-      </div>
-      
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="users">User Analytics</TabsTrigger>
-          <TabsTrigger value="engagement">Engagement</TabsTrigger>
-          <TabsTrigger value="innovations">Innovations</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <LineChart className="h-5 w-5 mr-2 text-blue-500" />
-                  User Growth
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center bg-muted/50">
-                <div className="w-full h-full flex flex-col items-center justify-center">
-                  <div className="flex items-end h-[200px] w-[80%] justify-between mt-4">
-                    {mockUserGrowth.map((item, index) => (
-                      <div key={index} className="flex flex-col items-center w-12">
-                        <div 
-                          className="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-sm" 
-                          style={{ height: `${item.users / 4}px`, width: '20px' }}
-                        ></div>
-                        <span className="text-xs mt-1 text-muted-foreground">{item.month}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-muted-foreground text-xs mt-4">
-                    Chart visualization will be enhanced in the next phase
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <BarChart3 className="h-5 w-5 mr-2 text-green-500" />
-                  Monthly Innovations
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center bg-muted/50">
-                <div className="w-full h-full flex flex-col items-center justify-center">
-                  <div className="flex items-end h-[200px] w-[80%] justify-between mt-4">
-                    {mockInnovationsByMonth.map((item, index) => (
-                      <div key={index} className="flex flex-col items-center w-12">
-                        <div 
-                          className="bg-gradient-to-t from-green-500 to-green-400 rounded-t-sm" 
-                          style={{ height: `${item.count * 5}px`, width: '20px' }}
-                        ></div>
-                        <span className="text-xs mt-1 text-muted-foreground">{item.month}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-muted-foreground text-xs mt-4">
-                    Chart visualization will be enhanced in the next phase
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <PieChart className="h-5 w-5 mr-2 text-amber-500" />
-                  User Distribution
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center bg-muted/50">
-                <div className="w-full h-full flex flex-col p-4">
-                  <div className="flex flex-col space-y-2">
-                    {mockUserDistribution.map((item, index) => (
-                      <div key={index} className="flex items-center">
-                        <div className={`w-3 h-3 rounded-full mr-2 bg-${['blue', 'green', 'amber', 'purple', 'pink'][index]}-${index % 2 ? '400' : '500'}`}></div>
-                        <span className="text-sm">{item.type}</span>
-                        <span className="ml-auto text-sm font-medium">{item.count}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-muted-foreground text-xs">
-                      Pie chart visualization will be implemented in the next phase
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <BarChart3 className="h-5 w-5 mr-2 text-purple-500" />
-                  Challenge Submissions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center bg-muted/50">
-                <div className="w-full h-full flex flex-col p-4">
-                  <div className="flex-1">
-                    {mockChallengeSubmissions.map((item, index) => (
-                      <div key={index} className="mb-3">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="truncate max-w-[80%]">{item.challenge}</span>
-                          <span>{item.submissions}</span>
-                        </div>
-                        <div className="w-full h-2 bg-gray-100 rounded-full">
-                          <div 
-                            className="h-full rounded-full bg-purple-500" 
-                            style={{ width: `${(item.submissions / 50) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-muted-foreground text-xs text-center mt-2">
-                    Bar chart visualization will be enhanced in the next phase
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="users">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Total Users</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center">
-                  <Users className="h-8 w-8 text-blue-500 mr-4" />
-                  <div>
-                    <div className="text-2xl font-bold">1,118</div>
-                    <div className="text-xs text-muted-foreground">+243 this month</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Active Users</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center">
-                  <Activity className="h-8 w-8 text-green-500 mr-4" />
-                  <div>
-                    <div className="text-2xl font-bold">792</div>
-                    <div className="text-xs text-muted-foreground">71% of total users</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">User Engagement</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center">
-                  <Calendar className="h-8 w-8 text-amber-500 mr-4" />
-                  <div>
-                    <div className="text-2xl font-bold">23.4 min</div>
-                    <div className="text-xs text-muted-foreground">Avg. session time</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Geographic Distribution</CardTitle>
-              <CardDescription>User distribution across regions</CardDescription>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2" />
+                Innovation Success Rate
+              </CardTitle>
+              <CardDescription>Overall success rate of submitted innovations</CardDescription>
             </CardHeader>
-            <CardContent className="h-[400px] flex flex-col items-center justify-center">
-              <Globe className="h-16 w-16 text-muted-foreground mb-4" />
-              <div className="space-y-4 max-w-md text-center">
-                <h3 className="text-lg font-medium">Geographic Distribution</h3>
-                <p className="text-muted-foreground">Map visualization will be implemented in the next phase</p>
-                <div className="pt-4 grid grid-cols-2 gap-4">
-                  <div className="bg-muted/30 p-3 rounded-md">
-                    <div className="font-medium">Riyadh Region</div>
-                    <div className="text-2xl font-bold text-moh-green">42%</div>
-                  </div>
-                  <div className="bg-muted/30 p-3 rounded-md">
-                    <div className="font-medium">Makkah Region</div>
-                    <div className="text-2xl font-bold text-moh-gold">28%</div>
-                  </div>
-                  <div className="bg-muted/30 p-3 rounded-md">
-                    <div className="font-medium">Eastern Province</div>
-                    <div className="text-2xl font-bold text-blue-500">17%</div>
-                  </div>
-                  <div className="bg-muted/30 p-3 rounded-md">
-                    <div className="font-medium">Other Regions</div>
-                    <div className="text-2xl font-bold text-amber-500">13%</div>
-                  </div>
-                </div>
-              </div>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-600">76%</div>
+              <p className="text-xs text-muted-foreground">+12% from previous period</p>
             </CardContent>
           </Card>
-        </TabsContent>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <BarChart2 className="h-5 w-5 mr-2" />
+                Challenge Participation
+              </CardTitle>
+              <CardDescription>Average submissions per challenge</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-blue-600">32.5</div>
+              <p className="text-xs text-muted-foreground">+8 from previous period</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <PieChartIcon className="h-5 w-5 mr-2" />
+                Top Innovation Sector
+              </CardTitle>
+              <CardDescription>Most active healthcare sector</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-indigo-600">Digital Health</div>
+              <p className="text-xs text-muted-foreground">35% of all innovations</p>
+            </CardContent>
+          </Card>
+        </div>
 
-        <TabsContent value="engagement">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Tabs defaultValue="success" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="success">Success Prediction</TabsTrigger>
+            <TabsTrigger value="trends">Innovation Trends</TabsTrigger>
+            <TabsTrigger value="challenges">Challenge Analytics</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="success" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Platform Usage</CardTitle>
-                <CardDescription>Daily active users over time</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center bg-muted/20">
-                <div className="space-y-4 text-center">
-                  <Activity className="h-16 w-16 text-muted-foreground mx-auto" />
-                  <h3 className="text-lg font-medium">User Activity</h3>
-                  <p className="text-muted-foreground">
-                    Engagement metrics visualization will be implemented in the next phase
-                  </p>
-                  <div className="pt-4 grid grid-cols-3 gap-2 max-w-md mx-auto">
-                    <div className="bg-muted/30 p-2 rounded-md">
-                      <div className="text-xs text-muted-foreground">Daily Active</div>
-                      <div className="text-lg font-bold">437</div>
-                    </div>
-                    <div className="bg-muted/30 p-2 rounded-md">
-                      <div className="text-xs text-muted-foreground">Weekly Active</div>
-                      <div className="text-lg font-bold">792</div>
-                    </div>
-                    <div className="bg-muted/30 p-2 rounded-md">
-                      <div className="text-xs text-muted-foreground">Monthly Active</div>
-                      <div className="text-lg font-bold">1,021</div>
-                    </div>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center">
+                      <BrainCircuit className="h-5 w-5 mr-2 text-purple-500" />
+                      AI Success Predictions
+                    </CardTitle>
+                    <CardDescription>
+                      Predictive analytics for innovation success by sector
+                    </CardDescription>
                   </div>
+                  <Badge className="bg-purple-100 text-purple-700">AI-Generated</Badge>
                 </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Feature Adoption</CardTitle>
-                <CardDescription>Most used platform features</CardDescription>
               </CardHeader>
-              <CardContent className="h-[300px]">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Innovations</span>
-                      <span className="font-medium">87%</span>
-                    </div>
-                    <div className="w-full h-2 bg-muted rounded-full">
-                      <div className="h-2 bg-blue-500 rounded-full" style={{ width: '87%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Challenges</span>
-                      <span className="font-medium">76%</span>
-                    </div>
-                    <div className="w-full h-2 bg-muted rounded-full">
-                      <div className="h-2 bg-green-500 rounded-full" style={{ width: '76%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Knowledge Hub</span>
-                      <span className="font-medium">65%</span>
-                    </div>
-                    <div className="w-full h-2 bg-muted rounded-full">
-                      <div className="h-2 bg-amber-500 rounded-full" style={{ width: '65%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Investment</span>
-                      <span className="font-medium">54%</span>
-                    </div>
-                    <div className="w-full h-2 bg-muted rounded-full">
-                      <div className="h-2 bg-purple-500 rounded-full" style={{ width: '54%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Regulatory</span>
-                      <span className="font-medium">41%</span>
-                    </div>
-                    <div className="w-full h-2 bg-muted rounded-full">
-                      <div className="h-2 bg-pink-500 rounded-full" style={{ width: '41%' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="md:col-span-2">
-              <CardHeader>
-                <CardTitle>Content Popularity</CardTitle>
-                <CardDescription>Most viewed resources and pages</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="pt-4">
+                {predictions ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-medium mb-2 text-sm">Most Viewed Resources</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center p-2 bg-muted/20 rounded-md">
-                          <FileText className="h-4 w-4 mr-2 text-blue-500" />
-                          <span className="text-sm">Digital Health Strategy Guide</span>
-                          <span className="ml-auto text-xs font-medium">3,217 views</span>
-                        </div>
-                        <div className="flex items-center p-2 bg-muted/20 rounded-md">
-                          <FileText className="h-4 w-4 mr-2 text-green-500" />
-                          <span className="text-sm">Healthcare AI Implementation</span>
-                          <span className="ml-auto text-xs font-medium">2,945 views</span>
-                        </div>
-                        <div className="flex items-center p-2 bg-muted/20 rounded-md">
-                          <FileText className="h-4 w-4 mr-2 text-amber-500" />
-                          <span className="text-sm">Medical Device Regulations</span>
-                          <span className="ml-auto text-xs font-medium">2,124 views</span>
+                      <h4 className="text-sm font-medium mb-3">Predicted Success Rate by Sector</h4>
+                      <div className="space-y-3">
+                        {Object.entries(predictions.successRate).map(([sector, rate]) => (
+                          <div key={sector} className="space-y-1">
+                            <div className="flex justify-between text-sm">
+                              <span>
+                                {sector === 'digital' ? 'Digital Health' : 
+                                 sector === 'medicalDevices' ? 'Medical Devices' :
+                                 sector === 'telemedicine' ? 'Telemedicine' :
+                                 sector === 'preventive' ? 'Preventive Care' : 'AI-Driven Innovations'}
+                              </span>
+                              <span className="font-medium">{rate}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className={`h-2 rounded-full ${
+                                  Number(rate) > 80 ? 'bg-green-500' :
+                                  Number(rate) > 70 ? 'bg-lime-500' :
+                                  Number(rate) > 60 ? 'bg-amber-500' : 'bg-orange-500'
+                                }`}
+                                style={{ width: `${rate}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-6">
+                        <h4 className="text-sm font-medium mb-3">Risk Assessment</h4>
+                        <div className="space-y-2">
+                          {predictions.risks.map((risk: any, i: number) => (
+                            <div key={i} className="p-3 bg-gray-50 rounded-md">
+                              <div className="flex justify-between items-start">
+                                <span className="font-medium">{risk.name}</span>
+                                <Badge 
+                                  className={
+                                    risk.level === 'High' ? 'bg-red-100 text-red-800' :
+                                    risk.level === 'Medium' ? 'bg-amber-100 text-amber-800' :
+                                    'bg-blue-100 text-blue-800'
+                                  }
+                                >
+                                  {risk.level}
+                                </Badge>
+                              </div>
+                              <p className="text-xs mt-1 text-gray-600">
+                                <span className="font-medium">Mitigation:</span> {risk.mitigation}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
                     
                     <div>
-                      <h4 className="font-medium mb-2 text-sm">Most Active Challenges</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center p-2 bg-muted/20 rounded-md">
-                          <Lightbulb className="h-4 w-4 mr-2 text-blue-500" />
-                          <span className="text-sm">Remote Patient Monitoring</span>
-                          <span className="ml-auto text-xs font-medium">47 participants</span>
-                        </div>
-                        <div className="flex items-center p-2 bg-muted/20 rounded-md">
-                          <Lightbulb className="h-4 w-4 mr-2 text-green-500" />
-                          <span className="text-sm">Mental Health Platform</span>
-                          <span className="ml-auto text-xs font-medium">42 participants</span>
-                        </div>
-                        <div className="flex items-center p-2 bg-muted/20 rounded-md">
-                          <Lightbulb className="h-4 w-4 mr-2 text-amber-500" />
-                          <span className="text-sm">AI for Disease Detection</span>
-                          <span className="ml-auto text-xs font-medium">32 participants</span>
-                        </div>
+                      <h4 className="text-sm font-medium mb-3">Projected Growth Areas</h4>
+                      <div className="space-y-3">
+                        {predictions.growthAreas.map((area: any, i: number) => (
+                          <div key={i} className="p-3 bg-gray-50 rounded-md">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium">{area.name}</span>
+                              <Badge className="bg-green-100 text-green-800">
+                                {area.growth}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center mt-1">
+                              <span className="text-xs text-gray-500 mr-2">Confidence:</span>
+                              <Badge 
+                                variant="outline" 
+                                className={
+                                  area.confidence === 'High' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
+                                  'bg-purple-50 border-purple-200 text-purple-700'
+                                }
+                              >
+                                {area.confidence}
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
                       </div>
+                      
+                      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <h4 className="text-sm font-medium mb-2 text-blue-800">AI Recommendation</h4>
+                        <p className="text-sm text-blue-700">
+                          Based on current trends and success rates, digital health innovations with AI components 
+                          show the highest potential for success. Focus on solutions that address remote monitoring 
+                          and preventive care while ensuring strong data privacy measures.
+                        </p>
+                      </div>
+                      
+                      <div className="mt-6 flex justify-between">
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Export Predictions
+                        </Button>
+                        <Button size="sm">Generate Detailed Report</Button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                      <RefreshCcw className="h-8 w-8 animate-spin text-muted-foreground mb-2 mx-auto" />
+                      <p>Loading AI predictions...</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Innovation Success Timeline</CardTitle>
+                <CardDescription>
+                  Success, failure, and pending innovations over time
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={innovationSuccessData}
+                      margin={{
+                        top: 10,
+                        right: 30,
+                        left: 0,
+                        bottom: 0,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Area type="monotone" dataKey="successful" stackId="1" stroke="#10b981" fill="#10b981" />
+                      <Area type="monotone" dataKey="failed" stackId="1" stroke="#f87171" fill="#f87171" />
+                      <Area type="monotone" dataKey="pending" stackId="1" stroke="#fcd34d" fill="#fcd34d" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="trends" className="space-y-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Healthcare Innovation Sector Distribution</CardTitle>
+                <CardDescription>
+                  Breakdown of innovations by healthcare sector
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={topSectors}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          label={({ name, value }) => `${name}: ${value}%`}
+                        >
+                          {topSectors.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-medium text-sm mb-2">Top Innovation Categories</h3>
+                      <div className="space-y-2">
+                        {topSectors.map((sector, i) => (
+                          <div key={i} className="flex items-center">
+                            <div 
+                              className="w-3 h-3 rounded-full mr-2" 
+                              style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                            ></div>
+                            <div className="flex-1 text-sm">{sector.name}</div>
+                            <div className="font-medium text-sm">{sector.value}%</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 rounded-lg border bg-blue-50 border-blue-100">
+                      <h4 className="font-medium text-sm mb-2 text-blue-800">Trend Analysis</h4>
+                      <p className="text-sm text-blue-700">
+                        Digital Health and AI in Healthcare are driving most innovations, 
+                        showing a 15% increase over the previous period. 
+                        Investment in Medical Devices has remained stable.
+                      </p>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="innovations">
-          <Card>
-            <CardHeader>
-              <CardTitle>Innovation Analytics</CardTitle>
-              <CardDescription>Track innovation submissions and trends</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-muted/20 p-4 rounded-md">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Innovations</h3>
-                  <div className="text-2xl font-bold">327</div>
-                  <div className="text-xs text-green-600 mt-1">+24% from last quarter</div>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>
+                  <BrainCircuit className="h-5 w-5 inline mr-2 text-purple-500" />
+                  AI Trend Prediction
+                </CardTitle>
+                <CardDescription>
+                  Predicted innovation sectors for the next 12 months
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={[
+                        { month: 'Jan', digital: 35, devices: 18, tele: 12, ai: 25, preventive: 10 },
+                        { month: 'Mar', digital: 38, devices: 17, tele: 14, ai: 28, preventive: 12 },
+                        { month: 'May', digital: 36, devices: 19, tele: 15, ai: 32, preventive: 11 },
+                        { month: 'Jul', digital: 40, devices: 20, tele: 18, ai: 35, preventive: 12 },
+                        { month: 'Sep', digital: 42, devices: 18, tele: 20, ai: 40, preventive: 15 },
+                        { month: 'Nov', digital: 45, devices: 19, tele: 22, ai: 45, preventive: 18 },
+                      ]}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="digital" stroke="#0088FE" name="Digital Health" />
+                      <Line type="monotone" dataKey="devices" stroke="#00C49F" name="Medical Devices" />
+                      <Line type="monotone" dataKey="tele" stroke="#FFBB28" name="Telemedicine" />
+                      <Line type="monotone" dataKey="ai" stroke="#8884d8" name="AI in Healthcare" />
+                      <Line type="monotone" dataKey="preventive" stroke="#FF8042" name="Preventive Care" />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-                
-                <div className="bg-muted/20 p-4 rounded-md">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Implementation Rate</h3>
-                  <div className="text-2xl font-bold">42%</div>
-                  <div className="text-xs text-amber-600 mt-1">+5% from last quarter</div>
-                </div>
-                
-                <div className="bg-muted/20 p-4 rounded-md">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Avg. Development Time</h3>
-                  <div className="text-2xl font-bold">7.3 months</div>
-                  <div className="text-xs text-green-600 mt-1">-1.2 months from last year</div>
-                </div>
-              </div>
-              
-              <div className="mt-8 space-y-6">
-                <div>
-                  <h3 className="font-medium mb-4">Innovation Categories Distribution</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-center">
-                    {[
-                      { category: "Digital Health", count: 103, color: "bg-blue-100 text-blue-800" },
-                      { category: "MedTech", count: 84, color: "bg-green-100 text-green-800" },
-                      { category: "AI & ML", count: 76, color: "bg-amber-100 text-amber-800" },
-                      { category: "Telehealth", count: 42, color: "bg-purple-100 text-purple-800" },
-                      { category: "Health Data", count: 22, color: "bg-pink-100 text-pink-800" }
-                    ].map((item, i) => (
-                      <div key={i} className={`p-3 rounded-md ${item.color}`}>
-                        <div className="text-xs">{item.category}</div>
-                        <div className="text-lg font-bold mt-1">{item.count}</div>
-                      </div>
-                    ))}
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-3 rounded-lg border bg-blue-50 border-blue-100">
+                    <h4 className="font-medium text-sm mb-1 text-blue-800">Key Insight</h4>
+                    <p className="text-xs text-blue-700">
+                      AI-powered healthcare solutions are projected to see the highest growth in the next 12 months.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-lg border bg-green-50 border-green-100">
+                    <h4 className="font-medium text-sm mb-1 text-green-800">Emerging Trend</h4>
+                    <p className="text-xs text-green-700">
+                      Preventive care innovations are beginning to gain momentum, showing potential for growth.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-lg border bg-amber-50 border-amber-100">
+                    <h4 className="font-medium text-sm mb-1 text-amber-800">Recommendation</h4>
+                    <p className="text-xs text-amber-700">
+                      Focus on AI-driven solutions that enhance preventive care for maximum impact.
+                    </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="challenges" className="space-y-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>Challenge Response Analytics</CardTitle>
+                <CardDescription>
+                  Analysis of responses to healthcare innovation challenges
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={challengeResponseData}
+                      layout="vertical"
+                      margin={{
+                        top: 5,
+                        right: 30,
+                        left: 100,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="completed" stackId="a" fill="#10b981" name="Completed" />
+                      <Bar dataKey="inProgress" stackId="a" fill="#fcd34d" name="In Progress" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
                 
-                <div>
-                  <h3 className="font-medium mb-4">Innovation Funding Status</h3>
-                  <div className="h-[200px] bg-muted/20 rounded-md flex items-center justify-center">
-                    <div className="text-center">
-                      <PieChart className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-muted-foreground">Detailed funding charts will be implemented in Phase 3</p>
-                    </div>
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="bg-green-50 border-green-200">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base text-green-800">Highest Completion</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-700">Remote Monitoring</div>
+                      <p className="text-xs text-green-600 mt-1">80% completion rate</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-amber-50 border-amber-200">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base text-amber-800">Lowest Completion</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-amber-700">Preventive Care</div>
+                      <p className="text-xs text-amber-600 mt-1">45% completion rate</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-blue-50 border-blue-200">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base text-blue-800">Average Completion</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-blue-700">65.4%</div>
+                      <p className="text-xs text-blue-600 mt-1">Across all challenges</p>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                <div className="mt-6 p-4 border rounded-lg bg-purple-50 border-purple-100">
+                  <h4 className="font-medium text-purple-800 mb-2 flex items-center">
+                    <BrainCircuit className="h-4 w-4 mr-2" />
+                    AI-Generated Challenge Recommendation
+                  </h4>
+                  <p className="text-sm text-purple-700">
+                    Based on completion rates and innovation trends, consider launching a new challenge focused on 
+                    "AI-Powered Preventive Care Solutions" to drive innovation in this underrepresented but high-potential area.
+                  </p>
+                  <div className="mt-4 flex justify-end">
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                      Create Recommended Challenge
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </AdminLayout>
   );
 }

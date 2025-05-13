@@ -1,17 +1,12 @@
 
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createOpenAIClient, handleOpenAIError, OPENAI_MODELS } from "../_shared/openai.ts";
 
-// Define the cors headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-
-// Create a Supabase client
-const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
-const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -20,79 +15,79 @@ serve(async (req) => {
   }
 
   try {
-    // Parse the request body
-    const { currentMetrics, benchmarkId } = await req.json();
-
-    // Check required parameters
-    if (!currentMetrics || !benchmarkId) {
-      return new Response(
-        JSON.stringify({ error: "Missing required parameters: currentMetrics and benchmarkId" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    const { policyDetails, currentState, desiredState } = await req.json();
+    
+    if (!policyDetails || !policyDetails.title || !policyDetails.description) {
+      throw new Error("Policy details are required");
     }
 
-    // In a real implementation, this would fetch real data and perform analysis
-    // For now, we'll return a simple mock response
-    const mockResponse = {
-      overallScore: 72,
-      categoryScores: [
-        { category: "Digital Transformation", score: 68, benchmarkComparison: 80 },
-        { category: "Prevention", score: 75, benchmarkComparison: 88 },
-        { category: "Access", score: 82, benchmarkComparison: 94 },
-        { category: "Quality", score: 78, benchmarkComparison: 85 },
-        { category: "Workforce", score: 65, benchmarkComparison: 72 }
-      ],
-      gaps: currentMetrics.map((metric) => ({
-        metricId: metric.id,
-        metricName: metric.name,
-        category: metric.category,
-        currentValue: metric.currentValue,
-        benchmarkValue: metric.currentValue + Math.round(Math.random() * 20),
-        gap: Math.round(Math.random() * 20),
-        gapPercentage: Math.round(Math.random() * 30),
-        priority: ["critical", "high", "medium", "low"][Math.floor(Math.random() * 4)]
-      })),
-      recommendations: [
-        {
-          category: "Digital Transformation", 
-          description: "Accelerate the adoption of telehealth solutions in rural areas",
-          expectedImpact: "Increased healthcare access for underserved populations",
-          timeframe: "medium"
-        },
-        {
-          category: "Workforce",
-          description: "Develop specialized training programs for healthcare professionals",
-          expectedImpact: "Enhanced skills and capabilities of healthcare workforce",
-          timeframe: "short"
-        },
-        {
-          category: "Prevention",
-          description: "Expand preventive healthcare programs with focus on chronic diseases",
-          expectedImpact: "Reduced disease burden and healthcare costs",
-          timeframe: "long"
-        }
-      ],
-      benchmarkSource: "WHO Healthcare Standards 2023"
-    };
+    // Initialize OpenAI client
+    const openai = createOpenAIClient();
 
-    // Log the request for monitoring
-    console.log(`Analyzed strategy gaps against benchmark: ${benchmarkId}`);
+    // Call OpenAI API for strategy gap analysis
+    try {
+      const completion = await openai.chat.completions.create({
+        model: OPENAI_MODELS.CHAT,
+        messages: [
+          {
+            role: "system",
+            content: `
+              You are an AI healthcare policy expert specializing in strategic gap analysis.
+              Analyze the provided healthcare policy details, current state, and desired state to identify gaps.
+              Your response MUST be in valid JSON format with these fields:
+              {
+                "gaps": [
+                  {
+                    "title": "Gap title",
+                    "description": "Description of the gap",
+                    "severity": "low/medium/high",
+                    "potentialImpact": "Description of potential impact if not addressed"
+                  }
+                ],
+                "recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"],
+                "overallAnalysis": "Overall analysis of the policy and key gaps to address"
+              }
+              Remember: Only return valid JSON - do not include any other text or explanation.
+            `
+          },
+          {
+            role: "user",
+            content: `
+              Please analyze the following healthcare policy:
+              
+              Policy Title: ${policyDetails.title}
+              Policy Description: ${policyDetails.description}
+              Policy Objectives: ${policyDetails.objectives.join(", ")}
+              ${policyDetails.targetSectors ? `Target Sectors: ${policyDetails.targetSectors.join(", ")}` : ""}
+              ${currentState ? `Current State: ${currentState}` : ""}
+              ${desiredState ? `Desired State: ${desiredState}` : ""}
+              
+              Identify strategic gaps between the policy's stated objectives and what would be needed to achieve optimal outcomes.
+              Provide specific, actionable recommendations to address these gaps.
+            `
+          }
+        ],
+        temperature: 0.5,
+        response_format: { type: "json_object" }
+      });
 
-    return new Response(
-      JSON.stringify(mockResponse),
-      { 
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      }
-    );
+      const gapAnalysis = JSON.parse(completion.choices[0].message.content || "{}");
+
+      // Return the gap analysis results
+      return new Response(
+        JSON.stringify(gapAnalysis),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      return handleOpenAIError(error);
+    }
   } catch (error) {
     console.error("Error in strategy-gap-analysis function:", error);
-    
     return new Response(
-      JSON.stringify({ error: error.message || "An error occurred during strategy gap analysis" }),
+      JSON.stringify({ error: error.message }),
       { 
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
       }
     );
   }
