@@ -150,7 +150,7 @@ export function MentorshipSection() {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
-              {t('learning.requestMentorshipFrom', { name: selectedMentor?.name || '' })}
+              {t(`learning.requestMentorshipFrom`)}
             </DialogTitle>
             <DialogDescription>
               {t('learning.mentorshipRequestDescription')}
