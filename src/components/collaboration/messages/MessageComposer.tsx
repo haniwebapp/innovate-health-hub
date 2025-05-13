@@ -51,7 +51,7 @@ export function MessageComposer({ selectedThread, onSendMessage, isLoading }: Me
           size="sm"
           type="submit"
           disabled={!message.trim() || !selectedThread || isLoading}
-          className="absolute bottom-2 right-2"
+          className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0"
         >
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
