@@ -67,20 +67,26 @@ export const mockChallenges: Challenge[] = [
 export const mockSubmissions: Record<string, Submission> = {
   "ch1": {
     challenge_id: "ch1",
+    challenge_title: "Remote Patient Monitoring Solutions",
     id: "sub1",
     title: "Remote Vital Signs Monitoring System",
     description: "AI-powered monitoring solution for chronic patients",
     status: "under-review",
     submitted_at: "2025-04-28T14:30:00+03:00",
+    updated_at: "2025-04-28T14:30:00+03:00",
+    category: "Digital Health",
     score: 85
   },
   "ch2": {
     challenge_id: "ch2",
+    challenge_title: "AI for Early Disease Detection",
     id: "sub2",
     title: "Early Disease Detection ML Algorithm",
     description: "Machine learning model for early detection of chronic diseases",
     status: "completed",
     submitted_at: "2025-04-15T09:45:00+03:00",
+    updated_at: "2025-04-15T09:45:00+03:00",
+    category: "AI & Machine Learning",
     score: 92
   }
 };

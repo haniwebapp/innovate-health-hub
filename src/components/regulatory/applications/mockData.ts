@@ -23,7 +23,7 @@ export const mockApplications: Application[] = [
   {
     id: "3",
     name: "Smart Medication Dispenser",
-    status: "pending",
+    status: "draft",
     submittedDate: "2025-05-02",
     framework: "Medical Devices Regulatory Framework",
     progress: 25,
