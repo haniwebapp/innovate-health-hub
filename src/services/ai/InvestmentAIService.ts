@@ -33,6 +33,8 @@ export interface MatchResult {
   };
   recommendedApproach: string;
   keyMetrics: string[];
+  alignmentAreas: string[]; // Added missing property
+  error?: string; // Added error property
 }
 
 export interface MarketTrendParams {
@@ -103,7 +105,7 @@ export class InvestmentAIService implements AIService {
 
   static async generateMatchAnalysis(
     innovationData: InnovationData,
-    investorCriteria: InvestorCriteria
+    investorCriteria?: InvestorCriteria
   ): Promise<MatchResult> {
     console.log('Generating match analysis for:', innovationData.name);
     
@@ -122,7 +124,8 @@ export class InvestmentAIService implements AIService {
         threats: ["Regulatory changes", "Large tech companies entering market"]
       },
       recommendedApproach: "Emphasize traction and Vision 2030 alignment in pitch",
-      keyMetrics: ["User growth rate", "Clinical validation results", "Regulatory approval timeline"]
+      keyMetrics: ["User growth rate", "Clinical validation results", "Regulatory approval timeline"],
+      alignmentAreas: ["Healthcare sector transformation", "Digital economy", "Quality of life"]
     };
   }
 
@@ -156,8 +159,8 @@ export class InvestmentAIService implements AIService {
     };
   }
 
-  static async getPitchDeckTemplates(sector: string, stage: string): Promise<PitchDeckTemplate[]> {
-    console.log(`Getting pitch deck templates for ${sector} sector at ${stage} stage`);
+  static async getPitchDeckTemplates(): Promise<PitchDeckTemplate[]> {
+    console.log(`Getting pitch deck templates`);
     
     // Mock implementation
     return [
@@ -200,28 +203,16 @@ export class InvestmentAIService implements AIService {
     ];
   }
 
-  static async generatePitchDeckContent(innovationData: InnovationData, templateId: string): Promise<PitchDeckContent> {
+  static async generatePitchDeckContent(innovationData: InnovationData, templateId: string): Promise<Record<string, string>> {
     console.log(`Generating pitch deck content for ${innovationData.name} using template ${templateId}`);
     
-    // Mock implementation
+    // Mock implementation - returning a simple Record<string, string> instead of the complex PitchDeckContent
     return {
-      slides: [
-        {
-          title: "Problem Statement",
-          content: `The healthcare system faces significant challenges in ${innovationData.sector}, with patients experiencing...`,
-          tips: ["Add specific statistics relevant to Saudi Arabia", "Consider including a patient journey visualization"]
-        },
-        {
-          title: "Solution Overview",
-          content: `${innovationData.name} addresses these challenges by providing a ${innovationData.description}`,
-          tips: ["Add a product screenshot or diagram", "Keep the explanation simple and focused"]
-        },
-        {
-          title: "Market Opportunity",
-          content: `The market for ${innovationData.sector} solutions is projected to reach $X billion by 2025, with a CAGR of Y%...`,
-          tips: ["Include Saudi-specific market data", "Highlight Vision 2030 relevance"]
-        }
-      ]
+      "Problem Statement": `The healthcare system faces significant challenges in ${innovationData.sector}, with patients experiencing...`,
+      "Solution Overview": `${innovationData.name} addresses these challenges by providing a ${innovationData.description}`,
+      "Market Opportunity": `The market for ${innovationData.sector} solutions is projected to reach $X billion by 2025, with a CAGR of Y%...`,
+      "Business Model": "Our business model focuses on B2B partnerships with healthcare providers...",
+      "Go-to-Market Strategy": "We will initially target major hospitals in Saudi Arabia..."
     };
   }
 

@@ -1,23 +1,7 @@
 
-import { InvestmentAIService } from "./InvestmentAIService";
-import { RegulatoryAIService } from "./RegulatoryAIService";
-import { InnovationAIService } from "./InnovationAIService";
-import { KnowledgeAIService } from "./KnowledgeAIService";
-import { PolicyAIService } from "./PolicyAIService";
-import { ChallengeAIService } from "./challenge/ChallengeAIService"; 
-import { SupportAIService } from "./support/SupportAIService";
-import { ClinicalAIService } from "./clinical/ClinicalAIService";
-import { EventsAIService } from "./events/EventsAIService";
-import { AdminAIService } from "./admin/AdminAIService";
-import { ComplianceAIService } from "./compliance/ComplianceAIService";
-import { CommunityAIService } from "./community/CommunityAIService";
-import { QuotationAIService } from "./quotation/QuotationAIService";
+import { AIServiceStaticReferences, CallTrace } from "./types/AIServiceTypes";
 
-import {
-  AIServiceStaticReferences,
-  CallTrace
-} from "./types/AIServiceTypes";
-
+// Define service types
 export enum AIServiceType {
   Investment = 'investment',
   Regulatory = 'regulatory',
@@ -94,20 +78,59 @@ export class AIServiceRegistry {
   }
 
   static initialize(): void {
-    // Initialize and register all AI services here
-    AIServiceRegistry.register(AIServiceType.Investment, new InvestmentAIService());
-    AIServiceRegistry.register(AIServiceType.Regulatory, new RegulatoryAIService());
-    AIServiceRegistry.register(AIServiceType.Innovation, new InnovationAIService());
-    AIServiceRegistry.register(AIServiceType.Knowledge, new KnowledgeAIService());
-    AIServiceRegistry.register(AIServiceType.Policy, new PolicyAIService());
-    AIServiceRegistry.register(AIServiceType.Challenge, new ChallengeAIService());
-    AIServiceRegistry.register(AIServiceType.Support, new SupportAIService());
-    AIServiceRegistry.register(AIServiceType.Clinical, new ClinicalAIService());
-    AIServiceRegistry.register(AIServiceType.Events, new EventsAIService());
-    AIServiceRegistry.register(AIServiceType.Admin, new AdminAIService());
-    AIServiceRegistry.register(AIServiceType.Compliance, new ComplianceAIService());
-    AIServiceRegistry.register(AIServiceType.Community, new CommunityAIService());
-    AIServiceRegistry.register(AIServiceType.Quotation, new QuotationAIService());
+    // We'll load the services lazily to avoid circular dependencies
+    // Import services dynamically only when initializing
+    import("./InvestmentAIService").then(({ InvestmentAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Investment, new InvestmentAIService());
+    });
+    
+    import("./RegulatoryAIService").then(({ RegulatoryAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Regulatory, new RegulatoryAIService());
+    });
+
+    import("./InnovationAIService").then(({ InnovationAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Innovation, new InnovationAIService());
+    });
+
+    import("./KnowledgeAIService").then(({ KnowledgeAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Knowledge, new KnowledgeAIService());
+    });
+
+    import("./PolicyAIService").then(({ PolicyAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Policy, new PolicyAIService());
+    });
+
+    import("./challenge/ChallengeAIService").then(({ ChallengeAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Challenge, new ChallengeAIService());
+    });
+
+    import("./support/SupportAIService").then(({ SupportAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Support, new SupportAIService());
+    });
+
+    import("./clinical/ClinicalAIService").then(({ ClinicalAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Clinical, new ClinicalAIService());
+    });
+
+    import("./events/EventsAIService").then(({ EventsAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Events, new EventsAIService());
+    });
+
+    import("./admin/AdminAIService").then(({ AdminAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Admin, new AdminAIService());
+    });
+
+    import("./compliance/ComplianceAIService").then(({ ComplianceAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Compliance, new ComplianceAIService());
+    });
+
+    import("./community/CommunityAIService").then(({ CommunityAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Community, new CommunityAIService());
+    });
+
+    import("./quotation/QuotationAIService").then(({ QuotationAIService }) => {
+      AIServiceRegistry.register(AIServiceType.Quotation, new QuotationAIService());
+    });
   }
 }
 

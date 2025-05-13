@@ -11,6 +11,9 @@ export interface Event {
   tags?: string[];
   presenter?: string;
   registrationUrl?: string;
+  eventType: string;  // Added this property
+  status: string;     // Added this property
+  recordingUrl?: string; // Added this property
 }
 
 export interface EventRegistration {
