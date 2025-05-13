@@ -11,6 +11,7 @@ import { CircuitPattern } from "@/components/home/hero/animations/CircuitPattern
 import { DNAHelixAnimations } from "@/components/home/hero/animations/DNAHelixAnimations";
 import Lottie from "lottie-react";
 import healthAnimation from "@/assets/animations/health-innovation-anim.json";
+import EventsDashboard from "./EventsDashboard";
 
 export default function EventsHero() {
   return (
@@ -25,10 +26,20 @@ export default function EventsHero() {
       
       {/* Content */}
       <div className="container mx-auto px-4 py-12 md:py-24 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 min-h-[60vh] lg:min-h-[50vh]">
-          {/* Text content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 min-h-[60vh] lg:min-h-[50vh]">
+          {/* Dashboard - Left Side */}
           <motion.div 
-            className="max-w-3xl"
+            className="lg:col-span-5"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <EventsDashboard />
+          </motion.div>
+
+          {/* Text content - Right Side */}
+          <motion.div 
+            className="lg:col-span-7"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
@@ -74,33 +85,33 @@ export default function EventsHero() {
                 <Link to="/dashboard/collaboration/events">My Events</Link>
               </Button>
             </motion.div>
-          </motion.div>
-
-          {/* Animation */}
-          <motion.div
-            className="hidden lg:flex justify-center items-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
-            <div className="relative w-80 h-80">
-              <Lottie 
-                animationData={healthAnimation} 
-                loop={true} 
-                className="w-full h-full"
-              />
-              <motion.div
-                className="absolute inset-0 bg-moh-green/10 rounded-full"
-                animate={{
-                  boxShadow: [
-                    "0 0 20px 10px rgba(0,129,74,0.3)",
-                    "0 0 40px 20px rgba(0,129,74,0.2)",
-                    "0 0 20px 10px rgba(0,129,74,0.3)"
-                  ]
-                }}
-                transition={{ duration: 4, repeat: Infinity }}
-              />
-            </div>
+            
+            {/* Animation */}
+            <motion.div
+              className="hidden lg:flex justify-end items-center mt-8"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+            >
+              <div className="relative w-60 h-60">
+                <Lottie 
+                  animationData={healthAnimation} 
+                  loop={true} 
+                  className="w-full h-full"
+                />
+                <motion.div
+                  className="absolute inset-0 bg-moh-green/10 rounded-full"
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px 10px rgba(0,129,74,0.3)",
+                      "0 0 40px 20px rgba(0,129,74,0.2)",
+                      "0 0 20px 10px rgba(0,129,74,0.3)"
+                    ]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
