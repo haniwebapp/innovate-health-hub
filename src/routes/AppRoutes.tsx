@@ -1,36 +1,36 @@
 
-import { Routes, Route } from 'react-router-dom';
-import { PublicRoutes } from './PublicRoutes';
-import { AuthRoutes } from './AuthRoutes';
-import { InnovationSubmissionRoutes } from './InnovationSubmissionRoutes';
-import { DashboardMainRoutes } from './DashboardMainRoutes';
-import NotFound from '@/pages/NotFound';
-import PolicyPage from '@/pages/policy/index';
-import AIEnhancedPage from '@/pages/ai-enhanced/index';
+import { Routes, Route, Navigate } from "react-router-dom";
+import HomePage from "@/pages/home/index";
+import DashboardPage from "@/pages/dashboard/index";
+import MarketplacePage from "@/pages/marketplace/index";
+import AboutPage from "@/pages/about/index";
+import InnovationsPage from "@/pages/innovations/index";
+import InnovationDetailPage from "@/pages/innovations/[id]";
+import ChallengesPage from "@/pages/challenges/index";
+import { DashboardRoutes } from "./DashboardRoutes";
+import { DashboardInnovationRoutes } from "./DashboardInnovationRoutes";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
-export function AppRoutes() {
+export const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
-      {PublicRoutes}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/innovations" element={<InnovationsPage />} />
+      <Route path="/innovations/:id" element={<InnovationDetailPage />} />
+      <Route path="/challenges" element={<ChallengesPage />} />
       
-      {/* Auth Routes */}
-      {AuthRoutes}
+      {/* Added Marketplace route */}
+      <Route path="/marketplace" element={<MarketplacePage />} />
       
-      {/* Innovation Submission Flow - Protected */}
-      {InnovationSubmissionRoutes}
+      {/* Dashboard Routes */}
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<DashboardPage />} />
+        {DashboardRoutes}
+        {DashboardInnovationRoutes}
+      </Route>
       
-      {/* Main Dashboard with nested routes (including admin routes) */}
-      {DashboardMainRoutes}
-      
-      {/* Policy Page */}
-      <Route path="/policy" element={<PolicyPage />} />
-      
-      {/* AI Enhanced Features Page */}
-      <Route path="/ai-enhanced" element={<AIEnhancedPage />} />
-      
-      {/* 404 Route */}
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
-}
+};

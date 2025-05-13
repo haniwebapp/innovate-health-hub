@@ -1,153 +1,237 @@
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { NavbarMobileMenu } from "./NavbarMobileMenu";
-import { NavbarMainLinks } from "@/components/layouts/NavbarMainLinks";
-import NavbarUserMenu from "@/components/layouts/NavbarUserMenu";
-import { motion, AnimatePresence } from "framer-motion";
-import { Dialog } from "@/components/ui/dialog";
-import { SearchDialog } from "@/components/layouts/SearchDialog";
-import { ScrollFadeIn } from "@/components/animations/ScrollFadeIn";
-import { NotificationBadge } from "@/components/notifications/NotificationBadge";
 
 export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const { user } = useAuth();
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
-  // Handle scrolling effect with throttling for better performance
+  const isDashboardPage = location.pathname.includes('/dashboard');
+
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
     const handleScroll = () => {
-      lastScrollY = window.scrollY;
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrolled(lastScrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
       }
     };
-    window.addEventListener('scroll', handleScroll, {
-      passive: true
-    });
+
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  // Check if route is active
-  const isRouteActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(`${path}/`);
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
-  
+
+  // Don't render the navbar on dashboard pages
+  if (isDashboardPage) {
+    return null;
+  }
+
   return (
-    <>
-      {/* Optional announcement banner */}
-      <div className="bg-gradient-to-r from-moh-green to-moh-darkGreen text-white text-sm py-1.5">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <p>Welcome to the new Ministry of Health Innovation Platform! <Link to="/about" className="underline font-medium">Learn more</Link></p>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? "bg-white shadow-md py-3" : "bg-transparent py-5"
+      }`}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <img
+              src="/lovable-uploads/7502fd8d-a2d2-4400-ad7a-4acb41cd43e1.png"
+              alt="MOH Logo"
+              className="h-10"
+            />
+            <span
+              className={`ml-2 font-semibold text-xl ${
+                isScrolled ? "text-moh-darkGreen" : "text-moh-darkGreen"
+              }`}
+            >
+              Healthcare Innovation
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            <NavLink to="/" isActive={location.pathname === "/"} isScrolled={isScrolled}>
+              Home
+            </NavLink>
+            <NavLink to="/innovations" isActive={location.pathname === "/innovations"} isScrolled={isScrolled}>
+              Innovations
+            </NavLink>
+            <NavLink to="/challenges" isActive={location.pathname === "/challenges"} isScrolled={isScrolled}>
+              Challenges
+            </NavLink>
+            {/* Added Marketplace link */}
+            <NavLink to="/marketplace" isActive={location.pathname === "/marketplace"} isScrolled={isScrolled}>
+              Marketplace
+            </NavLink>
+            <NavLink to="/about" isActive={location.pathname === "/about"} isScrolled={isScrolled}>
+              About
+            </NavLink>
+            
+            {isAuthenticated ? (
+              <>
+                <Button asChild className="ml-2 bg-moh-green hover:bg-moh-darkGreen">
+                  <Link to="/dashboard">Dashboard</Link>
+                </Button>
+                <Button variant="ghost" onClick={handleLogout} className="text-moh-darkGreen">
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button asChild className="ml-2 bg-moh-green hover:bg-moh-darkGreen">
+                <Link to="/dashboard">Sign In</Link>
+              </Button>
+            )}
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={`p-2 focus:outline-none ${
+                isScrolled ? "text-moh-darkGreen" : "text-moh-darkGreen"
+              }`}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
-      
-      <header 
-        className={`relative z-50 transition-all duration-300 
-        ${scrolled 
-          ? 'bg-white/85 backdrop-blur-md shadow-sm py-2' 
-          : 'bg-transparent py-3'}`}
-      >
-        <motion.div 
-          className="container mx-auto px-4 sm:px-6 lg:px-8"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link to="/" className="flex items-center group">
-                  <motion.img 
-                    src="/lovable-uploads/90b8f7e1-a93b-49bc-9fd6-06a4beeff4e6.png" 
-                    alt="Ministry of Health Logo" 
-                    className={`transition-all duration-300 ${scrolled ? 'h-8' : 'h-10'} w-auto object-contain`}
-                  />
-                </Link>
-              </motion.div>
-            </div>
-            
-            <NavbarMainLinks isRouteActive={isRouteActive} />
-            
-            <div className="hidden md:flex items-center space-x-4">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-moh-darkGreen hover:bg-moh-lightGreen/50 hover:text-moh-green rounded-full transition-colors"
-                onClick={() => setSearchOpen(true)}
-              >
-                <Search className="h-5 w-5" />
-                <span className="sr-only">Search</span>
-              </Button>
-              
-              <NotificationBadge />
-              
-              <div className="h-6 border-l border-gray-200 mx-1"></div>
-              
-              <NavbarUserMenu />
-            </div>
-            
-            {/* Mobile menu button with improved animation */}
-            <div className="flex md:hidden">
-              <Button 
-                type="button" 
-                variant="ghost" 
-                size="icon" 
-                className={`rounded-full transition-colors ${mobileMenuOpen ? 'bg-moh-lightGreen text-moh-green' : 'text-moh-darkGreen'}`}
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-                aria-expanded={mobileMenuOpen} 
-                aria-label="Toggle navigation menu"
-              >
-                <AnimatePresence initial={false} mode="wait">
-                  {mobileMenuOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <X className="h-5 w-5" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Menu className="h-5 w-5" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-      </header>
-      
-      {/* Mobile menu with improved animation */}
-      <AnimatePresence>
-        {mobileMenuOpen && <NavbarMobileMenu isRouteActive={isRouteActive} setMobileMenuOpen={setMobileMenuOpen} />}
-      </AnimatePresence>
 
-      {/* Search Dialog */}
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-    </>
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white shadow-lg"
+          >
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-3">
+              <MobileNavLink to="/" onClick={() => setMobileMenuOpen(false)}>
+                Home
+              </MobileNavLink>
+              <MobileNavLink to="/innovations" onClick={() => setMobileMenuOpen(false)}>
+                Innovations
+              </MobileNavLink>
+              <MobileNavLink to="/challenges" onClick={() => setMobileMenuOpen(false)}>
+                Challenges
+              </MobileNavLink>
+              {/* Added Marketplace link */}
+              <MobileNavLink to="/marketplace" onClick={() => setMobileMenuOpen(false)}>
+                Marketplace
+              </MobileNavLink>
+              <MobileNavLink to="/about" onClick={() => setMobileMenuOpen(false)}>
+                About
+              </MobileNavLink>
+              
+              {isAuthenticated ? (
+                <>
+                  <MobileNavLink to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    Dashboard
+                  </MobileNavLink>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-moh-darkGreen w-full justify-start px-3"
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="bg-moh-green hover:bg-moh-darkGreen w-full justify-center"
+                  asChild
+                >
+                  <Link to="/dashboard">Sign In</Link>
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
+
+interface NavLinkProps {
+  children: React.ReactNode;
+  to: string;
+  isActive: boolean;
+  isScrolled: boolean;
+}
+
+function NavLink({ children, to, isActive, isScrolled }: NavLinkProps) {
+  return (
+    <Link
+      to={to}
+      className={`px-3 py-2 rounded-md transition-colors relative ${
+        isActive
+          ? "text-moh-darkGreen font-medium"
+          : isScrolled
+          ? "text-gray-700 hover:text-moh-darkGreen"
+          : "text-moh-darkGreen hover:text-moh-green"
+      }`}
+    >
+      {children}
+      {isActive && (
+        <motion.div
+          layoutId="navbar-indicator"
+          className="absolute bottom-0 left-0 right-0 h-0.5 bg-moh-green"
+          initial={false}
+          transition={{
+            type: "spring",
+            stiffness: 500,
+            damping: 30,
+          }}
+        />
+      )}
+    </Link>
+  );
+}
+
+interface MobileNavLinkProps {
+  children: React.ReactNode;
+  to: string;
+  onClick: () => void;
+}
+
+function MobileNavLink({ children, to, onClick }: MobileNavLinkProps) {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={`px-3 py-2 ${
+        isActive
+          ? "text-moh-darkGreen font-medium bg-moh-lightGreen/20 rounded-md"
+          : "text-gray-700 hover:text-moh-darkGreen hover:bg-moh-lightGreen/10 rounded-md"
+      }`}
+    >
+      {children}
+    </Link>
   );
 }
