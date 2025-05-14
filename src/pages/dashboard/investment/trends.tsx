@@ -4,7 +4,7 @@ import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { AIInsightsCard } from '@/components/investment/AIInsightsCard';
-import { GeographicDistributionMap } from '@/components/investment/GeographicDistributionMap';
+import { MapboxGlobalMap } from '@/components/investment/MapboxGlobalMap';
 import { InvestorTypeAnalysis } from '@/components/investment/InvestorTypeAnalysis';
 
 // Mock data for the trends chart
@@ -76,7 +76,7 @@ export default function DashboardInvestmentTrendsPage() {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <GeographicDistributionMap />
+        <MapboxGlobalMap />
         <InvestorTypeAnalysis />
       </div>
     </div>
