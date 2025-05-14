@@ -1,2 +1,0 @@
-
-export { SupportWidget } from './SupportWidget';
