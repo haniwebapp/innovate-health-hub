@@ -2,18 +2,44 @@
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { InvestmentHotspot } from './types';
-import { MAPBOX_TOKEN } from './config';
+import { MAPBOX_TOKEN, isValidMapboxToken } from './config';
 
 interface UseMapboxGlobeProps {
   hotspots: InvestmentHotspot[];
 }
 
-export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps) {
+interface UseMapboxGlobeResult {
+  mapContainer: React.RefObject<HTMLDivElement>;
+  mapLoaded: boolean;
+  mapError: string | null;
+  updateMapboxToken: (token: string) => void;
+}
+
+export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlobeResult {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const popupRef = useRef<mapboxgl.Popup | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const [mapboxToken, setMapboxToken] = useState<string>(MAPBOX_TOKEN);
+
+  const updateMapboxToken = (token: string) => {
+    if (isValidMapboxToken(token)) {
+      localStorage.setItem('mapbox_token', token);
+      setMapboxToken(token);
+      setMapError(null);
+      
+      // Reinitialize map with new token
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+      initializeMap();
+    } else {
+      setMapError("Invalid Mapbox token format. Token should start with 'pk.' (public) or 'sk.' (secret).");
+    }
+  };
 
   const addHotspotMarkers = () => {
     if (!map.current) return;
@@ -103,102 +129,124 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps) {
     });
   };
 
-  // Initialize map when the component mounts
-  useEffect(() => {
+  const initializeMap = () => {
     if (!mapContainer.current) return;
-
-    // Initialize Mapbox
-    mapboxgl.accessToken = MAPBOX_TOKEN;
     
-    // Create the map instance
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      projection: { name: 'globe' } as mapboxgl.ProjectionSpecification,
-      zoom: 1.5,
-      center: [30, 25],
-      bearing: 0,
-      pitch: 45,
-    });
-
-    // Add navigation controls
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        visualizePitch: true,
-      }),
-      'top-right'
-    );
-
-    // Add globe effects
-    map.current.on('style.load', () => {
-      if (!map.current) return;
-      
-      // Add atmosphere and fog effects for a more realistic globe
-      map.current.setFog({
-        color: 'rgb(255, 255, 255)',
-        'high-color': 'rgb(200, 200, 225)',
-        'horizon-blend': 0.2,
-      });
-
-      // Add markers for investment hotspots after the map style loads
-      addHotspotMarkers();
-      
-      setMapLoaded(true);
-    });
-
-    // Globe rotation settings
-    const secondsPerRevolution = 240;
-    const maxSpinZoom = 3;
-    const slowSpinZoom = 2;
-    let userInteracting = false;
-    let spinEnabled = true;
-
-    // Function to make the globe spin automatically
-    function spinGlobe() {
-      if (!map.current) return;
-      
-      const zoom = map.current.getZoom();
-      if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
-        let distancePerSecond = 360 / secondsPerRevolution;
-        if (zoom > slowSpinZoom) {
-          const zoomDif = (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
-          distancePerSecond *= zoomDif;
-        }
-        const center = map.current.getCenter();
-        center.lng -= distancePerSecond;
-        map.current.easeTo({ center, duration: 1000, easing: (n) => n });
-      }
+    // Don't try to initialize if we don't have a valid token
+    if (!isValidMapboxToken(mapboxToken)) {
+      setMapError("Invalid Mapbox token. Please provide a valid token.");
+      return;
     }
 
-    // Control interaction states
-    map.current.on('mousedown', () => {
-      userInteracting = true;
-    });
-    
-    map.current.on('dragstart', () => {
-      userInteracting = true;
-    });
-    
-    map.current.on('mouseup', () => {
-      userInteracting = false;
-      setTimeout(() => {
-        spinGlobe();
-      }, 1000);
-    });
-    
-    map.current.on('touchend', () => {
-      userInteracting = false;
-      setTimeout(() => {
-        spinGlobe();
-      }, 1000);
-    });
+    try {
+      // Initialize Mapbox
+      mapboxgl.accessToken = mapboxToken;
+      
+      // Create the map instance
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        projection: { name: 'globe' } as mapboxgl.ProjectionSpecification,
+        zoom: 1.5,
+        center: [30, 25],
+        bearing: 0,
+        pitch: 45,
+      });
 
-    map.current.on('moveend', () => {
+      // Add navigation controls
+      map.current.addControl(
+        new mapboxgl.NavigationControl({
+          visualizePitch: true,
+        }),
+        'top-right'
+      );
+
+      // Handle map load errors
+      map.current.on('error', (e) => {
+        console.error('Mapbox error:', e);
+        setMapError(`Error loading map: ${e.error?.message || 'Unknown error'}`);
+      });
+
+      // Add globe effects
+      map.current.on('style.load', () => {
+        if (!map.current) return;
+        
+        // Add atmosphere and fog effects for a more realistic globe
+        map.current.setFog({
+          color: 'rgb(255, 255, 255)',
+          'high-color': 'rgb(200, 200, 225)',
+          'horizon-blend': 0.2,
+        });
+
+        // Add markers for investment hotspots after the map style loads
+        addHotspotMarkers();
+        
+        setMapLoaded(true);
+        setMapError(null);
+      });
+
+      // Globe rotation settings
+      const secondsPerRevolution = 240;
+      const maxSpinZoom = 3;
+      const slowSpinZoom = 2;
+      let userInteracting = false;
+      let spinEnabled = true;
+
+      // Function to make the globe spin automatically
+      function spinGlobe() {
+        if (!map.current) return;
+        
+        const zoom = map.current.getZoom();
+        if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+          let distancePerSecond = 360 / secondsPerRevolution;
+          if (zoom > slowSpinZoom) {
+            const zoomDif = (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+            distancePerSecond *= zoomDif;
+          }
+          const center = map.current.getCenter();
+          center.lng -= distancePerSecond;
+          map.current.easeTo({ center, duration: 1000, easing: (n) => n });
+        }
+      }
+
+      // Control interaction states
+      map.current.on('mousedown', () => {
+        userInteracting = true;
+      });
+      
+      map.current.on('dragstart', () => {
+        userInteracting = true;
+      });
+      
+      map.current.on('mouseup', () => {
+        userInteracting = false;
+        setTimeout(() => {
+          spinGlobe();
+        }, 1000);
+      });
+      
+      map.current.on('touchend', () => {
+        userInteracting = false;
+        setTimeout(() => {
+          spinGlobe();
+        }, 1000);
+      });
+
+      map.current.on('moveend', () => {
+        spinGlobe();
+      });
+
+      // Start the globe spinning
       spinGlobe();
-    });
+    } catch (error) {
+      console.error('Error initializing map:', error);
+      setMapError(`Failed to initialize map: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
 
-    // Start the globe spinning
-    spinGlobe();
+  // Initialize map when the component mounts or when token changes
+  useEffect(() => {
+    initializeMap();
 
     // Cleanup on unmount
     return () => {
@@ -215,7 +263,7 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps) {
       // Remove the map
       map.current?.remove();
     };
-  }, [hotspots]);
+  }, [mapboxToken, hotspots]);
 
-  return { mapContainer, mapLoaded };
+  return { mapContainer, mapLoaded, mapError, updateMapboxToken };
 }

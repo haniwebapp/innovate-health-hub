@@ -20,5 +20,28 @@ export const regionData: RegionDataItem[] = [
   { region: 'Africa', percentage: 5, color: '#80C18E' },
 ];
 
-// Mapbox token - in a real app, this should come from env variables
-export const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZWRldiIsImEiOiJjbHUxbHRweWIwMHgxMmptaG5ycDN1MXVjIn0.AtBYM5P-XE9zLleaSTr8-Q';
+// Try to get token from localStorage first if available
+const getMapboxToken = (): string => {
+  const storedToken = localStorage.getItem('mapbox_token');
+  if (storedToken) {
+    return storedToken;
+  }
+  
+  // The token provided by the user (we'll use this as default if available)
+  const userToken = "sk.eyJ1IjoiaGFuaWFrcmltIiwiYSI6ImNtYW50ajVuNzAycnMyanF6ZHV6OG4zYzYifQ.xxtzPRhCkcAoDNLppIMAYw";
+  
+  // Store it for future use
+  if (userToken) {
+    localStorage.setItem('mapbox_token', userToken);
+  }
+  
+  return userToken;
+};
+
+// Mapbox token
+export const MAPBOX_TOKEN = getMapboxToken();
+
+// Check if the token is valid (starts with pk. for public tokens or sk. for secret tokens)
+export const isValidMapboxToken = (token: string): boolean => {
+  return !!token && (token.startsWith('pk.') || token.startsWith('sk.'));
+};
