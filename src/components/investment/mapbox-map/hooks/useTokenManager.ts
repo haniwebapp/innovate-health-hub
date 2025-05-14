@@ -13,12 +13,12 @@ export function useTokenManager() {
   const fetchToken = useCallback(async () => {
     try {
       setIsLoading(true);
+      setTokenError(null);
       
       // First try to get from localStorage
       const localToken = localStorage.getItem('mapbox_token');
       if (localToken && isValidMapboxToken(localToken)) {
         setMapboxToken(localToken);
-        setTokenError(null);
         console.log("Using token from localStorage");
         return localToken;
       }
@@ -30,22 +30,39 @@ export function useTokenManager() {
       if (token && isValidMapboxToken(token)) {
         localStorage.setItem('mapbox_token', token);
         setMapboxToken(token);
-        setTokenError(null);
         return token;
       } else {
-        setTokenError("No valid Mapbox public token available. Please provide a valid token that starts with 'pk.'");
+        const errorMsg = "No valid Mapbox public token available. Please provide a valid token that starts with 'pk.'";
+        setTokenError(errorMsg);
         console.error("Invalid token format received:", token);
+        
+        // Show toast for better user feedback
+        toast({
+          title: "Mapbox Token Error",
+          description: "Could not retrieve a valid Mapbox token. Please enter a valid token below.",
+          variant: "destructive",
+        });
+        
         return null;
       }
     } catch (error) {
       console.error("Error fetching Mapbox token:", error);
-      setTokenError("Failed to fetch Mapbox token. Please try again later or provide your own token.");
+      const errorMsg = "Failed to fetch Mapbox token. Please try again later or provide your own token.";
+      setTokenError(errorMsg);
+      
+      // Show toast for better user feedback
+      toast({
+        title: "Mapbox Token Error",
+        description: "Connection error when retrieving token. Please check your network or enter a token manually.",
+        variant: "destructive",
+      });
+      
       return null;
     } finally {
       setIsLoading(false);
       setFetchAttempted(true);
     }
-  }, []);
+  }, [toast]);
 
   const updateToken = useCallback((token: string) => {
     if (isValidMapboxToken(token)) {

@@ -1,5 +1,6 @@
 
 import { InvestmentHotspot, RegionDataItem } from './types';
+import { supabase } from "@/integrations/supabase/client";
 
 // Investment hotspot data
 export const investmentHotspots: InvestmentHotspot[] = [
@@ -32,28 +33,24 @@ export const getMapboxToken = async (): Promise<string | null> => {
     
     // If not available, fetch from our Supabase Edge Function
     console.log("Fetching Mapbox token from Edge Function");
-    const response = await fetch('https://ntgrokpnwizohtfkcfec.supabase.co/functions/v1/mapbox-token', {
+    
+    // Use the Supabase client to invoke the edge function with proper authentication
+    const { data, error } = await supabase.functions.invoke('mapbox-token', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Failed to fetch Mapbox token:', errorData);
+    if (error) {
+      console.error('Failed to fetch Mapbox token:', error);
       return null;
     }
-
-    const data = await response.json();
     
-    if (data.token && isValidMapboxToken(data.token)) {
+    if (data?.token && isValidMapboxToken(data.token)) {
       // Store it for future use
       localStorage.setItem('mapbox_token', data.token);
       console.log("Successfully retrieved and stored Mapbox token");
       return data.token;
     } else {
-      console.error("Received invalid token format from server");
+      console.error("Received invalid token format from server:", data);
       return null;
     }
   } catch (error) {

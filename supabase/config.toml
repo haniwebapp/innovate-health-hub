@@ -85,3 +85,6 @@ gcp_jwt_path = "supabase/gcloud.json"
 [functions]
 [functions.investment-insights]
 verify_jwt = true
+
+[functions.mapbox-token]
+verify_jwt = false
