@@ -5,7 +5,7 @@ export const mockEvents: Event[] = [
   {
     id: "1",
     title: "Healthcare Innovation Summit",
-    description: "Annual gathering of healthcare innovators and industry leaders to discuss emerging trends and solutions for the Saudi healthcare system.",
+    description: "Annual gathering of healthcare innovators and industry leaders to discuss emerging trends and solutions for the Saudi healthcare system. Join us for keynote speeches, panel discussions, and networking opportunities with the brightest minds in healthcare innovation.",
     eventType: "conference",
     startDate: new Date(2025, 5, 15),
     endDate: new Date(2025, 5, 17),
@@ -18,12 +18,13 @@ export const mockEvents: Event[] = [
     category: "Innovation",
     status: "upcoming",
     maxAttendees: 500,
-    tags: ["innovation", "leadership", "digital health"]
+    tags: ["innovation", "leadership", "digital health"],
+    registrationUrl: "https://example.com/register/healthcare-summit"
   },
   {
     id: "2",
     title: "Digital Health Webinar Series",
-    description: "Weekly webinar focusing on digital transformation in healthcare with expert speakers from around the globe.",
+    description: "Weekly webinar focusing on digital transformation in healthcare with expert speakers from around the globe. This session explores the latest trends in telehealth adoption and implementation strategies for healthcare providers.",
     eventType: "webinar",
     startDate: new Date(2025, 4, 20),
     endDate: new Date(2025, 4, 20),
@@ -35,12 +36,13 @@ export const mockEvents: Event[] = [
     category: "Digital Health",
     status: "upcoming",
     maxAttendees: 1000,
-    tags: ["digital health", "telemedicine", "health tech"]
+    tags: ["digital health", "telemedicine", "health tech"],
+    registrationUrl: "https://example.com/register/webinar"
   },
   {
     id: "3",
     title: "Regulatory Compliance Workshop",
-    description: "Hands-on workshop for healthcare innovators on regulatory requirements and how to navigate approval processes.",
+    description: "Hands-on workshop for healthcare innovators on regulatory requirements and how to navigate approval processes. Learn from experienced regulatory affairs professionals about the latest changes in healthcare regulation.",
     eventType: "workshop",
     startDate: new Date(2025, 3, 10),
     endDate: new Date(2025, 3, 10),
@@ -58,7 +60,7 @@ export const mockEvents: Event[] = [
   {
     id: "4",
     title: "Investment Roundtable for Healthcare Startups",
-    description: "Exclusive roundtable connecting healthcare innovators with potential investors and venture capital firms.",
+    description: "Exclusive roundtable connecting healthcare innovators with potential investors and venture capital firms. Pitch your healthcare innovation directly to leading investment firms specializing in healthcare.",
     eventType: "networking",
     startDate: new Date(2025, 6, 5),
     endDate: new Date(2025, 6, 5),
@@ -70,12 +72,13 @@ export const mockEvents: Event[] = [
     category: "Investment",
     status: "upcoming",
     maxAttendees: 30,
-    tags: ["investment", "venture capital", "startups"]
+    tags: ["investment", "venture capital", "startups"],
+    registrationUrl: "https://example.com/register/investment-roundtable"
   },
   {
     id: "5",
     title: "AI in Healthcare Symposium",
-    description: "Comprehensive overview of artificial intelligence applications in healthcare diagnostics, treatment, and operations.",
+    description: "Comprehensive overview of artificial intelligence applications in healthcare diagnostics, treatment, and operations. This two-day symposium brings together AI researchers, healthcare providers, and policymakers to explore the future of AI in healthcare.",
     eventType: "symposium",
     startDate: new Date(2025, 7, 12),
     endDate: new Date(2025, 7, 13),
@@ -88,12 +91,13 @@ export const mockEvents: Event[] = [
     category: "Technology",
     status: "upcoming",
     maxAttendees: 200,
-    tags: ["AI", "machine learning", "diagnostics"]
+    tags: ["AI", "machine learning", "diagnostics"],
+    registrationUrl: "https://example.com/register/ai-symposium"
   },
   {
     id: "6",
     title: "Telehealth Implementation Masterclass",
-    description: "Practical masterclass on implementing telehealth solutions in healthcare organizations across the Kingdom.",
+    description: "Practical masterclass on implementing telehealth solutions in healthcare organizations across the Kingdom. Learn best practices, overcome common challenges, and develop a roadmap for telehealth integration in your organization.",
     eventType: "masterclass",
     startDate: new Date(2025, 4, 5),
     endDate: new Date(2025, 4, 6),
@@ -106,7 +110,44 @@ export const mockEvents: Event[] = [
     category: "Digital Health",
     status: "upcoming",
     maxAttendees: 100,
-    tags: ["telehealth", "implementation", "healthcare delivery"]
+    tags: ["telehealth", "implementation", "healthcare delivery"],
+    registrationUrl: "https://example.com/register/telehealth-masterclass"
+  },
+  {
+    id: "7",
+    title: "Healthcare Data Analytics Workshop",
+    description: "In-depth workshop on leveraging data analytics to improve healthcare outcomes and operational efficiency. This hands-on event will provide practical skills for healthcare professionals to implement data-driven decision making.",
+    eventType: "workshop",
+    startDate: new Date(2025, 3, 25),
+    endDate: new Date(2025, 3, 26),
+    location: "KAUST, Thuwal",
+    isVirtual: false,
+    presenter: "Prof. Abdullah Malik",
+    presenterTitle: "Healthcare Data Science Chair",
+    presenterOrganization: "King Abdullah University of Science and Technology",
+    category: "Data Science",
+    status: "completed",
+    recordingUrl: "https://example.com/recordings/data-analytics-workshop",
+    maxAttendees: 75,
+    tags: ["data analytics", "healthcare outcomes", "decision making"]
+  },
+  {
+    id: "8",
+    title: "Medical Device Innovation Conference",
+    description: "Annual conference showcasing the latest innovations in medical devices and technologies. Connect with manufacturers, researchers, and healthcare providers at this premier medical technology event.",
+    eventType: "conference",
+    startDate: new Date(2025, 8, 18),
+    endDate: new Date(2025, 8, 20),
+    location: "Dhahran Expo Center",
+    isVirtual: false,
+    featured: true,
+    presenter: "Multiple Speakers",
+    presenterOrganization: "Saudi Medical Devices Association",
+    category: "Medical Devices",
+    status: "upcoming",
+    maxAttendees: 350,
+    tags: ["medical devices", "innovation", "technology"],
+    registrationUrl: "https://example.com/register/medical-device-conference"
   }
 ];
 

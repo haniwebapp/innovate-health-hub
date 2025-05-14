@@ -1,7 +1,6 @@
-
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { EventService } from "@/services/events/EventService";
+import { EventService } from "@/services/events";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,14 @@ export default function PastEvents() {
     queryKey: ['pastEvents'],
     queryFn: () => EventService.getPastEvents(4),
   });
+
+  // Array of high-quality background images for past events
+  const pastEventImages = [
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1472396961693-142e6e269027?q=80&w=2070&auto=format&fit=crop",
+  ];
 
   if (isLoading) {
     return (
@@ -60,13 +67,16 @@ export default function PastEvents() {
       </motion.div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {events.map((event, index) => {
+        {events?.map((event, index) => {
           const eventDate = new Date(event.startDate);
           const formattedDate = eventDate.toLocaleDateString('en-US', {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
           });
+          
+          // Use the image at this index, or the first image if we run out of images
+          const imageUrl = pastEventImages[index % pastEventImages.length];
 
           return (
             <motion.div
@@ -79,7 +89,12 @@ export default function PastEvents() {
                 {event.recordingUrl ? (
                   <div className="relative">
                     <AspectRatio ratio={16/9}>
-                      <div className="w-full h-full bg-gradient-to-br from-moh-green/5 to-moh-gold/5"></div>
+                      <img 
+                        src={imageUrl}
+                        alt={event.title} 
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     </AspectRatio>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="h-12 w-12 rounded-full bg-moh-green/90 flex items-center justify-center">

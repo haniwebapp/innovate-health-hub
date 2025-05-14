@@ -1,172 +1,81 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Calendar, Users, Globe } from "lucide-react";
-import { Link } from "react-router-dom";
-import { WaveDivider } from "@/components/animations/WaveDivider";
-import { GradientOrbs } from "@/components/home/hero/animations/GradientOrbs";
-import { FloatingParticles } from "@/components/home/hero/animations/FloatingParticles";
-import { CircuitPattern } from "@/components/home/hero/animations/CircuitPattern";
-import { DNAHelixAnimations } from "@/components/home/hero/animations/DNAHelixAnimations";
-import Lottie from "lottie-react";
-import healthAnimation from "@/assets/animations/health-innovation-anim.json";
-import EventsDashboard from "./EventsDashboard";
+import { Calendar, Users } from "lucide-react";
 
 export default function EventsHero() {
   return (
-    <div className="relative bg-moh-green text-white pb-16 overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute inset-0 opacity-20">
-        <GradientOrbs />
-        <FloatingParticles />
-        <CircuitPattern />
-        <DNAHelixAnimations />
+    <section className="relative overflow-hidden bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
+      {/* Background decoration elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-moh-gold blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-moh-lightGold blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-60 h-60 rounded-full bg-moh-darkGreen blur-3xl"></div>
       </div>
       
-      {/* Content */}
-      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        {/* Feature icons - Moved up above the grid */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.div
-            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Calendar className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Upcoming Events</h3>
-              <p className="text-sm opacity-80">Webinars, workshops & more</p>
-            </div>
-          </motion.div>
-          
-          <motion.div
-            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Users className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Expert Speakers</h3>
-              <p className="text-sm opacity-80">Industry leaders & innovators</p>
-            </div>
-          </motion.div>
-          
-          <motion.div
-            className="flex items-center gap-4 backdrop-blur-sm bg-white/5 p-4 rounded-lg border border-white/10"
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          >
-            <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Globe className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Global & Local</h3>
-              <p className="text-sm opacity-80">Virtual & in-person options</p>
-            </div>
-          </motion.div>
-        </motion.div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 min-h-[50vh] lg:min-h-[40vh]">
-          {/* Dashboard - Left Side */}
-          <motion.div 
-            className="lg:col-span-5"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <EventsDashboard />
-          </motion.div>
+      {/* Background image with overlay */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=2070&auto=format&fit=crop" 
+          alt="Healthcare professionals at a conference" 
+          className="w-full h-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-moh-darkGreen/90 to-moh-darkGreen/70"></div>
+      </div>
 
-          {/* Text content - Right Side */}
-          <motion.div 
-            className="lg:col-span-7"
+      <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+        <div className="max-w-3xl mx-auto text-center space-y-6">
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-block px-3 py-1 rounded-full bg-moh-green/30 text-moh-lightGreen text-sm font-medium"
+          >
+            Connect & Learn
+          </motion.span>
+          
+          <motion.h1 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ delay: 0.3 }}
           >
-            <motion.h1 
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
-              Healthcare Innovation Events
-            </motion.h1>
-            
-            <motion.p 
-              className="text-lg md:text-xl opacity-90 mb-8"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.4 }}
-            >
-              Connect, learn, and collaborate with healthcare innovators through
-              webinars, workshops, conferences, and networking opportunities.
-            </motion.p>
-            
-            <motion.div 
-              className="flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              <Button
-                size="lg"
-                className="bg-white text-moh-green hover:bg-white/90 hover:text-moh-darkGreen transition-colors"
-                asChild
-              >
-                <Link to="#upcoming">View All Events</Link>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
-                asChild
-              >
-                <Link to="/dashboard/collaboration/events">My Events</Link>
-              </Button>
-            </motion.div>
-            
-            {/* Animation */}
-            <motion.div
-              className="hidden lg:flex justify-end items-center mt-8"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-            >
-              <div className="relative w-60 h-60">
-                <Lottie 
-                  animationData={healthAnimation} 
-                  loop={true} 
-                  className="w-full h-full"
-                />
-                <motion.div
-                  className="absolute inset-0 bg-moh-green/10 rounded-full"
-                  animate={{
-                    boxShadow: [
-                      "0 0 20px 10px rgba(0,129,74,0.3)",
-                      "0 0 40px 20px rgba(0,129,74,0.2)",
-                      "0 0 20px 10px rgba(0,129,74,0.3)"
-                    ]
-                  }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                />
-              </div>
-            </motion.div>
+            Healthcare <span className="text-transparent bg-clip-text bg-gradient-to-r from-moh-gold to-moh-lightGold">Innovation Events</span>
+          </motion.h1>
+          
+          <motion.p 
+            className="text-lg md:text-xl text-moh-lightGreen/90"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Connect with healthcare innovators, investors, and policymakers at our events focused on transforming healthcare in Saudi Arabia through innovation and collaboration.
+          </motion.p>
+          
+          <motion.div
+            className="flex justify-center items-center gap-8 pt-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <div className="flex items-center">
+              <Calendar className="h-6 w-6 text-moh-gold mr-2" />
+              <span className="text-lg text-moh-lightGreen/90">30+ Events Annually</span>
+            </div>
+            <div className="flex items-center">
+              <Users className="h-6 w-6 text-moh-gold mr-2" />
+              <span className="text-lg text-moh-lightGreen/90">10,000+ Attendees</span>
+            </div>
           </motion.div>
         </div>
       </div>
       
       {/* Wave divider */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <WaveDivider color="#ffffff" />
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-12 text-white">
+          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.92,130.83,141.41,214.86,114.72,271.78,97.31,328.1,64.46,392.73,38.81" fill="currentColor"></path>
+        </svg>
       </div>
-    </div>
+    </section>
   );
 }

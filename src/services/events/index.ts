@@ -1,38 +1,25 @@
 
-export * from "./EventBaseService";
-export * from "./EventQueryService";
-export * from "./EventRegistrationService";
-
-// For backward compatibility, re-export as EventService
 import { EventQueryService } from "./EventQueryService";
-import { EventRegistrationService } from "./EventRegistrationService";
 
 export class EventService {
-  // Re-export methods from EventQueryService
-  static getAllEvents = EventQueryService.getAllEvents;
-  static getUpcomingEvents = EventQueryService.getUpcomingEvents;
-  static getPastEvents = EventQueryService.getPastEvents;
-  static getFeaturedEvents = EventQueryService.getFeaturedEvents;
-  static getEventById = EventQueryService.getEventById;
-  
-  // Re-export methods from EventRegistrationService
-  static registerForEvent = EventRegistrationService.registerForEvent;
-  static isUserRegisteredForEvent = EventRegistrationService.isUserRegisteredForEvent;
-  static submitEventFeedback = EventRegistrationService.submitEventFeedback;
-  static getUserEventRegistrations = EventRegistrationService.getUserEventRegistrations;
-  
-  // Instead of trying to re-export protected methods, create public wrapper methods
-  // that internally call the protected methods from the appropriate service classes
-  static mapDbEventsToClient(dbEvents: any[]): any[] {
-    // Since EventQueryService inherits from EventBaseService, it has access to the protected methods
-    return EventQueryService["mapDbEventsToClient"](dbEvents);
+  // Re-expose methods from EventQueryService
+  static async getAllEvents() {
+    return EventQueryService.getAllEvents();
   }
 
-  static mapDbEventToClient(dbEvent: any): any {
-    return EventQueryService["mapDbEventToClient"](dbEvent);
+  static async getUpcomingEvents(limit?: number) {
+    return EventQueryService.getUpcomingEvents(limit);
   }
 
-  static mapDbRegistrationToClient(dbReg: any): any {
-    return EventQueryService["mapDbRegistrationToClient"](dbReg);
+  static async getPastEvents(limit?: number) {
+    return EventQueryService.getPastEvents(limit);
+  }
+
+  static async getFeaturedEvents(limit: number = 3) {
+    return EventQueryService.getFeaturedEvents(limit);
+  }
+
+  static async getEventById(id: string) {
+    return EventQueryService.getEventById(id);
   }
 }

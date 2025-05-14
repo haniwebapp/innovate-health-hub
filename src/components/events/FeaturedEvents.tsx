@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users, Star, MapPin, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { EventService } from "@/services/events/EventService";
+import { EventService } from "@/services/events";
 import { motion } from "framer-motion";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -15,6 +15,13 @@ export default function FeaturedEvents() {
     queryKey: ['featuredEvents'],
     queryFn: () => EventService.getFeaturedEvents(3),
   });
+
+  // Array of high-quality background images for events
+  const eventImages = [
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop"
+  ];
 
   if (isLoading) {
     return (
@@ -68,7 +75,7 @@ export default function FeaturedEvents() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events.map((event, index) => {
+        {events?.map((event, index) => {
           const eventDate = new Date(event.startDate);
           const formattedDate = eventDate.toLocaleDateString('en-US', {
             month: 'long',
@@ -79,6 +86,9 @@ export default function FeaturedEvents() {
             hour: '2-digit',
             minute: '2-digit',
           });
+          
+          // Use the image at this index, or the first image if we run out of images
+          const imageUrl = eventImages[index % eventImages.length];
 
           return (
             <motion.div
@@ -90,9 +100,12 @@ export default function FeaturedEvents() {
               <Card className="overflow-hidden h-full flex flex-col border-moh-gold/20 shadow-md hover:shadow-lg transition-all duration-300">
                 <div className="relative">
                   <AspectRatio ratio={16/9}>
-                    <div className="w-full h-full bg-gradient-to-br from-moh-green/10 to-moh-gold/10 flex items-center justify-center">
-                      <div className="text-3xl text-moh-green/20 font-bold">{event.eventType.toUpperCase()}</div>
-                    </div>
+                    <img 
+                      src={imageUrl}
+                      alt={event.title} 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   </AspectRatio>
                   <div className="absolute top-2 right-2">
                     <Badge className="bg-amber-500 text-white hover:bg-amber-600 flex items-center gap-1">
@@ -122,7 +135,7 @@ export default function FeaturedEvents() {
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-moh-green" />
                       <span className="text-gray-600">
-                        {Math.round((new Date(event.endDate).getTime() - new Date(event.startDate).getTime()) / (1000 * 60))} minutes
+                        {Math.round((new Date(event.endDate).getTime() - new Date(event.startDate).getTime()) / (1000 * 60 * 60))} hours
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
