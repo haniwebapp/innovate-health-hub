@@ -22,6 +22,7 @@ export interface Event {
 }
 
 export interface EventRegistration {
+  id: string;
   eventId: string;
   userId: string;
   registrationDate: Date;

@@ -1,5 +1,5 @@
 
-import { Event, EventRegistration } from "@/types/eventTypes";
+import { Event, EventRegistration } from "@/types/events";
 
 export class EventBaseService {
   /**
@@ -41,6 +41,7 @@ export class EventBaseService {
    */
   protected static mapDbRegistrationToClient(dbRegistration: any): EventRegistration {
     return {
+      id: dbRegistration.id,
       eventId: dbRegistration.event_id,
       userId: dbRegistration.user_id,
       registrationDate: new Date(dbRegistration.registration_date),

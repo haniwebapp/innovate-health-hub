@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { EventRegistration } from "@/types/eventTypes";
+import { EventRegistration } from "@/types/events";
 import { EventBaseService } from "./EventBaseService";
 
 export class EventRegistrationService extends EventBaseService {
