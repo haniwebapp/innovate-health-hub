@@ -9,6 +9,7 @@ import PolicyPage from '@/pages/policy/index';
 import AIEnhancedPage from '@/pages/ai-enhanced/index';
 import EventsPage from '@/pages/events/index';
 import EventsArchivePage from '@/pages/events/archive';
+import EventDetailsPage from '@/pages/events/details/[id]';
 import TeamManagementPage from '@/pages/dashboard/team/index';
 import Index from '@/pages/Index';
 
@@ -39,6 +40,7 @@ export function AppRoutes() {
       {/* Events Pages */}
       <Route path="/events" element={<EventsPage />} />
       <Route path="/events/archive" element={<EventsArchivePage />} />
+      <Route path="/events/details/:id" element={<EventDetailsPage />} />
       
       {/* AI Enhanced Features Page */}
       <Route path="/ai-enhanced" element={<AIEnhancedPage />} />

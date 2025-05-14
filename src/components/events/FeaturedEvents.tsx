@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -148,7 +147,7 @@ export default function FeaturedEvents() {
                 
                 <CardFooter className="pt-2 flex justify-between">
                   <Button variant="outline" asChild className="border-moh-green text-moh-green hover:bg-moh-green/5">
-                    <Link to={`/events/${event.id}`}>Details</Link>
+                    <Link to={`/events/details/${event.id}`}>Details</Link>
                   </Button>
                   <Button className="bg-moh-green hover:bg-moh-darkGreen">Register</Button>
                 </CardFooter>
