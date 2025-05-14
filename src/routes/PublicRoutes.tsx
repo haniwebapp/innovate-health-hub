@@ -7,6 +7,7 @@ import ChallengesPage from '@/pages/challenges';
 import ChallengeDetails from '@/pages/challenges/[id]';
 import InnovationsPage from '@/pages/innovations';
 import InnovationDetails from '@/pages/innovations/[id]';
+import InnovationSubmitPage from '@/pages/innovations/submit';
 import InvestmentPage from '@/pages/investment';
 import RegulatoryPage from '@/pages/regulatory';
 import KnowledgeHubPage from '@/pages/knowledge-hub';
@@ -27,6 +28,7 @@ export const PublicRoutes = (
     <Route path="/challenges/:id" element={<ChallengeDetails />} />
     <Route path="/innovations" element={<InnovationsPage />} />
     <Route path="/innovations/:id" element={<InnovationDetails />} />
+    <Route path="/innovations/submit/*" element={<InnovationSubmitPage />} />
     <Route path="/investment" element={<InvestmentPage />} />
     <Route path="/regulatory" element={<RegulatoryPage />} />
     <Route path="/knowledge-hub" element={<KnowledgeHubPage />} />

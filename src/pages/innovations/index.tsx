@@ -226,7 +226,7 @@ export default function InnovationsPage() {
                     Explore Innovations
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </a>
-                  <a href="/dashboard/submit-innovation" className="border border-moh-gold/50 text-moh-lightGold hover:bg-moh-darkGreen/20 font-medium py-3 px-6 rounded-lg flex items-center justify-center">
+                  <a href="/innovations/submit/basic-info" className="border border-moh-gold/50 text-moh-lightGold hover:bg-moh-darkGreen/20 font-medium py-3 px-6 rounded-lg flex items-center justify-center">
                     Submit Your Innovation
                   </a>
                 </motion.div>
