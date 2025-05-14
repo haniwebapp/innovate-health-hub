@@ -8,6 +8,7 @@ import NotFound from '@/pages/NotFound';
 import PolicyPage from '@/pages/policy/index';
 import AIEnhancedPage from '@/pages/ai-enhanced/index';
 import EventsPage from '@/pages/events/index';
+import EventsArchivePage from '@/pages/events/archive';
 import TeamManagementPage from '@/pages/dashboard/team/index';
 import Index from '@/pages/Index';
 
@@ -35,8 +36,9 @@ export function AppRoutes() {
       {/* Policy Page */}
       <Route path="/policy" element={<PolicyPage />} />
       
-      {/* Events Page */}
+      {/* Events Pages */}
       <Route path="/events" element={<EventsPage />} />
+      <Route path="/events/archive" element={<EventsArchivePage />} />
       
       {/* AI Enhanced Features Page */}
       <Route path="/ai-enhanced" element={<AIEnhancedPage />} />
