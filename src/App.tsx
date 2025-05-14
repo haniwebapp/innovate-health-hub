@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './providers/AppProviders';
 import { AppRoutes } from './routes/AppRoutes';
 import { FahadChatContainer } from './components/chat/FahadChatContainer';
+import { SupportWidget } from './components/support/widget';
 import './App.css';
 import './services/ai/AIServiceRegistry'; // Import the registry to ensure services get registered
 
@@ -16,6 +17,7 @@ function App() {
       <BrowserRouter>
         <AppRoutes />
         <FahadChatContainer />
+        <SupportWidget />
       </BrowserRouter>
     </AppProviders>
   );
