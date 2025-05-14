@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { EventService } from "@/services/events";
 import { motion } from "framer-motion";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { EventRegistrationButton } from "@/components/events/EventRegistrationButton";
 
 export default function FeaturedEvents() {
   const { data: events, isLoading, error } = useQuery({
@@ -149,7 +151,7 @@ export default function FeaturedEvents() {
                   <Button variant="outline" asChild className="border-moh-green text-moh-green hover:bg-moh-green/5">
                     <Link to={`/events/details/${event.id}`}>Details</Link>
                   </Button>
-                  <Button className="bg-moh-green hover:bg-moh-darkGreen">Register</Button>
+                  <EventRegistrationButton eventId={event.id} />
                 </CardFooter>
               </Card>
             </motion.div>
