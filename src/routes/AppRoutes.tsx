@@ -9,10 +9,14 @@ import PolicyPage from '@/pages/policy/index';
 import AIEnhancedPage from '@/pages/ai-enhanced/index';
 import EventsPage from '@/pages/events/index';
 import TeamManagementPage from '@/pages/dashboard/team/index';
+import Index from '@/pages/Index';
 
 export function AppRoutes() {
   return (
     <Routes>
+      {/* Root Route */}
+      <Route path="/" element={<Index />} />
+      
       {/* Public Routes */}
       {PublicRoutes}
       
