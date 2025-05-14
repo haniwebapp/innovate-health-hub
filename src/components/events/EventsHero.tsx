@@ -65,7 +65,7 @@ export default function EventsHero() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-white text-white hover:bg-white/10"
+                  className="border-moh-gold text-moh-gold hover:bg-moh-gold/10"
                 >
                   Submit Event <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
