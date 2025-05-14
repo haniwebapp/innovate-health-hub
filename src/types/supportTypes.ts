@@ -15,7 +15,7 @@ export interface SupportTicket {
   updated_at: string;
   resolved_at?: string;
   // New fields
-  metadata?: Record<string, any>;
+  metadata?: any;
   tags?: string[];
   satisfaction_rating?: number;
   response_time_minutes?: number;
@@ -34,7 +34,7 @@ export interface SupportInteraction {
   // New fields
   feedback?: boolean;
   ai_generated?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: any;
   tags?: string[];
 }
 

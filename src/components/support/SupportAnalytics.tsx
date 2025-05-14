@@ -46,7 +46,15 @@ export default function SupportAnalytics() {
       
       // Process ticket data for charts
       if (ticketsData) {
-        processTicketDataForCharts(ticketsData);
+        // Cast and transform the data to ensure it matches the SupportTicket type
+        const typedTickets: SupportTicket[] = ticketsData.map(ticket => ({
+          ...ticket,
+          priority: ticket.priority as 'low' | 'medium' | 'high' | 'critical',
+          status: ticket.status as 'open' | 'in-progress' | 'resolved' | 'closed',
+          metadata: ticket.metadata || {}
+        }));
+        
+        processTicketDataForCharts(typedTickets);
       }
     } catch (error: any) {
       console.error("Error fetching analytics data:", error);

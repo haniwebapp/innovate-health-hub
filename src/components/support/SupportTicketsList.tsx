@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -61,6 +60,7 @@ export default function SupportTicketsList() {
           ...ticket,
           priority: ticket.priority as 'low' | 'medium' | 'high' | 'critical',
           status: ticket.status as 'open' | 'in-progress' | 'resolved' | 'closed',
+          metadata: ticket.metadata || {}
         }));
         setTickets(typedTickets);
       }

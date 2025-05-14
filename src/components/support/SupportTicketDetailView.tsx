@@ -52,8 +52,21 @@ export default function SupportTicketDetailView({ ticketId, onClose }: SupportTi
       
       if (interactionsError) throw interactionsError;
       
-      setTicket(ticketData);
-      setInteractions(interactionsData || []);
+      // Cast the data to the correct types
+      const typedTicket: SupportTicket = {
+        ...ticketData,
+        priority: ticketData.priority as 'low' | 'medium' | 'high' | 'critical',
+        status: ticketData.status as 'open' | 'in-progress' | 'resolved' | 'closed',
+      };
+      
+      const typedInteractions: SupportInteraction[] = interactionsData?.map(interaction => ({
+        ...interaction,
+        // Ensure metadata is properly handled
+        metadata: interaction.metadata || {},
+      })) || [];
+      
+      setTicket(typedTicket);
+      setInteractions(typedInteractions);
     } catch (error: any) {
       console.error("Error fetching ticket details:", error);
       toast({
