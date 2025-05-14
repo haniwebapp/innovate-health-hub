@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,139 +8,141 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Zap, Brain, BarChart3, TrendingUp, Info, AreaChart } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { InvestmentInsightsService } from "@/services/investment/InvestmentInsightsService";
 import { InvestmentAIService, MarketTrendParams } from "@/services/ai/InvestmentAIService";
-import { AIMatchScoreCard } from "./AIMatchScoreCard";
-import { AIInsightsCard } from "./AIInsightsCard";
 
-// Sample innovation data for testing
-const testInnovationData = {
+// Sample data for demonstration
+const testInnovation = {
   name: "HealthMonitor Pro",
-  description: "A wearable device that continuously monitors vital signs and uses AI to detect early warning signs of health issues.",
-  stage: "early",
-  sector: "Digital Health",
-  fundingNeeded: 2000000,
-  teamSize: 8,
-  traction: "500 beta users, 3 hospital partnerships",
-  patentStatus: "Patent pending",
-  regulatoryStatus: "FDA approval in progress"
+  description: "Continuous remote monitoring solution for chronic disease patients with AI-powered anomaly detection.",
+  sector: "digital-health",
+  stage: "early-growth",
+  fundingNeeded: 2500000,
+  teamSize: 12,
+  traction: "2,500 active users, 5 hospital partnerships"
 };
 
-export function InvestmentAISection() {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [activeTab, setActiveTab] = useState('matching');
-  const [selectedSector, setSelectedSector] = useState('digital-health');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [aiMatchScores, setAiMatchScores] = useState<any[]>([]);
-  const [aiInsights, setAiInsights] = useState<string[]>([]);
-  const [marketTrendInsights, setMarketTrendInsights] = useState<any>(null);
-  const [buttonClicked, setButtonClicked] = useState(false);
-  const { toast } = useToast();
+// Sample match results
+const sampleMatches = [
+  {
+    id: 1,
+    name: "Saudi Health Ventures",
+    matchScore: 92,
+    investmentRange: "$1M - $5M",
+    focusSectors: ["Digital Health", "Medical Devices"],
+    stage: "Early Stage",
+    notable: "Backed 15 successful healthcare startups"
+  },
+  {
+    id: 2,
+    name: "MENA Healthcare Fund",
+    matchScore: 87,
+    investmentRange: "$500K - $3M",
+    focusSectors: ["Telemedicine", "Health AI"],
+    stage: "Seed, Series A",
+    notable: "Strong connections with regional healthcare systems"
+  },
+  {
+    id: 3,
+    name: "Vision Medical Capital",
+    matchScore: 84,
+    investmentRange: "$1M - $10M",
+    focusSectors: ["Digital Therapeutics", "Remote Care"],
+    stage: "Series A",
+    notable: "Focus on Vision 2030 healthcare transformation"
+  }
+];
 
+export function InvestmentAISection() {
+  const [activeTab, setActiveTab] = useState("matching");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSector, setSelectedSector] = useState("all");
+  const [selectedStage, setSelectedStage] = useState("early");
+  const [selectedRegion, setSelectedRegion] = useState("saudi");
+  const [selectedSize, setSelectedSize] = useState("1m-5m");
+  const [buttonClicked, setButtonClicked] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [matchResults, setMatchResults] = useState(sampleMatches);
+  const [aiInsights, setAiInsights] = useState<string[]>([]);
+  const [marketTrends, setMarketTrends] = useState<any>(null);
+  
+  const { toast } = useToast();
+  
   const handleAnalysis = async () => {
-    setIsAnalyzing(true);
     setButtonClicked(true);
+    setIsAnalyzing(true);
     
     try {
-      // Generate investment matches based on test data
-      const matchResult = await InvestmentAIService.generateMatchAnalysis(
-        testInnovationData,
-        {
-          investmentFocus: [selectedSector],
-          investmentStage: ["early"],
-          geographicFocus: ["Saudi Arabia"],
-          investmentSizeMin: 500000,
-          investmentSizeMax: 5000000
-        }
-      );
-      
-      // Generate market analysis for the selected sector
-      const marketParams: MarketTrendParams = {
-        sector: selectedSector === 'all' ? 'Healthcare' : selectedSector.replace('-', ' '),
-        timeframe: "Next 2 years",
-        region: "Saudi Arabia"
-      };
-      
-      const marketAnalysis = await InvestmentAIService.generateMarketAnalysis(marketParams);
-      
-      // Create formatted match scores for display
-      const formattedMatchScores = [
-        {
-          name: "Connected Health Solutions Fund",
-          score: matchResult.matchScore,
-          reason: matchResult.mainReasons[0] || "Strong alignment with your digital health focus and target market.",
-          additionalInfo: [
-            { label: "Investment Range", value: "$500K-2M" },
-            { label: "Focus", value: "Digital Health" },
-            { label: "Time to Decision", value: "4-6 weeks" }
-          ]
-        },
-        {
-          name: "Saudi Healthcare Innovation Fund",
-          score: Math.max(30, matchResult.matchScore - 12),
-          reason: matchResult.mainReasons[1] || "Good fit for early-stage healthcare startups with traction.",
-          additionalInfo: [
-            { label: "Investment Range", value: "$1M-5M" },
-            { label: "Focus", value: "Healthcare Tech" },
-            { label: "Time to Decision", value: "6-8 weeks" }
-          ]
-        },
-        {
-          name: "Medical Device Growth Partners",
-          score: Math.max(20, matchResult.matchScore - 20),
-          reason: matchResult.mainReasons[2] || "Potential match for hardware-focused healthcare solutions.",
-          additionalInfo: [
-            { label: "Investment Range", value: "$2M-10M" },
-            { label: "Focus", value: "Medical Devices" },
-            { label: "Time to Decision", value: "8-10 weeks" }
-          ]
-        }
-      ];
-      
-      setAiMatchScores(formattedMatchScores);
-      
-      // Set AI insights from the SWOT analysis
-      const insights = [
-        ...matchResult.swotAnalysis.opportunities.map(o => o),
-        ...matchResult.keyMetrics.map(m => `Key metric to highlight: ${m}`),
-        matchResult.recommendedApproach,
-        ...matchResult.swotAnalysis.strengths.map(s => `Strength: ${s}`)
-      ].slice(0, 4);
+      // Generate AI insights
+      const insights = await InvestmentInsightsService.getInsights({
+        sector: selectedSector,
+        stage: selectedStage,
+        region: selectedRegion,
+        investmentSize: selectedSize
+      });
       
       setAiInsights(insights);
       
-      // Set market trends
-      setMarketTrendInsights(marketAnalysis);
+      // Also generate market analysis
+      try {
+        const marketAnalysis = await InvestmentAIService.generateMarketAnalysis({
+          sector: selectedSector === 'all' ? 'digital health' : selectedSector,
+          timeframe: '2025-2030',
+          region: selectedRegion === 'saudi' ? 'Saudi Arabia' : selectedRegion === 'gcc' ? 'GCC' : 'MENA'
+        });
+        
+        setMarketTrends(marketAnalysis);
+      } catch (marketError) {
+        console.error("Error generating market analysis:", marketError);
+      }
       
       toast({
-        title: "Analysis Complete",
-        description: "AI has analyzed the latest market trends and investment opportunities.",
+        title: "Analysis complete!",
+        description: "AI has analyzed investment data and generated insights.",
       });
-    } catch (error: any) {
-      console.error("Analysis error:", error);
+    } catch (error) {
+      console.error("Error during analysis:", error);
       toast({
-        title: "Analysis Error",
-        description: error.message || "An error occurred during analysis",
-        variant: "destructive"
+        title: "Analysis failed",
+        description: "Unable to complete investment analysis. Please try again.",
+        variant: "destructive",
       });
+      
+      // Set fallback insights
+      setAiInsights([
+        "Healthcare AI solutions focusing on preventative care are seeing increased investor interest due to their potential for reducing healthcare costs.",
+        "Telemedicine platforms with specialized features for chronic disease management show strong growth potential in the Saudi market.",
+        "Investors are prioritizing healthcare startups that demonstrate clear integration pathways with existing healthcare systems.",
+        "Digital health solutions that align with Vision 2030 healthcare goals are attracting premium valuations.",
+        "Regional investors prefer startups with a clear regulatory compliance strategy and established clinical validation."
+      ]);
     } finally {
       setIsAnalyzing(false);
-      // Keep button in active state for visual feedback
-      setTimeout(() => setButtonClicked(false), 3000);
+      
+      // Switch to insights tab after analysis
+      setTimeout(() => {
+        setActiveTab("insights");
+      }, 500);
     }
   };
   
-  // Auto-run analysis on first load
-  useEffect(() => {
-    handleAnalysis();
-  }, []);
+  const filteredMatches = matchResults.filter(match => {
+    if (!searchQuery) return true;
+    return (
+      match.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      match.focusSectors.some(sector => 
+        sector.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  });
 
   return (
     <section className="py-16 bg-gradient-to-br from-moh-green via-moh-darkGreen to-moh-green text-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <Badge className="bg-moh-gold text-white mb-3">AI-POWERED</Badge>
-          <h2 className="text-3xl font-bold mb-3">Smart Investment Intelligence</h2>
-          <p className="max-w-2xl mx-auto text-moh-lightGreen">
+          <h2 className="text-3xl font-bold mb-3 text-white">Smart Investment Intelligence</h2>
+          <p className="max-w-2xl mx-auto text-white">
             Leverage AI-powered analysis to find the best matches for your healthcare innovation or investment strategy.
           </p>
         </div>
@@ -149,17 +152,17 @@ export function InvestmentAISection() {
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 space-y-6 h-full">
               <div className="flex items-center space-x-4">
                 <div className="bg-moh-gold/50 p-3 rounded-lg">
-                  <Brain className="h-6 w-6" />
+                  <Brain className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-xl">AI Investment Assistant</h3>
-                  <p className="text-moh-lightGreen text-sm">Intelligent analysis and matching</p>
+                  <h3 className="font-semibold text-xl text-white">AI Investment Assistant</h3>
+                  <p className="text-white text-sm">Intelligent analysis and matching</p>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
+                  <label className="block text-sm font-medium mb-1.5 text-white">
                     Investment Sector
                   </label>
                   <Select value={selectedSector} onValueChange={setSelectedSector}>
@@ -178,10 +181,10 @@ export function InvestmentAISection() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
+                  <label className="block text-sm font-medium mb-1.5 text-white">
                     Investment Stage
                   </label>
-                  <Select defaultValue="early">
+                  <Select value={selectedStage} onValueChange={setSelectedStage}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue placeholder="Select stage" />
                     </SelectTrigger>
@@ -196,10 +199,10 @@ export function InvestmentAISection() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
+                  <label className="block text-sm font-medium mb-1.5 text-white">
                     Geographic Focus
                   </label>
-                  <Select defaultValue="saudi">
+                  <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue placeholder="Select region" />
                     </SelectTrigger>
@@ -213,10 +216,10 @@ export function InvestmentAISection() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-1.5 text-moh-lightGreen">
+                  <label className="block text-sm font-medium mb-1.5 text-white">
                     Investment Size
                   </label>
-                  <Select defaultValue="1m-5m">
+                  <Select value={selectedSize} onValueChange={setSelectedSize}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
@@ -260,19 +263,19 @@ export function InvestmentAISection() {
               <TabsList className="bg-white/10 p-1">
                 <TabsTrigger 
                   value="matching" 
-                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white"
+                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white text-white"
                 >
                   Investment Matches
                 </TabsTrigger>
                 <TabsTrigger 
                   value="insights" 
-                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white"
+                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white text-white"
                 >
                   AI Insights
                 </TabsTrigger>
                 <TabsTrigger 
                   value="trends" 
-                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white"
+                  className="data-[state=active]:bg-moh-gold data-[state=active]:text-white text-white"
                 >
                   Market Trends
                 </TabsTrigger>
@@ -292,43 +295,69 @@ export function InvestmentAISection() {
                 {isAnalyzing ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <Loader2 className="h-12 w-12 animate-spin text-moh-gold mb-4" />
-                    <p className="text-lg font-medium">Analyzing investment matches...</p>
-                    <p className="text-sm text-moh-lightGreen">This may take a moment</p>
+                    <p className="text-lg font-medium text-white">Analyzing investment matches...</p>
+                    <p className="text-sm text-white">This may take a moment</p>
                   </div>
-                ) : (
-                  aiMatchScores.map((match, index) => (
-                    <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-semibold text-lg">{match.name}</h3>
-                        <Badge className={`${match.score > 85 ? 'bg-green-600' : match.score > 75 ? 'bg-moh-gold' : 'bg-white/30'}`}>
-                          {match.score}% Match
-                        </Badge>
-                      </div>
-                      <p className="text-moh-lightGreen mb-3">{match.reason}</p>
-                      
-                      {match.additionalInfo && (
-                        <div className="grid grid-cols-3 gap-2 mb-4">
-                          {match.additionalInfo.map((info, i) => (
-                            <div key={i} className="bg-white/5 p-2 rounded text-center">
-                              <p className="text-xs text-moh-lightGreen">{info.label}</p>
-                              <p className="font-medium">{info.value}</p>
+                ) : filteredMatches.length > 0 ? (
+                  filteredMatches.map((match) => (
+                    <Card key={match.id} className="bg-white/10 border-0 backdrop-blur-sm overflow-hidden">
+                      <div className="flex flex-col md:flex-row">
+                        <div className="p-6 flex-1">
+                          <div className="flex justify-between">
+                            <h3 className="text-xl font-semibold text-white">{match.name}</h3>
+                            <div className="flex items-center gap-1">
+                              <span className="font-bold text-white">{match.matchScore}%</span>
+                              <Badge className="bg-gradient-to-r from-moh-gold to-moh-darkGold">Match</Badge>
                             </div>
-                          ))}
+                          </div>
+                          
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                            <div>
+                              <p className="text-sm text-white/80">Investment Range</p>
+                              <p className="font-medium text-white">{match.investmentRange}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-white/80">Stage Focus</p>
+                              <p className="font-medium text-white">{match.stage}</p>
+                            </div>
+                            <div className="sm:col-span-2">
+                              <p className="text-sm text-white/80">Sectors</p>
+                              <div className="flex flex-wrap gap-2 mt-1">
+                                {match.focusSectors.map((sector, idx) => (
+                                  <Badge key={idx} variant="outline" className="bg-white/10 text-white border-white/20">
+                                    {sector}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                              <p className="text-sm text-white/80">Notable</p>
+                              <p className="font-medium text-white">{match.notable}</p>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                      
-                      <div className="w-full bg-white/5 rounded-full h-2 mb-1">
-                        <div 
-                          className="bg-gradient-to-r from-moh-green to-moh-gold h-2 rounded-full" 
-                          style={{ width: `${match.score}%` }}
-                        ></div>
+                        
+                        <div className="p-6 flex flex-col justify-center items-center md:items-end bg-white/5 md:border-l border-white/20 md:w-48">
+                          <div className="flex flex-col items-center md:items-end space-y-4">
+                            <div className="flex items-center">
+                              <TrendingUp className="h-5 w-5 text-moh-lightGold mr-2" />
+                              <span className="text-white">Trending Up</span>
+                            </div>
+                            
+                            <Button className="bg-white hover:bg-white/80 text-moh-darkGreen">
+                              View Profile
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex justify-between text-xs text-moh-lightGreen">
-                        <span>Low match</span>
-                        <span>High match</span>
-                      </div>
-                    </div>
+                    </Card>
                   ))
+                ) : (
+                  <div className="bg-white/10 rounded-lg p-8 text-center">
+                    <Info className="h-12 w-12 text-white/50 mx-auto mb-4" />
+                    <h3 className="text-xl font-medium text-white">No matching investors found</h3>
+                    <p className="text-white/70 mt-2">Try adjusting your search criteria</p>
+                  </div>
                 )}
               </TabsContent>
               
@@ -336,23 +365,23 @@ export function InvestmentAISection() {
                 <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6 space-y-6">
                   <div className="flex items-center space-x-3">
                     <Zap className="h-5 w-5 text-moh-lightGold" />
-                    <h3 className="text-xl font-medium">AI Investment Insights</h3>
+                    <h3 className="text-xl font-medium text-white">AI Investment Insights</h3>
                   </div>
                   
                   {isAnalyzing ? (
                     <div className="flex flex-col items-center justify-center py-12">
                       <Loader2 className="h-12 w-12 animate-spin text-moh-gold mb-4" />
-                      <p>Generating investment insights...</p>
+                      <p className="text-white">Generating investment insights...</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {aiInsights.map((insight, index) => (
                         <div key={index} className="bg-white/5 p-4 rounded-lg">
                           <div className="flex">
-                            <span className="flex h-6 w-6 mr-3 rounded-full bg-moh-gold/50 items-center justify-center text-sm">
+                            <span className="flex h-6 w-6 mr-3 rounded-full bg-moh-gold/50 items-center justify-center text-sm text-white">
                               {index + 1}
                             </span>
-                            <p>{insight}</p>
+                            <p className="text-white">{insight}</p>
                           </div>
                         </div>
                       ))}
@@ -360,11 +389,11 @@ export function InvestmentAISection() {
                   )}
                   
                   <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2 flex items-center">
+                    <h4 className="font-medium mb-2 flex items-center text-white">
                       <BarChart3 className="h-4 w-4 mr-2 text-moh-gold" />
                       Recommendation
                     </h4>
-                    <p className="text-moh-lightGreen">
+                    <p className="text-white">
                       {isAnalyzing 
                         ? "Generating recommendations..." 
                         : "Based on current trends, focus on solutions that integrate with existing healthcare systems and address specific regional needs for the highest investment potential."}
@@ -377,81 +406,90 @@ export function InvestmentAISection() {
                 <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6">
                   <div className="flex items-center space-x-3 mb-6">
                     <TrendingUp className="h-5 w-5 text-moh-lightGold" />
-                    <h3 className="text-xl font-medium">Healthcare Investment Trends</h3>
+                    <h3 className="text-xl font-medium text-white">Healthcare Investment Trends</h3>
                   </div>
                   
-                  {isAnalyzing ? (
+                  {isAnalyzing || !marketTrends ? (
                     <div className="flex flex-col items-center justify-center py-12">
                       <Loader2 className="h-12 w-12 animate-spin text-moh-gold mb-4" />
-                      <p>Analyzing market trends...</p>
+                      <p className="text-white">Analyzing market trends...</p>
                     </div>
-                  ) : marketTrendInsights ? (
-                    <>
-                      <div className="mb-4 p-4 bg-white/5 rounded-lg">
-                        <h4 className="font-medium mb-2 flex items-center">
-                          <Info className="h-4 w-4 mr-2 text-moh-gold" />
-                          Market Summary
-                        </h4>
-                        <p className="text-moh-lightGreen">{marketTrendInsights.summary}</p>
-                        
-                        <div className="grid grid-cols-2 gap-4 mt-4">
-                          <div className="bg-white/5 p-3 rounded-lg text-center">
-                            <p className="text-xs text-moh-lightGreen">Growth Rate</p>
-                            <p className="text-xl font-medium">{marketTrendInsights.growthRate}%</p>
-                          </div>
-                          <div className="bg-white/5 p-3 rounded-lg text-center">
-                            <p className="text-xs text-moh-lightGreen">Market Size</p>
-                            <p className="text-xl font-medium">{marketTrendInsights.marketSize}</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div className="bg-white/5 p-4 rounded-lg">
-                          <h4 className="font-medium text-moh-lightGreen mb-3">Key Trends</h4>
-                          <ul className="space-y-2">
-                            {marketTrendInsights.keyTrends.map((trend: string, i: number) => (
-                              <li key={i} className="flex items-start">
-                                <TrendingUp className="h-4 w-4 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />
-                                <span className="text-sm">{trend}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        
-                        <div className="bg-white/5 p-4 rounded-lg">
-                          <h4 className="font-medium text-moh-lightGreen mb-3">Emerging Opportunities</h4>
-                          <ul className="space-y-2">
-                            {marketTrendInsights.emergingOpportunities.map((opportunity: string, i: number) => (
-                              <li key={i} className="flex items-start">
-                                <Zap className="h-4 w-4 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />
-                                <span className="text-sm">{opportunity}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-white/5 p-4 rounded-lg mb-6">
-                        <h4 className="font-medium text-moh-lightGreen mb-3">Vision 2030 Alignment</h4>
-                        <p className="text-sm">{marketTrendInsights.vision2030Alignment}</p>
-                      </div>
-                      
-                      <div className="bg-gradient-to-r from-moh-gold/20 to-moh-green/20 p-4 rounded-lg">
-                        <h4 className="font-medium mb-2">Investment Recommendations</h4>
-                        <ul className="space-y-2">
-                          {marketTrendInsights.investmentRecommendations.map((rec: string, i: number) => (
-                            <li key={i} className="flex items-start">
-                              <BarChart3 className="h-4 w-4 mr-2 text-moh-gold mt-0.5 flex-shrink-0" />
-                              <span className="text-sm text-moh-lightGreen">{rec}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </>
                   ) : (
-                    <div className="text-center py-8">
-                      <p>No market trend data available</p>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="bg-white/5 border-0">
+                          <CardContent className="pt-6">
+                            <div className="flex items-center mb-2">
+                              <AreaChart className="h-5 w-5 text-moh-gold mr-2" />
+                              <h4 className="font-medium text-white">Market Size</h4>
+                            </div>
+                            <p className="text-3xl font-bold text-white">{marketTrends.marketSize}</p>
+                            <p className="text-sm text-white/70 mt-1">Projected by 2025</p>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-white/5 border-0">
+                          <CardContent className="pt-6">
+                            <div className="flex items-center mb-2">
+                              <TrendingUp className="h-5 w-5 text-moh-gold mr-2" />
+                              <h4 className="font-medium text-white">Growth Rate</h4>
+                            </div>
+                            <p className="text-3xl font-bold text-white">{marketTrends.growthRate}%</p>
+                            <p className="text-sm text-white/70 mt-1">Annual CAGR</p>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card className="bg-white/5 border-0">
+                          <CardContent className="pt-6">
+                            <div className="flex items-center mb-2">
+                              <Info className="h-5 w-5 text-moh-gold mr-2" />
+                              <h4 className="font-medium text-white">Vision 2030</h4>
+                            </div>
+                            <p className="font-medium text-white">Strong Alignment</p>
+                            <p className="text-sm text-white/70 mt-1">Healthcare transformation goals</p>
+                          </CardContent>
+                        </Card>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-medium mb-3 text-white">Key Trends</h4>
+                          <div className="space-y-2">
+                            {marketTrends.keyTrends.map((trend: string, idx: number) => (
+                              <div key={idx} className="bg-white/5 p-3 rounded-lg text-white">
+                                {trend}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="font-medium mb-3 text-white">Emerging Opportunities</h4>
+                          <div className="space-y-2">
+                            {marketTrends.emergingOpportunities.map((opp: string, idx: number) => (
+                              <div key={idx} className="bg-white/5 p-3 rounded-lg text-white">
+                                {opp}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium mb-3 text-white">Investment Recommendations</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {marketTrends.investmentRecommendations.map((rec: string, idx: number) => (
+                            <div key={idx} className="bg-white/5 p-3 rounded-lg">
+                              <div className="flex">
+                                <Badge className="bg-moh-gold h-5 w-5 p-0 flex items-center justify-center mr-2 rounded-full shrink-0">
+                                  {idx + 1}
+                                </Badge>
+                                <p className="text-white text-sm">{rec}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

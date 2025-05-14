@@ -1,53 +1,47 @@
 
-// OpenAI client creation and shared utilities
+import OpenAI from "https://deno.land/x/openai@v4.20.1/mod.ts";
 
-// Constants for OpenAI models
 export const OPENAI_MODELS = {
-  CHAT: "gpt-4o-mini",
-  EMBEDDING: "text-embedding-ada-002"
+  CHAT: "gpt-4o-mini", // Default model for most interactions
+  ADVANCED: "gpt-4o",   // Higher quality but more expensive 
 };
 
-// Create OpenAI client
 export function createOpenAIClient() {
-  const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-  if (!OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY environment variable not found');
-  }
-
-  // Import OpenAI
-  const { OpenAI } = require("https://esm.sh/openai@4.20.1");
+  const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
   
-  // Create and configure client
-  const client = new OpenAI({
+  if (!OPENAI_API_KEY) {
+    throw new Error("Missing OpenAI API key. Please set the OPENAI_API_KEY environment variable.");
+  }
+  
+  return new OpenAI({
     apiKey: OPENAI_API_KEY,
   });
-  
-  return client;
 }
 
-// Handle OpenAI errors
-export function handleOpenAIError(error: any) {
-  console.error('OpenAI API error:', error);
+export function handleOpenAIError(error: any, corsHeaders: Record<string, string> = {}) {
+  console.error("OpenAI API error:", error);
   
-  const errorMessage = error.response?.data?.error?.message || 
-                      error.message || 
-                      'Unknown error occurred when calling OpenAI API';
+  let statusCode = 500;
+  let errorMessage = "An error occurred while processing your request";
   
-  const statusCode = error.response?.status || 500;
+  if (error?.status === 429) {
+    statusCode = 429;
+    errorMessage = "Rate limit exceeded. Please try again later.";
+  } else if (error?.status === 400) {
+    statusCode = 400;
+    errorMessage = "Invalid request to AI service.";
+  } else if (error?.status === 401) {
+    statusCode = 401;
+    errorMessage = "Authentication error with AI service.";
+  }
   
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  const responseHeaders = {
+    'Content-Type': 'application/json',
+    ...corsHeaders
   };
   
   return new Response(
-    JSON.stringify({ 
-      error: errorMessage,
-      status: statusCode
-    }),
-    { 
-      status: statusCode, 
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-    }
+    JSON.stringify({ error: errorMessage, details: error?.message }),
+    { status: statusCode, headers: responseHeaders }
   );
 }
