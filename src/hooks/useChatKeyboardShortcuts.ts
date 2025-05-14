@@ -76,7 +76,7 @@ export function useChatKeyboardShortcuts({
     
     // Cleanup
     return () => {
-      window.addEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, minimized, onClose, toggleMinimize, onSendMessage, onFocusInput, onSwitchTab, currentTab]);
 }
