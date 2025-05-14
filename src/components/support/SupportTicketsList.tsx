@@ -4,22 +4,28 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input"; 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, MessageSquare, AlertTriangle, Clock } from "lucide-react";
+import { Loader2, MessageSquare, AlertTriangle, Clock, Tag, Search } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { SupportTicket } from "@/types/supportTypes";
+import SupportTicketDetailView from "./SupportTicketDetailView";
 
 export default function SupportTicketsList() {
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<"open" | "resolved" | "all">("open");
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const { toast } = useToast();
   const { user } = useAuth();
 
   useEffect(() => {
     fetchTickets();
-  }, [activeFilter, user]);
+  }, [activeFilter, priorityFilter, user]);
 
   const fetchTickets = async () => {
     if (!user) return;
@@ -33,11 +39,16 @@ export default function SupportTicketsList() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
-      // Add filter if not showing all
+      // Add status filter if not showing all
       if (activeFilter === "open") {
         query = query.in('status', ['open', 'in-progress']);
       } else if (activeFilter === "resolved") {
         query = query.in('status', ['resolved', 'closed']);
+      }
+      
+      // Add priority filter if not showing all
+      if (priorityFilter !== "all") {
+        query = query.eq('priority', priorityFilter);
       }
       
       const { data, error } = await query;
@@ -95,6 +106,31 @@ export default function SupportTicketsList() {
     });
   };
 
+  const handleTicketClick = (ticketId: string) => {
+    setSelectedTicketId(ticketId);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedTicketId(null);
+    fetchTickets(); // Refresh the list to show any updates
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredTickets = tickets.filter(ticket => {
+    if (!searchQuery) return true;
+    
+    const query = searchQuery.toLowerCase();
+    return (
+      ticket.subject.toLowerCase().includes(query) ||
+      ticket.description.toLowerCase().includes(query) ||
+      ticket.category.toLowerCase().includes(query) ||
+      (ticket.tags && ticket.tags.some(tag => tag.toLowerCase().includes(query)))
+    );
+  });
+
   if (!user) {
     return (
       <Card className="bg-slate-50">
@@ -109,24 +145,56 @@ export default function SupportTicketsList() {
     );
   }
 
+  // If a ticket is selected, show the detail view
+  if (selectedTicketId) {
+    return <SupportTicketDetailView ticketId={selectedTicketId} onClose={handleCloseDetail} />;
+  }
+
   return (
     <div className="space-y-4">
-      <Tabs defaultValue="open" onValueChange={(value) => setActiveFilter(value as any)}>
-        <TabsList>
-          <TabsTrigger value="open">Open</TabsTrigger>
-          <TabsTrigger value="resolved">Resolved</TabsTrigger>
-          <TabsTrigger value="all">All</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="flex flex-col sm:flex-row gap-3 justify-between">
+        <Tabs defaultValue={activeFilter} onValueChange={(value) => setActiveFilter(value as any)}>
+          <TabsList>
+            <TabsTrigger value="open">Open</TabsTrigger>
+            <TabsTrigger value="resolved">Resolved</TabsTrigger>
+            <TabsTrigger value="all">All</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        
+        <div className="flex gap-3">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+            <Input
+              placeholder="Search tickets..."
+              className="pl-8 w-full sm:w-[250px]"
+              value={searchQuery}
+              onChange={handleSearch}
+            />
+          </div>
+          
+          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Priorities</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="critical">Critical</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       
       {isLoading ? (
         <div className="flex justify-center p-12">
           <Loader2 className="h-8 w-8 animate-spin text-moh-green" />
         </div>
-      ) : tickets.length > 0 ? (
+      ) : filteredTickets.length > 0 ? (
         <div className="space-y-4">
-          {tickets.map((ticket) => (
-            <Card key={ticket.id}>
+          {filteredTickets.map((ticket) => (
+            <Card key={ticket.id} className="cursor-pointer hover:border-slate-400 transition-colors" onClick={() => handleTicketClick(ticket.id)}>
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{ticket.subject}</CardTitle>
@@ -145,6 +213,20 @@ export default function SupportTicketsList() {
                 <div className="text-sm text-slate-600 whitespace-pre-wrap line-clamp-3">
                   {ticket.description}
                 </div>
+                
+                {/* Tags display */}
+                {ticket.tags && ticket.tags.length > 0 && (
+                  <div className="mt-3 flex items-center flex-wrap gap-2">
+                    <span className="flex items-center text-xs text-slate-500">
+                      <Tag className="h-3 w-3 mr-1" /> Tags:
+                    </span>
+                    {ticket.tags.map((tag, i) => (
+                      <Badge key={i} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
                 
                 {ticket.initial_response && (
                   <div className="mt-3 bg-slate-50 p-3 rounded-md border border-slate-200">
@@ -173,11 +255,13 @@ export default function SupportTicketsList() {
             <MessageSquare className="h-12 w-12 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">No tickets found</h3>
             <p className="text-slate-600">
-              {activeFilter === "open" 
-                ? "You don't have any open support tickets." 
-                : activeFilter === "resolved"
-                ? "You don't have any resolved support tickets."
-                : "You haven't submitted any support tickets yet."}
+              {searchQuery 
+                ? "No tickets match your search criteria."
+                : activeFilter === "open" 
+                  ? "You don't have any open support tickets." 
+                  : activeFilter === "resolved"
+                  ? "You don't have any resolved support tickets."
+                  : "You haven't submitted any support tickets yet."}
             </p>
           </CardContent>
         </Card>

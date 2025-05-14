@@ -6,12 +6,16 @@ import SupportTicketForm from "@/components/support/SupportTicketForm";
 import SupportChatInterface from "@/components/support/SupportChatInterface";
 import SupportTicketsList from "@/components/support/SupportTicketsList";
 import SupportFeedbackSummary from "@/components/support/SupportFeedbackSummary";
+import SupportAnalytics from "@/components/support/SupportAnalytics";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function SupportPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.user_metadata?.userType === 'admin';
 
   return (
     <div className="space-y-6">
@@ -28,6 +32,7 @@ export default function SupportPage() {
           <TabsTrigger value="tickets">Submit Ticket</TabsTrigger>
           <TabsTrigger value="history">Ticket History</TabsTrigger>
           <TabsTrigger value="insights">Insights</TabsTrigger>
+          {isAdmin && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
         </TabsList>
         
         <TabsContent value="chat" className="space-y-4">
@@ -85,6 +90,22 @@ export default function SupportPage() {
             </CardContent>
           </Card>
         </TabsContent>
+        
+        {isAdmin && (
+          <TabsContent value="analytics" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Support Analytics</CardTitle>
+                <CardDescription>
+                  Advanced analytics and trends for support operations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SupportAnalytics />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

@@ -1264,6 +1264,42 @@ export type Database = {
         }
         Relationships: []
       }
+      knowledge_base_metrics: {
+        Row: {
+          created_at: string
+          helpful_count: number | null
+          id: string
+          last_accessed: string | null
+          not_helpful_count: number | null
+          resource_id: string
+          tickets_resolved: number | null
+          updated_at: string
+          views: number | null
+        }
+        Insert: {
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          last_accessed?: string | null
+          not_helpful_count?: number | null
+          resource_id: string
+          tickets_resolved?: number | null
+          updated_at?: string
+          views?: number | null
+        }
+        Update: {
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          last_accessed?: string | null
+          not_helpful_count?: number | null
+          resource_id?: string
+          tickets_resolved?: number | null
+          updated_at?: string
+          views?: number | null
+        }
+        Relationships: []
+      }
       knowledge_embeddings: {
         Row: {
           created_at: string | null
@@ -2218,31 +2254,79 @@ export type Database = {
         }
         Relationships: []
       }
+      support_analytics: {
+        Row: {
+          category: string | null
+          created_at: string
+          end_date: string
+          id: string
+          metric_name: string
+          metric_value: number
+          start_date: string
+          time_period: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          end_date: string
+          id?: string
+          metric_name: string
+          metric_value: number
+          start_date: string
+          time_period: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          end_date?: string
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          start_date?: string
+          time_period?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       support_interactions: {
         Row: {
+          ai_generated: boolean | null
           created_at: string
+          feedback: boolean | null
           id: string
           interaction_type: string
+          metadata: Json | null
           query: string | null
           response: string | null
+          tags: string[] | null
           ticket_id: string | null
           user_id: string
         }
         Insert: {
+          ai_generated?: boolean | null
           created_at?: string
+          feedback?: boolean | null
           id?: string
           interaction_type: string
+          metadata?: Json | null
           query?: string | null
           response?: string | null
+          tags?: string[] | null
           ticket_id?: string | null
           user_id: string
         }
         Update: {
+          ai_generated?: boolean | null
           created_at?: string
+          feedback?: boolean | null
           id?: string
           interaction_type?: string
+          metadata?: Json | null
           query?: string | null
           response?: string | null
+          tags?: string[] | null
           ticket_id?: string | null
           user_id?: string
         }
@@ -2265,11 +2349,17 @@ export type Database = {
           description: string
           id: string
           initial_response: string | null
+          metadata: Json | null
           priority: string
           resolved_at: string | null
+          resource_id: string | null
+          resource_type: string | null
+          response_time_minutes: number | null
+          satisfaction_rating: number | null
           sentiment: string | null
           status: string
           subject: string
+          tags: string[] | null
           updated_at: string
           user_id: string
         }
@@ -2281,11 +2371,17 @@ export type Database = {
           description: string
           id?: string
           initial_response?: string | null
+          metadata?: Json | null
           priority: string
           resolved_at?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          response_time_minutes?: number | null
+          satisfaction_rating?: number | null
           sentiment?: string | null
           status?: string
           subject: string
+          tags?: string[] | null
           updated_at?: string
           user_id: string
         }
@@ -2297,11 +2393,17 @@ export type Database = {
           description?: string
           id?: string
           initial_response?: string | null
+          metadata?: Json | null
           priority?: string
           resolved_at?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          response_time_minutes?: number | null
+          satisfaction_rating?: number | null
           sentiment?: string | null
           status?: string
           subject?: string
+          tags?: string[] | null
           updated_at?: string
           user_id?: string
         }
