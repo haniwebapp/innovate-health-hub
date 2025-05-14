@@ -1,7 +1,7 @@
 
-import { supabase } from "@/integrations/supabase/client";
-import { Event } from "@/types/eventTypes";
+import { Event } from "@/types/events";
 import { EventBaseService } from "./EventBaseService";
+import { mockEvents } from "@/components/events/mockData";
 
 export class EventQueryService extends EventBaseService {
   /**
@@ -9,110 +9,88 @@ export class EventQueryService extends EventBaseService {
    */
   static async getAllEvents(): Promise<Event[]> {
     try {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .order('start_date', { ascending: true });
-        
-      if (error) throw error;
-      
-      return this.mapDbEventsToClient(data || []);
+      // In a real implementation, this would fetch from Supabase
+      return mockEvents.map(event => this.mapDbEventToClient(event));
     } catch (error) {
-      console.error("Error fetching all events:", error);
-      throw error;
+      console.error("Error fetching events:", error);
+      return [];
     }
   }
-  
+
   /**
    * Get upcoming events
    */
   static async getUpcomingEvents(limit?: number): Promise<Event[]> {
     try {
-      let query = supabase
-        .from('events')
-        .select('*')
-        .eq('status', 'upcoming')
-        .order('start_date', { ascending: true });
+      const now = new Date();
+      const upcomingEvents = mockEvents
+        .filter(event => new Date(event.startDate) > now)
+        .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+        .map(event => this.mapDbEventToClient(event));
         
       if (limit) {
-        query = query.limit(limit);
+        return upcomingEvents.slice(0, limit);
       }
-        
-      const { data, error } = await query;
-        
-      if (error) throw error;
       
-      return this.mapDbEventsToClient(data || []);
+      return upcomingEvents;
     } catch (error) {
       console.error("Error fetching upcoming events:", error);
-      throw error;
+      return [];
     }
   }
-  
+
   /**
    * Get past events
    */
   static async getPastEvents(limit?: number): Promise<Event[]> {
     try {
-      let query = supabase
-        .from('events')
-        .select('*')
-        .in('status', ['completed', 'cancelled'])
-        .order('start_date', { ascending: false });
+      const now = new Date();
+      const pastEvents = mockEvents
+        .filter(event => new Date(event.endDate) < now)
+        .sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+        .map(event => this.mapDbEventToClient(event));
         
       if (limit) {
-        query = query.limit(limit);
+        return pastEvents.slice(0, limit);
       }
-        
-      const { data, error } = await query;
-        
-      if (error) throw error;
       
-      return this.mapDbEventsToClient(data || []);
+      return pastEvents;
     } catch (error) {
       console.error("Error fetching past events:", error);
-      throw error;
+      return [];
     }
   }
-  
+
   /**
    * Get featured events
    */
   static async getFeaturedEvents(limit: number = 3): Promise<Event[]> {
     try {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('featured', true)
-        .order('start_date', { ascending: true })
-        .limit(limit);
+      const featuredEvents = mockEvents
+        .filter(event => event.featured)
+        .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+        .map(event => this.mapDbEventToClient(event))
+        .slice(0, limit);
         
-      if (error) throw error;
-      
-      return this.mapDbEventsToClient(data || []);
+      return featuredEvents;
     } catch (error) {
       console.error("Error fetching featured events:", error);
-      throw error;
+      return [];
     }
   }
-  
+
   /**
    * Get event by ID
    */
   static async getEventById(id: string): Promise<Event | null> {
     try {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('id', id)
-        .single();
-        
-      if (error) throw error;
+      const event = mockEvents.find(event => event.id === id);
+      if (!event) return null;
       
-      return data ? this.mapDbEventToClient(data) : null;
+      return this.mapDbEventToClient(event);
     } catch (error) {
-      console.error(`Error fetching event with ID ${id}:`, error);
-      throw error;
+      console.error(`Error fetching event with id ${id}:`, error);
+      return null;
     }
   }
 }

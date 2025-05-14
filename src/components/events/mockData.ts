@@ -154,12 +154,14 @@ export const mockEvents: Event[] = [
 // You can add more mock data structures as needed
 export const mockEventRegistrations = [
   {
+    id: "reg-1",
     eventId: "1",
     userId: "user-123",
     registrationDate: new Date(2025, 5, 1),
     attended: false
   },
   {
+    id: "reg-2",
     eventId: "3",
     userId: "user-456",
     registrationDate: new Date(2025, 3, 1),
