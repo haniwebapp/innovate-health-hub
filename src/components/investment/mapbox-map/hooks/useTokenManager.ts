@@ -1,16 +1,19 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { getMapboxToken, isValidMapboxToken } from '../config';
 import { useToast } from '@/hooks/use-toast';
 
 export function useTokenManager() {
   const [mapboxToken, setMapboxToken] = useState<string | null>(null);
   const [tokenError, setTokenError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
   const fetchToken = useCallback(async () => {
     try {
+      setIsLoading(true);
       const token = await getMapboxToken();
+      
       if (token && isValidMapboxToken(token)) {
         setMapboxToken(token);
         setTokenError(null);
@@ -23,6 +26,8 @@ export function useTokenManager() {
       console.error("Error fetching Mapbox token:", error);
       setTokenError("Failed to fetch Mapbox token. Please try again later or provide your own token.");
       return null;
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -52,9 +57,15 @@ export function useTokenManager() {
     }
   }, [toast]);
 
+  // Initial fetch on mount
+  useEffect(() => {
+    fetchToken();
+  }, [fetchToken]);
+
   return { 
     mapboxToken, 
     tokenError, 
+    isLoading,
     fetchToken, 
     updateToken 
   };

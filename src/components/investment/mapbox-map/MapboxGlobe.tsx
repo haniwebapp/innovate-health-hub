@@ -2,6 +2,7 @@
 import React from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 import { InvestmentHotspot } from './types';
 import { useMapboxGlobe } from './useMapboxGlobe';
 import { MapStyles } from './MapStyles';
@@ -12,7 +13,7 @@ interface MapboxGlobeProps {
 }
 
 export function MapboxGlobe({ hotspots }: MapboxGlobeProps) {
-  const { mapContainer, mapLoaded, mapError, updateMapboxToken } = useMapboxGlobe({ hotspots });
+  const { mapContainer, mapLoaded, mapError, isLoading, updateMapboxToken } = useMapboxGlobe({ hotspots });
 
   return (
     <div className="relative h-[280px] w-full rounded-lg overflow-hidden">
@@ -27,7 +28,7 @@ export function MapboxGlobe({ hotspots }: MapboxGlobeProps) {
       />
       
       {/* Loading placeholder */}
-      {!mapLoaded && !mapError && (
+      {!mapLoaded && !mapError && !isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg">
           <div className="animate-pulse text-moh-green">Loading map...</div>
         </div>
@@ -38,6 +39,7 @@ export function MapboxGlobe({ hotspots }: MapboxGlobeProps) {
         <MapErrorDisplay 
           errorMessage={mapError} 
           onTokenSubmit={updateMapboxToken}
+          isLoading={isLoading}
         />
       )}
       

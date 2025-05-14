@@ -13,6 +13,7 @@ interface UseMapboxGlobeResult {
   mapContainer: React.RefObject<HTMLDivElement>;
   mapLoaded: boolean;
   mapError: string | null;
+  isLoading: boolean;
   updateMapboxToken: (token: string) => void;
 }
 
@@ -22,15 +23,10 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   
-  const { mapboxToken, tokenError, fetchToken, updateToken } = useTokenManager();
+  const { mapboxToken, tokenError, isLoading, fetchToken, updateToken } = useTokenManager();
   const { addHotspotMarkers, clearMarkers } = useMapMarkers();
   const { setupAnimationControls } = useMapAnimation();
   
-  // Fetch the token on component mount
-  useEffect(() => {
-    fetchToken();
-  }, [fetchToken]);
-
   // Set map error if token has error
   useEffect(() => {
     if (tokenError) {
@@ -92,6 +88,7 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
     mapContainer, 
     mapLoaded, 
     mapError, 
+    isLoading,
     updateMapboxToken: updateToken 
   };
 }
