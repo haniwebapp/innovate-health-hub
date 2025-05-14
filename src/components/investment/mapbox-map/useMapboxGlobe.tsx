@@ -1,8 +1,8 @@
-
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { InvestmentHotspot } from './types';
-import { MAPBOX_TOKEN, isValidMapboxToken } from './config';
+import { MAPBOX_TOKEN, getMapboxToken, isValidMapboxToken } from './config';
+import { useToast } from '@/hooks/use-toast';
 
 interface UseMapboxGlobeProps {
   hotspots: InvestmentHotspot[];
@@ -22,7 +22,27 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>(MAPBOX_TOKEN);
+  const [mapboxToken, setMapboxToken] = useState<string | null>(null);
+  const { toast } = useToast();
+  
+  // Fetch the token on component mount
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await getMapboxToken();
+        if (token && isValidMapboxToken(token)) {
+          setMapboxToken(token);
+        } else {
+          setMapError("No valid Mapbox token available. Please provide a valid token.");
+        }
+      } catch (error) {
+        console.error("Error fetching Mapbox token:", error);
+        setMapError("Failed to fetch Mapbox token. Please try again later or provide your own token.");
+      }
+    };
+    
+    fetchToken();
+  }, []);
 
   const updateMapboxToken = (token: string) => {
     if (isValidMapboxToken(token)) {
@@ -35,9 +55,21 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
         map.current.remove();
         map.current = null;
       }
-      initializeMap();
+      initializeMap(token);
+      
+      toast({
+        title: "Token updated",
+        description: "Your Mapbox token has been updated successfully.",
+        variant: "success",
+      });
     } else {
       setMapError("Invalid Mapbox token format. Token should start with 'pk.' (public) or 'sk.' (secret).");
+      
+      toast({
+        title: "Invalid token",
+        description: "Please provide a valid Mapbox token that starts with 'pk.' or 'sk.'",
+        variant: "destructive",
+      });
     }
   };
 
@@ -129,18 +161,18 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
     });
   };
 
-  const initializeMap = () => {
-    if (!mapContainer.current) return;
+  const initializeMap = (token: string | null) => {
+    if (!mapContainer.current || !token) return;
     
     // Don't try to initialize if we don't have a valid token
-    if (!isValidMapboxToken(mapboxToken)) {
+    if (!isValidMapboxToken(token)) {
       setMapError("Invalid Mapbox token. Please provide a valid token.");
       return;
     }
 
     try {
       // Initialize Mapbox
-      mapboxgl.accessToken = mapboxToken;
+      mapboxgl.accessToken = token;
       
       // Create the map instance
       map.current = new mapboxgl.Map({
@@ -244,9 +276,11 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
     }
   };
 
-  // Initialize map when the component mounts or when token changes
+  // Initialize map when the token is available
   useEffect(() => {
-    initializeMap();
+    if (mapboxToken) {
+      initializeMap(mapboxToken);
+    }
 
     // Cleanup on unmount
     return () => {

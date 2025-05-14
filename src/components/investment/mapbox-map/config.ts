@@ -20,26 +20,43 @@ export const regionData: RegionDataItem[] = [
   { region: 'Africa', percentage: 5, color: '#80C18E' },
 ];
 
-// Try to get token from localStorage first if available
-const getMapboxToken = (): string => {
-  const storedToken = localStorage.getItem('mapbox_token');
-  if (storedToken) {
-    return storedToken;
-  }
-  
-  // The token provided by the user (we'll use this as default if available)
-  const userToken = "sk.eyJ1IjoiaGFuaWFrcmltIiwiYSI6ImNtYW50ajVuNzAycnMyanF6ZHV6OG4zYzYifQ.xxtzPRhCkcAoDNLppIMAYw";
-  
-  // Store it for future use
-  if (userToken) {
-    localStorage.setItem('mapbox_token', userToken);
-  }
-  
-  return userToken;
-};
+// Get token from localStorage or use the Supabase function
+export const getMapboxToken = async (): Promise<string | null> => {
+  try {
+    // First try to get from localStorage if available
+    const storedToken = localStorage.getItem('mapbox_token');
+    if (storedToken) {
+      return storedToken;
+    }
+    
+    // If not available, fetch from our Supabase Edge Function
+    const response = await fetch('https://ntgrokpnwizohtfkcfec.supabase.co/functions/v1/mapbox-token', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-// Mapbox token
-export const MAPBOX_TOKEN = getMapboxToken();
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to fetch Mapbox token:', errorData);
+      return null;
+    }
+
+    const data = await response.json();
+    
+    if (data.token) {
+      // Store it for future use
+      localStorage.setItem('mapbox_token', data.token);
+      return data.token;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error fetching Mapbox token:', error);
+    return null;
+  }
+};
 
 // Check if the token is valid (starts with pk. for public tokens or sk. for secret tokens)
 export const isValidMapboxToken = (token: string): boolean => {
