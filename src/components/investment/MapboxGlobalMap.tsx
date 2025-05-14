@@ -11,14 +11,14 @@ import { cn } from '@/lib/utils';
 // For this demo, we'll use a temporary public token
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZWRldiIsImEiOiJjbHUxbHRweWIwMHgxMmptaG5ycDN1MXVjIn0.AtBYM5P-XE9zLleaSTr8-Q';
 
-// Investment hotspot data
+// Investment hotspot data with properly typed coordinates
 const investmentHotspots = [
-  { city: 'Riyadh', country: 'Saudi Arabia', amount: '$120M', coordinates: [46.738586, 24.774265], size: 'lg' },
-  { city: 'Dubai', country: 'UAE', amount: '$75M', coordinates: [55.270783, 25.204849], size: 'md' },
-  { city: 'London', country: 'UK', amount: '$50M', coordinates: [-0.127758, 51.507351], size: 'md' },
-  { city: 'New York', country: 'USA', amount: '$85M', coordinates: [-74.005974, 40.712776], size: 'md' },
-  { city: 'Singapore', country: 'Singapore', amount: '$45M', coordinates: [103.819836, 1.352083], size: 'sm' },
-  { city: 'Tokyo', country: 'Japan', amount: '$30M', coordinates: [139.839478, 35.652832], size: 'sm' },
+  { city: 'Riyadh', country: 'Saudi Arabia', amount: '$120M', coordinates: [46.738586, 24.774265] as [number, number], size: 'lg' },
+  { city: 'Dubai', country: 'UAE', amount: '$75M', coordinates: [55.270783, 25.204849] as [number, number], size: 'md' },
+  { city: 'London', country: 'UK', amount: '$50M', coordinates: [-0.127758, 51.507351] as [number, number], size: 'md' },
+  { city: 'New York', country: 'USA', amount: '$85M', coordinates: [-74.005974, 40.712776] as [number, number], size: 'md' },
+  { city: 'Singapore', country: 'Singapore', amount: '$45M', coordinates: [103.819836, 1.352083] as [number, number], size: 'sm' },
+  { city: 'Tokyo', country: 'Japan', amount: '$30M', coordinates: [139.839478, 35.652832] as [number, number], size: 'sm' },
 ];
 
 // Region data for the bar chart
@@ -52,7 +52,7 @@ export function MapboxGlobalMap({ className }: MapboxGlobalMapProps) {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      projection: 'globe',
+      projection: 'globe' as mapboxgl.Projection,
       zoom: 1.5,
       center: [30, 25],
       bearing: 0,
@@ -288,8 +288,9 @@ export function MapboxGlobalMap({ className }: MapboxGlobalMapProps) {
             </div>
           )}
           
-          {/* Add some CSS for animations */}
-          <style jsx>{`
+          {/* Add CSS for animations */}
+          <style>
+            {`
             @keyframes pulse {
               0% {
                 transform: scale(1);
@@ -316,7 +317,8 @@ export function MapboxGlobalMap({ className }: MapboxGlobalMapProps) {
               box-shadow: 0 2px 10px rgba(0,0,0,0.1);
               border: 1px solid rgba(0, 129, 74, 0.2);
             }
-          `}</style>
+            `}
+          </style>
         </div>
         
         <div className="mt-4">
