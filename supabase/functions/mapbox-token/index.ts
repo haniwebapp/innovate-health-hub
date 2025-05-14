@@ -2,6 +2,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 
+const isValidMapboxToken = (token: string): boolean => {
+  // Mapbox GL JS can ONLY use public tokens that start with 'pk.'
+  return !!token && typeof token === 'string' && token.startsWith('pk.');
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -13,6 +18,7 @@ serve(async (req) => {
     const mapboxToken = Deno.env.get('MAPBOX_TOKEN');
     
     if (!mapboxToken) {
+      console.error('Mapbox token not configured in environment variables');
       return new Response(
         JSON.stringify({ error: 'Mapbox token not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
@@ -20,13 +26,15 @@ serve(async (req) => {
     }
 
     // Validate that it's a public token
-    if (!mapboxToken.startsWith('pk.')) {
+    if (!isValidMapboxToken(mapboxToken)) {
+      console.error('Invalid Mapbox token format:', mapboxToken.substring(0, 5) + '...');
       return new Response(
         JSON.stringify({ error: 'Invalid Mapbox token format. Must be a public token (pk.)' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
 
+    console.log('Successfully validated and returned Mapbox token');
     // Return the token
     return new Response(
       JSON.stringify({ token: mapboxToken }),

@@ -26,10 +26,12 @@ export const getMapboxToken = async (): Promise<string | null> => {
     // First try to get from localStorage if available
     const storedToken = localStorage.getItem('mapbox_token');
     if (storedToken && isValidMapboxToken(storedToken)) {
+      console.log("Using Mapbox token from localStorage");
       return storedToken;
     }
     
     // If not available, fetch from our Supabase Edge Function
+    console.log("Fetching Mapbox token from Edge Function");
     const response = await fetch('https://ntgrokpnwizohtfkcfec.supabase.co/functions/v1/mapbox-token', {
       method: 'GET',
       headers: {
@@ -48,10 +50,12 @@ export const getMapboxToken = async (): Promise<string | null> => {
     if (data.token && isValidMapboxToken(data.token)) {
       // Store it for future use
       localStorage.setItem('mapbox_token', data.token);
+      console.log("Successfully retrieved and stored Mapbox token");
       return data.token;
+    } else {
+      console.error("Received invalid token format from server");
+      return null;
     }
-    
-    return null;
   } catch (error) {
     console.error('Error fetching Mapbox token:', error);
     return null;
@@ -61,5 +65,5 @@ export const getMapboxToken = async (): Promise<string | null> => {
 // Check if the token is valid (must start with pk. for public tokens)
 export const isValidMapboxToken = (token: string): boolean => {
   // Mapbox GL JS can ONLY use public tokens that start with 'pk.'
-  return !!token && token.startsWith('pk.');
+  return !!token && typeof token === 'string' && token.startsWith('pk.');
 };

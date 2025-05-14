@@ -28,9 +28,17 @@ export function MapboxGlobe({ hotspots }: MapboxGlobeProps) {
       />
       
       {/* Loading placeholder */}
-      {!mapLoaded && !mapError && !isLoading && (
+      {isLoading && !mapError && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg">
-          <div className="animate-pulse text-moh-green">Loading map...</div>
+          <Loader2 className="h-8 w-8 text-moh-green animate-spin" />
+          <span className="ml-2 text-moh-darkGreen">Loading map...</span>
+        </div>
+      )}
+
+      {/* Placeholder when no token has been fetched yet */}
+      {!isLoading && !mapLoaded && !mapError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg">
+          <div className="text-moh-green">Initializing map...</div>
         </div>
       )}
 

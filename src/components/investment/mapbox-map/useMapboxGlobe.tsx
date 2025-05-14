@@ -23,7 +23,7 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   
-  const { mapboxToken, tokenError, isLoading, fetchToken, updateToken } = useTokenManager();
+  const { mapboxToken, tokenError, isLoading, fetchAttempted, fetchToken, updateToken } = useTokenManager();
   const { addHotspotMarkers, clearMarkers } = useMapMarkers();
   const { setupAnimationControls } = useMapAnimation();
   
@@ -31,6 +31,7 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
   useEffect(() => {
     if (tokenError) {
       setMapError(tokenError);
+      setMapLoaded(false);
     }
   }, [tokenError]);
 
@@ -43,36 +44,46 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
       map.current = null;
     }
 
+    console.log("Initializing map with token:", token.substring(0, 5) + '...');
     const mapInstance = initializeMapboxGlobe(
       mapContainer.current, 
       token,
       {
         onError: (error) => {
+          console.error("Map initialization error:", error);
           setMapError(error);
           setMapLoaded(false);
         },
         onStyleLoad: (mapInstance) => {
           // Add markers for investment hotspots after the map style loads
           addHotspotMarkers(mapInstance, hotspots);
+          console.log("Map style loaded, markers added");
           setMapLoaded(true);
           setMapError(null);
         },
         onLoad: (mapInstance) => {
           // Set up animation controls
           setupAnimationControls(mapInstance);
+          console.log("Map loaded, animation controls set up");
         }
       }
     );
 
     if (mapInstance) {
       map.current = mapInstance;
+    } else {
+      console.error("Failed to create map instance");
     }
   };
 
   // Initialize map when the token is available
   useEffect(() => {
     if (mapboxToken) {
+      console.log("Token available, initializing map");
       initializeMap(mapboxToken);
+    } else if (fetchAttempted && !isLoading) {
+      console.log("Token fetch attempted but no token available");
+      setMapError("No valid Mapbox token available. Please provide a valid token.");
     }
 
     // Cleanup on unmount
@@ -82,13 +93,23 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
         map.current.remove();
       }
     };
-  }, [mapboxToken, hotspots, clearMarkers]);
+  }, [mapboxToken, hotspots, clearMarkers, fetchAttempted, isLoading]);
+
+  // Function to handle manual token update
+  const handleUpdateToken = (token: string) => {
+    if (updateToken(token)) {
+      console.log("Token updated, initializing map");
+      initializeMap(token);
+      return true;
+    }
+    return false;
+  };
 
   return { 
     mapContainer, 
     mapLoaded, 
     mapError, 
     isLoading,
-    updateMapboxToken: updateToken 
+    updateMapboxToken: handleUpdateToken 
   };
 }

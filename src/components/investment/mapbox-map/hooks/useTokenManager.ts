@@ -6,20 +6,35 @@ import { useToast } from '@/hooks/use-toast';
 export function useTokenManager() {
   const [mapboxToken, setMapboxToken] = useState<string | null>(null);
   const [tokenError, setTokenError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [fetchAttempted, setFetchAttempted] = useState<boolean>(false);
   const { toast } = useToast();
 
   const fetchToken = useCallback(async () => {
     try {
       setIsLoading(true);
+      
+      // First try to get from localStorage
+      const localToken = localStorage.getItem('mapbox_token');
+      if (localToken && isValidMapboxToken(localToken)) {
+        setMapboxToken(localToken);
+        setTokenError(null);
+        console.log("Using token from localStorage");
+        return localToken;
+      }
+      
+      // If not found locally, try to fetch from Supabase Edge Function
+      console.log("Fetching token from Supabase Edge Function");
       const token = await getMapboxToken();
       
       if (token && isValidMapboxToken(token)) {
+        localStorage.setItem('mapbox_token', token);
         setMapboxToken(token);
         setTokenError(null);
         return token;
       } else {
         setTokenError("No valid Mapbox public token available. Please provide a valid token that starts with 'pk.'");
+        console.error("Invalid token format received:", token);
         return null;
       }
     } catch (error) {
@@ -28,6 +43,7 @@ export function useTokenManager() {
       return null;
     } finally {
       setIsLoading(false);
+      setFetchAttempted(true);
     }
   }, []);
 
@@ -66,6 +82,7 @@ export function useTokenManager() {
     mapboxToken, 
     tokenError, 
     isLoading,
+    fetchAttempted,
     fetchToken, 
     updateToken 
   };

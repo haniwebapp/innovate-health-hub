@@ -47,8 +47,8 @@ export function MapErrorDisplay({ errorMessage, onTokenSubmit, isLoading = false
         <>
           <Alert variant="destructive" className="w-full max-w-sm border-red-300 bg-red-50">
             <AlertTriangle className="h-5 w-5" />
-            <AlertTitle>Map Error</AlertTitle>
-            <AlertDescription>
+            <AlertTitle className="text-red-800">Map Error</AlertTitle>
+            <AlertDescription className="text-red-700">
               {errorMessage || "An error occurred while loading the map."}
             </AlertDescription>
           </Alert>
