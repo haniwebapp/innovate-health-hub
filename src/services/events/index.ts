@@ -1,5 +1,6 @@
 
 import { EventQueryService } from "./EventQueryService";
+import { EventRegistrationService } from "./EventRegistrationService";
 
 export class EventService {
   // Re-expose methods from EventQueryService
@@ -21,5 +22,22 @@ export class EventService {
 
   static async getEventById(id: string) {
     return EventQueryService.getEventById(id);
+  }
+  
+  // Re-expose methods from EventRegistrationService
+  static async registerForEvent(eventId: string) {
+    return EventRegistrationService.registerForEvent(eventId);
+  }
+  
+  static async isUserRegisteredForEvent(eventId: string) {
+    return EventRegistrationService.isUserRegisteredForEvent(eventId);
+  }
+  
+  static async submitEventFeedback(eventId: string, feedback: string, rating?: number) {
+    return EventRegistrationService.submitEventFeedback(eventId, feedback, rating);
+  }
+  
+  static async getUserEventRegistrations() {
+    return EventRegistrationService.getUserEventRegistrations();
   }
 }

@@ -1,17 +1,9 @@
 
-import { supabase } from "@/integrations/supabase/client";
 import { Event, EventRegistration } from "@/types/eventTypes";
 
 export class EventBaseService {
   /**
-   * Map database event objects to client-side objects
-   */
-  protected static mapDbEventsToClient(dbEvents: any[]): Event[] {
-    return dbEvents.map(event => this.mapDbEventToClient(event));
-  }
-  
-  /**
-   * Map a single database event object to client-side object
+   * Map database event to client event
    */
   protected static mapDbEventToClient(dbEvent: any): Event {
     return {
@@ -26,29 +18,35 @@ export class EventBaseService {
       eventUrl: dbEvent.event_url,
       registrationUrl: dbEvent.registration_url,
       recordingUrl: dbEvent.recording_url,
-      maxAttendees: dbEvent.max_attendees,
       presenter: dbEvent.presenter,
       presenterTitle: dbEvent.presenter_title,
       presenterOrganization: dbEvent.presenter_organization,
-      category: dbEvent.category,
-      tags: dbEvent.tags,
       featured: dbEvent.featured,
-      status: dbEvent.status
+      category: dbEvent.category,
+      status: dbEvent.status,
+      maxAttendees: dbEvent.max_attendees,
+      tags: dbEvent.tags
     };
   }
-  
+
   /**
-   * Map a database registration object to client-side object
+   * Map database events to client events
    */
-  protected static mapDbRegistrationToClient(dbReg: any): EventRegistration {
+  protected static mapDbEventsToClient(dbEvents: any[]): Event[] {
+    return dbEvents.map(event => this.mapDbEventToClient(event));
+  }
+
+  /**
+   * Map database registration to client registration
+   */
+  protected static mapDbRegistrationToClient(dbRegistration: any): EventRegistration {
     return {
-      id: dbReg.id,
-      eventId: dbReg.event_id,
-      userId: dbReg.user_id,
-      registrationDate: new Date(dbReg.registration_date),
-      attended: dbReg.attended,
-      feedback: dbReg.feedback,
-      rating: dbReg.rating
+      eventId: dbRegistration.event_id,
+      userId: dbRegistration.user_id,
+      registrationDate: new Date(dbRegistration.registration_date),
+      attended: dbRegistration.attended,
+      feedback: dbRegistration.feedback,
+      rating: dbRegistration.rating
     };
   }
 }
