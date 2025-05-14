@@ -26,7 +26,7 @@ export function MapErrorDisplay({ errorMessage, onTokenSubmit }: MapErrorDisplay
     } else {
       toast({
         title: "Invalid token",
-        description: "Please provide a valid Mapbox token that starts with 'pk.' or 'sk.'",
+        description: "Please provide a valid Mapbox public token that starts with 'pk.'",
         variant: "destructive",
       });
     }
@@ -49,7 +49,7 @@ export function MapErrorDisplay({ errorMessage, onTokenSubmit }: MapErrorDisplay
         <form onSubmit={handleTokenSubmit} className="w-full max-w-sm flex flex-col gap-2 mt-2">
           <Input
             type="text"
-            placeholder="Enter your Mapbox token (pk. or sk.)"
+            placeholder="Enter your Mapbox public token (pk.)"
             value={tokenInput}
             onChange={(e) => setTokenInput(e.target.value)}
             className="text-sm"

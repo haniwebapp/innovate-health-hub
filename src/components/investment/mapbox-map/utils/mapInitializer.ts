@@ -16,10 +16,10 @@ export function initializeMapboxGlobe(
 ): mapboxgl.Map | null {
   const { onLoad, onError, onStyleLoad } = options;
   
-  // Don't try to initialize if we don't have a valid token
+  // Don't try to initialize if we don't have a valid public token
   if (!isValidMapboxToken(token)) {
     if (onError) {
-      onError("Invalid Mapbox token format.");
+      onError("Invalid Mapbox token format. Must be a public token (pk.)");
     }
     return null;
   }

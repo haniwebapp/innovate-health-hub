@@ -25,7 +25,7 @@ export const getMapboxToken = async (): Promise<string | null> => {
   try {
     // First try to get from localStorage if available
     const storedToken = localStorage.getItem('mapbox_token');
-    if (storedToken) {
+    if (storedToken && isValidMapboxToken(storedToken)) {
       return storedToken;
     }
     
@@ -45,7 +45,7 @@ export const getMapboxToken = async (): Promise<string | null> => {
 
     const data = await response.json();
     
-    if (data.token) {
+    if (data.token && isValidMapboxToken(data.token)) {
       // Store it for future use
       localStorage.setItem('mapbox_token', data.token);
       return data.token;
@@ -58,7 +58,8 @@ export const getMapboxToken = async (): Promise<string | null> => {
   }
 };
 
-// Check if the token is valid (starts with pk. for public tokens or sk. for secret tokens)
+// Check if the token is valid (must start with pk. for public tokens)
 export const isValidMapboxToken = (token: string): boolean => {
-  return !!token && (token.startsWith('pk.') || token.startsWith('sk.'));
+  // Mapbox GL JS can ONLY use public tokens that start with 'pk.'
+  return !!token && token.startsWith('pk.');
 };

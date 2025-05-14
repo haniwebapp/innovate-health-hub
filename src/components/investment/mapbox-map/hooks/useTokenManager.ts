@@ -16,7 +16,7 @@ export function useTokenManager() {
         setTokenError(null);
         return token;
       } else {
-        setTokenError("No valid Mapbox token available. Please provide a valid token.");
+        setTokenError("No valid Mapbox public token available. Please provide a valid token that starts with 'pk.'");
         return null;
       }
     } catch (error) {
@@ -40,11 +40,11 @@ export function useTokenManager() {
       
       return true;
     } else {
-      setTokenError("Invalid Mapbox token format. Token should start with 'pk.' (public) or 'sk.' (secret).");
+      setTokenError("Invalid Mapbox token format. Token must be a public token that starts with 'pk.'");
       
       toast({
         title: "Invalid token",
-        description: "Please provide a valid Mapbox token that starts with 'pk.' or 'sk.'",
+        description: "Please provide a valid Mapbox public token that starts with 'pk.'",
         variant: "destructive",
       });
       

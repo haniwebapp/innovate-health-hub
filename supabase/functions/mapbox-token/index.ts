@@ -19,6 +19,14 @@ serve(async (req) => {
       );
     }
 
+    // Validate that it's a public token
+    if (!mapboxToken.startsWith('pk.')) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid Mapbox token format. Must be a public token (pk.)' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
+
     // Return the token
     return new Response(
       JSON.stringify({ token: mapboxToken }),
