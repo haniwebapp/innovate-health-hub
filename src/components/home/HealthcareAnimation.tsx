@@ -1,4 +1,4 @@
 
-import HealthcareAnimation from "./healthcare-animation";
+import HealthcareAnimation from "./healthcare-animation/healthcare-animation";
 
 export default HealthcareAnimation;

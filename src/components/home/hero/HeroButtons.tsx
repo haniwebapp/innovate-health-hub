@@ -38,7 +38,8 @@ export function HeroButtons() {
         <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
-            className="bg-moh-green hover:bg-moh-darkGreen text-white shadow-md group w-full border-0" 
+            variant="moh"
+            className="shadow-md group w-full border-0" 
             asChild
           >
             <Link to="/innovations">
@@ -57,7 +58,8 @@ export function HeroButtons() {
         <motion.div variants={itemVariants}>
           <Button 
             size="lg" 
-            className="bg-moh-gold hover:bg-moh-darkGold text-white shadow-md group w-full border-0" 
+            variant="mohGold"
+            className="shadow-md group w-full border-0" 
             asChild
           >
             <Link to="/challenges">

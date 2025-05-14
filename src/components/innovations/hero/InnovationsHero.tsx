@@ -48,7 +48,8 @@ export default function InnovationsHero({
           >
             <Button
               asChild
-              className="bg-gradient-to-r from-moh-green to-moh-darkGreen hover:from-moh-darkGreen hover:to-moh-green text-white flex items-center gap-2 group shadow-lg hover:shadow-xl transition-all"
+              variant="moh"
+              className="flex items-center gap-2 group shadow-lg hover:shadow-xl transition-all"
             >
               <Link to="/innovations/submit">
                 <FileUp size={18} />

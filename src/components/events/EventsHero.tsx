@@ -17,8 +17,6 @@ export default function EventsHero() {
         <div className="absolute top-40 right-20 w-60 h-60 rounded-full bg-moh-darkGreen blur-3xl"></div>
       </div>
       
-      {/* Removed background image */}
-
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
@@ -59,7 +57,7 @@ export default function EventsHero() {
               >
                 <Button 
                   size="lg" 
-                  className="bg-moh-gold hover:bg-moh-lightGold text-moh-darkGreen"
+                  variant="mohGold"
                   onClick={() => navigate("/dashboard/collaboration/events")}
                 >
                   Browse Events

@@ -98,7 +98,7 @@ const EventsSection = () => {
                 </div>
                 
                 <Button 
-                  onClick={() => navigate("/dashboard/collaboration/events")}
+                  onClick={() => navigate("/events")}
                   variant="outline"
                   className="w-full mt-2 border-moh-green text-moh-green hover:bg-moh-green hover:text-white"
                 >
@@ -117,8 +117,9 @@ const EventsSection = () => {
                 Partner with the Ministry of Health Innovation Platform to host your healthcare innovation event and reach the entire ecosystem of innovators, investors, and healthcare providers.
               </p>
               <Button 
-                onClick={() => navigate("/dashboard/collaboration/events")} 
-                className="bg-moh-green hover:bg-moh-darkGreen text-white"
+                onClick={() => navigate("/events")} 
+                variant="moh"
+                className="text-white"
               >
                 Submit Event Proposal
               </Button>
