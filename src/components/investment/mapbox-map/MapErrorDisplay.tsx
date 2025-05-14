@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertTriangle, Loader2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -55,6 +55,13 @@ export function MapErrorDisplay({ errorMessage, onTokenSubmit, isLoading = false
           
           {isTokenError && (
             <form onSubmit={handleTokenSubmit} className="w-full max-w-sm flex flex-col gap-2 mt-2">
+              <div className="flex items-center justify-center mb-2">
+                <Globe className="h-10 w-10 text-moh-green opacity-70" />
+              </div>
+              <p className="text-sm text-center text-muted-foreground mb-2">
+                A valid Mapbox token is required to display geographic data. 
+                Please enter your Mapbox public token below.
+              </p>
               <Input
                 type="text"
                 placeholder="Enter your Mapbox public token (pk.)"
@@ -70,8 +77,9 @@ export function MapErrorDisplay({ errorMessage, onTokenSubmit, isLoading = false
               >
                 Update Token
               </Button>
-              <div className="text-xs text-center text-slate-500 mt-1">
-                Get a token at <a href="https://mapbox.com/" target="_blank" rel="noreferrer" className="text-moh-green hover:underline">mapbox.com</a>
+              <div className="text-xs text-center text-slate-500 mt-2">
+                <p>Get a free token at <a href="https://mapbox.com/" target="_blank" rel="noreferrer" className="text-moh-green hover:underline">mapbox.com</a></p>
+                <p className="mt-1">Your token will be securely stored in your browser.</p>
               </div>
             </form>
           )}
