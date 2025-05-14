@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,10 +32,12 @@ export function InvestmentAISection() {
   const [aiMatchScores, setAiMatchScores] = useState<any[]>([]);
   const [aiInsights, setAiInsights] = useState<string[]>([]);
   const [marketTrendInsights, setMarketTrendInsights] = useState<any>(null);
+  const [buttonClicked, setButtonClicked] = useState(false);
   const { toast } = useToast();
 
   const handleAnalysis = async () => {
     setIsAnalyzing(true);
+    setButtonClicked(true);
     
     try {
       // Generate investment matches based on test data
@@ -122,6 +123,8 @@ export function InvestmentAISection() {
       });
     } finally {
       setIsAnalyzing(false);
+      // Keep button in active state for visual feedback
+      setTimeout(() => setButtonClicked(false), 3000);
     }
   };
   
@@ -230,7 +233,11 @@ export function InvestmentAISection() {
               
               <Button 
                 onClick={handleAnalysis} 
-                className="w-full bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold"
+                className={`w-full transition-all duration-300 ${
+                  buttonClicked || isAnalyzing
+                    ? "bg-gradient-to-r from-moh-darkGold to-moh-gold hover:from-moh-darkGold hover:to-moh-gold ring-2 ring-white/30 shadow-lg transform scale-[0.98]"
+                    : "bg-gradient-to-r from-moh-gold to-moh-darkGold hover:from-moh-darkGold hover:to-moh-gold"
+                }`}
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
@@ -240,7 +247,7 @@ export function InvestmentAISection() {
                   </>
                 ) : (
                   <>
-                    <Zap className="mr-2 h-4 w-4" />
+                    <Zap className={`mr-2 h-4 w-4 ${buttonClicked ? "text-white animate-pulse" : ""}`} />
                     Run AI Analysis
                   </>
                 )}
