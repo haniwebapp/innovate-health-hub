@@ -6,4 +6,4 @@ export * from './config';
 export * from './MapStyles';
 export * from './hooks';
 export * from './utils';
-
+export * from './MapErrorDisplay';
