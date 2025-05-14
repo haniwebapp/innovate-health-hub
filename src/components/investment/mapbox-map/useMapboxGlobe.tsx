@@ -1,7 +1,8 @@
+
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { InvestmentHotspot } from './types';
-import { MAPBOX_TOKEN, getMapboxToken, isValidMapboxToken } from './config';
+import { getMapboxToken, isValidMapboxToken } from './config';
 import { useToast } from '@/hooks/use-toast';
 
 interface UseMapboxGlobeProps {
