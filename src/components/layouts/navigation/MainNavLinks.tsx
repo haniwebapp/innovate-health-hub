@@ -34,19 +34,7 @@ export function MainNavLinks({ isRouteActive }: MainNavLinksProps) {
               <Icon className="h-4 w-4" />
               <span>{link.label}</span>
             </div>
-            {isActive && (
-              <motion.div
-                className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-moh-green"
-                layoutId="navbar-active-indicator"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 380,
-                  damping: 30,
-                }}
-              />
-            )}
+            {/* Removing the underline motion element */}
           </NavLink>
         );
       })}
