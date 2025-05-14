@@ -1,6 +1,6 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
-import { FileText, Lightbulb, PlusCircle, Award } from "lucide-react";
+import { FileText, Lightbulb, Award } from "lucide-react";
 
 interface SidebarInnovationNavProps {
   isCollapsed: boolean;
@@ -26,11 +26,6 @@ export function SidebarInnovationNav({ isCollapsed }: SidebarInnovationNavProps)
           to: "/dashboard/submissions", 
           icon: <FileText size={18} className="text-moh-green" />, 
           text: "Submissions"
-        },
-        { 
-          to: "/dashboard/create-challenge", 
-          icon: <PlusCircle size={18} className="text-moh-green" />, 
-          text: "Create" 
         }
       ]}
     />
