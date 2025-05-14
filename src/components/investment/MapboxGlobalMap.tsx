@@ -52,7 +52,8 @@ export function MapboxGlobalMap({ className }: MapboxGlobalMapProps) {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      projection: 'globe' as mapboxgl.Projection,
+      // Fix the TypeScript error by properly casting the projection value
+      projection: { name: 'globe' } as mapboxgl.ProjectionSpecification,
       zoom: 1.5,
       center: [30, 25],
       bearing: 0,
