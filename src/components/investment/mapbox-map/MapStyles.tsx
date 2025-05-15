@@ -3,7 +3,8 @@ import React from 'react';
 
 export function MapStyles() {
   return (
-    <style jsx global>{`
+    <style>
+      {`
       .mapbox-marker {
         position: relative;
         cursor: pointer;
@@ -78,6 +79,7 @@ export function MapStyles() {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         border: 1px solid #00814A20;
       }
-    `}</style>
+      `}
+    </style>
   );
 }
