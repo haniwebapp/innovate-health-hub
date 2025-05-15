@@ -15,9 +15,10 @@ serve(async (req) => {
   }
 
   try {
-    const { innovationData } = await req.json();
-
-    // Log the received data for debugging
+    const requestData = await req.json();
+    const innovationData = requestData.innovationData;
+    
+    // Log the received data
     console.log("Vision 2030 alignment check requested for:", JSON.stringify(innovationData));
 
     if (!innovationData) {
@@ -45,10 +46,12 @@ serve(async (req) => {
     6. Recommendations to enhance alignment (list 2-3)
     
     Format your response as a JSON object with these keys: 
-    "alignmentScore" (number), 
+    "score" (number), 
     "alignmentAreas" (array of strings), 
     "vision2030Objectives" (array of strings), 
+    "gapAreas" (array of strings),
     "improvementAreas" (array of strings),
+    "vision2030Impact" (string), 
     "potentialImpact" (string), 
     "recommendations" (array of strings)`;
 
@@ -61,18 +64,20 @@ serve(async (req) => {
           { role: "user", content: userPrompt }
         ],
         temperature: 0.4,
+        response_format: { type: "json_object" }
       });
 
       let alignmentAnalysis;
       try {
         alignmentAnalysis = JSON.parse(completion.choices[0].message.content || "{}");
+        console.log("Parsed alignment analysis:", alignmentAnalysis);
       } catch (error) {
         console.error("Failed to parse GPT response as JSON:", error);
         console.log("Raw content:", completion.choices[0].message.content);
         
         // Create a fallback structure
         alignmentAnalysis = {
-          alignmentScore: 75,
+          score: 75,
           alignmentAreas: [
             "Digital healthcare transformation",
             "Preventive care focus",
@@ -83,10 +88,15 @@ serve(async (req) => {
             "Expand privatization of government services",
             "Promote digital transformation in healthcare"
           ],
+          gapAreas: [
+            "Limited localization components",
+            "Unclear sustainability metrics"
+          ],
           improvementAreas: [
             "Stronger localization components",
             "Clearer sustainability metrics"
           ],
+          vision2030Impact: "Moderate to high positive impact on healthcare quality metrics and accessibility goals",
           potentialImpact: "Moderate to high positive impact on healthcare quality metrics and accessibility goals",
           recommendations: [
             "Enhance focus on Saudi workforce development",
@@ -105,7 +115,11 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in vision-2030-alignment function:", error);
     return new Response(JSON.stringify({ 
-      error: error.message || "An error occurred during the Vision 2030 alignment analysis." 
+      error: error.message || "An error occurred during the Vision 2030 alignment analysis.",
+      score: 0,
+      alignmentAreas: [],
+      gapAreas: [],
+      vision2030Impact: "Error performing alignment assessment."
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

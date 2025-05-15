@@ -8,11 +8,20 @@ export class Vision2030Service {
    */
   static async checkAlignment(input: Vision2030AlignmentInput): Promise<Vision2030AlignmentResult> {
     try {
+      console.log("Calling vision-2030-alignment with input:", input);
+      
       const { data, error } = await supabase.functions.invoke("vision-2030-alignment", {
         body: { innovationData: input }
       });
+      
+      console.log("Response from vision-2030-alignment:", { data, error });
 
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(error.message || "Error checking Vision 2030 alignment");
+      
+      if (!data) {
+        throw new Error("No alignment data returned from service");
+      }
+      
       return data as Vision2030AlignmentResult;
     } catch (error: any) {
       console.error("Error checking Vision 2030 alignment:", error);

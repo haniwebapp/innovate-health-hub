@@ -1,4 +1,3 @@
-
 export interface StrategyGapInput {
   policyDetails: {
     title: string;
@@ -26,20 +25,20 @@ export interface Vision2030AlignmentInput {
   description: string;
   goals?: string;
   targetAudience?: string;
-  sector?: string;
+  sector: string;
 }
 
 export interface Vision2030AlignmentResult {
-  alignmentScore: number;
-  score: number; // Adding this for backward compatibility
-  alignmentAreas: string[];
-  gapAreas: string[]; // Adding this field
-  vision2030Objectives: string[];
-  vision2030Impact: string; // Adding this field
-  improvementAreas: string[];
-  potentialImpact: string;
-  recommendations: string[];
+  score: number;
+  alignmentScore?: number;
   overallScore?: number;
+  alignmentAreas: string[];
+  gapAreas: string[];
+  vision2030Objectives?: string[];
+  recommendations: string[];
+  vision2030Impact: string;
+  potentialImpact?: string;
+  improvementAreas?: string[];
   overallAssessment?: string;
   error?: string;
 }
@@ -109,11 +108,10 @@ export interface InnovationGuideResult {
 
 // Additional types needed for the policy components
 export interface PolicyData {
-  name: string;
+  name?: string;
   description: string;
   sector: string;
-  stakeholders?: string[];
-  policyText?: string;
+  goals?: string;
 }
 
 export interface PolicyImpactResult {

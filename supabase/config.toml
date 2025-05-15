@@ -4,3 +4,7 @@ project_id = "ntgrokpnwizohtfkcfec"
 [functions]
 [functions.mapbox-token]
 verify_jwt = false
+
+[functions.vision-2030-alignment]
+verify_jwt = false
+
