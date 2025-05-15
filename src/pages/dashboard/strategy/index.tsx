@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,9 +9,17 @@ import { PolicyImpactSimulator } from '@/components/policy/PolicyImpactSimulator
 import { StrategyAnalytics } from '@/components/policy/strategy/StrategyAnalytics';
 import { StrategyGapAnalyzer } from '@/components/policy/strategy/StrategyGapAnalyzer';
 import { BarChart3, BookOpen, LucideFolder, Settings, ShieldCheck, TrendingUp } from 'lucide-react';
+import { StrategyGapResult } from '@/services/ai/policy/types';
 
 export default function StrategyDashboard() {
   const [activeTab, setActiveTab] = React.useState("overview");
+  const [gapAnalysisResults, setGapAnalysisResults] = useState<StrategyGapResult | null>(null);
+
+  const handleGapAnalysisComplete = (results: StrategyGapResult) => {
+    setGapAnalysisResults(results);
+    // Optionally switch to the results view after analysis is complete
+    // setActiveTab("gap-results");
+  };
   
   return (
     <div className="space-y-6">
@@ -182,7 +189,7 @@ export default function StrategyDashboard() {
         </TabsContent>
         
         <TabsContent value="gap-analyzer">
-          <StrategyGapAnalyzer />
+          <StrategyGapAnalyzer onAnalysisComplete={handleGapAnalysisComplete} />
         </TabsContent>
         
         <TabsContent value="resources">

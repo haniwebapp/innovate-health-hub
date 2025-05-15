@@ -1,13 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Vision2030AlignmentChecker } from '@/components/policy/vision-alignment/Vision2030AlignmentChecker';
 import { StrategyAnalytics, StrategyGapAnalyzer } from '@/components/policy/strategy';
 import { ScrollProgress } from '@/components/animations/ScrollProgress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DocumentChangeNotifier } from '@/components/policy/DocumentChangeNotifier';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StrategyGapResult } from '@/services/ai/policy/types';
 
 const PolicyPage = () => {
+  const [gapAnalysisResults, setGapAnalysisResults] = useState<StrategyGapResult | null>(null);
+
+  const handleGapAnalysisComplete = (results: StrategyGapResult) => {
+    setGapAnalysisResults(results);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <ScrollProgress />
@@ -66,7 +73,7 @@ const PolicyPage = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <StrategyGapAnalyzer />
+                    <StrategyGapAnalyzer onAnalysisComplete={handleGapAnalysisComplete} />
                   </CardContent>
                 </Card>
               </TabsContent>

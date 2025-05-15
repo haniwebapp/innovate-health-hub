@@ -12,3 +12,4 @@ export * from './vision-alignment/AlignmentResults';
 export * from './vision-alignment/Vision2030AlignmentChecker';
 export * from './strategy/StrategyAnalytics';
 export * from './strategy/StrategyGapAnalyzer';
+export * from './strategy/StrategyGapResults';

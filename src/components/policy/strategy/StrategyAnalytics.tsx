@@ -1,13 +1,125 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, PieChart, TrendingUp, AlertCircle } from "lucide-react";
+import { BarChart3, PieChart, TrendingUp, AlertCircle, Loader2 } from "lucide-react";
 import { Separator } from '@/components/ui/separator';
+import { useToast } from "@/hooks/use-toast";
+
+interface AnalyticsData {
+  implementationProgress: {
+    overall: number;
+    sectors: { name: string; progress: number }[];
+  };
+  resourceAllocation: {
+    sectors: { name: string; percentage: number; color: string }[];
+  };
+  risks: {
+    items: { title: string; description: string; impact: string; level: string }[];
+    mitigationRate: number;
+  };
+}
+
+// Sample analytics data
+const sampleData: AnalyticsData = {
+  implementationProgress: {
+    overall: 78,
+    sectors: [
+      { name: "Digital Health", progress: 92 },
+      { name: "Telehealth", progress: 85 },
+      { name: "Rural Healthcare", progress: 64 },
+    ]
+  },
+  resourceAllocation: {
+    sectors: [
+      { name: "Digital Transformation", percentage: 42, color: "bg-moh-green" },
+      { name: "Healthcare Access", percentage: 28, color: "bg-amber-500" },
+      { name: "Medical Research", percentage: 18, color: "bg-blue-500" },
+      { name: "Workforce Development", percentage: 12, color: "bg-rose-500" },
+    ]
+  },
+  risks: {
+    items: [
+      { title: "Resource Allocation Gap", description: "Rural healthcare initiatives underfunded", impact: "Medium", level: "amber" },
+      { title: "Implementation Timeline", description: "Telehealth regulation delays", impact: "High", level: "rose" },
+      { title: "Stakeholder Alignment", description: "Private sector engagement improving", impact: "Positive", level: "green" },
+    ],
+    mitigationRate: 72
+  }
+};
 
 export const StrategyAnalytics = () => {
   const [timeframe, setTimeframe] = useState("quarterly");
+  const [isLoading, setIsLoading] = useState(true);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    const fetchAnalyticsData = async () => {
+      setIsLoading(true);
+      // In a real app, you would fetch data from an API
+      try {
+        // Simulating API call with timeout
+        setTimeout(() => {
+          setAnalyticsData(sampleData);
+          setIsLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.error("Error fetching analytics data:", error);
+        toast({
+          title: "Error Loading Analytics",
+          description: "Failed to load strategy analytics data. Please try again later.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+      }
+    };
+
+    fetchAnalyticsData();
+  }, [timeframe, toast]);
+
+  const handleGenerateReport = () => {
+    toast({
+      title: "Report Generation Started",
+      description: "Your analytics report is being generated and will be available shortly.",
+    });
+  };
+  
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-xl text-moh-darkGreen flex items-center">
+            <BarChart3 className="h-5 w-5 mr-2 text-moh-green" />
+            Healthcare Strategy Analytics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 text-moh-green animate-spin mb-4" />
+          <p className="text-muted-foreground">Loading analytics data...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!analyticsData) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-xl text-moh-darkGreen flex items-center">
+            <BarChart3 className="h-5 w-5 mr-2 text-moh-green" />
+            Healthcare Strategy Analytics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-64">
+          <AlertCircle className="h-8 w-8 text-amber-500 mb-4" />
+          <p className="text-muted-foreground">No analytics data available</p>
+          <Button className="mt-4" onClick={() => window.location.reload()}>Retry Loading Data</Button>
+        </CardContent>
+      </Card>
+    );
+  }
   
   return (
     <Card className="w-full">
@@ -37,33 +149,21 @@ export const StrategyAnalytics = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-moh-darkGreen">78%</div>
+              <div className="text-2xl font-bold text-moh-darkGreen">{analyticsData.implementationProgress.overall}%</div>
               <p className="text-xs text-muted-foreground">+12% from previous period</p>
               
               <div className="mt-4 space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span>Digital Health</span>
-                  <span className="font-medium">92%</span>
-                </div>
-                <div className="w-full bg-moh-lightGreen/30 rounded-full h-2">
-                  <div className="bg-moh-green h-2 rounded-full" style={{ width: "92%" }}></div>
-                </div>
-                
-                <div className="flex justify-between items-center text-sm">
-                  <span>Telehealth</span>
-                  <span className="font-medium">85%</span>
-                </div>
-                <div className="w-full bg-moh-lightGreen/30 rounded-full h-2">
-                  <div className="bg-moh-green h-2 rounded-full" style={{ width: "85%" }}></div>
-                </div>
-                
-                <div className="flex justify-between items-center text-sm">
-                  <span>Rural Healthcare</span>
-                  <span className="font-medium">64%</span>
-                </div>
-                <div className="w-full bg-moh-lightGreen/30 rounded-full h-2">
-                  <div className="bg-moh-green h-2 rounded-full" style={{ width: "64%" }}></div>
-                </div>
+                {analyticsData.implementationProgress.sectors.map((sector, index) => (
+                  <div key={index} className="space-y-1">
+                    <div className="flex justify-between items-center text-sm">
+                      <span>{sector.name}</span>
+                      <span className="font-medium">{sector.progress}%</span>
+                    </div>
+                    <div className="w-full bg-moh-lightGreen/30 rounded-full h-2">
+                      <div className="bg-moh-green h-2 rounded-full" style={{ width: `${sector.progress}%` }}></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -81,22 +181,12 @@ export const StrategyAnalytics = () => {
               </div>
               
               <div className="mt-2 space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-moh-green"></div>
-                  <span className="text-xs">Digital Transformation: 42%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                  <span className="text-xs">Healthcare Access: 28%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-xs">Medical Research: 18%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-500"></div>
-                  <span className="text-xs">Workforce Development: 12%</span>
-                </div>
+                {analyticsData.resourceAllocation.sectors.map((sector, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${sector.color}`}></div>
+                    <span className="text-xs">{sector.name}: {sector.percentage}%</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -110,33 +200,38 @@ export const StrategyAnalytics = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="p-2 bg-amber-50 border border-amber-200 rounded-md">
-                  <p className="text-sm font-medium text-amber-800">Resource Allocation Gap</p>
-                  <p className="text-xs text-muted-foreground">Rural healthcare initiatives underfunded</p>
-                  <p className="text-xs font-medium text-amber-800 mt-1">Impact: Medium</p>
-                </div>
-                
-                <div className="p-2 bg-rose-50 border border-rose-200 rounded-md">
-                  <p className="text-sm font-medium text-rose-800">Implementation Timeline</p>
-                  <p className="text-xs text-muted-foreground">Telehealth regulation delays</p>
-                  <p className="text-xs font-medium text-rose-800 mt-1">Impact: High</p>
-                </div>
-                
-                <div className="p-2 bg-moh-lightGreen/50 border border-moh-green/20 rounded-md">
-                  <p className="text-sm font-medium text-moh-darkGreen">Stakeholder Alignment</p>
-                  <p className="text-xs text-muted-foreground">Private sector engagement improving</p>
-                  <p className="text-xs font-medium text-moh-darkGreen mt-1">Impact: Positive</p>
-                </div>
+                {analyticsData.risks.items.map((risk, index) => (
+                  <div 
+                    key={index} 
+                    className={`p-2 ${
+                      risk.level === 'amber' ? 'bg-amber-50 border border-amber-200' :
+                      risk.level === 'rose' ? 'bg-rose-50 border border-rose-200' :
+                      'bg-moh-lightGreen/50 border border-moh-green/20'
+                    } rounded-md`}
+                  >
+                    <p className={`text-sm font-medium ${
+                      risk.level === 'amber' ? 'text-amber-800' :
+                      risk.level === 'rose' ? 'text-rose-800' :
+                      'text-moh-darkGreen'
+                    }`}>{risk.title}</p>
+                    <p className="text-xs text-muted-foreground">{risk.description}</p>
+                    <p className={`text-xs font-medium mt-1 ${
+                      risk.level === 'amber' ? 'text-amber-800' :
+                      risk.level === 'rose' ? 'text-rose-800' :
+                      'text-moh-darkGreen'
+                    }`}>Impact: {risk.impact}</p>
+                  </div>
+                ))}
               </div>
               
               <Separator className="my-3" />
               
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Risk mitigation rate</span>
-                <span className="text-xs font-medium">72%</span>
+                <span className="text-xs font-medium">{analyticsData.risks.mitigationRate}%</span>
               </div>
               <div className="w-full bg-moh-lightGreen/30 rounded-full h-1.5 mt-1">
-                <div className="bg-moh-green h-1.5 rounded-full" style={{ width: "72%" }}></div>
+                <div className="bg-moh-green h-1.5 rounded-full" style={{ width: `${analyticsData.risks.mitigationRate}%` }}></div>
               </div>
             </CardContent>
           </Card>
@@ -160,7 +255,7 @@ export const StrategyAnalytics = () => {
           </div>
         </TabsContent>
         
-        <Button className="w-full">Generate Full Analytics Report</Button>
+        <Button className="w-full" onClick={handleGenerateReport}>Generate Full Analytics Report</Button>
       </CardContent>
     </Card>
   );
