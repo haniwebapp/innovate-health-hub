@@ -37,6 +37,7 @@ export function initializeMapboxGlobe(
       center: [30, 25],
       bearing: 0,
       pitch: 45,
+      trackResize: true,
     });
 
     // Add navigation controls
@@ -57,20 +58,28 @@ export function initializeMapboxGlobe(
 
     // Add globe effects
     map.on('style.load', () => {
-      // Add atmosphere and fog effects for a more realistic globe
-      map.setFog({
-        color: 'rgb(255, 255, 255)',
-        'high-color': 'rgb(200, 200, 225)',
-        'horizon-blend': 0.2,
-      });
+      // Make sure the map still exists before accessing it
+      if (map && !map._removed) {
+        // Add atmosphere and fog effects for a more realistic globe
+        map.setFog({
+          color: 'rgb(255, 255, 255)',
+          'high-color': 'rgb(200, 200, 225)',
+          'horizon-blend': 0.2,
+        });
 
-      if (onStyleLoad) {
-        onStyleLoad(map);
+        if (onStyleLoad) {
+          onStyleLoad(map);
+        }
       }
     });
 
     if (onLoad) {
-      onLoad(map);
+      map.on('load', () => {
+        // Verify map still exists before calling onLoad
+        if (map && !map._removed) {
+          onLoad(map);
+        }
+      });
     }
 
     return map;

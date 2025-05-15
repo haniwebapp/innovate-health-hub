@@ -35,14 +35,30 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
     }
   }, [tokenError]);
 
+  // Safely remove existing map
+  const safelyRemoveMap = () => {
+    try {
+      if (map.current) {
+        // Clear all markers first
+        clearMarkers();
+        
+        if (!map.current._removed) {
+          // Only call remove if the map hasn't been removed yet
+          map.current.remove();
+        }
+        
+        map.current = null;
+      }
+    } catch (err) {
+      console.error("Error removing map:", err);
+    }
+  };
+
   const initializeMap = (token: string) => {
     if (!mapContainer.current) return;
     
-    // Clean up any existing map
-    if (map.current) {
-      map.current.remove();
-      map.current = null;
-    }
+    // Safely clean up any existing map
+    safelyRemoveMap();
 
     console.log("Initializing map with token:", token.substring(0, 5) + '...');
     const mapInstance = initializeMapboxGlobe(
@@ -55,16 +71,22 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
           setMapLoaded(false);
         },
         onStyleLoad: (mapInstance) => {
-          // Add markers for investment hotspots after the map style loads
-          addHotspotMarkers(mapInstance, hotspots);
-          console.log("Map style loaded, markers added");
-          setMapLoaded(true);
-          setMapError(null);
+          // Verify map still exists before adding markers
+          if (mapInstance && !mapInstance._removed) {
+            // Add markers for investment hotspots after the map style loads
+            addHotspotMarkers(mapInstance, hotspots);
+            console.log("Map style loaded, markers added");
+            setMapLoaded(true);
+            setMapError(null);
+          }
         },
         onLoad: (mapInstance) => {
-          // Set up animation controls
-          setupAnimationControls(mapInstance);
-          console.log("Map loaded, animation controls set up");
+          // Verify map still exists before setting up animations
+          if (mapInstance && !mapInstance._removed) {
+            // Set up animation controls
+            setupAnimationControls(mapInstance);
+            console.log("Map loaded, animation controls set up");
+          }
         }
       }
     );
@@ -86,14 +108,11 @@ export function useMapboxGlobe({ hotspots }: UseMapboxGlobeProps): UseMapboxGlob
       setMapError("No valid Mapbox token available. Please provide a valid token.");
     }
 
-    // Cleanup on unmount
+    // Cleanup on unmount or when dependencies change
     return () => {
-      clearMarkers();
-      if (map.current) {
-        map.current.remove();
-      }
+      safelyRemoveMap();
     };
-  }, [mapboxToken, hotspots, clearMarkers, fetchAttempted, isLoading]);
+  }, [mapboxToken, hotspots, fetchAttempted, isLoading]);
 
   // Function to handle manual token update
   const handleUpdateToken = (token: string) => {
