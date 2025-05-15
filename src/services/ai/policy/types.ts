@@ -112,6 +112,7 @@ export interface PolicyData {
   description: string;
   sector: string;
   goals?: string;
+  stakeholders?: string[]; // Added stakeholders property
 }
 
 export interface PolicyImpactResult {

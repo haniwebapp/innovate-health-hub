@@ -1,4 +1,3 @@
-
 import { PolicyData, PolicyImpactResult } from '@/services/ai/policy/types';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -6,7 +5,7 @@ export const initialPolicyData: PolicyData = {
   name: '',
   description: '',
   sector: 'healthcare',
-  stakeholders: []
+  stakeholders: [] // Added initialization for the stakeholders array
 };
 
 export const simulatePolicy = async (policyData: PolicyData, params: { timeframe: string; region: string }) => {
