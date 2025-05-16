@@ -82,10 +82,14 @@ export class StrategyGapService {
       if (error) throw new Error(error.message);
       if (!data) throw new Error("Analysis not found");
       
+      // The issue is here - data is a single object, not an array
+      // Check if data is an array and take the first item if needed
+      const result = Array.isArray(data) ? data[0] : data;
+      
       return {
-        overallAnalysis: data.overall_analysis,
-        gaps: data.gaps || [],
-        recommendations: data.recommendations || []
+        overallAnalysis: result.overall_analysis,
+        gaps: result.gaps || [],
+        recommendations: result.recommendations || []
       };
     } catch (error: any) {
       console.error("Error getting strategy gap analysis:", error);
