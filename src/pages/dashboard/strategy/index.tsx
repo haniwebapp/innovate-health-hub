@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,9 +7,8 @@ import { Button } from '@/components/ui/button';
 import BreadcrumbNav from '@/components/navigation/BreadcrumbNav';
 import { Vision2030AlignmentChecker } from '@/components/policy/vision-alignment/Vision2030AlignmentChecker';
 import { PolicyImpactSimulator } from '@/components/policy/PolicyImpactSimulator';
-import { StrategyAnalytics } from '@/components/policy/strategy/StrategyAnalytics';
-import { StrategyGapAnalyzer } from '@/components/policy/strategy/StrategyGapAnalyzer';
-import { BarChart3, BookOpen, LucideFolder, Settings, ShieldCheck, TrendingUp } from 'lucide-react';
+import { StrategyAnalytics, StrategyGapAnalyzer, StrategyAnalysisHistory } from '@/components/policy/strategy';
+import { BarChart3, BookOpen, History, LucideFolder, Settings, ShieldCheck, TrendingUp } from 'lucide-react';
 import { StrategyGapResult } from '@/services/ai/policy/types';
 
 export default function StrategyDashboard() {
@@ -17,8 +17,6 @@ export default function StrategyDashboard() {
 
   const handleGapAnalysisComplete = (results: StrategyGapResult) => {
     setGapAnalysisResults(results);
-    // Optionally switch to the results view after analysis is complete
-    // setActiveTab("gap-results");
   };
   
   return (
@@ -44,6 +42,7 @@ export default function StrategyDashboard() {
           <TabsTrigger value="simulation">Impact Simulation</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="gap-analyzer">Gap Analyzer</TabsTrigger>
+          <TabsTrigger value="history">Analysis History</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
         </TabsList>
         
@@ -89,6 +88,13 @@ export default function StrategyDashboard() {
                     onClick={() => setActiveTab("gap-analyzer")}
                   >
                     <TrendingUp className="h-4 w-4" /> Gap Analysis
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex items-center justify-start gap-2"
+                    onClick={() => setActiveTab("history")}
+                  >
+                    <History className="h-4 w-4" /> Analysis History
                   </Button>
                   <Button 
                     variant="outline" 
@@ -190,6 +196,10 @@ export default function StrategyDashboard() {
         
         <TabsContent value="gap-analyzer">
           <StrategyGapAnalyzer onAnalysisComplete={handleGapAnalysisComplete} />
+        </TabsContent>
+        
+        <TabsContent value="history">
+          <StrategyAnalysisHistory />
         </TabsContent>
         
         <TabsContent value="resources">

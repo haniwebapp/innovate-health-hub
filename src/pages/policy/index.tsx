@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DocumentChangeNotifier } from '@/components/policy/DocumentChangeNotifier';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { StrategyGapResult } from '@/services/ai/policy/types';
+import { StrategyAnalysisHistory } from '@/components/policy/strategy/StrategyAnalysisHistory';
 
 const PolicyPage = () => {
   const [gapAnalysisResults, setGapAnalysisResults] = useState<StrategyGapResult | null>(null);
@@ -30,10 +31,11 @@ const PolicyPage = () => {
             </p>
             
             <Tabs defaultValue="vision" className="mb-8">
-              <TabsList className="grid grid-cols-3 mb-8">
-                <TabsTrigger value="vision">Vision 2030 Alignment</TabsTrigger>
+              <TabsList className="grid grid-cols-4 mb-8">
+                <TabsTrigger value="vision">Vision 2030</TabsTrigger>
                 <TabsTrigger value="analytics">Policy Analytics</TabsTrigger>
                 <TabsTrigger value="gap">Gap Analysis</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
               </TabsList>
               
               <TabsContent value="vision">
@@ -76,6 +78,10 @@ const PolicyPage = () => {
                     <StrategyGapAnalyzer onAnalysisComplete={handleGapAnalysisComplete} />
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="history">
+                <StrategyAnalysisHistory />
               </TabsContent>
             </Tabs>
             

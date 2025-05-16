@@ -2141,6 +2141,106 @@ export type Database = {
           },
         ]
       }
+      strategy_gap_analyses: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          overall_analysis: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          overall_analysis: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          overall_analysis?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      strategy_gaps: {
+        Row: {
+          analysis_id: string
+          created_at: string
+          description: string
+          id: string
+          potential_impact: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          analysis_id: string
+          created_at?: string
+          description: string
+          id?: string
+          potential_impact?: string | null
+          severity: string
+          title: string
+        }
+        Update: {
+          analysis_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          potential_impact?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strategy_gaps_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "strategy_gap_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strategy_recommendations: {
+        Row: {
+          analysis_id: string
+          created_at: string
+          id: string
+          priority: string | null
+          recommendation: string
+        }
+        Insert: {
+          analysis_id: string
+          created_at?: string
+          id?: string
+          priority?: string | null
+          recommendation: string
+        }
+        Update: {
+          analysis_id?: string
+          created_at?: string
+          id?: string
+          priority?: string | null
+          recommendation?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strategy_recommendations_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "strategy_gap_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       submissions: {
         Row: {
           category: string
@@ -2902,6 +3002,18 @@ export type Database = {
           count: number
         }[]
       }
+      get_strategy_gap_analysis: {
+        Args: { p_analysis_id: string }
+        Returns: {
+          id: string
+          title: string
+          description: string
+          overall_analysis: string
+          created_at: string
+          gaps: Json
+          recommendations: string[]
+        }[]
+      }
       halfvec_avg: {
         Args: { "": number[] }
         Returns: unknown
@@ -2962,6 +3074,17 @@ export type Database = {
         Args: { "": string } | { "": unknown } | { "": unknown }
         Returns: string
       }
+      list_strategy_gap_analyses: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          title: string
+          description: string
+          created_at: string
+          gap_count: number
+          recommendation_count: number
+        }[]
+      }
       match_documents: {
         Args: {
           query_embedding: string
@@ -2975,6 +3098,17 @@ export type Database = {
           category: string
           similarity: number
         }[]
+      }
+      save_strategy_gap_analysis: {
+        Args: {
+          p_user_id: string
+          p_title: string
+          p_description: string
+          p_overall_analysis: string
+          p_gaps: Json
+          p_recommendations: string[]
+        }
+        Returns: string
       }
       sparsevec_out: {
         Args: { "": unknown }

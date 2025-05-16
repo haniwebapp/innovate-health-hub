@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { StrategyGapService } from '@/services/ai/policy/StrategyGapService';
-import { FileSpreadsheet, Loader2 } from "lucide-react";
+import { FileSpreadsheet, Loader2, Save } from "lucide-react";
 import { StrategyGapResult } from "@/services/ai/policy/types";
 import { StrategyGapResults } from './StrategyGapResults';
 
@@ -18,6 +18,7 @@ export interface StrategyGapAnalyzerProps {
 export function StrategyGapAnalyzer({ onAnalysisComplete }: StrategyGapAnalyzerProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [policyTitle, setPolicyTitle] = useState('');
   const [policyDescription, setPolicyDescription] = useState('');
   const [currentState, setCurrentState] = useState('');
@@ -70,6 +71,29 @@ export function StrategyGapAnalyzer({ onAnalysisComplete }: StrategyGapAnalyzerP
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveAnalysis = async () => {
+    if (!results) return;
+    
+    setIsSaving(true);
+    try {
+      await StrategyGapService.saveAnalysis(policyTitle, policyDescription, results);
+      
+      toast({
+        title: "Saved Successfully",
+        description: "The gap analysis has been saved to your account."
+      });
+    } catch (error) {
+      console.error('Error saving analysis:', error);
+      toast({
+        title: "Save Failed",
+        description: error instanceof Error ? error.message : "Failed to save the analysis.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -139,20 +163,43 @@ export function StrategyGapAnalyzer({ onAnalysisComplete }: StrategyGapAnalyzerP
               </div>
             </div>
             
-            <Button 
-              onClick={handleAnalyze} 
-              className="w-full bg-[#00814A] hover:bg-[#006e3f]"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing Gaps...
-                </>
-              ) : (
-                "Analyze Strategy Gaps"
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                onClick={handleAnalyze} 
+                className="w-full bg-[#00814A] hover:bg-[#006e3f]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Analyzing Gaps...
+                  </>
+                ) : (
+                  "Analyze Strategy Gaps"
+                )}
+              </Button>
+              
+              {results && (
+                <Button 
+                  onClick={handleSaveAnalysis} 
+                  className="w-full border-[#00814A] text-[#00814A] hover:bg-[#00814A]/10"
+                  variant="outline"
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Analysis
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
