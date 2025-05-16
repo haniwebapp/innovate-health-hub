@@ -130,3 +130,20 @@
   max-height: 100%;
   overflow-y: scroll;
 }
+
+/* Sticky header styles */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+
+.sticky-header-scrolled {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Adjust content padding to prevent content from hiding under sticky header */
+.sticky-header-active main {
+  padding-top: var(--header-height, 4rem);
+}

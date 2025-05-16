@@ -57,10 +57,10 @@ export default function Navbar() {
       </div>
       
       <header 
-        className={`relative z-50 transition-all duration-300 
+        className={`sticky top-0 z-50 transition-all duration-300 
         ${scrolled 
-          ? 'bg-white/85 backdrop-blur-md shadow-sm py-2' 
-          : 'bg-transparent py-3'}`}
+          ? 'bg-white/95 backdrop-blur-md shadow-md py-2' 
+          : 'bg-white/80 backdrop-blur-sm py-3'}`}
       >
         <motion.div 
           className="container mx-auto px-4 sm:px-6 lg:px-8"

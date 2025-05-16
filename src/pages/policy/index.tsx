@@ -20,7 +20,7 @@ const PolicyPage = () => {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <ScrollProgress />
       
-      <main className="flex-grow py-10">
+      <main className="flex-grow py-10 mt-2">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4">
