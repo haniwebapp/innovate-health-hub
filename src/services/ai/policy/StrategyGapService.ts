@@ -82,14 +82,42 @@ export class StrategyGapService {
       if (error) throw new Error(error.message);
       if (!data) throw new Error("Analysis not found");
       
-      // The issue is here - data is a single object, not an array
       // Check if data is an array and take the first item if needed
       const result = Array.isArray(data) ? data[0] : data;
       
+      // Parse and validate gaps data
+      let parsedGaps: Array<{
+        title: string;
+        description: string;
+        severity: "low" | "medium" | "high";
+        potentialImpact: string;
+      }> = [];
+      
+      if (result.gaps) {
+        // If gaps is already an array of objects, use it directly
+        if (Array.isArray(result.gaps) && typeof result.gaps[0] === 'object') {
+          parsedGaps = result.gaps as any[];
+        } 
+        // If gaps is a string, try to parse it
+        else if (typeof result.gaps === 'string') {
+          try {
+            parsedGaps = JSON.parse(result.gaps);
+          } catch (e) {
+            console.error("Error parsing gaps JSON:", e);
+            parsedGaps = [];
+          }
+        }
+      }
+      
+      // Ensure recommendations is an array
+      const recommendations = Array.isArray(result.recommendations) 
+        ? result.recommendations 
+        : (result.recommendations ? [result.recommendations] : []);
+      
       return {
         overallAnalysis: result.overall_analysis,
-        gaps: result.gaps || [],
-        recommendations: result.recommendations || []
+        gaps: parsedGaps,
+        recommendations: recommendations
       };
     } catch (error: any) {
       console.error("Error getting strategy gap analysis:", error);
