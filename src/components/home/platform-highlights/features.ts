@@ -1,5 +1,5 @@
 
-import { Brain, FlaskConical, TrendingUp, BookOpen, Award, Users, HeartPulse, Globe } from "lucide-react";
+import { Brain, FlaskConical, TrendingUp, BookOpen, Award, Users, HeartPulse, Globe, Lightbulb } from "lucide-react";
 import React from "react";
 
 export interface Feature {
@@ -17,6 +17,13 @@ export const features: Feature[] = [
     description: "Advanced algorithms connect innovations with the right investors and opportunities.",
     ctaLink: "/innovations",
     color: "green"
+  },
+  {
+    iconName: "Lightbulb",
+    title: "Innovation Guide",
+    description: "Get personalized roadmaps and guidance for your healthcare innovation journey.",
+    ctaLink: "/innovations/guide",
+    color: "darkGold"
   },
   {
     iconName: "FlaskConical",
@@ -58,7 +65,8 @@ export function getIconByName(name: string) {
     Award,
     Users,
     HeartPulse,
-    Globe
+    Globe,
+    Lightbulb
   };
   
   return icons[name] || Award;

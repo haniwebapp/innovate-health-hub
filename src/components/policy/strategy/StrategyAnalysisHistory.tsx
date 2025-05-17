@@ -37,7 +37,18 @@ export const StrategyAnalysisHistory: React.FC = () => {
     
     try {
       const data = await StrategyGapService.listAnalyses();
-      setAnalyses(data as AnalysisHistoryItem[]);
+      // Ensure all required fields are present in the data
+      const typedData = data.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description || '',
+        created_at: item.created_at,
+        gap_count: item.gap_count || 0,
+        recommendation_count: item.recommendation_count || 0,
+        user_id: item.user_id || '',
+      })) as AnalysisHistoryItem[];
+      
+      setAnalyses(typedData);
     } catch (err: any) {
       console.error("Error loading analyses:", err);
       setError(err.message || "Failed to load analysis history");

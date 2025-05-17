@@ -12,6 +12,7 @@ import EventsArchivePage from '@/pages/events/archive';
 import EventDetailsPage from '@/pages/events/details/[id]';
 import TeamManagementPage from '@/pages/dashboard/team/index';
 import Index from '@/pages/Index';
+import InnovationGuidePage from '@/pages/innovations/guide';
 
 export function AppRoutes() {
   return (
@@ -27,6 +28,9 @@ export function AppRoutes() {
       
       {/* Innovation Submission Flow - Protected */}
       {InnovationSubmissionRoutes}
+
+      {/* Innovation Guide */}
+      <Route path="/innovations/guide" element={<InnovationGuidePage />} />
       
       {/* Main Dashboard with nested routes (including admin routes) */}
       {DashboardMainRoutes}
