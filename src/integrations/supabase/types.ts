@@ -1034,6 +1034,42 @@ export type Database = {
         }
         Relationships: []
       }
+      innovation_guides: {
+        Row: {
+          content: Json
+          created_at: string
+          description: string
+          id: string
+          innovation_stage: string
+          innovation_type: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          description: string
+          id?: string
+          innovation_stage: string
+          innovation_type: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          description?: string
+          id?: string
+          innovation_stage?: string
+          innovation_type?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       innovation_investments: {
         Row: {
           amount: number

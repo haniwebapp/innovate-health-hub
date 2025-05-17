@@ -19,6 +19,15 @@ export class InnovationGuideService {
         return this.getMockGuideData(input);
       }
       
+      // Save the generated guide to the database
+      await this.saveGuide({
+        title: `${input.innovationType} ${input.innovationStage} Guide`,
+        description: `Guidance for ${input.innovationType} in ${input.innovationStage} stage`,
+        content: data,
+        innovation_type: input.innovationType,
+        innovation_stage: input.innovationStage
+      });
+      
       return data as InnovationGuideResult;
     } catch (error: any) {
       console.error("Error generating innovation guide:", error);
@@ -27,12 +36,52 @@ export class InnovationGuideService {
   }
 
   /**
+   * Save a generated innovation guide to the database
+   */
+  private static async saveGuide(guide: {
+    title: string;
+    description: string;
+    content: any;
+    innovation_type: string;
+    innovation_stage: string;
+  }) {
+    try {
+      // Only attempt to save if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('innovation_guides')
+        .insert({
+          title: guide.title,
+          description: guide.description,
+          content: guide.content,
+          innovation_type: guide.innovation_type,
+          innovation_stage: guide.innovation_stage,
+          user_id: user.id
+        });
+
+      if (error) {
+        console.error("Failed to save innovation guide:", error);
+      }
+    } catch (err) {
+      console.error("Error saving innovation guide:", err);
+    }
+  }
+
+  /**
    * Get a list of all innovation guides for the current user
    */
   static async listGuides() {
     try {
-      // Instead of using an RPC that doesn't exist, let's use a direct query to a table
-      // We'll assume there's an innovation_guides table, if not, we'll return mock data
+      // First check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        console.log("User not authenticated, returning mock data");
+        return this.getMockGuidesList();
+      }
+      
       const { data, error } = await supabase
         .from('innovation_guides')
         .select('*')
