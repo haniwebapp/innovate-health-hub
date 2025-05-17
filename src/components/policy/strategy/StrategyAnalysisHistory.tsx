@@ -13,7 +13,9 @@ interface AnalysisHistoryItem {
   title: string;
   description?: string;
   created_at: string;
-  user_id: string;
+  gap_count?: number;
+  recommendation_count?: number;
+  user_id?: string;
 }
 
 export const StrategyAnalysisHistory: React.FC = () => {
@@ -35,7 +37,7 @@ export const StrategyAnalysisHistory: React.FC = () => {
     
     try {
       const data = await StrategyGapService.listAnalyses();
-      setAnalyses(data);
+      setAnalyses(data as AnalysisHistoryItem[]);
     } catch (err: any) {
       console.error("Error loading analyses:", err);
       setError(err.message || "Failed to load analysis history");
