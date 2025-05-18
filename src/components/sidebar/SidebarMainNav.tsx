@@ -12,59 +12,53 @@ interface SidebarMainNavProps {
 export function SidebarMainNav({ isCollapsed }: SidebarMainNavProps) {
   const { pathname } = useLocation();
   
+  // Convert the isActive function to check if a path is active
   const isActive = (path: string) => {
     return pathname === path || pathname.startsWith(`${path}/`);
   };
   
+  // Create an array of navigation items to map through
+  const navItems = [
+    {
+      to: "/dashboard",
+      icon: <Home className="h-[1.2rem] w-[1.2rem]" />,
+      text: "Dashboard"
+    },
+    {
+      to: "/dashboard/challenges",
+      icon: <LineChart className="h-[1.2rem] w-[1.2rem]" />,
+      text: "Challenges"
+    },
+    {
+      to: "/dashboard/submissions",
+      icon: <Send className="h-[1.2rem] w-[1.2rem]" />,
+      text: "Submissions"
+    },
+    {
+      to: "/dashboard/activity",
+      icon: <FileText className="h-[1.2rem] w-[1.2rem]" />,
+      text: "Activity"
+    },
+    {
+      to: "/dashboard/events",
+      icon: <CalendarDays className="h-[1.2rem] w-[1.2rem]" />,
+      text: "Events"
+    },
+    {
+      to: "/dashboard/support",
+      icon: <HelpCircle className="h-[1.2rem] w-[1.2rem]" />,
+      text: "Support"
+    }
+  ];
+  
   return (
-    <SidebarNavSection title="Main Navigation" isCollapsed={isCollapsed}>
-      <SidebarNavItem
-        isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard")}
-        href="/dashboard"
-        icon={<Home className="h-[1.2rem] w-[1.2rem]" />}
-        label="Dashboard"
-      />
-      
-      <SidebarNavItem
-        isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/challenges")}
-        href="/dashboard/challenges"
-        icon={<LineChart className="h-[1.2rem] w-[1.2rem]" />}
-        label="Challenges"
-      />
-      
-      <SidebarNavItem
-        isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/submissions")}
-        href="/dashboard/submissions"
-        icon={<Send className="h-[1.2rem] w-[1.2rem]" />}
-        label="Submissions"
-      />
-      
-      <SidebarNavItem
-        isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/activity")}
-        href="/dashboard/activity"
-        icon={<FileText className="h-[1.2rem] w-[1.2rem]" />}
-        label="Activity"
-      />
-      
-      <SidebarNavItem
-        isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/events")}
-        href="/dashboard/collaboration/events"
-        icon={<CalendarDays className="h-[1.2rem] w-[1.2rem]" />}
-        label="Events"
-      />
-      
-      <SidebarNavItem
-        isCollapsed={isCollapsed}
-        isActive={isActive("/dashboard/support")}
-        href="/dashboard/support"
-        icon={<HelpCircle className="h-[1.2rem] w-[1.2rem]" />}
-        label="Support"
-      />
-    </SidebarNavSection>
+    <SidebarNavSection 
+      title="Main Navigation" 
+      isCollapsed={isCollapsed} 
+      items={navItems.map(item => ({
+        ...item,
+        badge: undefined
+      }))}
+    />
   );
 }

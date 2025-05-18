@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { InnovationGuideService } from '@/services/ai/innovation/InnovationGuideService';
@@ -10,14 +9,17 @@ import { useToast } from '@/components/ui/use-toast';
 import { ArrowLeft, Bookmark, Calendar, CheckCircle2, Clock, Download, Lightbulb, Share2, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 
+// Updated SavedGuide interface to handle content as possibly Json type
 interface SavedGuide {
   id: string;
   title: string;
   description: string;
   created_at: string;
+  user_id?: string;
   innovation_type: string;
   innovation_stage: string;
-  content?: InnovationGuideResult;
+  updated_at?: string;
+  content?: any; // Use any here since the content can be of various formats
 }
 
 export default function GuidePage() {
@@ -38,7 +40,16 @@ export default function GuidePage() {
         const foundGuide = guides.find(g => g.id === id);
         
         if (foundGuide) {
-          setGuide(foundGuide);
+          // Parse content if it's a string
+          if (foundGuide.content && typeof foundGuide.content === 'string') {
+            try {
+              foundGuide.content = JSON.parse(foundGuide.content);
+            } catch (e) {
+              console.error("Failed to parse guide content:", e);
+            }
+          }
+          
+          setGuide(foundGuide as SavedGuide);
         } else {
           toast({
             title: "Guide Not Found",
@@ -68,6 +79,16 @@ export default function GuidePage() {
     } catch (error) {
       return 'Unknown date';
     }
+  };
+
+  // Type guard to check if content is InnovationGuideResult
+  const isInnovationGuideResult = (content: any): content is InnovationGuideResult => {
+    return content && 
+      (content.stageSpecificGuidance !== undefined || 
+       content.recommendations !== undefined ||
+       content.resources !== undefined ||
+       content.marketInsights !== undefined ||
+       content.nextSteps !== undefined);
   };
 
   if (loading) {
@@ -103,7 +124,7 @@ export default function GuidePage() {
     );
   }
 
-  const guideContent = guide.content as InnovationGuideResult;
+  const guideContent = guide.content && isInnovationGuideResult(guide.content) ? guide.content : undefined;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -155,7 +176,7 @@ export default function GuidePage() {
           </div>
 
           {/* Guide content */}
-          {guideContent && (
+          {guideContent ? (
             <div className="space-y-8">
               {/* Stage-specific guidance */}
               {guideContent.stageSpecificGuidance && (
@@ -290,6 +311,14 @@ export default function GuidePage() {
                   </CardContent>
                 </Card>
               )}
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg border p-8 text-center">
+              <Lightbulb className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-gray-700 mb-2">Guide Content Unavailable</h3>
+              <p className="text-gray-500">
+                The content for this guide could not be displayed. It may be in an unsupported format.
+              </p>
             </div>
           )}
         </div>
