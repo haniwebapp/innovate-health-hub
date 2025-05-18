@@ -29,7 +29,16 @@ export default function SavedGuidesPage() {
       try {
         setLoading(true);
         const data = await InnovationGuideService.listGuides();
-        setGuides(data);
+        // Make sure the data matches the SavedGuide interface
+        const formattedGuides: SavedGuide[] = data.map((guide: any) => ({
+          id: guide.id,
+          title: guide.title,
+          description: guide.description,
+          created_at: guide.created_at,
+          innovation_type: guide.innovation_type || 'Unknown Type',
+          innovation_stage: guide.innovation_stage || 'Unknown Stage'
+        }));
+        setGuides(formattedGuides);
       } catch (error) {
         console.error("Failed to fetch guides:", error);
         toast({

@@ -109,21 +109,27 @@ export class InnovationGuideService {
         title: "Digital Health App Development Guide",
         description: "Comprehensive guidance for creating healthcare mobile applications",
         created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        user_id: "current-user"
+        user_id: "current-user",
+        innovation_type: "Digital Health",
+        innovation_stage: "Development"
       },
       {
         id: "2",
         title: "Medical Device Regulatory Pathway",
         description: "Step-by-step guidance for medical device approval",
         created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        user_id: "current-user"
+        user_id: "current-user",
+        innovation_type: "Medical Device",
+        innovation_stage: "Regulatory"
       },
       {
         id: "3",
         title: "Healthcare Data Platform Strategy",
         description: "Guidelines for developing secure healthcare data platforms",
         created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-        user_id: "current-user"
+        user_id: "current-user",
+        innovation_type: "Data Platform",
+        innovation_stage: "Concept"
       }
     ];
   }
