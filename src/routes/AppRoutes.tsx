@@ -13,6 +13,8 @@ import EventDetailsPage from '@/pages/events/details/[id]';
 import TeamManagementPage from '@/pages/dashboard/team/index';
 import Index from '@/pages/Index';
 import InnovationGuidePage from '@/pages/innovations/guide';
+import SavedGuidesPage from '@/pages/innovations/saved-guides';
+import GuidePage from '@/pages/innovations/guides/[id]';
 
 export function AppRoutes() {
   return (
@@ -31,6 +33,8 @@ export function AppRoutes() {
 
       {/* Innovation Guide */}
       <Route path="/innovations/guide" element={<InnovationGuidePage />} />
+      <Route path="/innovations/saved-guides" element={<SavedGuidesPage />} />
+      <Route path="/innovations/guides/:id" element={<GuidePage />} />
       
       {/* Main Dashboard with nested routes (including admin routes) */}
       {DashboardMainRoutes}

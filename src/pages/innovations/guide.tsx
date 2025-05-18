@@ -3,7 +3,9 @@ import React from 'react';
 import { ScrollProgress } from '@/components/animations/ScrollProgress';
 import { InnovationGuideGenerator } from '@/components/innovations/InnovationGuideGenerator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { HeartPulse, Sparkles, Lightbulb, TrendingUp } from 'lucide-react';
+import { HeartPulse, Sparkles, Lightbulb, TrendingUp, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 export default function InnovationGuidePage() {
   return (
@@ -14,6 +16,15 @@ export default function InnovationGuidePage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="mb-6 text-center">
+              <div className="flex justify-end mb-2">
+                <Button variant="outline" asChild className="text-moh-green border-moh-green/30 hover:bg-moh-lightGreen/20">
+                  <Link to="/innovations/saved-guides" className="flex items-center gap-2">
+                    <BookOpen size={16} />
+                    View Saved Guides
+                  </Link>
+                </Button>
+              </div>
+            
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
                 Innovation Guide
               </h1>
