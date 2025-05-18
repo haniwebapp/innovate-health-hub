@@ -1,6 +1,6 @@
 
 import { SidebarNavSection } from "./SidebarNavSection";
-import { FileText, Lightbulb, Award, BookOpen } from "lucide-react";
+import { FileText, Lightbulb, Award, BookOpen, Bookmark } from "lucide-react";
 
 interface SidebarInnovationNavProps {
   isCollapsed: boolean;
@@ -29,8 +29,12 @@ export function SidebarInnovationNav({ isCollapsed }: SidebarInnovationNavProps)
         },
         { 
           to: "/innovations/saved-guides", 
-          icon: <FileText size={18} className="text-moh-green" />, 
-          text: "Saved Guides"
+          icon: <Bookmark size={18} className="text-moh-green" />, 
+          text: "Saved Guides",
+          badge: {
+            variant: "default",
+            content: "New"
+          }
         },
         { 
           to: "/dashboard/submissions", 

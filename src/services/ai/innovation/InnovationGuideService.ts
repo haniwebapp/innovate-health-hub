@@ -100,6 +100,40 @@ export class InnovationGuideService {
   }
 
   /**
+   * Get a single innovation guide by ID
+   */
+  static async getGuideById(id: string) {
+    try {
+      // First check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        console.log("User not authenticated, returning mock data");
+        const mockGuides = this.getMockGuidesList();
+        return mockGuides.find(guide => guide.id === id) || null;
+      }
+      
+      const { data, error } = await supabase
+        .from('innovation_guides')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        console.warn(`Could not fetch guide with id ${id}, returning mock data:`, error);
+        const mockGuides = this.getMockGuidesList();
+        return mockGuides.find(guide => guide.id === id) || null;
+      }
+      
+      return data;
+    } catch (error: any) {
+      console.error("Error getting guide by ID:", error);
+      const mockGuides = this.getMockGuidesList();
+      return mockGuides.find(guide => guide.id === id) || null;
+    }
+  }
+
+  /**
    * Delete an innovation guide by ID
    */
   static async deleteGuide(id: string) {
@@ -138,7 +172,13 @@ export class InnovationGuideService {
         created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         user_id: "current-user",
         innovation_type: "Digital Health",
-        innovation_stage: "Development"
+        innovation_stage: "Development",
+        content: this.getMockGuideData({
+          innovationType: "Digital Health",
+          innovationStage: "concept",
+          challenges: "",
+          goals: ""
+        })
       },
       {
         id: "2",
@@ -147,7 +187,13 @@ export class InnovationGuideService {
         created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         user_id: "current-user",
         innovation_type: "Medical Device",
-        innovation_stage: "Regulatory"
+        innovation_stage: "Regulatory",
+        content: this.getMockGuideData({
+          innovationType: "Medical Device",
+          innovationStage: "regulatory",
+          challenges: "",
+          goals: ""
+        })
       },
       {
         id: "3",
@@ -156,7 +202,13 @@ export class InnovationGuideService {
         created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
         user_id: "current-user",
         innovation_type: "Data Platform",
-        innovation_stage: "Concept"
+        innovation_stage: "Concept",
+        content: this.getMockGuideData({
+          innovationType: "Data Platform",
+          innovationStage: "concept",
+          challenges: "",
+          goals: ""
+        })
       }
     ];
   }
