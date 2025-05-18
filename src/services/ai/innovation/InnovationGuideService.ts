@@ -100,6 +100,33 @@ export class InnovationGuideService {
   }
 
   /**
+   * Delete an innovation guide by ID
+   */
+  static async deleteGuide(id: string) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      
+      const { error } = await supabase
+        .from('innovation_guides')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);  // Ensure users can only delete their own guides
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      return true;
+    } catch (error: any) {
+      console.error("Error deleting innovation guide:", error);
+      throw new Error(error.message || "Failed to delete guide");
+    }
+  }
+
+  /**
    * Mock data for development and demo purposes - guides list
    */
   private static getMockGuidesList() {
