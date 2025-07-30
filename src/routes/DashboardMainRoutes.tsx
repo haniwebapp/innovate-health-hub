@@ -41,6 +41,7 @@ import AdminCMSPage from '@/pages/admin/cms/index';
 import AdminCMSPagesPage from '@/pages/admin/cms/pages/index';
 import AdminCMSNewPage from '@/pages/admin/cms/pages/new';
 import AdminCMSEditPage from '@/pages/admin/cms/pages/edit';
+import AdminCategoriesPage from '@/pages/admin/categories/index';
 
 export const DashboardMainRoutes = (
   <Route path="/dashboard" element={
@@ -90,6 +91,7 @@ export const DashboardMainRoutes = (
       <Route path="cms/pages" element={<AdminLayout title="CMS Pages" description="Manage CMS pages">{<AdminCMSPagesPage />}</AdminLayout>} />
       <Route path="cms/pages/new" element={<AdminLayout title="Create CMS Page" description="Create a new CMS page">{<AdminCMSNewPage />}</AdminLayout>} />
       <Route path="cms/pages/edit/:id" element={<AdminLayout title="Edit CMS Page" description="Edit CMS page content">{<AdminCMSEditPage />}</AdminLayout>} />
+      <Route path="categories" element={<AdminLayout title="Category Management" description="Manage platform categories">{<AdminCategoriesPage />}</AdminLayout>} />
     </Route>
   </Route>
 );
